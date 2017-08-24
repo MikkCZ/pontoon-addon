@@ -17,7 +17,7 @@ function updateNumberOfUnreadNotifications() {
     return response.text();
   }).then(function(text) {
     var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
-    var unreadCount = document.querySelectorAll('.notification-item[data-unread=true]').length;
+    var unreadCount = notificationsDoc.querySelectorAll('.notification-item[data-unread=true]').length;
     updateIconUnreadCount(unreadCount);
   });
 }
