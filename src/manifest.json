@@ -15,7 +15,9 @@
   ],
   "browser_action": {
     "default_title": "Pontoon notifications",
-    "default_icon": "img/pontoon-logo.svg"
+    "default_icon": "img/pontoon-logo.svg",
+    "default_popup": "html/notifications-popup.html",
+    "browser_style": true
   },
   "background": {
     "scripts": [ "js/background.js" ]
