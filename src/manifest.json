@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Pontoon Tools",
+  "description": "Tools for Pontoon and its integration into the browser.",
+  "version": "0.1",
+  "author": "Michal Stanke",
+  "icons": {
+    "16": "img/pontoon-logo.svg",
+    "48": "img/pontoon-logo.svg",
+    "96": "img/pontoon-logo.svg",
+    "128": "img/pontoon-logo.svg"
+  },
+  "permissions": [
+    "https://pontoon.mozilla.org/*"
+  ],
+  "browser_action": {
+    "default_title": "Pontoon notifications",
+    "default_icon": "img/pontoon-logo.svg"
+  },
+  "background": {
+    "scripts": [ "js/background.js" ]
+  }
+}
+
