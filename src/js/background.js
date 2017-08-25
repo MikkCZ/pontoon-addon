@@ -28,16 +28,8 @@ function scheduleRefresh(intervalTime) {
   refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalTime);
 }
 
-function openNotificationsPage() {
-  chrome.tabs.create({url: notificationsUrl});
-}
-
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   updateNumberOfUnreadNotifications();
-});
-
-chrome.browserAction.onClicked.addListener(function() {
-  openNotificationsPage();
 });
 updateNumberOfUnreadNotifications();
 scheduleRefresh(5 * 60 * 1000); // 5 minutes
