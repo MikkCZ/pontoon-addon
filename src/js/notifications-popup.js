@@ -5,6 +5,7 @@ var markAsReadUrl = notificationsUrl + 'mark-all-as-read/';
 function seeAllNotifications(e) {
   e.preventDefault();
   chrome.tabs.create({url: notificationsUrl});
+  window.close();
 }
 document.querySelectorAll('#empty-list .see-all')[0].addEventListener('click', seeAllNotifications);
 
