@@ -20,7 +20,6 @@ function markAllNotificationsAsRead(e) {
   var request = new XMLHttpRequest();
   request.addEventListener('readystatechange', function (e) {
     if(request.readyState === XMLHttpRequest.DONE) {
-      console.log('request done');
       triggerNotificationsReload();
     }
   });

@@ -2,7 +2,7 @@
   "applications": {
     "gecko": {
       "id": "pontoon-tools@mikk.cz",
-      "strict_min_version": "52.0"
+      "strict_min_version": "55.0"
     }
   },
   "manifest_version": 2,
@@ -20,6 +20,10 @@
     "https://pontoon.mozilla.org/*",
     "storage"
   ],
+  "options_ui": {
+    "page": "html/options-ui.html",
+    "browser_style": true
+  },
   "browser_action": {
     "default_title": "Pontoon notifications",
     "default_icon": "img/pontoon-logo.svg",
