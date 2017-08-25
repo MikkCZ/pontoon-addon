@@ -1,5 +1,15 @@
 var notificationsUrl = 'https://pontoon.mozilla.org/notifications/';
 
+function markAllNotificationsAsRead(e) {
+  e.preventDefault();
+  var request = new XMLHttpRequest();
+  request.addEventListener('readystatechange', function (e) {
+    loadNotifications();
+  });
+  request.open('GET', notificationsUrl+'mark-all-as-read/', true);
+  request.send(null);
+}
+
 function appendNotificationToList(list, notification) {
   var sourceLink = notification.getElementsByTagName('a')[0];
   var link = document.createElement('a');
@@ -23,6 +33,12 @@ function displayNotifications(notifications) {
     for (n of notifications) {
       appendNotificationToList(notificationsList, n);
     }
+    notificationsList.appendChild(document.createElement('br'));
+    var markAsReadLink = document.createElement('a');
+    markAsReadLink.innerHTML = 'Mark all notifications as read';
+    markAsReadLink.setAttribute('href', '#');
+    markAsReadLink.addEventListener('click', markAllNotificationsAsRead);
+    notificationsList.appendChild(markAsReadLink);
   } else {
     var span = document.createElement('span');
     span.innerHTML = 'There are no unread notifications!';
