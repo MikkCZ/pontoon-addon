@@ -10,6 +10,7 @@ function markAllNotificationsAsRead(e) {
     }
   });
   request.open('GET', notificationsUrl+'mark-all-as-read/', true);
+  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
   request.send(null);
 }
 
