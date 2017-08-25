@@ -11,11 +11,14 @@
     "128": "img/pontoon-logo.svg"
   },
   "permissions": [
-    "https://pontoon.mozilla.org/*"
+    "https://pontoon.mozilla.org/*",
+    "storage"
   ],
   "browser_action": {
     "default_title": "Pontoon notifications",
-    "default_icon": "img/pontoon-logo.svg"
+    "default_icon": "img/pontoon-logo.svg",
+    "default_popup": "html/notifications-popup.html",
+    "browser_style": true
   },
   "background": {
     "scripts": [ "js/background.js" ]

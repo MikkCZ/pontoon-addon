@@ -1,0 +1,26 @@
+body {
+  background-color: #272A2F;
+  color: #ebebeb;
+}
+
+#notification-list {
+  padding: 1em;
+  text-align: center;
+  list-style: none;
+}
+
+#notification-list li {
+  background-color: #333941;
+  padding: 0.5em;
+  margin-bottom: 0.1em;
+}
+
+#notification-list li:hover {
+  background-color: #3f4752;
+}
+
+#notification-list a {
+  color: #F36;
+  text-decoration: none;
+}
+
