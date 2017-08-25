@@ -30,4 +30,5 @@ for (input of document.querySelectorAll('input')) {
   input.addEventListener('change', saveChangedOptionToLocalStorage);
 }
 
+document.getElementById('locale_team').value = navigator.language || navigator.userLanguage;
 loadOptionsFromLocalStorage();
