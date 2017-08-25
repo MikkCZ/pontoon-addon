@@ -1,26 +1,86 @@
+/* General */
+
 body {
   background-color: #272A2F;
   color: #ebebeb;
 }
 
-#notification-list {
+a {
+  color: #F36;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none;
+}
+
+#notification-list,
+#full-list,
+#empty-list
+{
   padding: 1em;
   text-align: center;
+}
+
+.bottom-link {
+  display: block;
+  margin-top: 0.8em;
+  padding: 0.5em;
+  border-top: 1px solid #525a65;
+  text-align: center;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.bottom-link:hover {
+  background-color: #3f4752;
+  color: #fff;
+}
+
+/* Notifications list */
+
+#notification-list {
   list-style: none;
 }
 
 #notification-list li {
-  background-color: #333941;
   padding: 0.5em;
   margin-bottom: 0.1em;
+  background-color: #333941;
 }
 
 #notification-list li:hover {
   background-color: #3f4752;
 }
 
-#notification-list a {
-  color: #F36;
-  text-decoration: none;
+/* Empty list */
+
+#empty-list img {
+  max-height: 7em;
+  padding-bottom: 0.5em;
 }
 
+#empty-list p {
+  text-align: center;
+}
+
+#empty-list .title,
+#empty-list .description
+{
+  margin: 0;
+  padding: 0;
+}
+
+#empty-list .description {
+  color: #aaa;
+}
+
+#empty-list .title {
+  font-size: 16px;
+  color: #ebebeb;
+}
+
+#empty-list .description {
+  padding-top: 0.25em;
+  font-size: 12px;
+}
