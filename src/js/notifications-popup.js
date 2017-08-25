@@ -17,10 +17,10 @@ function markAllNotificationsAsRead(e) {
 function appendNotificationToList(list, notification) {
   var sourceLink = notification.getElementsByTagName('a')[0];
   var link = document.createElement('a');
-  link.innerHTML = sourceLink.innerHTML;
+  link.textContent = sourceLink.textContent;
   link.setAttribute('href', 'https://pontoon.mozilla.org'+sourceLink.getAttribute('href'));
   var description = document.createElement('span');
-  description.innerHTML = notification.querySelectorAll('.verb')[0].innerHTML + ' ' + notification.querySelectorAll('.timeago')[0].innerHTML;
+  description.textContent = notification.querySelectorAll('.verb')[0].textContent + ' ' + notification.querySelectorAll('.timeago')[0].textContent;
   var listItem = document.createElement('li');
   listItem.appendChild(link);
   listItem.appendChild(document.createElement('br'));
@@ -39,15 +39,15 @@ function displayNotifications(notifications) {
     }
     notificationsList.appendChild(document.createElement('br'));
     var markAsReadLink = document.createElement('a');
-    markAsReadLink.innerHTML = 'Mark all notifications as read';
+    markAsReadLink.textContent = 'Mark all notifications as read';
     markAsReadLink.setAttribute('href', '#');
     markAsReadLink.addEventListener('click', markAllNotificationsAsRead);
     notificationsList.appendChild(markAsReadLink);
   } else {
     var span = document.createElement('span');
-    span.innerHTML = 'There are no unread notifications!';
+    span.textContent = 'There are no unread notifications!';
     var notificationsPageLink = document.createElement('a');
-    notificationsPageLink.innerHTML = 'See all notifications.';
+    notificationsPageLink.textContent = 'See all notifications.';
     notificationsPageLink.setAttribute('href', notificationsUrl);
     notificationsList.appendChild(span);
     notificationsList.appendChild(document.createElement('br'));
