@@ -23,14 +23,27 @@ function updateNumberOfUnreadNotifications() {
   });
 }
 
-function scheduleRefresh(intervalTime) {
-  clearInterval(refreshInterval);
-  refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalTime);
+function scheduleRefresh() {
+  var optionKey = 'options.notifications_update_interval';
+  chrome.storage.local.get(optionKey, function (item) {
+    if (item[optionKey] === undefined) {
+      var intervalMinutes = 15;
+    } else {
+      var intervalMinutes = parseInt(item[optionKey], 10);
+    }
+    clearInterval(refreshInterval);
+    refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalMinutes * 3600 * 1000);
+  });
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   updateNumberOfUnreadNotifications();
+  scheduleRefresh();
+});
+chrome.storage.onChanged.addListener(function(changes, areaName) {
+  if (changes['options.notifications_update_interval'] !== undefined) {
+    scheduleRefresh();
+  }
 });
 updateNumberOfUnreadNotifications();
-scheduleRefresh(5 * 60 * 1000); // 5 minutes
-
+scheduleRefresh();
