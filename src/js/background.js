@@ -18,7 +18,7 @@ function updateNumberOfUnreadNotifications() {
   }).then(function(text) {
     chrome.storage.local.set({notificationsDocText: text});
     var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
-    var unreadCount = notificationsDoc.querySelectorAll('.notification-item[data-unread=true]').length;
+    var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
     updateIconUnreadCount(unreadCount);
   });
 }

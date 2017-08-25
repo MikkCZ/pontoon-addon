@@ -58,7 +58,7 @@ function displayNotifications(notifications) {
 function loadNotificationsFromStorage() {
   chrome.storage.local.get('notificationsDocText', function(item) {
     var notificationsDoc = new DOMParser().parseFromString(item.notificationsDocText, 'text/html');
-    var unreadNotifications = notificationsDoc.querySelectorAll('.notification-item[data-unread=true]');
+    var unreadNotifications = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]');
     displayNotifications(unreadNotifications);
   });
 }
