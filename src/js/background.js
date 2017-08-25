@@ -16,6 +16,7 @@ function updateNumberOfUnreadNotifications() {
   }).then(function(response) {
     return response.text();
   }).then(function(text) {
+    chrome.storage.local.set({notificationsDocText: text});
     var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
     var unreadCount = document.querySelectorAll('.notification-item[data-unread=true]').length;
     updateIconUnreadCount(unreadCount);
@@ -30,6 +31,10 @@ function scheduleRefresh(intervalTime) {
 function openNotificationsPage() {
   chrome.tabs.create({url: notificationsUrl});
 }
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  updateNumberOfUnreadNotifications();
+});
 
 chrome.browserAction.onClicked.addListener(function() {
   openNotificationsPage();

@@ -4,7 +4,10 @@ function markAllNotificationsAsRead(e) {
   e.preventDefault();
   var request = new XMLHttpRequest();
   request.addEventListener('readystatechange', function (e) {
-    loadNotifications();
+    if(request.readyState === XMLHttpRequest.DONE) {
+      console.log('request done');
+      triggerNotificationsReload();
+    }
   });
   request.open('GET', notificationsUrl+'mark-all-as-read/', true);
   request.send(null);
@@ -51,16 +54,22 @@ function displayNotifications(notifications) {
   }
 }
 
-function loadNotifications() {
-  fetch(notificationsUrl, {
-    credentials: 'include'
-  }).then(function(response) {
-    return response.text();
-  }).then(function(text) {
-    var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
+function loadNotificationsFromStorage() {
+  chrome.storage.local.get('notificationsDocText', function(item) {
+    var notificationsDoc = new DOMParser().parseFromString(item.notificationsDocText, 'text/html');
     var unreadNotifications = notificationsDoc.querySelectorAll('.notification-item[data-unread=true]');
     displayNotifications(unreadNotifications);
   });
 }
 
-loadNotifications();
+function triggerNotificationsReload() {
+  chrome.runtime.sendMessage({
+    type: 'notifications-reload-request'
+  });
+}
+
+chrome.storage.onChanged.addListener(function(changes, areaName) {
+  loadNotificationsFromStorage();
+});
+
+loadNotificationsFromStorage();
