@@ -47,8 +47,9 @@ function displayNotifications(notifications) {
   var notificationsList = document.getElementById('notification-list');
   var fullList = document.getElementById('full-list');
   var emptyList = document.getElementById('empty-list');
+  var error = document.getElementById('error');
 
-  if (notifications.length > 0) {
+  if (notifications != undefined && notifications.length > 0) {
     while (notificationsList.lastChild) {
       notificationsList.removeChild(notificationsList.lastChild);
     }
@@ -58,18 +59,29 @@ function displayNotifications(notifications) {
     notificationsList.classList.remove('hidden');
     fullList.classList.remove('hidden');
     emptyList.classList.add('hidden');
-  } else {
+    error.classList.add('hidden');
+  } else if (notifications != undefined) {
     notificationsList.classList.add('hidden');
     fullList.classList.add('hidden');
     emptyList.classList.remove('hidden');
+    error.classList.add('hidden');
+  } else {
+    notificationsList.classList.add('hidden');
+    fullList.classList.add('hidden');
+    emptyList.classList.add('hidden');
+    error.classList.remove('hidden');
   }
 }
 
 function loadNotificationsFromStorage() {
   chrome.storage.local.get('notificationsDocText', function(item) {
-    var notificationsDoc = new DOMParser().parseFromString(item.notificationsDocText, 'text/html');
-    var unreadNotifications = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]');
-    displayNotifications(unreadNotifications);
+    if (item.notificationsDocText != undefined) {
+      var notificationsDoc = new DOMParser().parseFromString(item.notificationsDocText, 'text/html');
+      var unreadNotifications = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]');
+      displayNotifications(unreadNotifications);
+    } else {
+      displayNotifications(undefined);
+    }
   });
 }
 chrome.storage.onChanged.addListener(function(changes, areaName) {

@@ -1,9 +1,10 @@
 var notificationsUrl = 'https://pontoon.mozilla.org/notifications/';
 var refreshInterval;
+var error = false;
 
 function updateIconUnreadCount(count) {
   chrome.browserAction.setBadgeText({text: count.toString()});
-  if (count > 0) {
+  if (count != 0) {
     chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
   } else {
     chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
@@ -12,27 +13,41 @@ function updateIconUnreadCount(count) {
 
 function updateNumberOfUnreadNotifications() {
   fetch(notificationsUrl, {
-    credentials: 'include'
+    credentials: 'include',
+    redirect: 'manual',
   }).then(function(response) {
-    return response.text();
+    error = (response.status != 200);
+    if (!error) {
+      return response.text();
+    } else {
+      chrome.storage.local.remove('notificationsDocText');
+      updateIconUnreadCount('!');
+      scheduleRefresh();
+    }
   }).then(function(text) {
-    chrome.storage.local.set({notificationsDocText: text});
-    var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
-    var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
-    updateIconUnreadCount(unreadCount);
+    if (text != undefined) {
+      chrome.storage.local.set({notificationsDocText: text});
+      var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
+      var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
+      updateIconUnreadCount(unreadCount);
+    }
   });
 }
 
 function scheduleRefresh() {
   var optionKey = 'options.notifications_update_interval';
   chrome.storage.local.get(optionKey, function (item) {
+    var intervalMinutes;
     if (item[optionKey] === undefined) {
-      var intervalMinutes = 15;
+      intervalMinutes = 15;
     } else {
-      var intervalMinutes = parseInt(item[optionKey], 10);
+      intervalMinutes = parseInt(item[optionKey], 10);
+    }
+    if (error) {
+      intervalMinutes = 1;
     }
     clearInterval(refreshInterval);
-    refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalMinutes * 3600 * 1000);
+    refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalMinutes * 60 * 1000);
   });
 }
 

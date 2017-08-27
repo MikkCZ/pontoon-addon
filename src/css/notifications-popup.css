@@ -16,7 +16,8 @@ a {
 
 #notification-list,
 #full-list,
-#empty-list
+#empty-list,
+#error
 {
   padding: 1em;
   text-align: center;
@@ -60,27 +61,31 @@ a {
   padding-bottom: 0.5em;
 }
 
-#empty-list p {
+#empty-list p,
+#error p
+{
   text-align: center;
 }
 
 #empty-list .title,
-#empty-list .description
+#empty-list .description,
+#error p
 {
   margin: 0;
   padding: 0;
 }
 
-#empty-list .description {
+#empty-list .description,
+#error .description
+{
+  padding-top: 0.25em;
+  font-size: 12px;
   color: #aaa;
 }
 
-#empty-list .title {
+#empty-list .title,
+#error .title
+{
   font-size: 16px;
   color: #ebebeb;
-}
-
-#empty-list .description {
-  padding-top: 0.25em;
-  font-size: 12px;
 }
