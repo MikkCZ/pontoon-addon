@@ -39,11 +39,11 @@ ToolbarButton.prototype = {
 
     _watchStorageChanges: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            var optionKey = 'notificationsDocText';
-            if (changes[optionKey] !== undefined) {
-                this._options.get([optionKey], function(item) {
-                    if (item[optionKey] != undefined) {
-                        var notificationsDoc = new DOMParser().parseFromString(item[optionKey], 'text/html');
+            var docKey = 'notificationsDocText';
+            if (changes[docKey] !== undefined) {
+                chrome.storage.local.get(docKey, function(item) {
+                    if (item[docKey] != undefined) {
+                        var notificationsDoc = new DOMParser().parseFromString(item[docKey], 'text/html');
                         var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
                         this.updateBadge(unreadCount);
                     } else {
