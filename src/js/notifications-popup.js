@@ -12,4 +12,3 @@ document.querySelectorAll('#full-list .mark-all-as-read')[0].addEventListener('c
 });
 
 var popup = new NotificationsPopup(remotePontoon);
-popup.init();

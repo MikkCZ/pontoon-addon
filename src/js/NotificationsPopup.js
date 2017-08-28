@@ -1,9 +1,11 @@
 function NotificationsPopup(remotePontoon) {
     this._remotePontoon = remotePontoon;
+
+    this._init();
 }
 
 NotificationsPopup.prototype = {
-    init: function() {
+    _init: function() {
         this._watchStorageChanges();
         this._loadNotificationsFromStorage();
     },

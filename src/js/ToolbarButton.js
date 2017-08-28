@@ -3,10 +3,12 @@ function ToolbarButton(options, remotePontoon) {
     this._remotePontoon = remotePontoon;
     this._updateError = false;
     this._refreshInterval;
+
+    this._init();
 }
 
 ToolbarButton.prototype = {
-    init: function() {
+    _init: function() {
         this._addContextMenu();
         this._watchStorageChanges();
         this._watchOptionsUpdates();
