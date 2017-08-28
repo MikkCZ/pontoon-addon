@@ -78,7 +78,7 @@ Options.prototype = {
 
     get: function(optionIds, callback) {
         chrome.storage.local.get(optionIds, function(items) {
-            for (optionId of optionIds) {
+            for (const optionId of optionIds) {
                 if (items[optionId] === undefined) {
                     items[optionId] = this._getDefaultFor(optionId);
                 }

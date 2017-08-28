@@ -42,7 +42,7 @@ NotificationsPopup.prototype = {
             while (notificationsList.lastChild) {
                 notificationsList.removeChild(notificationsList.lastChild);
             }
-            for (n of notifications) {
+            for (const n of notifications) {
                 this._appendNotificationToList(notificationsList, n);
             }
             notificationsList.classList.remove('hidden');

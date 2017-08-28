@@ -54,7 +54,7 @@ RemotePontoon.prototype = {
         browser.tabs.query({
             url: this.getBaseUrl() + '/*',
         }).then(function(pontoonTabs) {
-            for (tab of pontoonTabs) {
+            for (const tab of pontoonTabs) {
                 chrome.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'});
             }
         }.bind(this));

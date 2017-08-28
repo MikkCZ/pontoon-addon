@@ -5,6 +5,6 @@ var inputs = document.querySelectorAll('input');
 
 inputs.forEach(options.loadDefault.bind(options));
 options.loadAllFromLocalStorage();
-for (input of inputs) {
+for (const input of inputs) {
   input.addEventListener('change', options.saveInputOnChange.bind(options));
 }
