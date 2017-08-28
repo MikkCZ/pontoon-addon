@@ -44,7 +44,7 @@ ToolbarButton.prototype = {
                 chrome.storage.local.get(docKey, function(item) {
                     if (item[docKey] != undefined) {
                         var notificationsDoc = new DOMParser().parseFromString(item[docKey], 'text/html');
-                        var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
+                        var unreadCount = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]').length;
                         this._updateBadge(unreadCount);
                     } else {
                         this._updateBadge('!');

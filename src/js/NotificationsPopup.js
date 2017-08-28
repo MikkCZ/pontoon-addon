@@ -65,7 +65,7 @@ NotificationsPopup.prototype = {
         chrome.storage.local.get(docKey, function(item) {
             if (item[docKey] != undefined) {
                 var notificationsDoc = new DOMParser().parseFromString(item[docKey], 'text/html');
-                var unreadNotifications = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]');
+                var unreadNotifications = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]');
                 this._displayNotifications(unreadNotifications);
             } else {
                 this._displayNotifications(undefined);
