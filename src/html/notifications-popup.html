@@ -7,18 +7,21 @@
 <body>
   <ul id="notification-list"></ul>
   <div id="full-list">
-    <a class="mark-all-as-read bottom-link" href="https://pontoon.mozilla.org/notifications/mark-all-as-read/">Mark all Notifications as read</a>
+    <a class="mark-all-as-read bottom-link">Mark all Notifications as read</a>
+    <a class="team-page bottom-link">Open team page</a>
   </div>
   <div id="empty-list">
     <img src="../img/bell-color-333941.svg">
     <p class="title">No new notifications.</p>
     <p class="description">Here you’ll see updates for localizations you contribute to.</p>
-    <a class="see-all bottom-link" href="https://pontoon.mozilla.org/notifications/">See all Notifications</a>
+    <a class="see-all bottom-link">See all Notifications</a>
+    <a class="team-page bottom-link">Open team page</a>
   </div>
   <div id="error">
     <p class="title">Error</p>
-    <p class="description">There was an error fetching data from Pontoon. Please check, if you are <a href="https://pontoon.mozilla.org/">signed in</a>.</p>
+    <p class="description">There was an error fetching data from Pontoon. Please check, if you are <a class="sign-in">signed in</a>.</p>
   </div>
+  <script src="../js/Options.js"></script>
   <script src="../js/RemotePontoon.js"></script>
   <script src="../js/NotificationsPopup.js"></script>
   <script src="../js/notifications-popup.js"></script>

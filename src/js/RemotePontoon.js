@@ -14,6 +14,10 @@ RemotePontoon.prototype = {
         return this._notificationsUrl;
     },
 
+    getTeamPageUrl: function(team) {
+        return `${this._baseUrl}/${team}/`;
+    },
+
     updateNotificationsDocText: function() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
