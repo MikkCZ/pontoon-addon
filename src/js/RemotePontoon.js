@@ -2,6 +2,7 @@ function RemotePontoon() {
     this._baseUrl = 'https://pontoon.mozilla.org';
     this._notificationsUrl = this._baseUrl + '/notifications/';
     this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
+    this._listenToMessagesFromContent();
 }
 
 RemotePontoon.prototype = {
@@ -28,6 +29,14 @@ RemotePontoon.prototype = {
                 chrome.storage.local.set({notificationsDocText: text});
             } else {
                 chrome.storage.local.set({notificationsDocText: undefined});
+            }
+        }.bind(this));
+    },
+
+    _listenToMessagesFromContent: function() {
+        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+            if (request.type == 'pontoon-page-loaded') {
+                chrome.storage.local.set({notificationsDocText: request.value});
             }
         }.bind(this));
     },
