@@ -32,7 +32,12 @@
     "browser_style": true
   },
   "background": {
-    "scripts": [ "js/background.js" ]
+    "scripts": [
+      "js/Options.js",
+      "js/RemotePontoon.js",
+      "js/ToolbarButton.js",
+      "js/background.js"
+    ]
   }
 }
 
