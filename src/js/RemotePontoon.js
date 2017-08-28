@@ -35,8 +35,13 @@ RemotePontoon.prototype = {
 
     _listenToMessagesFromContent: function() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-            if (request.type == 'pontoon-page-loaded') {
-                chrome.storage.local.set({notificationsDocText: request.value});
+            switch (request.type) {
+                case 'pontoon-page-loaded':
+                    chrome.storage.local.set({notificationsDocText: request.value});
+                    break;
+                case 'mark-all-notifications-as-read-from-page':
+                    this.markAllNotificationsAsRead();
+                    break;
             }
         }.bind(this));
     },
