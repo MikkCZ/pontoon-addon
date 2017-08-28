@@ -32,7 +32,10 @@
     "browser_style": true
   },
   "background": {
-    "scripts": [ "js/background.js" ]
+    "scripts": [
+      "js/Options.js",
+      "js/background.js"
+    ]
   }
 }
 

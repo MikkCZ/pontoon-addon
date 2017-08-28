@@ -2,6 +2,8 @@ var notificationsUrl = 'https://pontoon.mozilla.org/notifications/';
 var refreshInterval;
 var error = false;
 
+var options = new Options();
+
 function updateIconUnreadCount(count) {
   chrome.browserAction.setBadgeText({text: count.toString()});
   if (count != 0) {
@@ -36,21 +38,22 @@ function updateNumberOfUnreadNotifications() {
   });
 }
 
+function setRefresh(intervalMinutes) {
+  clearInterval(refreshInterval);
+  refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalMinutes * 60 * 1000);
+}
+
 function scheduleRefresh() {
-  var optionKey = 'options.notifications_update_interval';
-  chrome.storage.local.get(optionKey, function (item) {
-    var intervalMinutes;
-    if (item[optionKey] === undefined) {
-      intervalMinutes = 15;
-    } else {
-      intervalMinutes = parseInt(item[optionKey], 10);
-    }
-    if (error) {
-      intervalMinutes = 1;
-    }
-    clearInterval(refreshInterval);
-    refreshInterval = setInterval(updateNumberOfUnreadNotifications, intervalMinutes * 60 * 1000);
-  });
+  if (!error) {
+    var optionKey = 'options.notifications_update_interval';
+    options.get([optionKey], function (item) {
+      var intervalMinutes = parseInt(item[optionKey], 10);
+      setRefresh(intervalMinutes);
+    });
+  } else {
+    var intervalMinutes = 1;
+    setRefresh(intervalMinutes);
+  }
 }
 
 chrome.contextMenus.create({
