@@ -12,6 +12,7 @@ function updateIconUnreadCount(count) {
 }
 
 function updateNumberOfUnreadNotifications() {
+  chrome.browserAction.setBadgeText({text: ''});
   fetch(notificationsUrl, {
     credentials: 'include',
     redirect: 'manual',
@@ -23,6 +24,7 @@ function updateNumberOfUnreadNotifications() {
       chrome.storage.local.remove('notificationsDocText');
       updateIconUnreadCount('!');
       scheduleRefresh();
+      return undefined;
     }
   }).then(function(text) {
     if (text != undefined) {
@@ -51,6 +53,14 @@ function scheduleRefresh() {
   });
 }
 
+chrome.contextMenus.create({
+  title: 'Reload notifications',
+  contexts: ['browser_action'],
+  onclick: function(info, tab) {
+    updateNumberOfUnreadNotifications();
+    scheduleRefresh();
+  },
+});
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   updateNumberOfUnreadNotifications();
   scheduleRefresh();

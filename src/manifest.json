@@ -18,7 +18,8 @@
   },
   "permissions": [
     "https://pontoon.mozilla.org/*",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "options_ui": {
     "page": "html/options-ui.html",
