@@ -11,11 +11,11 @@ ToolbarButton.prototype = {
         this._watchStorageChanges();
         this._watchOptionsUpdates();
         this._listenToMessagesFromPopup();
-        this.reload();
+        this._reload();
     },
 
     _updateNumberOfUnreadNotifications: function() {
-        this.updateBadge('');
+        this._updateBadge('');
         this._remotePontoon.updateNotificationsDocText();
     },
 
@@ -45,9 +45,9 @@ ToolbarButton.prototype = {
                     if (item[docKey] != undefined) {
                         var notificationsDoc = new DOMParser().parseFromString(item[docKey], 'text/html');
                         var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
-                        this.updateBadge(unreadCount);
+                        this._updateBadge(unreadCount);
                     } else {
-                        this.updateBadge('!');
+                        this._updateBadge('!');
                         this._scheduleOrUpdateRefresh();
                     }
                 }.bind(this));
@@ -66,7 +66,7 @@ ToolbarButton.prototype = {
     _listenToMessagesFromPopup: function() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (request.type == 'notifications-reload-request') {
-                this.reload();
+                this._reload();
             }
         }.bind(this));
     },
@@ -75,11 +75,11 @@ ToolbarButton.prototype = {
         chrome.contextMenus.create({
             title: 'Reload notifications',
             contexts: ['browser_action'],
-            onclick: this.reload.bind(this),
+            onclick: this._reload.bind(this),
         });
     },
 
-    updateBadge: function(text) {
+    _updateBadge: function(text) {
         chrome.browserAction.setBadgeText({text: text.toString()});
         if (text != 0) {
             chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
@@ -88,7 +88,7 @@ ToolbarButton.prototype = {
         }
     },
 
-    reload: function() {
+    _reload: function() {
         this._updateNumberOfUnreadNotifications();
         this._scheduleOrUpdateRefresh();
     },
