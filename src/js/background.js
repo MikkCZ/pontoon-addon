@@ -1,5 +1,6 @@
 'use-strict';
 
 var options = new Options();
-var toolbarButton = new ToolbarButton(options);
+var remotePontoon = new RemotePontoon();
+var toolbarButton = new ToolbarButton(options, remotePontoon);
 toolbarButton.init();

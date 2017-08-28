@@ -1,39 +1,22 @@
-var pontoonBaseUrl = 'https://pontoon.mozilla.org';
-var notificationsUrl = pontoonBaseUrl + '/notifications/';
-var markAsReadUrl = notificationsUrl + 'mark-all-as-read/';
+var remotePontoon = new RemotePontoon();
 
 function seeAllNotifications(e) {
   e.preventDefault();
-  chrome.tabs.create({url: notificationsUrl});
+  chrome.tabs.create({url: remotePontoon.getNotificationsUrl()});
   window.close();
 }
 document.querySelectorAll('#empty-list .see-all')[0].addEventListener('click', seeAllNotifications);
 
-function triggerNotificationsReload() {
-  chrome.runtime.sendMessage({
-    type: 'notifications-reload-request'
-  });
-}
-
-function markAllNotificationsAsRead(e) {
+document.querySelectorAll('#full-list .mark-all-as-read')[0].addEventListener('click', function(e) {
   e.preventDefault();
-  var request = new XMLHttpRequest();
-  request.addEventListener('readystatechange', function (e) {
-    if(request.readyState === XMLHttpRequest.DONE) {
-      triggerNotificationsReload();
-    }
-  });
-  request.open('GET', markAsReadUrl, true);
-  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-  request.send(null);
-}
-document.querySelectorAll('#full-list .mark-all-as-read')[0].addEventListener('click', markAllNotificationsAsRead);
+  remotePontoon.markAllNotificationsAsRead();
+});
 
 function appendNotificationToList(list, notification) {
   var sourceLink = notification.getElementsByTagName('a')[0];
   var link = document.createElement('a');
   link.textContent = sourceLink.textContent;
-  link.setAttribute('href', pontoonBaseUrl + sourceLink.getAttribute('href'));
+  link.setAttribute('href', remotePontoon.getBaseUrl() + sourceLink.getAttribute('href'));
   var description = document.createElement('span');
   description.textContent = notification.querySelectorAll('.verb')[0].textContent + ' ' + notification.querySelectorAll('.timeago')[0].textContent;
   var listItem = document.createElement('li');

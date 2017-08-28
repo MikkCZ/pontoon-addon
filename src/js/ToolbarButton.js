@@ -1,5 +1,6 @@
-function ToolbarButton(options) {
+function ToolbarButton(options, remotePontoon) {
     this._options = options;
+    this._remotePontoon = remotePontoon;
     this._updateError = false;
     this._refreshInterval;
 }
@@ -7,6 +8,7 @@ function ToolbarButton(options) {
 ToolbarButton.prototype = {
     init: function() {
         this._addContextMenu();
+        this._watchStorageChanges();
         this._watchOptionsUpdates();
         this._listenToMessagesFromPopup();
         this.reload();
@@ -14,27 +16,7 @@ ToolbarButton.prototype = {
 
     _updateNumberOfUnreadNotifications: function() {
         this.updateBadge('');
-        fetch('https://pontoon.mozilla.org/notifications/', {
-            credentials: 'include',
-            redirect: 'manual',
-        }).then(function(response) {
-            this._updateError = (response.status != 200);
-            if (!this._updateError) {
-                return response.text();
-            } else {
-                chrome.storage.local.remove('notificationsDocText');
-                this.updateBadge('!');
-                this._scheduleOrUpdateRefresh();
-                return undefined;
-            }
-        }.bind(this)).then(function(text) {
-            if (text != undefined) {
-                chrome.storage.local.set({notificationsDocText: text});
-                var notificationsDoc = new DOMParser().parseFromString(text, 'text/html');
-                var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
-                this.updateBadge(unreadCount);
-            }
-        }.bind(this));
+        this._remotePontoon.updateNotificationsDocText();
     },
 
     _setRefresh: function(intervalMinutes) {
@@ -53,6 +35,24 @@ ToolbarButton.prototype = {
             var intervalMinutes = 1;
             this._setRefresh(intervalMinutes);
         }
+    },
+
+    _watchStorageChanges: function() {
+        chrome.storage.onChanged.addListener(function(changes, areaName) {
+            var optionKey = 'notificationsDocText';
+            if (changes[optionKey] !== undefined) {
+                this._options.get([optionKey], function(item) {
+                    if (item[optionKey] != undefined) {
+                        var notificationsDoc = new DOMParser().parseFromString(item[optionKey], 'text/html');
+                        var unreadCount = notificationsDoc.querySelectorAll('#main .notification-item[data-unread=true]').length;
+                        this.updateBadge(unreadCount);
+                    } else {
+                        this.updateBadge('!');
+                        this._scheduleOrUpdateRefresh();
+                    }
+                }.bind(this));
+            }
+        }.bind(this));
     },
 
     _watchOptionsUpdates: function() {
