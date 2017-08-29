@@ -1,5 +1,8 @@
 'use-strict';
 
 var options = new Options();
-var remotePontoon = new RemotePontoon();
-var toolbarButton = new ToolbarButton(options, remotePontoon);
+var localeTeamOptionKey = 'options.locale_team';
+options.get([localeTeamOptionKey], function(items) {
+    var remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
+    var toolbarButton = new ToolbarButton(options, remotePontoon);
+});

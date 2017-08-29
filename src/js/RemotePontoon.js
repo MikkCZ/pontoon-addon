@@ -1,8 +1,10 @@
-function RemotePontoon() {
+function RemotePontoon(team) {
     this._baseUrl = 'https://pontoon.mozilla.org';
     this._notificationsUrl = this._baseUrl + '/notifications/';
     this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
+    this._team = team;
     this._listenToMessagesFromContent();
+    this._watchOptionsUpdates();
 }
 
 RemotePontoon.prototype = {
@@ -14,8 +16,12 @@ RemotePontoon.prototype = {
         return this._notificationsUrl;
     },
 
-    getTeamPageUrl: function(team) {
-        return `${this._baseUrl}/${team}/`;
+    getTeamPageUrl: function() {
+        return `${this._baseUrl}/${this._team}/`;
+    },
+
+    getTeamProjectUrl: function(projectsUrl) {
+        return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`);
     },
 
     updateNotificationsDocText: function() {
@@ -46,6 +52,14 @@ RemotePontoon.prototype = {
                 case 'mark-all-notifications-as-read-from-page':
                     this.markAllNotificationsAsRead();
                     break;
+            }
+        }.bind(this));
+    },
+
+    _watchOptionsUpdates: function() {
+        chrome.storage.onChanged.addListener(function(changes, areaName) {
+            if (changes['options.locale_team'] !== undefined) {
+                this._team = changes['options.locale_team'].newValue;
             }
         }.bind(this));
     },

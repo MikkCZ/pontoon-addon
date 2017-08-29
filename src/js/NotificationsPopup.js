@@ -22,7 +22,7 @@ NotificationsPopup.prototype = {
         var sourceLink = notification.getElementsByTagName('a')[0];
         var link = document.createElement('a');
         link.textContent = sourceLink.textContent;
-        link.setAttribute('href', this._remotePontoon.getBaseUrl() + sourceLink.getAttribute('href'));
+        link.setAttribute('href', this._remotePontoon.getTeamProjectUrl(sourceLink.getAttribute('href')));
         var description = document.createElement('span');
         description.textContent = notification.querySelectorAll('.verb')[0].textContent + ' ' + notification.querySelectorAll('.timeago')[0].textContent;
         var listItem = document.createElement('li');
