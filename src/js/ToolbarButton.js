@@ -62,10 +62,14 @@ ToolbarButton.prototype = {
 
     _watchOptionsUpdates: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            var optionKey = 'options.notifications_update_interval';
-            if (changes[optionKey] !== undefined) {
-                var intervalMinutes = parseInt(changes[optionKey].newValue, 10);
+            var updateIntervalOptionKey = 'options.notifications_update_interval';
+            if (changes[updateIntervalOptionKey] !== undefined) {
+                var intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
                 this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
+            }
+            var openPontoonOptionKey = 'options.open_pontoon_on_button_click';
+            if (changes[openPontoonOptionKey]) {
+                this._setPopup(!changes[openPontoonOptionKey].newValue);
             }
         }.bind(this));
     },
@@ -78,8 +82,22 @@ ToolbarButton.prototype = {
         }.bind(this));
     },
 
+    _setPopup: function(showPopup) {
+        if (showPopup) {
+            chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/notifications-popup.html')});
+        } else {
+            chrome.browserAction.setPopup({popup: ''});
+        }
+    },
+
     _addOnClickAction: function() {
-        chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/notifications-popup.html')});
+        chrome.browserAction.onClicked.addListener(function(tab) {
+            chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
+        }.bind(this));
+        var optionKey = 'options.open_pontoon_on_button_click';
+        this._options.get([optionKey], function(item) {
+            this._setPopup(!item[optionKey]);
+        }.bind(this));
     },
 
     _addContextMenu: function() {

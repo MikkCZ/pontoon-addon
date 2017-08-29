@@ -47,6 +47,9 @@ Options.prototype = {
             case `${this._prefix}locale_team`:
                 return navigator.language || navigator.userLanguage;
                 break;
+            case `${this._prefix}open_pontoon_on_button_click`:
+                return false;
+                break;
         }
     },
 
