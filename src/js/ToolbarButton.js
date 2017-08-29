@@ -9,6 +9,7 @@ function ToolbarButton(options, remotePontoon) {
 
 ToolbarButton.prototype = {
     _init: function() {
+        this._addOnClickAction();
         this._addContextMenu();
         this._watchStorageChanges();
         this._watchOptionsUpdates();
@@ -75,6 +76,10 @@ ToolbarButton.prototype = {
                 this._reload();
             }
         }.bind(this));
+    },
+
+    _addOnClickAction: function() {
+        chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/notifications-popup.html')});
     },
 
     _addContextMenu: function() {
