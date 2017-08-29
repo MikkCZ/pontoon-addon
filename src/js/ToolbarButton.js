@@ -106,10 +106,38 @@ ToolbarButton.prototype = {
             contexts: ['browser_action'],
             onclick: this._reload.bind(this),
         });
+        var pontoonPagesMenuId = chrome.contextMenus.create({
+            title: 'Pontoon pages',
+            contexts: ['browser_action'],
+        });
+        chrome.contextMenus.create({
+            title: 'Home',
+            contexts: ['browser_action'],
+            parentId: pontoonPagesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getBaseUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Team page',
+            contexts: ['browser_action'],
+            parentId: pontoonPagesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Team bugs',
+            contexts: ['browser_action'],
+            parentId: pontoonPagesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getTeamBugsUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Machinery',
+            contexts: ['browser_action'],
+            parentId: pontoonPagesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getMachineryUrl()});}.bind(this),
+        });
         chrome.contextMenus.create({
             title: 'Pontoon tools options',
             contexts: ['browser_action'],
-            onclick: function() {chrome.runtime.openOptionsPage();},
+            onclick: function() {chrome.runtime.openOptionsPage();}.bind(this),
         });
     },
 

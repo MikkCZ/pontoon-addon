@@ -16,8 +16,16 @@ RemotePontoon.prototype = {
         return this._notificationsUrl;
     },
 
+    getMachineryUrl: function() {
+        return `${this._baseUrl}/machinery/`;
+    },
+
     getTeamPageUrl: function() {
         return `${this._baseUrl}/${this._team}/`;
+    },
+
+    getTeamBugsUrl: function() {
+        return `${this._baseUrl}/${this._team}/bugs/`;
     },
 
     getTeamProjectUrl: function(projectsUrl) {
