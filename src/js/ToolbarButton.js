@@ -106,6 +106,11 @@ ToolbarButton.prototype = {
             contexts: ['browser_action'],
             onclick: this._reload.bind(this),
         });
+        chrome.contextMenus.create({
+            title: 'Pontoon tools options',
+            contexts: ['browser_action'],
+            onclick: function() {chrome.runtime.openOptionsPage();},
+        });
     },
 
     _updateBadge: function(text) {
