@@ -13,7 +13,7 @@ NotificationsPopup.prototype = {
     _watchStorageChanges: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             if (changes['notificationsDocText'] !== undefined) {
-                this._loadNotificationsFromStorage();
+                this._loadNotificationsFromDocContent(changes['notificationsDocText'].newValue);
             }
         }.bind(this));
     },
@@ -62,15 +62,23 @@ NotificationsPopup.prototype = {
         }
     },
 
+    _loadNotificationsFromDocContent: function(docContent) {
+        if (docContent != undefined) {
+            var notificationsDoc = new DOMParser().parseFromString(docContent, 'text/html');
+            var unreadNotifications = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]');
+            this._displayNotifications(unreadNotifications);
+        } else {
+            this._displayNotifications(undefined);
+        }
+    },
+
     _loadNotificationsFromStorage: function() {
         var docKey = 'notificationsDocText';
         chrome.storage.local.get(docKey, function(item) {
             if (item[docKey] != undefined) {
-                var notificationsDoc = new DOMParser().parseFromString(item[docKey], 'text/html');
-                var unreadNotifications = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]');
-                this._displayNotifications(unreadNotifications);
+                this._loadNotificationsFromDocContent(item[docKey]);
             } else {
-                this._displayNotifications(undefined);
+                this._loadNotificationsFromDocContent(undefined)
             }
         }.bind(this));
     },

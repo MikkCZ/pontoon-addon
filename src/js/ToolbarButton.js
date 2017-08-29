@@ -26,41 +26,45 @@ ToolbarButton.prototype = {
         this._refreshInterval = setInterval(this._updateNumberOfUnreadNotifications.bind(this), intervalMinutes * 60 * 1000);
     },
 
-    _scheduleOrUpdateRefresh: function() {
+    _scheduleOrUpdateRefreshWithInterval: function(intervalMinutes) {
         if (!this._updateError) {
-            var optionKey = 'options.notifications_update_interval';
-            this._options.get([optionKey], function(item) {
-                var intervalMinutes = parseInt(item[optionKey], 10);
-                this._setRefresh(intervalMinutes);
-            }.bind(this));
-        } else {
-            var intervalMinutes = 1;
             this._setRefresh(intervalMinutes);
+        } else {
+            this._setRefresh(1);
         }
+    },
+
+    _scheduleOrUpdateRefresh: function() {
+        var optionKey = 'options.notifications_update_interval';
+        this._options.get([optionKey], function(item) {
+            var intervalMinutes = parseInt(item[optionKey], 10);
+            this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
+        }.bind(this));
     },
 
     _watchStorageChanges: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             var docKey = 'notificationsDocText';
             if (changes[docKey] !== undefined) {
-                chrome.storage.local.get(docKey, function(item) {
-                    if (item[docKey] != undefined) {
-                        var notificationsDoc = new DOMParser().parseFromString(item[docKey], 'text/html');
-                        var unreadCount = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]').length;
-                        this._updateBadge(unreadCount);
-                    } else {
-                        this._updateBadge('!');
-                        this._scheduleOrUpdateRefresh();
-                    }
-                }.bind(this));
+                var docContent = changes[docKey].newValue;
+                if (docContent != undefined) {
+                    var notificationsDoc = new DOMParser().parseFromString(docContent, 'text/html');
+                    var unreadCount = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]').length;
+                    this._updateBadge(unreadCount);
+                } else {
+                    this._updateBadge('!');
+                    this._scheduleOrUpdateRefresh();
+                }
             }
         }.bind(this));
     },
 
     _watchOptionsUpdates: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            if (changes['options.notifications_update_interval'] !== undefined) {
-                this._scheduleOrUpdateRefresh();
+            var optionKey = 'options.notifications_update_interval';
+            if (changes[optionKey] !== undefined) {
+                var intervalMinutes = parseInt(changes[optionKey].newValue, 10);
+                this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
             }
         }.bind(this));
     },
