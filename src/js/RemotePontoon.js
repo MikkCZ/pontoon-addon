@@ -69,7 +69,7 @@ RemotePontoon.prototype = {
     },
 
     markAllNotificationsAsRead: function() {
-        chrome.tabs.query({
+        browser.tabs.query({
             url: this.getBaseUrl() + '/*',
         }).then(function(pontoonTabs) {
             for (const tab of pontoonTabs) {
