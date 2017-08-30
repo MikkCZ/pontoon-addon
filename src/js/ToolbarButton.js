@@ -134,8 +134,42 @@ ToolbarButton.prototype = {
             parentId: pontoonPagesMenuId,
             onclick: function() {chrome.tabs.create({url: this._remotePontoon.getMachineryUrl()});}.bind(this),
         });
+        var localizationResourcesMenuId = chrome.contextMenus.create({
+            title: 'Other Mozilla l10n sources',
+            contexts: ['browser_action'],
+        });
         chrome.contextMenus.create({
-            title: 'Pontoon tools options',
+            title: 'Transvision',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: 'https://transvision.mozfr.org/'});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Style Guides',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: 'https://mozilla-l10n.github.io/styleguides/'});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Elmo dashboard',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: 'https://l10n.mozilla.org/teams/'});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Web dashboard',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: 'https://l10n.mozilla-community.org/webdashboard/'});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'MozillaWiki L10n:Teams',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: 'https://wiki.mozilla.org/L10n:Teams'});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Pontoon Tools options',
             contexts: ['browser_action'],
             onclick: function() {chrome.runtime.openOptionsPage();}.bind(this),
         });
