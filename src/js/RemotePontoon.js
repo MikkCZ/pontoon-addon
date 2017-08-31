@@ -32,8 +32,12 @@ RemotePontoon.prototype = {
         return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`);
     },
 
-    getSearchUrlForSelectedTextOnMozillaOrg: function(selectedText) {
-        return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${selectedText.replace(' ', '+')}`;
+    getSearchInFirefoxProjectUrl: function(textToSearch) {
+        return `${this._baseUrl}/${this._team}/firefox/all-resources/?search=${textToSearch.replace(' ', '+')}`;
+    },
+
+    getSearchInMozillaOrgProjectUrl: function(textToSearch) {
+        return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${textToSearch.replace(' ', '+')}`;
     },
 
     updateNotificationsDocText: function() {

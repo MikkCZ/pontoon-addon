@@ -23,12 +23,21 @@ options.get([localeTeamOptionKey], function(items) {
         },
     });
     chrome.contextMenus.create({
-        title: 'Search for "%s" in Pontoon',
+        title: 'Search for "%s" in Pontoon (Firefox)',
+        documentUrlPatterns: ['*://support.mozilla.org/*'],
+        contexts: ['selection'],
+        parentId: mozillaPageContextMenuParent,
+        onclick: function(info, tab) {
+            chrome.tabs.create({url: remotePontoon.getSearchInFirefoxProjectUrl(info.selectionText)});
+        },
+    });
+    chrome.contextMenus.create({
+        title: 'Search for "%s" in Pontoon (Mozilla.org)',
         documentUrlPatterns: ['*://www.mozilla.org/*', '*://www-dev.allizom.org/*'],
         contexts: ['selection'],
         parentId: mozillaPageContextMenuParent,
         onclick: function(info, tab) {
-            chrome.tabs.create({url: remotePontoon.getSearchUrlForSelectedTextOnMozillaOrg(info.selectionText)});
+            chrome.tabs.create({url: remotePontoon.getSearchInMozillaOrgProjectUrl(info.selectionText)});
         },
     });
 });
