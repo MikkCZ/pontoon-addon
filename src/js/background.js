@@ -22,4 +22,13 @@ options.get([localeTeamOptionKey], function(items) {
             chrome.tabs.create({url: remoteLinks.getBuzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url)});
         },
     });
+    chrome.contextMenus.create({
+        title: 'Search for "%s" in Pontoon',
+        documentUrlPatterns: ['*://www.mozilla.org/*', '*://www-dev.allizom.org/*'],
+        contexts: ['selection'],
+        parentId: mozillaPageContextMenuParent,
+        onclick: function(info, tab) {
+            chrome.tabs.create({url: remotePontoon.getSearchUrlForSelectedTextOnMozillaOrg(info.selectionText)});
+        },
+    });
 });
