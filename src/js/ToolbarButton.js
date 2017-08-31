@@ -2,6 +2,7 @@ function ToolbarButton(options, remotePontoon, remoteLinks) {
     this._options = options;
     this._remotePontoon = remotePontoon;
     this._remoteLinks = remoteLinks;
+    this._defaultTitle = 'Pontoon notifications';
     this._updateError = false;
     this._refreshInterval;
 
@@ -211,6 +212,11 @@ ToolbarButton.prototype = {
 
     _updateBadge: function(text) {
         chrome.browserAction.setBadgeText({text: text.toString()});
+        if (text.toString().trim().length == 0) {
+            chrome.browserAction.setTitle({title: this._defaultTitle});
+        } else {
+            chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text.toString()})`});
+        }
         if (text != 0) {
             chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
         } else {
