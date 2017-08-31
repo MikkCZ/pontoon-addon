@@ -104,6 +104,11 @@ ToolbarButton.prototype = {
 
     _addContextMenu: function() {
         chrome.contextMenus.create({
+            title: 'Mark all Notifications as read',
+            contexts: ['browser_action'],
+            onclick: this._remotePontoon.markAllNotificationsAsRead.bind(this._remotePontoon),
+        });
+        chrome.contextMenus.create({
             title: 'Reload notifications',
             contexts: ['browser_action'],
             onclick: this._reload.bind(this),
