@@ -36,6 +36,10 @@ RemoteLinks.prototype = {
         return 'https://www.microsoft.com/Language/en-US/Search.aspx';
     },
 
+    getBuzillaReportUrlForSelectedTextOnPage: function(selectedText, pageUrl) {
+        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${this._team}] Translation update proposed for "${selectedText}" on ${pageUrl}&comment=The translation:%0A${selectedText}%0A%0AShould be:%0A`;
+    },
+
     _watchOptionsUpdates: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             if (changes['options.locale_team'] !== undefined) {
