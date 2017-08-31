@@ -1,6 +1,7 @@
-function ToolbarButton(options, remotePontoon) {
+function ToolbarButton(options, remotePontoon, remoteLinks) {
     this._options = options;
     this._remotePontoon = remotePontoon;
+    this._remoteLinks = remoteLinks;
     this._updateError = false;
     this._refreshInterval;
 
@@ -135,38 +136,71 @@ ToolbarButton.prototype = {
             onclick: function() {chrome.tabs.create({url: this._remotePontoon.getMachineryUrl()});}.bind(this),
         });
         var localizationResourcesMenuId = chrome.contextMenus.create({
-            title: 'Other Mozilla l10n sources',
+            title: 'Other l10n sources',
             contexts: ['browser_action'],
         });
         chrome.contextMenus.create({
             title: 'Transvision',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: 'https://transvision.mozfr.org/'});}.bind(this),
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getTransvisionUrl()});}.bind(this),
         });
         chrome.contextMenus.create({
-            title: 'Style Guides',
+            title: 'amaGama.locamotion.org',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: 'https://mozilla-l10n.github.io/styleguides/'});}.bind(this),
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getAmaGamaUrl()});}.bind(this),
         });
         chrome.contextMenus.create({
-            title: 'Elmo dashboard',
+            title: 'Microsoft Terminology Search',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: 'https://l10n.mozilla.org/teams/'});}.bind(this),
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getMicrosoftTerminologySearchUrl()});}.bind(this),
         });
         chrome.contextMenus.create({
-            title: 'Web dashboard',
+            type: 'separator',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: 'https://l10n.mozilla-community.org/webdashboard/'});}.bind(this),
         });
         chrome.contextMenus.create({
-            title: 'MozillaWiki L10n:Teams',
+            title: 'Cambridge Dictionary',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: 'https://wiki.mozilla.org/L10n:Teams'});}.bind(this),
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getCambridgeDictionaryUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            type: 'separator',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+        });
+        chrome.contextMenus.create({
+            title: 'Mozilla Style Guides',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            type: 'separator',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+        });
+        chrome.contextMenus.create({
+            title: 'Mozilla l10n Team dashboard',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getElmoDashboardUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'Mozilla Web l10n Dashboard',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getWebDashboardUrl()});}.bind(this),
+        });
+        chrome.contextMenus.create({
+            title: 'MozillaWiki L10n Team',
+            contexts: ['browser_action'],
+            parentId: localizationResourcesMenuId,
+            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl()});}.bind(this),
         });
         chrome.contextMenus.create({
             title: 'Pontoon Tools options',

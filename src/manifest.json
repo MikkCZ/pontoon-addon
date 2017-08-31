@@ -35,6 +35,7 @@
     "scripts": [
       "js/Options.js",
       "js/RemotePontoon.js",
+      "js/RemoteLinks.js",
       "js/ToolbarButton.js",
       "js/background.js"
     ]
