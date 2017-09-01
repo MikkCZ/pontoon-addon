@@ -14,6 +14,11 @@ a {
   display: none;
 }
 
+.timeago {
+  text-align: right;
+  color: #888;
+}
+
 #notification-list,
 #full-list,
 #empty-list,

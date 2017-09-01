@@ -23,11 +23,14 @@ NotificationsPopup.prototype = {
         link.textContent = notification.link.text;
         link.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.link.href));
         var description = document.createElement('span');
-        description.textContent = notification.description + ' ' + notification.timeago;
+        description.textContent = ` ${notification.description}`;
+        var timeago = document.createElement('div');
+        timeago.textContent = notification.timeago;
+        timeago.classList.add('timeago');
         var listItem = document.createElement('li');
         listItem.appendChild(link);
-        listItem.appendChild(document.createElement('br'));
         listItem.appendChild(description);
+        listItem.appendChild(timeago);
         list.appendChild(listItem);
     },
 
