@@ -43,14 +43,14 @@ RemotePontoon.prototype = {
 
     _updateNotificationsDataFromPageContent: function(notificationsPageContent) {
         var notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
-        if (notificationsPage.querySelectorAll('header #notifications').length > 0) {
+        if (notificationsPage.querySelector('header #notifications')) {
             var notificationsDataObj = {};
             for (const n of notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')) {
                 var nObj = {};
                 nObj.id = n.dataset.id;
-                nObj.link = {text: n.getElementsByTagName('a')[0].textContent, href: n.getElementsByTagName('a')[0].getAttribute('href')};
-                nObj.description = n.querySelectorAll('.verb')[0].textContent;
-                nObj.timeago = n.querySelectorAll('.timeago')[0].textContent;
+                nObj.link = {text: n.querySelector('.actor a').textContent, href: n.querySelector('.actor a').getAttribute('href')};
+                nObj.description = n.querySelector('.verb').textContent;
+                nObj.timeago = n.querySelector('.timeago').textContent;
                 notificationsDataObj[n.dataset.id] = nObj;
             }
             chrome.storage.local.set({notificationsData: notificationsDataObj});

@@ -5,7 +5,7 @@ chrome.runtime.sendMessage({
     value: document.documentElement.innerHTML
 });
 
-var unreadNotificationsIcon = document.querySelectorAll('#notifications.unread .button .icon')[0];
+var unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon');
 
 function unreadNotificationsIconClick() {
     unreadNotificationsIcon.removeEventListener('click', unreadNotificationsIconClick);
