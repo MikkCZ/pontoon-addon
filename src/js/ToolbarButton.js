@@ -3,7 +3,6 @@ function ToolbarButton(options, remotePontoon, remoteLinks) {
     this._remotePontoon = remotePontoon;
     this._remoteLinks = remoteLinks;
     this._defaultTitle = 'Pontoon notifications';
-    this._updateError = false;
     this._refreshInterval;
 
     this._init();
@@ -24,17 +23,9 @@ ToolbarButton.prototype = {
         this._remotePontoon.updateNotificationsData();
     },
 
-    _setRefresh: function(intervalMinutes) {
+    _scheduleOrUpdateRefreshWithInterval: function(intervalMinutes) {
         clearInterval(this._refreshInterval);
         this._refreshInterval = setInterval(this._updateNumberOfUnreadNotifications.bind(this), intervalMinutes * 60 * 1000);
-    },
-
-    _scheduleOrUpdateRefreshWithInterval: function(intervalMinutes) {
-        if (!this._updateError) {
-            this._setRefresh(intervalMinutes);
-        } else {
-            this._setRefresh(1);
-        }
     },
 
     _scheduleOrUpdateRefresh: function() {
@@ -54,7 +45,6 @@ ToolbarButton.prototype = {
                     this._updateBadge(Object.keys(notificationsData).length);
                 } else {
                     this._updateBadge('!');
-                    this._scheduleOrUpdateRefresh();
                 }
             }
         }.bind(this));
