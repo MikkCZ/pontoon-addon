@@ -39,18 +39,12 @@ Options.prototype = {
         }
     },
 
-    _getDefaultFor: function(id) {
-        switch(id) {
-            case `${this._prefix}notifications_update_interval`:
-                return 15;
-                break;
-            case `${this._prefix}locale_team`:
-                return navigator.language || navigator.userLanguage;
-                break;
-            case `${this._prefix}open_pontoon_on_button_click`:
-                return false;
-                break;
-        }
+    _defaults: function() {
+        var defaults = {};
+        defaults[`${this._prefix}notifications_update_interval`] = 15;
+        defaults[`${this._prefix}locale_team`] = navigator.language || navigator.userLanguage;
+        defaults[`${this._prefix}open_pontoon_on_button_click`] = false;
+        return defaults;
     },
 
     _setValue: function(input, value) {
@@ -61,21 +55,20 @@ Options.prototype = {
         }
     },
 
-    loadDefault: function(input) {
-        var defaultValue = this._getDefaultFor(this._getOptionId(input));
-        this._setValue(input, defaultValue);
+    _loadAllFromObject: function(object) {
+        Object.keys(object).map(function(key, index) {
+            if (key.startsWith(this._prefix)) {
+                var input = document.getElementById(this._getInputId(key));
+                var value = object[key];
+                this._setValue(input, value);
+            }
+        }.bind(this));
     },
 
     loadAllFromLocalStorage: function() {
+        this._loadAllFromObject(this._defaults());
         chrome.storage.local.get(function (items) {
-            Object.keys(items).map(function(key, index) {
-                if (key.startsWith(this._prefix)) {
-                    var value = items[key];
-                    var inputId = this._getInputId(key);
-                    var input = document.getElementById(inputId);
-                    this._setValue(input, value);
-                }
-            }.bind(this));
+            this._loadAllFromObject(items);
         }.bind(this));
     },
 
@@ -83,7 +76,7 @@ Options.prototype = {
         chrome.storage.local.get(optionIds, function(items) {
             for (const optionId of optionIds) {
                 if (items[optionId] === undefined) {
-                    items[optionId] = this._getDefaultFor(optionId);
+                    items[optionId] = this._defaults()[optionId];
                 }
             }
             callback(items);
