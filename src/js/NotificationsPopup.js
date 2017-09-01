@@ -43,6 +43,12 @@ NotificationsPopup.prototype = {
             timeago.classList.add('timeago');
             listItem.appendChild(timeago);
         }
+        if (notification.message) {
+            var message = document.createElement('div');
+            message.textContent = notification.message;
+            message.classList.add('message');
+            listItem.appendChild(message);
+        }
         list.appendChild(listItem);
     },
 

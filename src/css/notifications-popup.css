@@ -1,6 +1,7 @@
 /* General */
 
 body {
+  max-width: 500px;
   background-color: #272A2F;
   color: #ebebeb;
 }
@@ -14,9 +15,14 @@ a {
   display: none;
 }
 
+.timeago,
+.message
+{
+  color: #888;
+}
+
 .timeago {
   text-align: right;
-  color: #888;
 }
 
 #notification-list,

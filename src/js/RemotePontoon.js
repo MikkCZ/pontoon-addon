@@ -54,6 +54,9 @@ RemotePontoon.prototype = {
                 }
                 nObj.verb = n.querySelector('.verb').textContent;
                 nObj.timeago = n.querySelector('.timeago').textContent;
+                if (n.querySelector('.message')) {
+                    nObj.message = n.querySelector('.message').textContent;
+                }
                 notificationsDataObj[n.dataset.id] = nObj;
             }
             chrome.storage.local.set({notificationsData: notificationsDataObj});
