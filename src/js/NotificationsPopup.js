@@ -19,16 +19,16 @@ NotificationsPopup.prototype = {
     },
 
     _appendNotificationToList: function(list, notification) {
-        var link = document.createElement('a');
-        link.textContent = notification.link.text;
-        link.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.link.href));
+        var actorLink = document.createElement('a');
+        actorLink.textContent = notification.actor.text;
+        actorLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.actor.link));
         var description = document.createElement('span');
         description.textContent = ` ${notification.description}`;
         var timeago = document.createElement('div');
         timeago.textContent = notification.timeago;
         timeago.classList.add('timeago');
         var listItem = document.createElement('li');
-        listItem.appendChild(link);
+        listItem.appendChild(actorLink);
         listItem.appendChild(description);
         listItem.appendChild(timeago);
         list.appendChild(listItem);
