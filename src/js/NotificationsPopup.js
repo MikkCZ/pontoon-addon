@@ -26,10 +26,10 @@ NotificationsPopup.prototype = {
             actorLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.actor.link));
             listItem.appendChild(actorLink);
         }
-        if (notification.description) {
-            var description = document.createElement('span');
-            description.textContent = ` ${notification.description}`;
-            listItem.appendChild(description);
+        if (notification.verb) {
+            var verb = document.createElement('span');
+            verb.textContent = ` ${notification.verb}`;
+            listItem.appendChild(verb);
         }
         if (notification.target) {
             var targetLink = document.createElement('a');
