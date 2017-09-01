@@ -19,18 +19,30 @@ NotificationsPopup.prototype = {
     },
 
     _appendNotificationToList: function(list, notification) {
-        var actorLink = document.createElement('a');
-        actorLink.textContent = notification.actor.text;
-        actorLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.actor.link));
-        var description = document.createElement('span');
-        description.textContent = ` ${notification.description}`;
-        var timeago = document.createElement('div');
-        timeago.textContent = notification.timeago;
-        timeago.classList.add('timeago');
         var listItem = document.createElement('li');
-        listItem.appendChild(actorLink);
-        listItem.appendChild(description);
-        listItem.appendChild(timeago);
+        if (notification.actor) {
+            var actorLink = document.createElement('a');
+            actorLink.textContent = notification.actor.text;
+            actorLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.actor.link));
+            listItem.appendChild(actorLink);
+        }
+        if (notification.description) {
+            var description = document.createElement('span');
+            description.textContent = ` ${notification.description}`;
+            listItem.appendChild(description);
+        }
+        if (notification.target) {
+            var targetLink = document.createElement('a');
+            targetLink.textContent = ` ${notification.target.text}`;
+            targetLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.target.link));
+            listItem.appendChild(targetLink);
+        }
+        if (notification.timeago) {
+            var timeago = document.createElement('div');
+            timeago.textContent = notification.timeago;
+            timeago.classList.add('timeago');
+            listItem.appendChild(timeago);
+        }
         list.appendChild(listItem);
     },
 

@@ -49,6 +49,9 @@ RemotePontoon.prototype = {
                 var nObj = {};
                 nObj.id = n.dataset.id;
                 nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
+                if (n.querySelector('.target')) {
+                    nObj.target = {text: n.querySelector('.target a').textContent, link: n.querySelector('.target a').getAttribute('href')};
+                }
                 nObj.description = n.querySelector('.verb').textContent;
                 nObj.timeago = n.querySelector('.timeago').textContent;
                 notificationsDataObj[n.dataset.id] = nObj;
