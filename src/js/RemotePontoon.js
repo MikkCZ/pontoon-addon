@@ -3,6 +3,7 @@ function RemotePontoon(team) {
     this._notificationsUrl = this._baseUrl + '/notifications/';
     this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
     this._team = team;
+    this._domParser = new DOMParser();
     this._listenToMessagesFromContent();
     this._watchOptionsUpdates();
 }
@@ -40,7 +41,25 @@ RemotePontoon.prototype = {
         return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${textToSearch.replace(' ', '+')}`;
     },
 
-    updateNotificationsDocText: function() {
+    _updateNotificationsDataFromPageContent: function(notificationsPageContent) {
+        if (notificationsPageContent) {
+            var notificationsDataObj = {};
+            var notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
+            for (const n of notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')) {
+                var nObj = {};
+                nObj.id = n.dataset.id;
+                nObj.link = {text: n.getElementsByTagName('a')[0].textContent, href: n.getElementsByTagName('a')[0].getAttribute('href')};
+                nObj.description = n.querySelectorAll('.verb')[0].textContent;
+                nObj.timeago = n.querySelectorAll('.timeago')[0].textContent;
+                notificationsDataObj[n.dataset.id] = nObj;
+            }
+            chrome.storage.local.set({notificationsData: notificationsDataObj});
+        } else {
+            chrome.storage.local.set({notificationsData: undefined});
+        }
+    },
+
+    updateNotificationsData: function() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
             redirect: 'manual',
@@ -51,11 +70,7 @@ RemotePontoon.prototype = {
                 return undefined;
             }
         }.bind(this)).then(function(text) {
-            if (text != undefined) {
-                chrome.storage.local.set({notificationsDocText: text});
-            } else {
-                chrome.storage.local.set({notificationsDocText: undefined});
-            }
+            this._updateNotificationsDataFromPageContent(text);
         }.bind(this));
     },
 
@@ -63,7 +78,7 @@ RemotePontoon.prototype = {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             switch (request.type) {
                 case 'pontoon-page-loaded':
-                    chrome.storage.local.set({notificationsDocText: request.value});
+                    this._updateNotificationsDataFromPageContent(request.value);
                     break;
                 case 'mark-all-notifications-as-read-from-page':
                     this.markAllNotificationsAsRead();

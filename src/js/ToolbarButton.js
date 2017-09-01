@@ -21,7 +21,7 @@ ToolbarButton.prototype = {
 
     _updateNumberOfUnreadNotifications: function() {
         this._updateBadge('');
-        this._remotePontoon.updateNotificationsDocText();
+        this._remotePontoon.updateNotificationsData();
     },
 
     _setRefresh: function(intervalMinutes) {
@@ -47,13 +47,11 @@ ToolbarButton.prototype = {
 
     _watchStorageChanges: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            var docKey = 'notificationsDocText';
-            if (changes[docKey] !== undefined) {
-                var docContent = changes[docKey].newValue;
-                if (docContent != undefined) {
-                    var notificationsDoc = new DOMParser().parseFromString(docContent, 'text/html');
-                    var unreadCount = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]').length;
-                    this._updateBadge(unreadCount);
+            var dataKey = 'notificationsData';
+            if (changes[dataKey] !== undefined) {
+                var notificationsData = changes[dataKey].newValue;
+                if (notificationsData != undefined) {
+                    this._updateBadge(Object.keys(notificationsData).length);
                 } else {
                     this._updateBadge('!');
                     this._scheduleOrUpdateRefresh();

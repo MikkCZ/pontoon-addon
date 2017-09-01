@@ -12,19 +12,18 @@ NotificationsPopup.prototype = {
 
     _watchStorageChanges: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            if (changes['notificationsDocText'] !== undefined) {
-                this._loadNotificationsFromDocContent(changes['notificationsDocText'].newValue);
+            if (changes['nofiticationsData'] !== undefined) {
+                this._displayNotifications(changes['nofiticationsData'].newValue);
             }
         }.bind(this));
     },
 
     _appendNotificationToList: function(list, notification) {
-        var sourceLink = notification.getElementsByTagName('a')[0];
         var link = document.createElement('a');
-        link.textContent = sourceLink.textContent;
-        link.setAttribute('href', this._remotePontoon.getTeamProjectUrl(sourceLink.getAttribute('href')));
+        link.textContent = notification.link.text;
+        link.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.link.href));
         var description = document.createElement('span');
-        description.textContent = notification.querySelectorAll('.verb')[0].textContent + ' ' + notification.querySelectorAll('.timeago')[0].textContent;
+        description.textContent = notification.description + ' ' + notification.timeago;
         var listItem = document.createElement('li');
         listItem.appendChild(link);
         listItem.appendChild(document.createElement('br'));
@@ -32,24 +31,24 @@ NotificationsPopup.prototype = {
         list.appendChild(listItem);
     },
 
-    _displayNotifications: function(notifications) {
+    _displayNotifications: function(notificationsData) {
         var notificationsList = document.getElementById('notification-list');
         var fullList = document.getElementById('full-list');
         var emptyList = document.getElementById('empty-list');
         var error = document.getElementById('error');
 
-        if (notifications != undefined && notifications.length > 0) {
+        if (notificationsData != undefined && Object.keys(notificationsData).length > 0) {
             while (notificationsList.lastChild) {
                 notificationsList.removeChild(notificationsList.lastChild);
             }
-            for (const n of notifications) {
-                this._appendNotificationToList(notificationsList, n);
+            for (const nKey of Object.keys(notificationsData).sort().reverse()) {
+                this._appendNotificationToList(notificationsList, notificationsData[nKey]);
             }
             notificationsList.classList.remove('hidden');
             fullList.classList.remove('hidden');
             emptyList.classList.add('hidden');
             error.classList.add('hidden');
-        } else if (notifications != undefined) {
+        } else if (notificationsData != undefined) {
             notificationsList.classList.add('hidden');
             fullList.classList.add('hidden');
             emptyList.classList.remove('hidden');
@@ -62,24 +61,10 @@ NotificationsPopup.prototype = {
         }
     },
 
-    _loadNotificationsFromDocContent: function(docContent) {
-        if (docContent != undefined) {
-            var notificationsDoc = new DOMParser().parseFromString(docContent, 'text/html');
-            var unreadNotifications = notificationsDoc.querySelectorAll('header .notification-item[data-unread=true]');
-            this._displayNotifications(unreadNotifications);
-        } else {
-            this._displayNotifications(undefined);
-        }
-    },
-
     _loadNotificationsFromStorage: function() {
-        var docKey = 'notificationsDocText';
-        chrome.storage.local.get(docKey, function(item) {
-            if (item[docKey] != undefined) {
-                this._loadNotificationsFromDocContent(item[docKey]);
-            } else {
-                this._loadNotificationsFromDocContent(undefined)
-            }
+        var dataKey = 'notificationsData';
+        chrome.storage.local.get(dataKey, function(item) {
+            this._displayNotifications(item[dataKey]);
         }.bind(this));
     },
 }
