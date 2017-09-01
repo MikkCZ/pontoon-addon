@@ -42,9 +42,9 @@ RemotePontoon.prototype = {
     },
 
     _updateNotificationsDataFromPageContent: function(notificationsPageContent) {
-        if (notificationsPageContent) {
+        var notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
+        if (notificationsPage.querySelectorAll('header #notifications').length > 0) {
             var notificationsDataObj = {};
-            var notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
             for (const n of notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')) {
                 var nObj = {};
                 nObj.id = n.dataset.id;
@@ -62,13 +62,8 @@ RemotePontoon.prototype = {
     updateNotificationsData: function() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
-            redirect: 'manual',
         }).then(function(response) {
-            if (response.status == 200) {
-                return response.text();
-            } else {
-                return undefined;
-            }
+            return response.text();
         }.bind(this)).then(function(text) {
             this._updateNotificationsDataFromPageContent(text);
         }.bind(this));
