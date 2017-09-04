@@ -96,10 +96,6 @@ RemotePontoon.prototype = {
         }.bind(this));
     },
 
-    _triggerNotificationsReload: function() {
-        chrome.runtime.sendMessage({type: 'notifications-reload-request'});
-    },
-
     markAllNotificationsAsRead: function() {
         browser.tabs.query({
             url: this.getBaseUrl() + '/*',
@@ -112,7 +108,7 @@ RemotePontoon.prototype = {
         var request = new XMLHttpRequest();
         request.addEventListener('readystatechange', function (e) {
             if(request.readyState === XMLHttpRequest.DONE) {
-                 this._triggerNotificationsReload();
+                chrome.storage.local.set({notificationsData: {}});
             }
         }.bind(this));
         request.open('GET', this._markAsReadUrl, true);

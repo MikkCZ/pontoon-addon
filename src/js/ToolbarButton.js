@@ -14,7 +14,6 @@ ToolbarButton.prototype = {
         this._addContextMenu();
         this._watchStorageChanges();
         this._watchOptionsUpdates();
-        this._listenToMessagesFromPopup();
         this._reload();
     },
 
@@ -60,14 +59,6 @@ ToolbarButton.prototype = {
             var openPontoonOptionKey = 'options.open_pontoon_on_button_click';
             if (changes[openPontoonOptionKey]) {
                 this._setPopup(!changes[openPontoonOptionKey].newValue);
-            }
-        }.bind(this));
-    },
-
-    _listenToMessagesFromPopup: function() {
-        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-            if (request.type == 'notifications-reload-request') {
-                this._reload();
             }
         }.bind(this));
     },
