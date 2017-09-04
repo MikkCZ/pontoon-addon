@@ -15,6 +15,12 @@ ToolbarButton.prototype = {
         this._watchStorageChanges();
         this._watchOptionsUpdates();
         this._reload();
+        // Bug 1395885 workaround
+        chrome.windows.onCreated.addListener(function() {
+            chrome.browserAction.getBadgeText({}, function(text) {
+                this._updateBadge(text);
+            }.bind(this));
+        }.bind(this));
     },
 
     _updateNumberOfUnreadNotifications: function() {
@@ -41,7 +47,7 @@ ToolbarButton.prototype = {
             if (changes[dataKey] !== undefined) {
                 var notificationsData = changes[dataKey].newValue;
                 if (notificationsData != undefined) {
-                    this._updateBadge(Object.keys(notificationsData).length);
+                    this._updateBadge(`${Object.keys(notificationsData).length}`);
                 } else {
                     this._updateBadge('!');
                 }
@@ -195,13 +201,13 @@ ToolbarButton.prototype = {
     },
 
     _updateBadge: function(text) {
-        chrome.browserAction.setBadgeText({text: text.toString()});
-        if (text.toString().trim().length == 0) {
+        chrome.browserAction.setBadgeText({text: text});
+        if (text.trim().length == 0) {
             chrome.browserAction.setTitle({title: this._defaultTitle});
         } else {
-            chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text.toString()})`});
+            chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
         }
-        if (text != 0) {
+        if (text != '0') {
             chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
         } else {
             chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
