@@ -6,14 +6,6 @@ function withRemotePontoon(remotePontoon) {
         chrome.tabs.create({url: remotePontoon.getNotificationsUrl()});
         window.close();
     });
-    for (const link of document.querySelectorAll('a.team-page')) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});
-            window.close();
-        });
-    }
-
     document.querySelector('#full-list .mark-all-as-read').addEventListener('click', function(e) {
         e.preventDefault();
         remotePontoon.markAllNotificationsAsRead();
@@ -23,8 +15,14 @@ function withRemotePontoon(remotePontoon) {
         chrome.tabs.create({url: remotePontoon.getBaseUrl()});
         window.close();
     });
+    document.querySelector('a.team-page').addEventListener('click', function(e) {
+        e.preventDefault();
+        chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});
+        window.close();
+    });
 
-    var popup = new NotificationsPopup(remotePontoon);
+    var notificationsPopup = new NotificationsPopup(remotePontoon);
+    var teamInfoPopup = new TeamInfoPopup(remotePontoon);
 }
 
 var options = new Options();

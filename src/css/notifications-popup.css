@@ -28,7 +28,8 @@ a {
 #notification-list,
 #full-list,
 #empty-list,
-#error
+#error,
+#team-info
 {
   padding: 1em;
   text-align: center;
@@ -99,4 +100,38 @@ a {
 {
   font-size: 16px;
   color: #ebebeb;
+}
+
+/* Team info */
+#team-info ul {
+  padding: 0;
+  margin: 0 1em;
+  list-style-type: none;
+  color: #aaa;
+}
+#team-info li::before {
+  display: inline-block;
+  content: '';
+  border-radius: 0.1em;
+  width: 0.7em;
+  height: 0.7em;
+  margin-right: 0.5em;
+}
+#team-info li.translated::before {
+  background-color: #7bc876;
+}
+#team-info li.suggested::before {
+  background-color: #4fc4f6;
+}
+#team-info li.fuzzy::before {
+  background-color: #fed271;
+}
+#team-info li.missing::before {
+  background-color: #4d5967;
+}
+#team-info li .text {
+  text-transform: uppercase;
+}
+#team-info li .count {
+  float: right;
 }
