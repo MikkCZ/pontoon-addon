@@ -20,6 +20,13 @@ function withRemotePontoon(remotePontoon) {
         chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});
         window.close();
     });
+    for (const hLink of document.querySelectorAll('#team-info h1 a')) {
+        hLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});
+            window.close();
+        });
+    }
 
     var notificationsPopup = new NotificationsPopup(remotePontoon);
     var teamInfoPopup = new TeamInfoPopup(remotePontoon);

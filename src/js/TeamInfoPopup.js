@@ -20,21 +20,23 @@ TeamInfoPopup.prototype = {
 
     _displayTeamInfo: function(teamData) {
         if (teamData) {
+            document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
+            document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
             var infoList = document.querySelector('#team-info ul');
             while (infoList.lastChild) {
                 infoList.removeChild(infoList.lastChild);
             }
-            for (const iKey of Object.keys(teamData)) {
-                var dataItem = teamData[iKey];
+            for (const iKey of Object.keys(teamData.strings)) {
+                var dataItem = teamData.strings[iKey];
                 var listItem = document.createElement('li');
                 listItem.classList.add(dataItem.status);
-                var text = document.createElement('span');
-                text.classList.add('text');
-                text.textContent = dataItem.text;
-                listItem.appendChild(text);
+                var title = document.createElement('span');
+                title.classList.add('title');
+                title.textContent = dataItem.title;
+                listItem.appendChild(title);
                 var count = document.createElement('span');
                 count.classList.add('count');
-                count.textContent = dataItem.value;
+                count.textContent = dataItem.count;
                 listItem.appendChild(count);
                 infoList.appendChild(listItem);
             }

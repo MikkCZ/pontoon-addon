@@ -80,7 +80,7 @@ ToolbarButton.prototype = {
 
     _setPopup: function(showPopup) {
         if (showPopup) {
-            chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/notifications-popup.html')});
+            chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/popup.html')});
         } else {
             chrome.browserAction.setPopup({popup: ''});
         }

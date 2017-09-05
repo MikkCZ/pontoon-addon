@@ -9,6 +9,7 @@ body {
 a {
   color: #F36;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .hidden {
@@ -103,9 +104,20 @@ a {
 }
 
 /* Team info */
+#team-info h1 {
+  padding: 0;
+  margin: 0;
+}
+#team-info h1 .name {
+  color: #ebebeb;
+}
+#team-info h1 .code {
+  color: #7bc876;
+  font-weight: normal;
+}
 #team-info ul {
   padding: 0;
-  margin: 0 1em;
+  margin: 1em;
   list-style-type: none;
   color: #aaa;
 }
@@ -129,7 +141,7 @@ a {
 #team-info li.missing::before {
   background-color: #4d5967;
 }
-#team-info li .text {
+#team-info li .title {
   text-transform: uppercase;
 }
 #team-info li .count {

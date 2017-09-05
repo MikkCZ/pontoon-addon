@@ -41,6 +41,10 @@ RemotePontoon.prototype = {
         return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${textToSearch.replace(' ', '+')}`;
     },
 
+    getTeamCode: function() {
+        return this._team;
+    },
+
     _updateNotificationsDataFromPageContent: function(notificationsPageContent) {
         var notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
         if (notificationsPage.querySelector('header #notifications')) {
@@ -88,12 +92,14 @@ RemotePontoon.prototype = {
         var teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
         if (teamPage.querySelector('#heading .legend')) {
             var teamDataObj = {};
+            teamDataObj.teamName = teamPage.querySelector('h1 .None').textContent;
+            teamDataObj.strings = {};
             for (const item of teamPage.querySelectorAll('#heading .legend li')) {
                 var iObj = {};
                 iObj.status = item.getAttribute('class');
-                iObj.text = this._getTextWithoutChildren(item);
-                iObj.value = item.querySelector('.value').textContent;
-                teamDataObj[iObj.status] = iObj;
+                iObj.title = this._getTextWithoutChildren(item);
+                iObj.count = item.querySelector('.value').textContent;
+                teamDataObj.strings[iObj.status] = iObj;
             }
             chrome.storage.local.set({teamData: teamDataObj});
         } else {
