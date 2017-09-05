@@ -43,7 +43,7 @@ ToolbarButton.prototype = {
     },
 
     _scheduleOrUpdateRefresh: function() {
-        var optionKey = 'options.notifications_update_interval';
+        var optionKey = 'options.data_update_interval';
         this._options.get([optionKey], function(item) {
             var intervalMinutes = parseInt(item[optionKey], 10);
             this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
@@ -66,7 +66,7 @@ ToolbarButton.prototype = {
 
     _watchOptionsUpdates: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            var updateIntervalOptionKey = 'options.notifications_update_interval';
+            var updateIntervalOptionKey = 'options.data_update_interval';
             if (changes[updateIntervalOptionKey] !== undefined) {
                 var intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
                 this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);

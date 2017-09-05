@@ -8,15 +8,18 @@
 <body>
   <table>
     <tr>
-      <td><label for="notifications_update_interval">Update notifications from Pontoon every</label></td>
-      <td><input id="notifications_update_interval" type="number" min="5">minutes</input></td>
+      <td><label for="data_update_interval">Update data from Pontoon every</label></td>
+      <td><input id="data_update_interval" type="number" min="5">minutes</input></td>
     </tr>
     <tr>
       <td><label for="locale_team">Use this locale team as preferred</label></td>
       <td><input id="locale_team" type="text" required></input></td>
     </tr>
     <tr>
-      <td colspan="2"><input id="open_pontoon_on_button_click" type="checkbox"></input> <label for="open_pontoon_on_button_click">When clicking the toolbar button, open Pontoon instead of the notifications list</label></td>
+      <td colspan="2"><input id="open_pontoon_on_button_click" type="checkbox"></input> <label for="open_pontoon_on_button_click">When clicking the toolbar button, open Pontoon instead of the popup</label></td>
+    </tr>
+    <tr>
+      <td colspan="2"><input id="hide_team_info_in_popup" type="checkbox"></input> <label for="hide_team_info_in_popup">Do not show team information in the popup</label></td>
     </tr>
   </table>
   <script src="../js/Options.js"></script>

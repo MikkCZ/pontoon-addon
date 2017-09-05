@@ -29,7 +29,7 @@ function withRemotePontoon(remotePontoon) {
     }
 
     var notificationsPopup = new NotificationsPopup(remotePontoon);
-    var teamInfoPopup = new TeamInfoPopup(remotePontoon);
+    var teamInfoPopup = new TeamInfoPopup(options, remotePontoon);
 }
 
 var options = new Options();
