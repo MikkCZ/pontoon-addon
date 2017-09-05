@@ -216,7 +216,7 @@ ToolbarButton.prototype = {
         } else {
             chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
         }
-        if (text != '0') {
+        if (text != '0' && text != '') {
             chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
         } else {
             chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
