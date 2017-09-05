@@ -28,9 +28,18 @@ ToolbarButton.prototype = {
         this._remotePontoon.updateNotificationsData();
     },
 
+    _updateTeamData: function() {
+        this._remotePontoon.updateTeamData();
+    },
+
+    _updateData: function() {
+        this._updateNumberOfUnreadNotifications();
+        this._updateTeamData();
+    },
+
     _scheduleOrUpdateRefreshWithInterval: function(intervalMinutes) {
         clearInterval(this._refreshInterval);
-        this._refreshInterval = setInterval(this._updateNumberOfUnreadNotifications.bind(this), intervalMinutes * 60 * 1000);
+        this._refreshInterval = setInterval(this._updateData.bind(this), intervalMinutes * 60 * 1000);
     },
 
     _scheduleOrUpdateRefresh: function() {
@@ -215,7 +224,7 @@ ToolbarButton.prototype = {
     },
 
     _reload: function() {
-        this._updateNumberOfUnreadNotifications();
+        this._updateData();
         this._scheduleOrUpdateRefresh();
     },
 }

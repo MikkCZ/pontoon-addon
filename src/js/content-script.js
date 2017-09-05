@@ -2,9 +2,9 @@
 
 chrome.runtime.sendMessage({
     type: 'pontoon-page-loaded',
+    url: document.location.toString(),
     value: document.documentElement.innerHTML
 });
-
 var unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon');
 
 function unreadNotificationsIconClick() {

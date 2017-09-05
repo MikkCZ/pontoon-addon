@@ -75,11 +75,48 @@ RemotePontoon.prototype = {
         }.bind(this));
     },
 
+    _getTextWithoutChildren: function(element) {
+        for (const child of element.childNodes) {
+            if (child.nodeName == '#text' && child.textContent.trim().length > 0) {
+                return child.textContent.trim();
+            }
+        }
+        return '';
+    },
+
+    _updateDataFromTeamPageContent: function(teamPageContent) {
+        var teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
+        if (teamPage.querySelector('#heading .legend')) {
+            var teamDataObj = {};
+            for (const item of teamPage.querySelectorAll('#heading .legend li')) {
+                var iObj = {};
+                iObj.status = item.getAttribute('class');
+                iObj.text = this._getTextWithoutChildren(item);
+                iObj.value = item.querySelector('.value').textContent;
+                teamDataObj[iObj.status] = iObj;
+            }
+            chrome.storage.local.set({teamData: teamDataObj});
+        } else {
+            chrome.storage.local.set({teamData: undefined});
+        }
+    },
+
+    updateTeamData: function() {
+        fetch(this.getTeamPageUrl()).then(function(response) {
+            return response.text();
+        }.bind(this)).then(function(text) {
+            this._updateDataFromTeamPageContent(text);
+        }.bind(this));
+    },
+
     _listenToMessagesFromContent: function() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             switch (request.type) {
                 case 'pontoon-page-loaded':
                     this._updateNotificationsDataFromPageContent(request.value);
+                    if (request.url == this.getTeamPageUrl()) {
+                        this._updateDataFromTeamPageContent(request.value);
+                    }
                     break;
                 case 'mark-all-notifications-as-read-from-page':
                     this.markAllNotificationsAsRead();
