@@ -1,6 +1,7 @@
 /* General */
 
 body {
+  min-width: 350px;
   max-width: 500px;
   background-color: #272A2F;
   color: #ebebeb;
