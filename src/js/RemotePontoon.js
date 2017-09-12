@@ -79,7 +79,7 @@ class RemotePontoon {
         });
     }
 
-    _getTextWithoutChildren(element) {
+    static _getTextFromElementWithoutChildrenText(element) {
         for (const child of element.childNodes) {
             if (child.nodeName === '#text' && child.textContent.trim().length > 0) {
                 return child.textContent.trim();
@@ -97,7 +97,7 @@ class RemotePontoon {
             for (const item of teamPage.querySelectorAll('#heading .legend li')) {
                 const iObj = {};
                 iObj.status = item.getAttribute('class');
-                iObj.title = this._getTextWithoutChildren(item);
+                iObj.title = RemotePontoon._getTextFromElementWithoutChildrenText(item);
                 iObj.count = item.querySelector('.value').textContent;
                 teamDataObj.strings[iObj.status] = iObj;
             }

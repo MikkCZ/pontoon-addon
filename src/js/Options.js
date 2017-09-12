@@ -12,11 +12,11 @@ class Options {
         return optionId.replace(this._prefixRegExp, '');
     }
 
-    _isValid(input) {
+    static _isValidInput(input) {
         return (input.parentElement.querySelector(':valid') === input);
     }
 
-    _getValue(input) {
+    static _getValueFromInput(input) {
         if (input.type !== 'checkbox') {
             return input.value;
         } else {
@@ -32,9 +32,9 @@ class Options {
 
     saveInputOnChange(e) {
         const input = e.target;
-        if (this._isValid(input)) {
+        if (Options._isValidInput(input)) {
             const optionId = this._getOptionId(input);
-            const value = this._getValue(input);
+            const value = Options._getValueFromInput(input);
             this._saveOption(optionId, value);
         }
     }
@@ -48,7 +48,7 @@ class Options {
         return defaults;
     }
 
-    _setValue(input, value) {
+    static _setValueToInput(input, value) {
         if (input.type !== 'checkbox') {
             input.value = value;
         } else {
@@ -61,7 +61,7 @@ class Options {
             if (key.startsWith(this._prefix)) {
                 const input = document.getElementById(this._getInputId(key));
                 const value = object[key];
-                this._setValue(input, value);
+                Options._setValueToInput(input, value);
             }
         });
     }
