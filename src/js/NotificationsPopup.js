@@ -69,6 +69,13 @@ class NotificationsPopup {
             message.classList.add('message');
             listItem.appendChild(message);
         }
+        if (!notification.target) {
+            listItem.querySelectorAll('*').forEach((child) => {
+                child.addEventListener('click', (e) => chrome.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.link)}));
+            });
+            listItem.addEventListener('click', (e) => chrome.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.link)}));
+            listItem.classList.add('pointer');
+        }
         return listItem;
     }
 
