@@ -6,10 +6,6 @@ class ToolbarButton {
         this._defaultTitle = 'Pontoon notifications';
         this._refreshInterval = undefined;
 
-        this._init();
-    }
-
-    _init() {
         this._addOnClickAction();
         this._addContextMenu();
         this._watchStorageChanges();

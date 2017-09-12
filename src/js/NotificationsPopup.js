@@ -2,10 +2,6 @@ class NotificationsPopup {
     constructor(remotePontoon) {
         this._remotePontoon = remotePontoon;
 
-        this._init();
-    }
-
-    _init() {
         this._watchStorageChanges();
         this._loadNotificationsFromStorage();
     }
