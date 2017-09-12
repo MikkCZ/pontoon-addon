@@ -8,8 +8,9 @@ class NotificationsPopup {
 
     _watchStorageChanges() {
         chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (changes['nofiticationsData'] !== undefined) {
-                this._displayNotifications(changes['nofiticationsData'].newValue);
+            const dataKey = 'notificationsData';
+            if (changes[dataKey] !== undefined) {
+                this._displayNotifications(changes[dataKey].newValue);
             }
         });
     }
