@@ -61,11 +61,10 @@ class Options {
     }
 
     /**
-     * Listen to input value changes and save valid values.
-     * @param e change event
+     * Update options from changed input, if the new value is valid.
+     * @param input which value has changed
      */
-    saveInputOnChange(e) {
-        const input = e.target;
+    updateOptionFromInput(input) {
         if (Options._isValidInput(input)) {
             const optionId = this._getOptionId(input);
             const value = Options._getValueFromInput(input);

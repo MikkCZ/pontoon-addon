@@ -7,5 +7,5 @@ options.loadAllFromLocalStorage();
 
 // Watch for input changes and store the new values.
 document.querySelectorAll('input').forEach((input) =>
-    input.addEventListener('change', (e) => options.saveInputOnChange(e))
+    input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
 );
