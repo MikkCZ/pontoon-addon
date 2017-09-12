@@ -1,4 +1,6 @@
+web-ext-artifacts/*
 *.xpi
 *.zip
 *.png
+*~
 
