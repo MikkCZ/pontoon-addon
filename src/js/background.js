@@ -1,14 +1,14 @@
 'use strict';
 
-var options = new Options();
-var localeTeamOptionKey = 'options.locale_team';
+const options = new Options();
+const localeTeamOptionKey = 'options.locale_team';
 options.get([localeTeamOptionKey], function(items) {
-    var remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
-    var remoteLinks = new RemoteLinks(items[localeTeamOptionKey]);
-    var toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
+    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
+    const remoteLinks = new RemoteLinks(items[localeTeamOptionKey]);
+    const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
 
-    var mozillaWebsitesUrlPatterns = ['*://*.mozilla.org/*', '*://*.firefox.com/*', '*://mozillians.org/*', '*://*.allizom.org/*'];
-    var mozillaPageContextMenuParent = chrome.contextMenus.create({
+    const mozillaWebsitesUrlPatterns = ['*://*.mozilla.org/*', '*://*.firefox.com/*', '*://mozillians.org/*', '*://*.allizom.org/*'];
+    const mozillaPageContextMenuParent = chrome.contextMenus.create({
         title: 'Pontoon Tools',
         documentUrlPatterns: mozillaWebsitesUrlPatterns,
         contexts: ['selection'],

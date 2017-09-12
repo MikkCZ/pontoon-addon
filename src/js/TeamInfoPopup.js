@@ -20,24 +20,24 @@ TeamInfoPopup.prototype = {
     },
 
     _displayTeamInfo: function(teamData) {
-        var optionKey = 'options.hide_team_info_in_popup';
+        const optionKey = 'options.hide_team_info_in_popup';
         this._options.get([optionKey], function(item) {
             if(!item[optionKey] && teamData) {
                 document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
                 document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
-                var infoList = document.querySelector('#team-info ul');
+                const infoList = document.querySelector('#team-info ul');
                 while (infoList.lastChild) {
                     infoList.removeChild(infoList.lastChild);
                 }
                 for (const iKey of Object.keys(teamData.strings)) {
-                    var dataItem = teamData.strings[iKey];
-                    var listItem = document.createElement('li');
+                    const dataItem = teamData.strings[iKey];
+                    const listItem = document.createElement('li');
                     listItem.classList.add(dataItem.status);
-                    var title = document.createElement('span');
+                    const title = document.createElement('span');
                     title.classList.add('title');
                     title.textContent = dataItem.title;
                     listItem.appendChild(title);
-                    var count = document.createElement('span');
+                    const count = document.createElement('span');
                     count.classList.add('count');
                     count.textContent = dataItem.count;
                     listItem.appendChild(count);
@@ -49,9 +49,9 @@ TeamInfoPopup.prototype = {
     },
 
     _loadTeamDataFromStorage: function() {
-        var dataKey = 'teamData';
+        const dataKey = 'teamData';
         chrome.storage.local.get(dataKey, function(item) {
             this._displayTeamInfo(item[dataKey]);
         }.bind(this));
     },
-}
+};

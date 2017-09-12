@@ -3,7 +3,7 @@ function ToolbarButton(options, remotePontoon, remoteLinks) {
     this._remotePontoon = remotePontoon;
     this._remoteLinks = remoteLinks;
     this._defaultTitle = 'Pontoon notifications';
-    this._refreshInterval;
+    this._refreshInterval = undefined;
 
     this._init();
 }
@@ -43,19 +43,19 @@ ToolbarButton.prototype = {
     },
 
     _scheduleOrUpdateRefresh: function() {
-        var optionKey = 'options.data_update_interval';
+        const optionKey = 'options.data_update_interval';
         this._options.get([optionKey], function(item) {
-            var intervalMinutes = parseInt(item[optionKey], 10);
+            const intervalMinutes = parseInt(item[optionKey], 10);
             this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
         }.bind(this));
     },
 
     _watchStorageChanges: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            var dataKey = 'notificationsData';
+            const dataKey = 'notificationsData';
             if (changes[dataKey] !== undefined) {
-                var notificationsData = changes[dataKey].newValue;
-                if (notificationsData != undefined) {
+                const notificationsData = changes[dataKey].newValue;
+                if (notificationsData !== undefined) {
                     this._updateBadge(`${Object.keys(notificationsData).length}`);
                 } else {
                     this._updateBadge('!');
@@ -66,12 +66,12 @@ ToolbarButton.prototype = {
 
     _watchOptionsUpdates: function() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
-            var updateIntervalOptionKey = 'options.data_update_interval';
+            const updateIntervalOptionKey = 'options.data_update_interval';
             if (changes[updateIntervalOptionKey] !== undefined) {
-                var intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
+                const intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
                 this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
             }
-            var openPontoonOptionKey = 'options.open_pontoon_on_button_click';
+            const openPontoonOptionKey = 'options.open_pontoon_on_button_click';
             if (changes[openPontoonOptionKey]) {
                 this._setPopup(!changes[openPontoonOptionKey].newValue);
             }
@@ -90,7 +90,7 @@ ToolbarButton.prototype = {
         chrome.browserAction.onClicked.addListener(function(tab) {
             chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
         }.bind(this));
-        var optionKey = 'options.open_pontoon_on_button_click';
+        const optionKey = 'options.open_pontoon_on_button_click';
         this._options.get([optionKey], function(item) {
             this._setPopup(!item[optionKey]);
         }.bind(this));
@@ -107,7 +107,7 @@ ToolbarButton.prototype = {
             contexts: ['browser_action'],
             onclick: this._reload.bind(this),
         });
-        var pontoonPagesMenuId = chrome.contextMenus.create({
+        const pontoonPagesMenuId = chrome.contextMenus.create({
             title: 'Pontoon pages',
             contexts: ['browser_action'],
         });
@@ -135,7 +135,7 @@ ToolbarButton.prototype = {
             parentId: pontoonPagesMenuId,
             onclick: function() {chrome.tabs.create({url: this._remotePontoon.getMachineryUrl()});}.bind(this),
         });
-        var localizationResourcesMenuId = chrome.contextMenus.create({
+        const localizationResourcesMenuId = chrome.contextMenus.create({
             title: 'Other l10n sources',
             contexts: ['browser_action'],
         });
@@ -211,12 +211,12 @@ ToolbarButton.prototype = {
 
     _updateBadge: function(text) {
         chrome.browserAction.setBadgeText({text: text});
-        if (text.trim().length == 0) {
+        if (text.trim().length === 0) {
             chrome.browserAction.setTitle({title: this._defaultTitle});
         } else {
             chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
         }
-        if (text != '0' && text != '') {
+        if (text !== '0' && text !== '') {
             chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
         } else {
             chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
@@ -227,4 +227,4 @@ ToolbarButton.prototype = {
         this._updateData();
         this._scheduleOrUpdateRefresh();
     },
-}
+};

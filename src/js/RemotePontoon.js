@@ -46,11 +46,11 @@ RemotePontoon.prototype = {
     },
 
     _updateNotificationsDataFromPageContent: function(notificationsPageContent) {
-        var notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
+        const notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
         if (notificationsPage.querySelector('header #notifications')) {
-            var notificationsDataObj = {};
+            const notificationsDataObj = {};
             for (const n of notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')) {
-                var nObj = {};
+                const nObj = {};
                 nObj.id = n.dataset.id;
                 nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
                 if (n.querySelector('.target')) {
@@ -81,7 +81,7 @@ RemotePontoon.prototype = {
 
     _getTextWithoutChildren: function(element) {
         for (const child of element.childNodes) {
-            if (child.nodeName == '#text' && child.textContent.trim().length > 0) {
+            if (child.nodeName === '#text' && child.textContent.trim().length > 0) {
                 return child.textContent.trim();
             }
         }
@@ -89,13 +89,13 @@ RemotePontoon.prototype = {
     },
 
     _updateDataFromTeamPageContent: function(teamPageContent) {
-        var teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
+        const teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
         if (teamPage.querySelector('#heading .legend')) {
-            var teamDataObj = {};
+            const teamDataObj = {};
             teamDataObj.teamName = teamPage.querySelector('h1 .None').textContent;
             teamDataObj.strings = {};
             for (const item of teamPage.querySelectorAll('#heading .legend li')) {
-                var iObj = {};
+                const iObj = {};
                 iObj.status = item.getAttribute('class');
                 iObj.title = this._getTextWithoutChildren(item);
                 iObj.count = item.querySelector('.value').textContent;
@@ -120,7 +120,7 @@ RemotePontoon.prototype = {
             switch (request.type) {
                 case 'pontoon-page-loaded':
                     this._updateNotificationsDataFromPageContent(request.value);
-                    if (request.url == this.getTeamPageUrl()) {
+                    if (request.url === this.getTeamPageUrl()) {
                         this._updateDataFromTeamPageContent(request.value);
                     }
                     break;
@@ -148,7 +148,7 @@ RemotePontoon.prototype = {
             }
         }.bind(this));
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
         request.addEventListener('readystatechange', function (e) {
             if(request.readyState === XMLHttpRequest.DONE) {
                 chrome.storage.local.set({notificationsData: {}});
@@ -158,4 +158,4 @@ RemotePontoon.prototype = {
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.send(null);
     },
-}
+};

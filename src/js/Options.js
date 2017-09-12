@@ -17,7 +17,7 @@ Options.prototype = {
     },
 
     _getValue: function(input) {
-        if (input.type != 'checkbox') {
+        if (input.type !== 'checkbox') {
             return input.value;
         } else {
             return input.checked;
@@ -25,22 +25,22 @@ Options.prototype = {
     },
 
     _saveOption: function(id, value) {
-        var option = { };
+        const option = {};
         option[id] = value;
         chrome.storage.local.set(option);
     },
 
     saveInputOnChange: function(e) {
-        var input = e.target;
+        const input = e.target;
         if (this._isValid(input)) {
-            var optionId = this._getOptionId(input);
-            var value = this._getValue(input);
+            const optionId = this._getOptionId(input);
+            const value = this._getValue(input);
             this._saveOption(optionId, value);
         }
     },
 
     _defaults: function() {
-        var defaults = {};
+        const defaults = {};
         defaults[`${this._prefix}data_update_interval`] = 15;
         defaults[`${this._prefix}locale_team`] = navigator.language || navigator.userLanguage;
         defaults[`${this._prefix}open_pontoon_on_button_click`] = false;
@@ -49,7 +49,7 @@ Options.prototype = {
     },
 
     _setValue: function(input, value) {
-        if (input.type != 'checkbox') {
+        if (input.type !== 'checkbox') {
             input.value = value;
         } else {
             input.checked = value;
@@ -59,8 +59,8 @@ Options.prototype = {
     _loadAllFromObject: function(object) {
         Object.keys(object).map(function(key, index) {
             if (key.startsWith(this._prefix)) {
-                var input = document.getElementById(this._getInputId(key));
-                var value = object[key];
+                const input = document.getElementById(this._getInputId(key));
+                const value = object[key];
                 this._setValue(input, value);
             }
         }.bind(this));
@@ -83,4 +83,4 @@ Options.prototype = {
             callback(items);
         }.bind(this));
     },
-}
+};

@@ -1,5 +1,7 @@
 'use strict';
 
+const options = new Options();
+
 function withRemotePontoon(remotePontoon) {
     document.querySelector('#empty-list .see-all').addEventListener('click', function(e) {
         e.preventDefault();
@@ -28,13 +30,12 @@ function withRemotePontoon(remotePontoon) {
         });
     }
 
-    var notificationsPopup = new NotificationsPopup(remotePontoon);
-    var teamInfoPopup = new TeamInfoPopup(options, remotePontoon);
+    const notificationsPopup = new NotificationsPopup(remotePontoon);
+    const teamInfoPopup = new TeamInfoPopup(options, remotePontoon);
 }
 
-var options = new Options();
-var localeTeamOptionKey = 'options.locale_team';
+const localeTeamOptionKey = 'options.locale_team';
 options.get([localeTeamOptionKey], function(items) {
-    var remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
+    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
     withRemotePontoon(remotePontoon);
 });

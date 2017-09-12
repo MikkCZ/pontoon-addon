@@ -19,32 +19,32 @@ NotificationsPopup.prototype = {
     },
 
     _appendNotificationToList: function(list, notification) {
-        var listItem = document.createElement('li');
+        const listItem = document.createElement('li');
         if (notification.actor) {
-            var actorLink = document.createElement('a');
+            const actorLink = document.createElement('a');
             actorLink.textContent = notification.actor.text;
             actorLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.actor.link));
             listItem.appendChild(actorLink);
         }
         if (notification.verb) {
-            var verb = document.createElement('span');
+            const verb = document.createElement('span');
             verb.textContent = ` ${notification.verb}`;
             listItem.appendChild(verb);
         }
         if (notification.target) {
-            var targetLink = document.createElement('a');
+            const targetLink = document.createElement('a');
             targetLink.textContent = ` ${notification.target.text}`;
             targetLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.target.link));
             listItem.appendChild(targetLink);
         }
         if (notification.timeago) {
-            var timeago = document.createElement('div');
+            const timeago = document.createElement('div');
             timeago.textContent = notification.timeago;
             timeago.classList.add('timeago');
             listItem.appendChild(timeago);
         }
         if (notification.message) {
-            var message = document.createElement('div');
+            const message = document.createElement('div');
             message.textContent = notification.message;
             message.classList.add('message');
             listItem.appendChild(message);
@@ -53,12 +53,12 @@ NotificationsPopup.prototype = {
     },
 
     _displayNotifications: function(notificationsData) {
-        var notificationsList = document.getElementById('notification-list');
-        var fullList = document.getElementById('full-list');
-        var emptyList = document.getElementById('empty-list');
-        var error = document.getElementById('error');
+        const notificationsList = document.getElementById('notification-list');
+        const fullList = document.getElementById('full-list');
+        const emptyList = document.getElementById('empty-list');
+        const error = document.getElementById('error');
 
-        if (notificationsData != undefined && Object.keys(notificationsData).length > 0) {
+        if (notificationsData !== undefined && Object.keys(notificationsData).length > 0) {
             while (notificationsList.lastChild) {
                 notificationsList.removeChild(notificationsList.lastChild);
             }
@@ -69,7 +69,7 @@ NotificationsPopup.prototype = {
             fullList.classList.remove('hidden');
             emptyList.classList.add('hidden');
             error.classList.add('hidden');
-        } else if (notificationsData != undefined) {
+        } else if (notificationsData !== undefined) {
             notificationsList.classList.add('hidden');
             fullList.classList.add('hidden');
             emptyList.classList.remove('hidden');
@@ -83,9 +83,9 @@ NotificationsPopup.prototype = {
     },
 
     _loadNotificationsFromStorage: function() {
-        var dataKey = 'notificationsData';
+        const dataKey = 'notificationsData';
         chrome.storage.local.get(dataKey, function(item) {
             this._displayNotifications(item[dataKey]);
         }.bind(this));
     },
-}
+};
