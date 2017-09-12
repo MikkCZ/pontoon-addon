@@ -2,7 +2,7 @@
 
 const options = new Options();
 const localeTeamOptionKey = 'options.locale_team';
-options.get([localeTeamOptionKey], (items) => {
+options.get(localeTeamOptionKey, (items) => {
     const remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
     const remoteLinks = new RemoteLinks(items[localeTeamOptionKey]);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);

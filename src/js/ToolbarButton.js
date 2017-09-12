@@ -38,7 +38,7 @@ class ToolbarButton {
 
     _scheduleOrUpdateRefresh() {
         const optionKey = 'options.data_update_interval';
-        this._options.get([optionKey], (item) => {
+        this._options.get(optionKey, (item) => {
             const intervalMinutes = parseInt(item[optionKey], 10);
             this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
         });
@@ -83,7 +83,7 @@ class ToolbarButton {
     _addOnClickAction() {
         chrome.browserAction.onClicked.addListener((tab) => chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()}));
         const optionKey = 'options.open_pontoon_on_button_click';
-        this._options.get([optionKey], (item) => this._setPopup(!item[optionKey]));
+        this._options.get(optionKey, (item) => this._setPopup(!item[optionKey]));
     }
 
     _addContextMenu() {

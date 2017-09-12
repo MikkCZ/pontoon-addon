@@ -72,6 +72,9 @@ class Options {
     }
 
     get(optionIds, callback) {
+        if (typeof optionIds === 'string') {
+            optionIds = [optionIds];
+        }
         chrome.storage.local.get(optionIds, (items) => {
             for (const optionId of optionIds) {
                 if (items[optionId] === undefined) {

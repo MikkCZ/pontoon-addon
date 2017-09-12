@@ -17,7 +17,7 @@ class TeamInfoPopup {
 
     _displayTeamInfo(teamData) {
         const optionKey = 'options.hide_team_info_in_popup';
-        this._options.get([optionKey], (item) => {
+        this._options.get(optionKey, (item) => {
             if(!item[optionKey] && teamData) {
                 document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
                 document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
