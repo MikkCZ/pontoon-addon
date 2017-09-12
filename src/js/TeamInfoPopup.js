@@ -46,8 +46,6 @@ class TeamInfoPopup {
 
     _loadTeamDataFromStorage() {
         const dataKey = 'teamData';
-        chrome.storage.local.get(dataKey, (item) => {
-            this._displayTeamInfo(item[dataKey]);
-        });
+        chrome.storage.local.get(dataKey, (item) => this._displayTeamInfo(item[dataKey]));
     }
 }

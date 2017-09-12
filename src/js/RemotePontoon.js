@@ -72,11 +72,11 @@ class RemotePontoon {
     updateNotificationsData() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
-        }).then((response) => {
-            return response.text();
-        }).then((text) => {
-            this._updateNotificationsDataFromPageContent(text);
-        });
+        }).then(
+            (response) => response.text()
+        ).then(
+            (text) => this._updateNotificationsDataFromPageContent(text)
+        );
     }
 
     static _getTextFromElementWithoutChildrenText(element) {
@@ -108,11 +108,11 @@ class RemotePontoon {
     }
 
     updateTeamData() {
-        fetch(this.getTeamPageUrl()).then((response) => {
-            return response.text();
-        }).then((text) => {
-            this._updateDataFromTeamPageContent(text);
-        });
+        fetch(this.getTeamPageUrl()).then(
+            (response) => response.text()
+        ).then(
+            (text) => this._updateDataFromTeamPageContent(text)
+        );
     }
 
     _listenToMessagesFromContent() {

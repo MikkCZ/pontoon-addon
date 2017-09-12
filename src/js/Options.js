@@ -68,9 +68,7 @@ class Options {
 
     loadAllFromLocalStorage() {
         this._loadAllFromObject(this._defaults());
-        chrome.storage.local.get((items) => {
-            this._loadAllFromObject(items);
-        });
+        chrome.storage.local.get((items) => this._loadAllFromObject(items));
     }
 
     get(optionIds, callback) {

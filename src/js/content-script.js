@@ -15,7 +15,7 @@ function unreadNotificationsIconClick() {
 if (unreadNotificationsIcon !== null) {
     unreadNotificationsIcon.addEventListener('click', unreadNotificationsIconClick);
 
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.type === 'mark-all-notifications-as-read-from-extension') {
             unreadNotificationsIcon.style.color = '#4D5967';
         }
