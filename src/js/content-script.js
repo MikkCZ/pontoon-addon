@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 chrome.runtime.sendMessage({
     type: 'pontoon-page-loaded',

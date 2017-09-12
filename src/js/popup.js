@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 function withRemotePontoon(remotePontoon) {
     document.querySelector('#empty-list .see-all').addEventListener('click', function(e) {

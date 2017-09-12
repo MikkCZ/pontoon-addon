@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 var options = new Options();
 var localeTeamOptionKey = 'options.locale_team';
