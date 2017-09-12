@@ -20,14 +20,8 @@ function withRemotePontoon(remotePontoon) {
         chrome.tabs.create({url: remotePontoon.getBaseUrl()});
         window.close();
     });
-    // Team page link
-    document.querySelector('a.team-page').addEventListener('click', (e) => {
-        e.preventDefault();
-        chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});
-        window.close();
-    });
-    // Team page links in team info headline
-    document.querySelectorAll('#team-info h1 a').forEach((hLink) => {
+    // Team page links
+    document.querySelectorAll('a.team-page,#team-info h1 a').forEach((hLink) => {
         hLink.addEventListener('click', (e) => {
             e.preventDefault();
             chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});

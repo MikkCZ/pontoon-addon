@@ -17,7 +17,7 @@ class ToolbarButton {
         this._addContextMenu();
         this._watchStorageChanges();
         this._watchOptionsUpdates();
-        this._reload();
+        this._refreshDataAndUpdateSchedule();
         // Bug 1395885 workaround
         chrome.windows.onCreated.addListener(() =>
             chrome.browserAction.getBadgeText({}, (text) => this._updateBadge(text))
@@ -25,29 +25,14 @@ class ToolbarButton {
     }
 
     /**
-     * Trigger notifications data update.
+     * Trigger notifications and team data refresh.
      * @private
      */
-    _updateNumberOfUnreadNotifications() {
+    _triggerDataRefresh() {
         this._updateBadge('');
         this._remotePontoon.updateNotificationsData();
-    }
 
-    /**
-     * Trigger team info update.
-     * @private
-     */
-    _updateTeamData() {
         this._remotePontoon.updateTeamData();
-    }
-
-    /**
-     * Trigger all data update.
-     * @private
-     */
-    _updateData() {
-        this._updateNumberOfUnreadNotifications();
-        this._updateTeamData();
     }
 
     /**
@@ -57,7 +42,7 @@ class ToolbarButton {
      */
     _scheduleOrUpdateRefreshWithInterval(intervalMinutes) {
         clearInterval(this._refreshInterval);
-        this._refreshInterval = setInterval(() => this._updateData(), intervalMinutes * 60 * 1000);
+        this._refreshInterval = setInterval(() => this._triggerDataRefresh(), intervalMinutes * 60 * 1000);
     }
 
     /**
@@ -144,7 +129,7 @@ class ToolbarButton {
         chrome.contextMenus.create({
             title: 'Reload notifications',
             contexts: ['browser_action'],
-            onclick: () => this._reload(),
+            onclick: () => this._refreshDataAndUpdateSchedule(),
         });
         const pontoonPagesMenuId = chrome.contextMenus.create({
             title: 'Pontoon pages',
@@ -271,8 +256,8 @@ class ToolbarButton {
      * Reload data and schedule further updates.
      * @private
      */
-    _reload() {
-        this._updateData();
+    _refreshDataAndUpdateSchedule() {
+        this._triggerDataRefresh();
         this._scheduleOrUpdateRefresh();
     }
 }

@@ -25,6 +25,15 @@ class TeamInfoPopup {
     }
 
     /**
+     * Load team info from storage and update the popup.
+     * @private
+     */
+    _loadTeamDataFromStorage() {
+        const dataKey = 'teamData';
+        chrome.storage.local.get(dataKey, (item) => this._displayTeamInfo(item[dataKey]));
+    }
+
+    /**
      * Create team info strings status list item from data object.
      * @param data data object
      * @returns {Element} team info strings status list item
@@ -65,14 +74,5 @@ class TeamInfoPopup {
                     .forEach((listItem) => infoList.appendChild(listItem));
             }
         });
-    }
-
-    /**
-     * Load team info from storage and update the popup.
-     * @private
-     */
-    _loadTeamDataFromStorage() {
-        const dataKey = 'teamData';
-        chrome.storage.local.get(dataKey, (item) => this._displayTeamInfo(item[dataKey]));
     }
 }

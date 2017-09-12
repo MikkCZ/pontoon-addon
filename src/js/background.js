@@ -18,7 +18,7 @@ options.get(localeTeamOptionKey, (items) => {
         documentUrlPatterns: mozillaWebsitesUrlPatterns,
         contexts: ['selection'],
         parentId: mozillaPageContextMenuParent,
-        onclick: (info, tab) => chrome.tabs.create({url: remoteLinks.getBuzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url)}),
+        onclick: (info, tab) => chrome.tabs.create({url: remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url)}),
     });
     chrome.contextMenus.create({
         title: 'Search for "%s" in Pontoon (Firefox)',

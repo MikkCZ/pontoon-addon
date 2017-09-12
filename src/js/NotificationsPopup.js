@@ -24,6 +24,15 @@ class NotificationsPopup {
     }
 
     /**
+     * Load notifications data from storage and update the popup.
+     * @private
+     */
+    _loadNotificationsFromStorage() {
+        const dataKey = 'notificationsData';
+        chrome.storage.local.get(dataKey, (item) => this._displayNotifications(item[dataKey]));
+    }
+
+    /**
      * Create notification popup list item from data object.
      * @param notification data object
      * @returns {Element} notification list item
@@ -97,14 +106,5 @@ class NotificationsPopup {
             emptyList.classList.add('hidden');
             error.classList.remove('hidden');
         }
-    }
-
-    /**
-     * Load notifications data from storage and update the popup.
-     * @private
-     */
-    _loadNotificationsFromStorage() {
-        const dataKey = 'notificationsData';
-        chrome.storage.local.get(dataKey, (item) => this._displayNotifications(item[dataKey]));
     }
 }
