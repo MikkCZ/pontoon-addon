@@ -34,4 +34,6 @@ options.get(localeTeamOptionKey, (items) => {
         parentId: mozillaPageContextMenuParent,
         onclick: (info, tab) => chrome.tabs.create({url: remotePontoon.getSearchInMozillaOrgProjectUrl(info.selectionText)}),
     });
+
+    const pageAction = new PageAction(remotePontoon);
 });

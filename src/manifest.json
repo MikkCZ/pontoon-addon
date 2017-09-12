@@ -31,12 +31,20 @@
     "default_icon": "img/pontoon-logo.svg",
     "browser_style": true
   },
+  "page_action": {
+    "browser_style": true,
+    "default_icon": {
+      "19": "img/pontoon-logo.svg",
+      "38": "img/pontoon-logo.svg"
+    }
+  },
   "background": {
     "scripts": [
       "js/Options.js",
       "js/RemotePontoon.js",
       "js/RemoteLinks.js",
       "js/ToolbarButton.js",
+      "js/PageAction.js",
       "js/background.js"
     ]
   },
