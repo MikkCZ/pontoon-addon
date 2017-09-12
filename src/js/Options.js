@@ -42,7 +42,7 @@ class Options {
     _defaults() {
         const defaults = {};
         defaults[`${this._prefix}data_update_interval`] = 15;
-        defaults[`${this._prefix}locale_team`] = navigator.language || navigator.userLanguage;
+        defaults[`${this._prefix}locale_team`] = chrome.i18n.getUILanguage();
         defaults[`${this._prefix}open_pontoon_on_button_click`] = false;
         defaults[`${this._prefix}hide_team_info_in_popup`] = false;
         return defaults;
