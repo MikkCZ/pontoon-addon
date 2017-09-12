@@ -12,7 +12,7 @@ function unreadNotificationsIconClick() {
     chrome.runtime.sendMessage({type: 'mark-all-notifications-as-read-from-page'});
 }
 
-if (unreadNotificationsIcon !== undefined) {
+if (unreadNotificationsIcon !== null) {
     unreadNotificationsIcon.addEventListener('click', unreadNotificationsIconClick);
 
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
