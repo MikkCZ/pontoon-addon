@@ -1,25 +1,25 @@
-function TeamInfoPopup(options, remotePontoon) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
+class TeamInfoPopup {
+    constructor(options, remotePontoon) {
+        this._options = options;
+        this._remotePontoon = remotePontoon;
 
-    this._init();
-}
+        this._init();
+    }
 
-TeamInfoPopup.prototype = {
-    _init: function() {
+    _init() {
         this._watchStorageChanges();
         this._loadTeamDataFromStorage();
-    },
+    }
 
-    _watchStorageChanges: function() {
+    _watchStorageChanges() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             if (changes['teamData'] !== undefined) {
                 this._loadTeamDataFromStorage(changes['teamData'].newValue);
             }
         }.bind(this));
-    },
+    }
 
-    _displayTeamInfo: function(teamData) {
+    _displayTeamInfo(teamData) {
         const optionKey = 'options.hide_team_info_in_popup';
         this._options.get([optionKey], function(item) {
             if(!item[optionKey] && teamData) {
@@ -46,12 +46,12 @@ TeamInfoPopup.prototype = {
             } else {
             }
         }.bind(this));
-    },
+    }
 
-    _loadTeamDataFromStorage: function() {
+    _loadTeamDataFromStorage() {
         const dataKey = 'teamData';
         chrome.storage.local.get(dataKey, function(item) {
             this._displayTeamInfo(item[dataKey]);
         }.bind(this));
-    },
-};
+    }
+}

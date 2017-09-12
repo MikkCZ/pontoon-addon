@@ -1,24 +1,24 @@
-function NotificationsPopup(remotePontoon) {
-    this._remotePontoon = remotePontoon;
+class NotificationsPopup {
+    constructor(remotePontoon) {
+        this._remotePontoon = remotePontoon;
 
-    this._init();
-}
+        this._init();
+    }
 
-NotificationsPopup.prototype = {
-    _init: function() {
+    _init() {
         this._watchStorageChanges();
         this._loadNotificationsFromStorage();
-    },
+    }
 
-    _watchStorageChanges: function() {
+    _watchStorageChanges() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             if (changes['nofiticationsData'] !== undefined) {
                 this._displayNotifications(changes['nofiticationsData'].newValue);
             }
         }.bind(this));
-    },
+    }
 
-    _appendNotificationToList: function(list, notification) {
+    _appendNotificationToList(list, notification) {
         const listItem = document.createElement('li');
         if (notification.actor) {
             const actorLink = document.createElement('a');
@@ -50,9 +50,9 @@ NotificationsPopup.prototype = {
             listItem.appendChild(message);
         }
         list.appendChild(listItem);
-    },
+    }
 
-    _displayNotifications: function(notificationsData) {
+    _displayNotifications(notificationsData) {
         const notificationsList = document.getElementById('notification-list');
         const fullList = document.getElementById('full-list');
         const emptyList = document.getElementById('empty-list');
@@ -80,12 +80,12 @@ NotificationsPopup.prototype = {
             emptyList.classList.add('hidden');
             error.classList.remove('hidden');
         }
-    },
+    }
 
-    _loadNotificationsFromStorage: function() {
+    _loadNotificationsFromStorage() {
         const dataKey = 'notificationsData';
         chrome.storage.local.get(dataKey, function(item) {
             this._displayNotifications(item[dataKey]);
         }.bind(this));
-    },
-};
+    }
+}

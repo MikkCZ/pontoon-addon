@@ -1,51 +1,51 @@
-function RemotePontoon(team) {
-    this._baseUrl = 'https://pontoon.mozilla.org';
-    this._notificationsUrl = this._baseUrl + '/notifications/';
-    this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
-    this._team = team;
-    this._domParser = new DOMParser();
-    this._listenToMessagesFromContent();
-    this._watchOptionsUpdates();
-}
+class RemotePontoon {
+    constructor(team) {
+        this._baseUrl = 'https://pontoon.mozilla.org';
+        this._notificationsUrl = this._baseUrl + '/notifications/';
+        this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
+        this._team = team;
+        this._domParser = new DOMParser();
+        this._listenToMessagesFromContent();
+        this._watchOptionsUpdates();
+    }
 
-RemotePontoon.prototype = {
-    getBaseUrl: function() {
+    getBaseUrl() {
         return this._baseUrl;
-    },
+    }
 
-    getNotificationsUrl: function() {
+    getNotificationsUrl() {
         return this._notificationsUrl;
-    },
+    }
 
-    getMachineryUrl: function() {
+    getMachineryUrl() {
         return `${this._baseUrl}/machinery/`;
-    },
+    }
 
-    getTeamPageUrl: function() {
+    getTeamPageUrl() {
         return `${this._baseUrl}/${this._team}/`;
-    },
+    }
 
-    getTeamBugsUrl: function() {
+    getTeamBugsUrl() {
         return `${this._baseUrl}/${this._team}/bugs/`;
-    },
+    }
 
-    getTeamProjectUrl: function(projectsUrl) {
+    getTeamProjectUrl(projectsUrl) {
         return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`);
-    },
+    }
 
-    getSearchInFirefoxProjectUrl: function(textToSearch) {
+    getSearchInFirefoxProjectUrl(textToSearch) {
         return `${this._baseUrl}/${this._team}/firefox/all-resources/?search=${textToSearch.replace(' ', '+')}`;
-    },
+    }
 
-    getSearchInMozillaOrgProjectUrl: function(textToSearch) {
+    getSearchInMozillaOrgProjectUrl(textToSearch) {
         return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${textToSearch.replace(' ', '+')}`;
-    },
+    }
 
-    getTeamCode: function() {
+    getTeamCode() {
         return this._team;
-    },
+    }
 
-    _updateNotificationsDataFromPageContent: function(notificationsPageContent) {
+    _updateNotificationsDataFromPageContent(notificationsPageContent) {
         const notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
         if (notificationsPage.querySelector('header #notifications')) {
             const notificationsDataObj = {};
@@ -67,9 +67,9 @@ RemotePontoon.prototype = {
         } else {
             chrome.storage.local.set({notificationsData: undefined});
         }
-    },
+    }
 
-    updateNotificationsData: function() {
+    updateNotificationsData() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
         }).then(function(response) {
@@ -77,18 +77,18 @@ RemotePontoon.prototype = {
         }.bind(this)).then(function(text) {
             this._updateNotificationsDataFromPageContent(text);
         }.bind(this));
-    },
+    }
 
-    _getTextWithoutChildren: function(element) {
+    _getTextWithoutChildren(element) {
         for (const child of element.childNodes) {
             if (child.nodeName === '#text' && child.textContent.trim().length > 0) {
                 return child.textContent.trim();
             }
         }
         return '';
-    },
+    }
 
-    _updateDataFromTeamPageContent: function(teamPageContent) {
+    _updateDataFromTeamPageContent(teamPageContent) {
         const teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
         if (teamPage.querySelector('#heading .legend')) {
             const teamDataObj = {};
@@ -105,17 +105,17 @@ RemotePontoon.prototype = {
         } else {
             chrome.storage.local.set({teamData: undefined});
         }
-    },
+    }
 
-    updateTeamData: function() {
+    updateTeamData() {
         fetch(this.getTeamPageUrl()).then(function(response) {
             return response.text();
         }.bind(this)).then(function(text) {
             this._updateDataFromTeamPageContent(text);
         }.bind(this));
-    },
+    }
 
-    _listenToMessagesFromContent: function() {
+    _listenToMessagesFromContent() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             switch (request.type) {
                 case 'pontoon-page-loaded':
@@ -129,17 +129,17 @@ RemotePontoon.prototype = {
                     break;
             }
         }.bind(this));
-    },
+    }
 
-    _watchOptionsUpdates: function() {
+    _watchOptionsUpdates() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             if (changes['options.locale_team'] !== undefined) {
                 this._team = changes['options.locale_team'].newValue;
             }
         }.bind(this));
-    },
+    }
 
-    markAllNotificationsAsRead: function() {
+    markAllNotificationsAsRead() {
         browser.tabs.query({
             url: this.getBaseUrl() + '/*',
         }).then(function(pontoonTabs) {
@@ -157,5 +157,5 @@ RemotePontoon.prototype = {
         request.open('GET', this._markAsReadUrl, true);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.send(null);
-    },
-};
+    }
+}

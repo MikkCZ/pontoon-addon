@@ -1,15 +1,15 @@
-function ToolbarButton(options, remotePontoon, remoteLinks) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
-    this._remoteLinks = remoteLinks;
-    this._defaultTitle = 'Pontoon notifications';
-    this._refreshInterval = undefined;
+class ToolbarButton {
+    constructor(options, remotePontoon, remoteLinks) {
+        this._options = options;
+        this._remotePontoon = remotePontoon;
+        this._remoteLinks = remoteLinks;
+        this._defaultTitle = 'Pontoon notifications';
+        this._refreshInterval = undefined;
 
-    this._init();
-}
+        this._init();
+    }
 
-ToolbarButton.prototype = {
-    _init: function() {
+    _init() {
         this._addOnClickAction();
         this._addContextMenu();
         this._watchStorageChanges();
@@ -21,36 +21,36 @@ ToolbarButton.prototype = {
                 this._updateBadge(text);
             }.bind(this));
         }.bind(this));
-    },
+    }
 
-    _updateNumberOfUnreadNotifications: function() {
+    _updateNumberOfUnreadNotifications() {
         this._updateBadge('');
         this._remotePontoon.updateNotificationsData();
-    },
+    }
 
-    _updateTeamData: function() {
+    _updateTeamData() {
         this._remotePontoon.updateTeamData();
-    },
+    }
 
-    _updateData: function() {
+    _updateData() {
         this._updateNumberOfUnreadNotifications();
         this._updateTeamData();
-    },
+    }
 
-    _scheduleOrUpdateRefreshWithInterval: function(intervalMinutes) {
+    _scheduleOrUpdateRefreshWithInterval(intervalMinutes) {
         clearInterval(this._refreshInterval);
         this._refreshInterval = setInterval(this._updateData.bind(this), intervalMinutes * 60 * 1000);
-    },
+    }
 
-    _scheduleOrUpdateRefresh: function() {
+    _scheduleOrUpdateRefresh() {
         const optionKey = 'options.data_update_interval';
         this._options.get([optionKey], function(item) {
             const intervalMinutes = parseInt(item[optionKey], 10);
             this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
         }.bind(this));
-    },
+    }
 
-    _watchStorageChanges: function() {
+    _watchStorageChanges() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             const dataKey = 'notificationsData';
             if (changes[dataKey] !== undefined) {
@@ -62,9 +62,9 @@ ToolbarButton.prototype = {
                 }
             }
         }.bind(this));
-    },
+    }
 
-    _watchOptionsUpdates: function() {
+    _watchOptionsUpdates() {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             const updateIntervalOptionKey = 'options.data_update_interval';
             if (changes[updateIntervalOptionKey] !== undefined) {
@@ -76,17 +76,17 @@ ToolbarButton.prototype = {
                 this._setPopup(!changes[openPontoonOptionKey].newValue);
             }
         }.bind(this));
-    },
+    }
 
-    _setPopup: function(showPopup) {
+    _setPopup(showPopup) {
         if (showPopup) {
             chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/popup.html')});
         } else {
             chrome.browserAction.setPopup({popup: ''});
         }
-    },
+    }
 
-    _addOnClickAction: function() {
+    _addOnClickAction() {
         chrome.browserAction.onClicked.addListener(function(tab) {
             chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
         }.bind(this));
@@ -94,9 +94,9 @@ ToolbarButton.prototype = {
         this._options.get([optionKey], function(item) {
             this._setPopup(!item[optionKey]);
         }.bind(this));
-    },
+    }
 
-    _addContextMenu: function() {
+    _addContextMenu() {
         chrome.contextMenus.create({
             title: 'Mark all Notifications as read',
             contexts: ['browser_action'],
@@ -207,9 +207,9 @@ ToolbarButton.prototype = {
             contexts: ['browser_action'],
             onclick: function() {chrome.runtime.openOptionsPage();}.bind(this),
         });
-    },
+    }
 
-    _updateBadge: function(text) {
+    _updateBadge(text) {
         chrome.browserAction.setBadgeText({text: text});
         if (text.trim().length === 0) {
             chrome.browserAction.setTitle({title: this._defaultTitle});
@@ -221,10 +221,10 @@ ToolbarButton.prototype = {
         } else {
             chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
         }
-    },
+    }
 
-    _reload: function() {
+    _reload() {
         this._updateData();
         this._scheduleOrUpdateRefresh();
-    },
-};
+    }
+}
