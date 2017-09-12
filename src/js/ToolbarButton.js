@@ -1,4 +1,11 @@
 class ToolbarButton {
+    /**
+     * Initialize instance, add button click action and context menu, load data from Pontoon and schedule data updates
+     * trigger, watch for future data and options changes.
+     * @param options
+     * @param remotePontoon
+     * @param remoteLinks
+     */
     constructor(options, remotePontoon, remoteLinks) {
         this._options = options;
         this._remotePontoon = remotePontoon;
@@ -17,25 +24,46 @@ class ToolbarButton {
         );
     }
 
+    /**
+     * Trigger notifications data update.
+     * @private
+     */
     _updateNumberOfUnreadNotifications() {
         this._updateBadge('');
         this._remotePontoon.updateNotificationsData();
     }
 
+    /**
+     * Trigger team info update.
+     * @private
+     */
     _updateTeamData() {
         this._remotePontoon.updateTeamData();
     }
 
+    /**
+     * Trigger all data update.
+     * @private
+     */
     _updateData() {
         this._updateNumberOfUnreadNotifications();
         this._updateTeamData();
     }
 
+    /**
+     * Schedule data update to repeat with given interval.
+     * @param intervalMinutes interval to update in minutes
+     * @private
+     */
     _scheduleOrUpdateRefreshWithInterval(intervalMinutes) {
         clearInterval(this._refreshInterval);
         this._refreshInterval = setInterval(() => this._updateData(), intervalMinutes * 60 * 1000);
     }
 
+    /**
+     * Schedule data update with interval from options.
+     * @private
+     */
     _scheduleOrUpdateRefresh() {
         const optionKey = 'options.data_update_interval';
         this._options.get(optionKey, (item) => {
@@ -44,6 +72,10 @@ class ToolbarButton {
         });
     }
 
+    /**
+     * Update button badge when notification data change in storage.
+     * @private
+     */
     _watchStorageChanges() {
         chrome.storage.onChanged.addListener((changes, areaName) => {
             const dataKey = 'notificationsData';
@@ -58,6 +90,10 @@ class ToolbarButton {
         });
     }
 
+    /**
+     * Keep data update interval and button click action in sync with options.
+     * @private
+     */
     _watchOptionsUpdates() {
         chrome.storage.onChanged.addListener((changes, areaName) => {
             const updateIntervalOptionKey = 'options.data_update_interval';
@@ -72,6 +108,11 @@ class ToolbarButton {
         });
     }
 
+    /**
+     * Set action for button click.
+     * @param showPopup true to display the popup, false to fallback to onClicked listener.
+     * @private
+     */
     _setPopup(showPopup) {
         if (showPopup) {
             chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/popup.html')});
@@ -80,12 +121,20 @@ class ToolbarButton {
         }
     }
 
+    /**
+     * Add button click actions.
+     * @private
+     */
     _addOnClickAction() {
         chrome.browserAction.onClicked.addListener((tab) => chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()}));
         const optionKey = 'options.open_pontoon_on_button_click';
         this._options.get(optionKey, (item) => this._setPopup(!item[optionKey]));
     }
 
+    /**
+     * Add button context menu.
+     * @private
+     */
     _addContextMenu() {
         chrome.contextMenus.create({
             title: 'Mark all Notifications as read',
@@ -199,6 +248,11 @@ class ToolbarButton {
         });
     }
 
+    /**
+     * Update button badge with the given text and corresponding color.
+     * @param text to set
+     * @private
+     */
     _updateBadge(text) {
         chrome.browserAction.setBadgeText({text: text});
         if (text.trim().length === 0) {
@@ -213,6 +267,10 @@ class ToolbarButton {
         }
     }
 
+    /**
+     * Reload data and schedule further updates.
+     * @private
+     */
     _reload() {
         this._updateData();
         this._scheduleOrUpdateRefresh();

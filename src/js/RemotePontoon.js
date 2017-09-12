@@ -1,4 +1,8 @@
 class RemotePontoon {
+    /**
+     * Initialize instance, listen to messages from tabs content and watch for options updates.
+     * @param team locale
+     */
     constructor(team) {
         this._baseUrl = 'https://pontoon.mozilla.org';
         this._notificationsUrl = this._baseUrl + '/notifications/';
@@ -9,42 +13,87 @@ class RemotePontoon {
         this._watchOptionsUpdates();
     }
 
+    /**
+     * Get home page URL.
+     * @returns {string}
+     */
     getBaseUrl() {
         return this._baseUrl;
     }
 
+    /**
+     * Get notifications page URL.
+     * @returns {string}
+     */
     getNotificationsUrl() {
         return this._notificationsUrl;
     }
 
+    /**
+     * Get machinery page URL.
+     * @returns {string}
+     */
     getMachineryUrl() {
         return `${this._baseUrl}/machinery/`;
     }
 
+    /**
+     * Get team page URL.
+     * @returns {string}
+     */
     getTeamPageUrl() {
         return `${this._baseUrl}/${this._team}/`;
     }
 
+    /**
+     * Get team bugs list URL.
+     * @returns {string}
+     */
     getTeamBugsUrl() {
         return `${this._baseUrl}/${this._team}/bugs/`;
     }
 
+    /**
+     * Get project URL for the team.
+     * @param projectsUrl general project URL
+     * @returns {string} team specific URL
+     */
     getTeamProjectUrl(projectsUrl) {
         return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`);
     }
 
+    /**
+     * Get URL to search in Firefox project.
+     * @param textToSearch
+     * @returns {string}
+     */
     getSearchInFirefoxProjectUrl(textToSearch) {
         return `${this._baseUrl}/${this._team}/firefox/all-resources/?search=${textToSearch.replace(' ', '+')}`;
     }
 
+    /**
+     * Get URL to search in Mozilla.org project.
+     * @param textToSearch
+     * @returns {string}
+     */
     getSearchInMozillaOrgProjectUrl(textToSearch) {
         return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${textToSearch.replace(' ', '+')}`;
     }
 
+    /**
+     * Get team locale code.
+     * @returns {string}
+     */
     getTeamCode() {
         return this._team;
     }
 
+    /**
+     * Extract unread notification data from notification item to data object.
+     * @param n notifications list item
+     * @returns {{}} notification data object
+     * @private
+     */
     static _createUnreadNotificationData(n) {
         const nObj = {};
         nObj.id = n.dataset.id;
@@ -60,6 +109,11 @@ class RemotePontoon {
         return nObj;
     }
 
+    /**
+     * Update notifications data in storage from notifications page content.
+     * @param notificationsPageContent
+     * @private
+     */
     _updateNotificationsDataFromPageContent(notificationsPageContent) {
         const notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
         if (notificationsPage.querySelector('header #notifications')) {
@@ -73,6 +127,9 @@ class RemotePontoon {
         }
     }
 
+    /**
+     * Update notifications data in storage.
+     */
     updateNotificationsData() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
@@ -83,6 +140,12 @@ class RemotePontoon {
         );
     }
 
+    /**
+     * Get text contained directly in the element (ignore content of children).
+     * @param element
+     * @returns {string}
+     * @private
+     */
     static _getTextFromElementWithoutChildrenText(element) {
         const text = [...element.childNodes]
             .filter((child) => child.nodeName === '#text')
@@ -95,6 +158,12 @@ class RemotePontoon {
         }
     }
 
+    /**
+     * Extract strings status data from list item to data object.
+     * @param item list item
+     * @returns {{}} string status data object
+     * @private
+     */
     static _createTeamStringStatusObject(item) {
         const iObj = {};
         iObj.status = item.getAttribute('class');
@@ -103,6 +172,11 @@ class RemotePontoon {
         return iObj;
     }
 
+    /**
+     * Update team info in storage from team page content.
+     * @param teamPageContent
+     * @private
+     */
     _updateDataFromTeamPageContent(teamPageContent) {
         const teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
         if (teamPage.querySelector('#heading .legend')) {
@@ -118,6 +192,9 @@ class RemotePontoon {
         }
     }
 
+    /**
+     * Update team info in storage.
+     */
     updateTeamData() {
         fetch(this.getTeamPageUrl()).then(
             (response) => response.text()
@@ -126,6 +203,10 @@ class RemotePontoon {
         );
     }
 
+    /**
+     * Listen to messages from tabs content to update storage data accordingly.
+     * @private
+     */
     _listenToMessagesFromContent() {
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
@@ -142,6 +223,10 @@ class RemotePontoon {
         });
     }
 
+    /**
+     * Keep the team locale in sync with the options.
+     * @private
+     */
     _watchOptionsUpdates() {
         chrome.storage.onChanged.addListener((changes, areaName) => {
             if (changes['options.locale_team'] !== undefined) {
@@ -150,6 +235,9 @@ class RemotePontoon {
         });
     }
 
+    /**
+     * Mark all notifications as read both in Pontoon and in the storage.
+     */
     markAllNotificationsAsRead() {
         browser.tabs.query({
             url: this.getBaseUrl() + '/*',

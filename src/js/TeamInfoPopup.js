@@ -1,4 +1,9 @@
 class TeamInfoPopup {
+    /**
+     * Initialize instance, load team info from storage and watch future info updates.
+     * @param options
+     * @param remotePontoon
+     */
     constructor(options, remotePontoon) {
         this._options = options;
         this._remotePontoon = remotePontoon;
@@ -7,6 +12,10 @@ class TeamInfoPopup {
         this._loadTeamDataFromStorage();
     }
 
+    /**
+     * Update team info when data change in storage.
+     * @private
+     */
     _watchStorageChanges() {
         chrome.storage.onChanged.addListener((changes, areaName) => {
             if (changes['teamData'] !== undefined) {
@@ -15,6 +24,12 @@ class TeamInfoPopup {
         });
     }
 
+    /**
+     * Create team info strings status list item from data object.
+     * @param data data object
+     * @returns {Element} team info strings status list item
+     * @private
+     */
     static _createTeamStringStatusListItem(data) {
         const listItem = document.createElement('li');
         listItem.classList.add(data.status);
@@ -29,6 +44,11 @@ class TeamInfoPopup {
         return listItem;
     }
 
+    /**
+     * Display team info from data from storage.
+     * @param teamData from storage
+     * @private
+     */
     _displayTeamInfo(teamData) {
         const optionKey = 'options.hide_team_info_in_popup';
         this._options.get(optionKey, (item) => {
@@ -47,6 +67,10 @@ class TeamInfoPopup {
         });
     }
 
+    /**
+     * Load team info from storage and update the popup.
+     * @private
+     */
     _loadTeamDataFromStorage() {
         const dataKey = 'teamData';
         chrome.storage.local.get(dataKey, (item) => this._displayTeamInfo(item[dataKey]));

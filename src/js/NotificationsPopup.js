@@ -1,4 +1,8 @@
 class NotificationsPopup {
+    /**
+     * Initialize instance, load notifications from storage and watch future data updates.
+     * @param remotePontoon
+     */
     constructor(remotePontoon) {
         this._remotePontoon = remotePontoon;
 
@@ -6,6 +10,10 @@ class NotificationsPopup {
         this._loadNotificationsFromStorage();
     }
 
+    /**
+     * Update notifications popup when notification data change in storage.
+     * @private
+     */
     _watchStorageChanges() {
         chrome.storage.onChanged.addListener((changes, areaName) => {
             const dataKey = 'notificationsData';
@@ -15,6 +23,12 @@ class NotificationsPopup {
         });
     }
 
+    /**
+     * Create notification popup list item from data object.
+     * @param notification data object
+     * @returns {Element} notification list item
+     * @private
+     */
     _createNotificationListItem(notification) {
         const listItem = document.createElement('li');
         if (notification.actor) {
@@ -49,6 +63,11 @@ class NotificationsPopup {
         return listItem;
     }
 
+    /**
+     * Display notifications from data from storage.
+     * @param notificationsData from storage
+     * @private
+     */
     _displayNotifications(notificationsData) {
         const notificationsList = document.getElementById('notification-list');
         const fullList = document.getElementById('full-list');
@@ -80,6 +99,10 @@ class NotificationsPopup {
         }
     }
 
+    /**
+     * Load notifications data from storage and update the popup.
+     * @private
+     */
     _loadNotificationsFromStorage() {
         const dataKey = 'notificationsData';
         chrome.storage.local.get(dataKey, (item) => this._displayNotifications(item[dataKey]));
