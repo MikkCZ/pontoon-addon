@@ -12,11 +12,11 @@ class ToolbarButton {
         this._watchOptionsUpdates();
         this._reload();
         // Bug 1395885 workaround
-        chrome.windows.onCreated.addListener(function() {
-            chrome.browserAction.getBadgeText({}, function(text) {
+        chrome.windows.onCreated.addListener(() => {
+            chrome.browserAction.getBadgeText({}, (text) => {
                 this._updateBadge(text);
-            }.bind(this));
-        }.bind(this));
+            });
+        });
     }
 
     _updateNumberOfUnreadNotifications() {
@@ -35,19 +35,19 @@ class ToolbarButton {
 
     _scheduleOrUpdateRefreshWithInterval(intervalMinutes) {
         clearInterval(this._refreshInterval);
-        this._refreshInterval = setInterval(this._updateData.bind(this), intervalMinutes * 60 * 1000);
+        this._refreshInterval = setInterval(() => this._updateData(), intervalMinutes * 60 * 1000);
     }
 
     _scheduleOrUpdateRefresh() {
         const optionKey = 'options.data_update_interval';
-        this._options.get([optionKey], function(item) {
+        this._options.get([optionKey], (item) => {
             const intervalMinutes = parseInt(item[optionKey], 10);
             this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
-        }.bind(this));
+        });
     }
 
     _watchStorageChanges() {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             const dataKey = 'notificationsData';
             if (changes[dataKey] !== undefined) {
                 const notificationsData = changes[dataKey].newValue;
@@ -57,11 +57,11 @@ class ToolbarButton {
                     this._updateBadge('!');
                 }
             }
-        }.bind(this));
+        });
     }
 
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             const updateIntervalOptionKey = 'options.data_update_interval';
             if (changes[updateIntervalOptionKey] !== undefined) {
                 const intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
@@ -71,7 +71,7 @@ class ToolbarButton {
             if (changes[openPontoonOptionKey]) {
                 this._setPopup(!changes[openPontoonOptionKey].newValue);
             }
-        }.bind(this));
+        });
     }
 
     _setPopup(showPopup) {
@@ -83,25 +83,25 @@ class ToolbarButton {
     }
 
     _addOnClickAction() {
-        chrome.browserAction.onClicked.addListener(function(tab) {
+        chrome.browserAction.onClicked.addListener((tab) => {
             chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
-        }.bind(this));
+        });
         const optionKey = 'options.open_pontoon_on_button_click';
-        this._options.get([optionKey], function(item) {
+        this._options.get([optionKey], (item) => {
             this._setPopup(!item[optionKey]);
-        }.bind(this));
+        });
     }
 
     _addContextMenu() {
         chrome.contextMenus.create({
             title: 'Mark all Notifications as read',
             contexts: ['browser_action'],
-            onclick: this._remotePontoon.markAllNotificationsAsRead.bind(this._remotePontoon),
+            onclick: () => this._remotePontoon.markAllNotificationsAsRead(),
         });
         chrome.contextMenus.create({
             title: 'Reload notifications',
             contexts: ['browser_action'],
-            onclick: this._reload.bind(this),
+            onclick: () => this._reload(),
         });
         const pontoonPagesMenuId = chrome.contextMenus.create({
             title: 'Pontoon pages',
@@ -111,25 +111,25 @@ class ToolbarButton {
             title: 'Home',
             contexts: ['browser_action'],
             parentId: pontoonPagesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getBaseUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remotePontoon.getBaseUrl()}),
         });
         chrome.contextMenus.create({
             title: 'Team page',
             contexts: ['browser_action'],
             parentId: pontoonPagesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()}),
         });
         chrome.contextMenus.create({
             title: 'Team bugs',
             contexts: ['browser_action'],
             parentId: pontoonPagesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getTeamBugsUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remotePontoon.getTeamBugsUrl()}),
         });
         chrome.contextMenus.create({
             title: 'Machinery',
             contexts: ['browser_action'],
             parentId: pontoonPagesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remotePontoon.getMachineryUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remotePontoon.getMachineryUrl()}),
         });
         const localizationResourcesMenuId = chrome.contextMenus.create({
             title: 'Other l10n sources',
@@ -139,19 +139,19 @@ class ToolbarButton {
             title: 'Transvision',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getTransvisionUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getTransvisionUrl()}),
         });
         chrome.contextMenus.create({
             title: 'amaGama.locamotion.org',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getAmaGamaUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getAmaGamaUrl()}),
         });
         chrome.contextMenus.create({
             title: 'Microsoft Terminology Search',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getMicrosoftTerminologySearchUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getMicrosoftTerminologySearchUrl()}),
         });
         chrome.contextMenus.create({
             type: 'separator',
@@ -162,7 +162,7 @@ class ToolbarButton {
             title: 'Cambridge Dictionary',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getCambridgeDictionaryUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getCambridgeDictionaryUrl()}),
         });
         chrome.contextMenus.create({
             type: 'separator',
@@ -173,7 +173,7 @@ class ToolbarButton {
             title: 'Mozilla Style Guides',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl()}),
         });
         chrome.contextMenus.create({
             type: 'separator',
@@ -184,24 +184,24 @@ class ToolbarButton {
             title: 'Mozilla l10n Team dashboard',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getElmoDashboardUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getElmoDashboardUrl()}),
         });
         chrome.contextMenus.create({
             title: 'Mozilla Web l10n Dashboard',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getWebDashboardUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getWebDashboardUrl()}),
         });
         chrome.contextMenus.create({
             title: 'MozillaWiki L10n Team',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: function() {chrome.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl()});}.bind(this),
+            onclick: () => chrome.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl()}),
         });
         chrome.contextMenus.create({
             title: 'Pontoon Tools options',
             contexts: ['browser_action'],
-            onclick: function() {chrome.runtime.openOptionsPage();}.bind(this),
+            onclick: () => chrome.runtime.openOptionsPage(),
         });
     }
 

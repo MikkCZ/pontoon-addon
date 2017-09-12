@@ -57,30 +57,30 @@ class Options {
     }
 
     _loadAllFromObject(object) {
-        Object.keys(object).map(function(key, index) {
+        Object.keys(object).map((key, index) => {
             if (key.startsWith(this._prefix)) {
                 const input = document.getElementById(this._getInputId(key));
                 const value = object[key];
                 this._setValue(input, value);
             }
-        }.bind(this));
+        });
     }
 
     loadAllFromLocalStorage() {
         this._loadAllFromObject(this._defaults());
-        chrome.storage.local.get(function (items) {
+        chrome.storage.local.get((items) => {
             this._loadAllFromObject(items);
-        }.bind(this));
+        });
     }
 
     get(optionIds, callback) {
-        chrome.storage.local.get(optionIds, function(items) {
+        chrome.storage.local.get(optionIds, (items) => {
             for (const optionId of optionIds) {
                 if (items[optionId] === undefined) {
                     items[optionId] = this._defaults()[optionId];
                 }
             }
             callback(items);
-        }.bind(this));
+        });
     }
 }

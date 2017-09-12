@@ -7,11 +7,11 @@ class NotificationsPopup {
     }
 
     _watchStorageChanges() {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             if (changes['nofiticationsData'] !== undefined) {
                 this._displayNotifications(changes['nofiticationsData'].newValue);
             }
-        }.bind(this));
+        });
     }
 
     _appendNotificationToList(list, notification) {
@@ -80,8 +80,8 @@ class NotificationsPopup {
 
     _loadNotificationsFromStorage() {
         const dataKey = 'notificationsData';
-        chrome.storage.local.get(dataKey, function(item) {
+        chrome.storage.local.get(dataKey, (item) => {
             this._displayNotifications(item[dataKey]);
-        }.bind(this));
+        });
     }
 }

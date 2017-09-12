@@ -8,16 +8,16 @@ class TeamInfoPopup {
     }
 
     _watchStorageChanges() {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             if (changes['teamData'] !== undefined) {
                 this._loadTeamDataFromStorage(changes['teamData'].newValue);
             }
-        }.bind(this));
+        });
     }
 
     _displayTeamInfo(teamData) {
         const optionKey = 'options.hide_team_info_in_popup';
-        this._options.get([optionKey], function(item) {
+        this._options.get([optionKey], (item) => {
             if(!item[optionKey] && teamData) {
                 document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
                 document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
@@ -41,13 +41,13 @@ class TeamInfoPopup {
                 }
             } else {
             }
-        }.bind(this));
+        });
     }
 
     _loadTeamDataFromStorage() {
         const dataKey = 'teamData';
-        chrome.storage.local.get(dataKey, function(item) {
+        chrome.storage.local.get(dataKey, (item) => {
             this._displayTeamInfo(item[dataKey]);
-        }.bind(this));
+        });
     }
 }

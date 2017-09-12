@@ -41,10 +41,10 @@ class RemoteLinks {
     }
 
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             if (changes['options.locale_team'] !== undefined) {
                 this._team = changes['options.locale_team'].newValue;
             }
-        }.bind(this));
+        });
     }
 }

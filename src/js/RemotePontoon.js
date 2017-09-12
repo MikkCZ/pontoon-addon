@@ -72,11 +72,11 @@ class RemotePontoon {
     updateNotificationsData() {
         fetch(this.getNotificationsUrl(), {
             credentials: 'include',
-        }).then(function(response) {
+        }).then((response) => {
             return response.text();
-        }.bind(this)).then(function(text) {
+        }).then((text) => {
             this._updateNotificationsDataFromPageContent(text);
-        }.bind(this));
+        });
     }
 
     _getTextWithoutChildren(element) {
@@ -108,15 +108,15 @@ class RemotePontoon {
     }
 
     updateTeamData() {
-        fetch(this.getTeamPageUrl()).then(function(response) {
+        fetch(this.getTeamPageUrl()).then((response) => {
             return response.text();
-        }.bind(this)).then(function(text) {
+        }).then((text) => {
             this._updateDataFromTeamPageContent(text);
-        }.bind(this));
+        });
     }
 
     _listenToMessagesFromContent() {
-        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
                 case 'pontoon-page-loaded':
                     this._updateNotificationsDataFromPageContent(request.value);
@@ -128,32 +128,32 @@ class RemotePontoon {
                     this.markAllNotificationsAsRead();
                     break;
             }
-        }.bind(this));
+        });
     }
 
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             if (changes['options.locale_team'] !== undefined) {
                 this._team = changes['options.locale_team'].newValue;
             }
-        }.bind(this));
+        });
     }
 
     markAllNotificationsAsRead() {
         browser.tabs.query({
             url: this.getBaseUrl() + '/*',
-        }).then(function(pontoonTabs) {
+        }).then((pontoonTabs) => {
             for (const tab of pontoonTabs) {
                 chrome.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'});
             }
-        }.bind(this));
+        });
 
         const request = new XMLHttpRequest();
-        request.addEventListener('readystatechange', function (e) {
+        request.addEventListener('readystatechange', (e) => {
             if(request.readyState === XMLHttpRequest.DONE) {
                 chrome.storage.local.set({notificationsData: {}});
             }
-        }.bind(this));
+        });
         request.open('GET', this._markAsReadUrl, true);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.send(null);
