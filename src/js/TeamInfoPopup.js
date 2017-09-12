@@ -15,6 +15,20 @@ class TeamInfoPopup {
         });
     }
 
+    static _createTeamStringStatusListItem(data) {
+        const listItem = document.createElement('li');
+        listItem.classList.add(data.status);
+        const title = document.createElement('span');
+        title.classList.add('title');
+        title.textContent = data.title;
+        listItem.appendChild(title);
+        const count = document.createElement('span');
+        count.classList.add('count');
+        count.textContent = data.count;
+        listItem.appendChild(count);
+        return listItem;
+    }
+
     _displayTeamInfo(teamData) {
         const optionKey = 'options.hide_team_info_in_popup';
         this._options.get(optionKey, (item) => {
@@ -25,21 +39,10 @@ class TeamInfoPopup {
                 while (infoList.lastChild) {
                     infoList.removeChild(infoList.lastChild);
                 }
-                for (const iKey of Object.keys(teamData.strings)) {
-                    const dataItem = teamData.strings[iKey];
-                    const listItem = document.createElement('li');
-                    listItem.classList.add(dataItem.status);
-                    const title = document.createElement('span');
-                    title.classList.add('title');
-                    title.textContent = dataItem.title;
-                    listItem.appendChild(title);
-                    const count = document.createElement('span');
-                    count.classList.add('count');
-                    count.textContent = dataItem.count;
-                    listItem.appendChild(count);
-                    infoList.appendChild(listItem);
-                }
-            } else {
+                Object.keys(teamData.strings)
+                    .map((iKey) => teamData.strings[iKey])
+                    .map((dataItem) => TeamInfoPopup._createTeamStringStatusListItem(dataItem))
+                    .forEach((listItem) => infoList.appendChild(listItem));
             }
         });
     }

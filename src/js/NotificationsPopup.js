@@ -14,7 +14,7 @@ class NotificationsPopup {
         });
     }
 
-    _appendNotificationToList(list, notification) {
+    _createNotificationListItem(notification) {
         const listItem = document.createElement('li');
         if (notification.actor) {
             const actorLink = document.createElement('a');
@@ -45,7 +45,7 @@ class NotificationsPopup {
             message.classList.add('message');
             listItem.appendChild(message);
         }
-        list.appendChild(listItem);
+        return listItem;
     }
 
     _displayNotifications(notificationsData) {
@@ -58,9 +58,10 @@ class NotificationsPopup {
             while (notificationsList.lastChild) {
                 notificationsList.removeChild(notificationsList.lastChild);
             }
-            for (const nKey of Object.keys(notificationsData).sort().reverse()) {
-                this._appendNotificationToList(notificationsList, notificationsData[nKey]);
-            }
+            Object.keys(notificationsData).sort().reverse()
+                .map((nKey) => notificationsData[nKey])
+                .map((data) => this._createNotificationListItem(data))
+                .forEach((listItem) => notificationsList.appendChild(listItem));
             notificationsList.classList.remove('hidden');
             fullList.classList.remove('hidden');
             emptyList.classList.add('hidden');

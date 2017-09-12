@@ -57,13 +57,13 @@ class Options {
     }
 
     _loadAllFromObject(object) {
-        Object.keys(object).map((key, index) => {
-            if (key.startsWith(this._prefix)) {
+        Object.keys(object)
+            .filter((key) => key.startsWith(this._prefix))
+            .forEach((key) => {
                 const input = document.getElementById(this._getInputId(key));
                 const value = object[key];
                 Options._setValueToInput(input, value);
-            }
-        });
+            });
     }
 
     loadAllFromLocalStorage() {
@@ -76,12 +76,15 @@ class Options {
             optionIds = [optionIds];
         }
         chrome.storage.local.get(optionIds, (items) => {
-            for (const optionId of optionIds) {
-                if (items[optionId] === undefined) {
-                    items[optionId] = this._defaults()[optionId];
+            const optionsWithDefaultValues = {};
+            optionIds.forEach((optionId) => {
+                if (items[optionId] !== undefined) {
+                    optionsWithDefaultValues[optionId] = items[optionId];
+                } else {
+                    optionsWithDefaultValues[optionId] = this._defaults()[optionId];
                 }
-            }
-            callback(items);
+            });
+            callback(optionsWithDefaultValues);
         });
     }
 }

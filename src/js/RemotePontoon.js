@@ -45,24 +45,28 @@ class RemotePontoon {
         return this._team;
     }
 
+    static _createUnreadNotificationData(n) {
+        const nObj = {};
+        nObj.id = n.dataset.id;
+        nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
+        if (n.querySelector('.target')) {
+            nObj.target = {text: n.querySelector('.target a').textContent, link: n.querySelector('.target a').getAttribute('href')};
+        }
+        nObj.verb = n.querySelector('.verb').textContent;
+        nObj.timeago = n.querySelector('.timeago').textContent;
+        if (n.querySelector('.message')) {
+            nObj.message = n.querySelector('.message').textContent;
+        }
+        return nObj;
+    }
+
     _updateNotificationsDataFromPageContent(notificationsPageContent) {
         const notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
         if (notificationsPage.querySelector('header #notifications')) {
             const notificationsDataObj = {};
-            for (const n of notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')) {
-                const nObj = {};
-                nObj.id = n.dataset.id;
-                nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
-                if (n.querySelector('.target')) {
-                    nObj.target = {text: n.querySelector('.target a').textContent, link: n.querySelector('.target a').getAttribute('href')};
-                }
-                nObj.verb = n.querySelector('.verb').textContent;
-                nObj.timeago = n.querySelector('.timeago').textContent;
-                if (n.querySelector('.message')) {
-                    nObj.message = n.querySelector('.message').textContent;
-                }
-                notificationsDataObj[n.dataset.id] = nObj;
-            }
+            [...notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')]
+                .map((n) => RemotePontoon._createUnreadNotificationData(n))
+                .forEach((nObj) => notificationsDataObj[nObj.id] = nObj);
             chrome.storage.local.set({notificationsData: notificationsDataObj});
         } else {
             chrome.storage.local.set({notificationsData: undefined});
@@ -80,12 +84,23 @@ class RemotePontoon {
     }
 
     static _getTextFromElementWithoutChildrenText(element) {
-        for (const child of element.childNodes) {
-            if (child.nodeName === '#text' && child.textContent.trim().length > 0) {
-                return child.textContent.trim();
-            }
+        const text = [...element.childNodes]
+            .filter((child) => child.nodeName === '#text')
+            .map((child) => child.textContent.trim())
+            .find((text) => text.length > 0);
+        if (text !== undefined) {
+            return text;
+        } else {
+            return '';
         }
-        return '';
+    }
+
+    static _createTeamStringStatusObject(item) {
+        const iObj = {};
+        iObj.status = item.getAttribute('class');
+        iObj.title = RemotePontoon._getTextFromElementWithoutChildrenText(item);
+        iObj.count = item.querySelector('.value').textContent;
+        return iObj;
     }
 
     _updateDataFromTeamPageContent(teamPageContent) {
@@ -94,13 +109,9 @@ class RemotePontoon {
             const teamDataObj = {};
             teamDataObj.teamName = teamPage.querySelector('h1 .None').textContent;
             teamDataObj.strings = {};
-            for (const item of teamPage.querySelectorAll('#heading .legend li')) {
-                const iObj = {};
-                iObj.status = item.getAttribute('class');
-                iObj.title = RemotePontoon._getTextFromElementWithoutChildrenText(item);
-                iObj.count = item.querySelector('.value').textContent;
-                teamDataObj.strings[iObj.status] = iObj;
-            }
+            [...teamPage.querySelectorAll('#heading .legend li')]
+                .map((item) => RemotePontoon._createTeamStringStatusObject(item))
+                .forEach((iObj) => teamDataObj.strings[iObj.status] = iObj);
             chrome.storage.local.set({teamData: teamDataObj});
         } else {
             chrome.storage.local.set({teamData: undefined});
@@ -143,9 +154,9 @@ class RemotePontoon {
         browser.tabs.query({
             url: this.getBaseUrl() + '/*',
         }).then((pontoonTabs) => {
-            for (const tab of pontoonTabs) {
-                chrome.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'});
-            }
+            pontoonTabs.forEach((tab) =>
+                chrome.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
+            );
         });
 
         const request = new XMLHttpRequest();
