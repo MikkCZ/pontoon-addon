@@ -42,11 +42,23 @@ class PageAction {
     _getPontoonProjectUrlForPageUrl(pageUrl) {
         const tmpLink = document.createElement('a');
         tmpLink.href = pageUrl;
-        // TODO: refactor this elsewhere + add mapping for all projects
+        // TODO: refactor this elsewhere
         const toProjectMap = new Map([
-            ['support.mozilla.org', 'sumo'],
+            ['addons.mozilla.org', 'amo'],
+            ['www.changecopyright.org', 'copyright-campaign'],
+            ['accounts.firefox.com', 'firefox-accounts'],
+            ['screenshots.firefox.com', 'firefox-screenshots'],
+            ['donate.mozilla.org', 'fundraising'],
+            ['developer.mozilla.org', 'mdn'],
+            ['advocacy.mozilla.org', 'mozilla-advocacy'],
+            ['learning.mozilla.org', 'mozilla-learning-network'],
             ['www.mozilla.org', 'mozillaorg'],
-            ['www-dev.allizom.org', 'mozillaorg']
+            ['www-dev.allizom.org', 'mozillaorg'],
+            ['mozillians.org', 'mozillians'],
+            ['support.mozilla.org', 'sumo'],
+            ['send.firefox.com', 'test-pilot-firefox-send'],
+            ['testpilot.firefox.com', 'test-pilot-website'],
+            ['thimble.mozilla.org', 'thimble']
         ]);
         const project = toProjectMap.get(tmpLink.hostname);
         if (project) {
