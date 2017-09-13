@@ -6,6 +6,6 @@ const options = new Options();
 options.loadAllFromLocalStorage();
 
 // Watch for input changes and store the new values.
-document.querySelectorAll('input').forEach((input) =>
+document.querySelectorAll('input[data-option-id]').forEach((input) =>
     input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
 );

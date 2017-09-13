@@ -11,7 +11,7 @@ class Options {
      * @private
      */
     _getOptionId(input) {
-        return this._prefix + input.id;
+        return this._prefix + input.dataset.optionId;
     }
 
     /**
@@ -109,7 +109,7 @@ class Options {
         Object.keys(object)
             .filter((key) => key.startsWith(this._prefix))
             .forEach((key) => {
-                const input = document.getElementById(this._getInputId(key));
+                const input = document.querySelector(`input[data-option-id=${this._getInputId(key)}]`);
                 const value = object[key];
                 Options._setValueToInput(input, value);
             });
