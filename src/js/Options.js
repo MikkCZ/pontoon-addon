@@ -31,7 +31,7 @@ class Options {
      * @private
      */
     static _isValidInput(input) {
-        return (typeof input.nodeName.toLowerCase() === 'select') || (input.parentElement.querySelector(':valid') === input);
+        return (input.nodeName.toLowerCase() === 'select') || (input.parentElement.querySelector(':valid') === input);
     }
 
     /**
