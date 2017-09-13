@@ -69,11 +69,20 @@ class NotificationsPopup {
             message.classList.add('message');
             listItem.appendChild(message);
         }
-        if (!notification.target) {
+        if (listItem.querySelectorAll('a').length === 1) {
+            const linkUrl  = listItem.querySelector('a').href;
             listItem.querySelectorAll('*').forEach((child) => {
-                child.addEventListener('click', (e) => chrome.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.link)}));
+                child.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    chrome.tabs.create({url: linkUrl});
+                });
             });
-            listItem.addEventListener('click', (e) => chrome.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.link)}));
+            listItem.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                chrome.tabs.create({url: linkUrl});
+            });
             listItem.classList.add('pointer');
         }
         return listItem;
