@@ -41,5 +41,5 @@ options.get(localeTeamOptionKey, (items) => {
         });
     });
 
-    const pageAction = new PageAction(remotePontoon);
+    const pageAction = new PageAction(options, remotePontoon);
 });

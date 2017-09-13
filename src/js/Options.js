@@ -83,7 +83,8 @@ class Options {
         defaults[`${this._prefix}data_update_interval`] = 15;
         defaults[`${this._prefix}display_toolbar_button_badge`] = true;
         defaults[`${this._prefix}toolbar_button_action`] = 'popup';
-        defaults[`${this._prefix}locale_team`] = chrome.i18n.getUILanguage();
+        defaults[`${this._prefix}display_page_action`] = true;
+        defaults[`${this._prefix}page_action_item_action`] = 'translation-view';
         return defaults;
     }
 
