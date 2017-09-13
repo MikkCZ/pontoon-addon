@@ -63,21 +63,22 @@ class RemotePontoon {
     }
 
     /**
+     * Get URL to search text in project.
+     * @param projectSlug
+     * @param textToSearch
+     * @returns {string}
+     */
+    getSearchInProjectUrl(projectSlug, textToSearch) {
+        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(' ', '+')}`;
+    }
+
+    /**
      * Get URL to search in Firefox project.
      * @param textToSearch
      * @returns {string}
      */
     getSearchInFirefoxProjectUrl(textToSearch) {
-        return `${this._baseUrl}/${this._team}/firefox/all-resources/?search=${textToSearch.replace(' ', '+')}`;
-    }
-
-    /**
-     * Get URL to search in Mozilla.org project.
-     * @param textToSearch
-     * @returns {string}
-     */
-    getSearchInMozillaOrgProjectUrl(textToSearch) {
-        return `${this._baseUrl}/${this._team}/mozillaorg/all-resources/?search=${textToSearch.replace(' ', '+')}`;
+        return this.getSearchInProjectUrl('firefox', textToSearch);
     }
 
     /**
@@ -88,6 +89,10 @@ class RemotePontoon {
         return this._team;
     }
 
+    /**
+     * Get key-value array with all projects.
+     * @returns [[string,object]] array of arrays, where each contains domain string and object with project slug and name
+     */
     getDomainToProjectKvArray() {
         return [
             ['addons.mozilla.org', {slug: 'amo', name: 'AMO'}],
@@ -108,6 +113,10 @@ class RemotePontoon {
         ];
     }
 
+    /**
+     * Get map from project domains to project data object containing project slug and name.
+     * @returns {Map} from domain to project data
+     */
     getDomainToProjectMap() {
         return new Map(this.getDomainToProjectKvArray());
     }

@@ -7,7 +7,10 @@ options.get(localeTeamOptionKey, (items) => {
     const remoteLinks = new RemoteLinks(items[localeTeamOptionKey]);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
 
-    const mozillaWebsitesUrlPatterns = ['*://*.mozilla.org/*', '*://*.firefox.com/*', '*://mozillians.org/*', '*://*.allizom.org/*'];
+    const domainToProjectKvArray = remotePontoon.getDomainToProjectKvArray();
+    const mozillaWebsitesUrlPatterns = domainToProjectKvArray
+        .map((kvArray) => kvArray[0])
+        .map((domain) => `https://${domain}/*`);
     const mozillaPageContextMenuParent = chrome.contextMenus.create({
         title: 'Pontoon Tools',
         documentUrlPatterns: mozillaWebsitesUrlPatterns,
@@ -22,17 +25,20 @@ options.get(localeTeamOptionKey, (items) => {
     });
     chrome.contextMenus.create({
         title: 'Search for "%s" in Pontoon (Firefox)',
-        documentUrlPatterns: ['*://support.mozilla.org/*'],
+        documentUrlPatterns: ['https://support.mozilla.org/*'],
         contexts: ['selection'],
         parentId: mozillaPageContextMenuParent,
         onclick: (info, tab) => chrome.tabs.create({url: remotePontoon.getSearchInFirefoxProjectUrl(info.selectionText)}),
     });
-    chrome.contextMenus.create({
-        title: 'Search for "%s" in Pontoon (Mozilla.org)',
-        documentUrlPatterns: ['*://www.mozilla.org/*', '*://www-dev.allizom.org/*'],
-        contexts: ['selection'],
-        parentId: mozillaPageContextMenuParent,
-        onclick: (info, tab) => chrome.tabs.create({url: remotePontoon.getSearchInMozillaOrgProjectUrl(info.selectionText)}),
+    domainToProjectKvArray.forEach((kvArray) => {
+        const [domain, projectData] = kvArray;
+        chrome.contextMenus.create({
+            title: `Search for "%s" in Pontoon (${projectData.name})`,
+            documentUrlPatterns: [`https://${domain}/*`],
+            contexts: ['selection'],
+            parentId: mozillaPageContextMenuParent,
+            onclick: (info, tab) => chrome.tabs.create({url: remotePontoon.getSearchInProjectUrl(projectData.slug, info.selectionText)}),
+        });
     });
 
     const pageAction = new PageAction(remotePontoon);
