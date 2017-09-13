@@ -13,8 +13,12 @@
   </section>
   <section>
     <h3>Toolbar button</h3>
-    <div><input id="open_pontoon_on_button_click" data-option-id="open_pontoon_on_button_click" type="checkbox"> <label for="open_pontoon_on_button_click">When clicking the toolbar button, open Pontoon instead of the popup</label></div>
-    <div><input id="hide_team_info_in_popup" data-option-id="hide_team_info_in_popup" type="checkbox"> <label for="hide_team_info_in_popup">Do not show team information in the popup</label></div>
+    <div><input id="display_toolbar_button_badge" data-option-id="display_toolbar_button_badge" type="checkbox"> <label for="display_toolbar_button_badge">Show number of unread notifications in the toolbar button</label></div>
+    <div><label for="toolbar_button_action">When you click the toolbar button</label> <select id="toolbar_button_action" data-option-id="toolbar_button_action">
+      <option value="popup">open popup with notifications and team information</option>
+      <option value="team-page">open Pontoon team page (selected above)</option>
+      <option value="home-page">open Pontoon home page (from Pontoon settings)</option>
+    </select></div>
   </section>
   <section>
     <h3>Page action</h3>

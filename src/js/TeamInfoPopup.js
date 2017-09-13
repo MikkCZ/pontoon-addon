@@ -59,20 +59,17 @@ class TeamInfoPopup {
      * @private
      */
     _displayTeamInfo(teamData) {
-        const optionKey = 'options.hide_team_info_in_popup';
-        this._options.get(optionKey, (item) => {
-            if(!item[optionKey] && teamData) {
-                document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
-                document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
-                const infoList = document.querySelector('#team-info ul');
-                while (infoList.lastChild) {
-                    infoList.removeChild(infoList.lastChild);
-                }
-                Object.keys(teamData.strings)
-                    .map((iKey) => teamData.strings[iKey])
-                    .map((dataItem) => TeamInfoPopup._createTeamStringStatusListItem(dataItem))
-                    .forEach((listItem) => infoList.appendChild(listItem));
+        if(teamData) {
+            document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
+            document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
+            const infoList = document.querySelector('#team-info ul');
+            while (infoList.lastChild) {
+                infoList.removeChild(infoList.lastChild);
             }
-        });
+            Object.keys(teamData.strings)
+                .map((iKey) => teamData.strings[iKey])
+                .map((dataItem) => TeamInfoPopup._createTeamStringStatusListItem(dataItem))
+                .forEach((listItem) => infoList.appendChild(listItem));
+        }
     }
 }

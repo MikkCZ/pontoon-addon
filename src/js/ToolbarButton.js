@@ -12,7 +12,10 @@ class ToolbarButton {
         this._remoteLinks = remoteLinks;
         this._defaultTitle = 'Pontoon notifications';
         this._refreshInterval = undefined;
+        this._badgeText = '';
 
+        this._openPontoonTeamPage = () => chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
+        this._openPontoonHomePage= () => chrome.tabs.create({url: this._remotePontoon.getBaseUrl()});
         this._addOnClickAction();
         this._addContextMenu();
         this._watchStorageChanges();
@@ -29,7 +32,7 @@ class ToolbarButton {
      * @private
      */
     _triggerDataRefresh() {
-        this._updateBadge('');
+        this._hideBadge();
         this._remotePontoon.updateNotificationsData();
 
         this._remotePontoon.updateTeamData();
@@ -86,23 +89,40 @@ class ToolbarButton {
                 const intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
                 this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
             }
-            const openPontoonOptionKey = 'options.open_pontoon_on_button_click';
-            if (changes[openPontoonOptionKey]) {
-                this._setPopup(!changes[openPontoonOptionKey].newValue);
+            const buttonActionOption = 'options.toolbar_button_action';
+            if (changes[buttonActionOption]) {
+                this._setButtonAction(changes[buttonActionOption].newValue);
+            }
+            const displayBadgeOption = 'options.display_toolbar_button_badge';
+            if (changes[displayBadgeOption]) {
+                if (changes[displayBadgeOption].newValue) {
+                    this._updateBadge(this._badgeText);
+                } else {
+                    this._hideBadge();
+                }
             }
         });
     }
 
     /**
      * Set action for button click.
-     * @param showPopup true to display the popup, false to fallback to onClicked listener.
+     * @param buttonAction from options
      * @private
      */
-    _setPopup(showPopup) {
-        if (showPopup) {
-            chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/popup.html')});
-        } else {
-            chrome.browserAction.setPopup({popup: ''});
+    _setButtonAction(buttonAction) {
+        chrome.browserAction.setPopup({popup: ''});
+        chrome.browserAction.onClicked.removeListener(this._openPontoonTeamPage);
+        chrome.browserAction.onClicked.removeListener(this._openPontoonHomePage);
+        switch (buttonAction) {
+            case 'popup':
+                chrome.browserAction.setPopup({popup: chrome.extension.getURL('html/popup.html')});
+                break;
+            case 'team-page':
+                chrome.browserAction.onClicked.addListener(this._openPontoonTeamPage);
+                break;
+            case 'home-page':
+                chrome.browserAction.onClicked.addListener(this._openPontoonHomePage);
+                break;
         }
     }
 
@@ -111,9 +131,8 @@ class ToolbarButton {
      * @private
      */
     _addOnClickAction() {
-        chrome.browserAction.onClicked.addListener((tab) => chrome.tabs.create({url: this._remotePontoon.getTeamPageUrl()}));
-        const optionKey = 'options.open_pontoon_on_button_click';
-        this._options.get(optionKey, (item) => this._setPopup(!item[optionKey]));
+        const buttonActionOption = 'options.toolbar_button_action';
+        this._options.get(buttonActionOption, (item) => this._setButtonAction(item[buttonActionOption]));
     }
 
     /**
@@ -239,17 +258,32 @@ class ToolbarButton {
      * @private
      */
     _updateBadge(text) {
-        chrome.browserAction.setBadgeText({text: text});
-        if (text.trim().length === 0) {
-            chrome.browserAction.setTitle({title: this._defaultTitle});
-        } else {
-            chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
+        if (text.trim().length > 0) {
+            this._badgeText = text;
         }
-        if (text !== '0' && text !== '') {
-            chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
-        } else {
-            chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
-        }
+        const optionKey = 'options.display_toolbar_button_badge';
+        this._options.get(optionKey, (item) => {
+            if (item[optionKey]) {
+                chrome.browserAction.setBadgeText({text: text});
+                chrome.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
+                if (text !== '0') {
+                    chrome.browserAction.setBadgeBackgroundColor({color: '#F36'});
+                } else {
+                    chrome.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
+                }
+            } else {
+                this._hideBadge();
+            }
+        });
+    }
+
+    /**
+     * Hide the button badge.
+     * @private
+     */
+    _hideBadge() {
+        chrome.browserAction.setBadgeText({text: ''});
+        chrome.browserAction.setTitle({title: this._defaultTitle});
     }
 
     /**

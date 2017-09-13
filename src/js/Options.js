@@ -79,10 +79,11 @@ class Options {
      */
     _defaults() {
         const defaults = {};
-        defaults[`${this._prefix}data_update_interval`] = 15;
         defaults[`${this._prefix}locale_team`] = chrome.i18n.getUILanguage();
-        defaults[`${this._prefix}open_pontoon_on_button_click`] = false;
-        defaults[`${this._prefix}hide_team_info_in_popup`] = false;
+        defaults[`${this._prefix}data_update_interval`] = 15;
+        defaults[`${this._prefix}display_toolbar_button_badge`] = true;
+        defaults[`${this._prefix}toolbar_button_action`] = 'popup';
+        defaults[`${this._prefix}locale_team`] = chrome.i18n.getUILanguage();
         return defaults;
     }
 
@@ -111,7 +112,9 @@ class Options {
             .forEach((key) => {
                 const input = document.querySelector(`[data-option-id=${this._getInputId(key)}]`);
                 const value = object[key];
-                Options._setValueToInput(input, value);
+                if (input) {
+                    Options._setValueToInput(input, value);
+                }
             });
     }
 
