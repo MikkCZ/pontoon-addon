@@ -12,6 +12,16 @@ teamsInPontoon
     })
     .forEach((option) => localeTeamSelect.appendChild(option));
 
+const dataUpdateSelect = document.querySelector('select[data-option-id=data_update_interval]');
+[5, 15, 30, 60, 120]
+    .map((interval) => {
+        const option = document.createElement('option');
+        option.value = interval;
+        option.text = interval;
+        return option;
+    })
+    .forEach((option) => dataUpdateSelect.appendChild(option));
+
 const options = new Options();
 
 // Load options values from storage.
