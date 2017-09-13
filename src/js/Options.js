@@ -144,4 +144,8 @@ class Options {
             callback(optionsWithDefaultValues);
         });
     }
+
+    resetDefaults(callback) {
+        chrome.storage.local.set(this._defaults(), callback);
+    }
 }
