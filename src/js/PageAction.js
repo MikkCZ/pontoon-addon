@@ -7,7 +7,17 @@ class PageAction {
         this._remotePontoon = remotePontoon;
         this._addClickAction();
         this._watchTabsUpdates();
-        // TODO: show page action for existing tabs (necessary for extension install/update/reload)
+
+        browser.tabs.query({})
+            .then((tabs) => {
+                tabs.forEach((tab) => {
+                    const projectData = this._getPontoonProjectForPageUrl(tab.url);
+                    if (projectData) {
+                        chrome.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
+                        chrome.pageAction.show(tab.id);
+                    }
+                });
+            });
     }
 
     /**
