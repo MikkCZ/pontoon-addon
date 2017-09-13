@@ -88,6 +88,30 @@ class RemotePontoon {
         return this._team;
     }
 
+    getDomainToProjectKvArray() {
+        return [
+            ['addons.mozilla.org', {slug: 'amo', name: 'AMO'}],
+            ['www.changecopyright.org', {slug: 'copyright-campaign', name: 'EU Copyright campaign'}],
+            ['accounts.firefox.com', {slug: 'firefox-accounts', name: 'Firefox Accounts'}],
+            ['screenshots.firefox.com', {slug: 'firefox-screenshots', name: 'Firefox Screenshots'}],
+            ['donate.mozilla.org', {slug: 'fundraising', name: 'Fundraising'}],
+            ['developer.mozilla.org', {slug: 'mdn', name: 'MDN'}],
+            ['advocacy.mozilla.org', {slug: 'mozilla-advocacy', name: 'Mozilla Advocacy'}],
+            ['learning.mozilla.org', {slug: 'mozilla-learning-network', name: 'Mozilla Learning Network'}],
+            ['www.mozilla.org', {slug: 'mozillaorg', name: 'Mozilla.org'}],
+            ['www-dev.allizom.org', {slug: 'mozillaorg', name: 'Mozilla.org'}],
+            ['mozillians.org', {slug: 'mozillians', name: 'Mozillians'}],
+            ['support.mozilla.org', {slug: 'sumo', name: 'SUMO'}],
+            ['send.firefox.com', {slug: 'test-pilot-firefox-send', name: 'Test Pilot: Firefox Send'}],
+            ['testpilot.firefox.com', {slug: 'test-pilot-website', name: 'Test Pilot: Website'}],
+            ['thimble.mozilla.org', {slug: 'thimble', name: 'Thimble'}]
+        ];
+    }
+
+    getDomainToProjectMap() {
+        return new Map(this.getDomainToProjectKvArray());
+    }
+
     /**
      * Extract unread notification data from notification item to data object.
      * @param n notifications list item
