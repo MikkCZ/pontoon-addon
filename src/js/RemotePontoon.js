@@ -69,7 +69,7 @@ class RemotePontoon {
      * @returns {string}
      */
     getSearchInProjectUrl(projectSlug, textToSearch) {
-        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(' ', '+')}`;
+        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(/ /g, '+')}`;
     }
 
     /**
