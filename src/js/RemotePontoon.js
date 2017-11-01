@@ -2,12 +2,14 @@ class RemotePontoon {
     /**
      * Initialize instance, listen to messages from tabs content and watch for options updates.
      * @param team locale
+     * @param options
      */
-    constructor(team) {
+    constructor(team, options) {
         this._baseUrl = 'https://pontoon.mozilla.org';
         this._notificationsUrl = this._baseUrl + '/notifications/';
         this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
+        this._options = options;
         this._domParser = new DOMParser();
         this._listenToMessagesFromContent();
         this._watchOptionsUpdates();
@@ -269,11 +271,9 @@ class RemotePontoon {
      * @private
      */
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (changes['options.locale_team'] !== undefined) {
-                this._team = changes['options.locale_team'].newValue;
-            }
-        });
+        this._options.subscribeToOptionChange('locale_team', (change) =>
+            this._team = change.newValue
+        );
     }
 
     /**

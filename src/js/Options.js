@@ -136,16 +136,30 @@ class Options {
         if (typeof optionIds === 'string') {
             optionIds = [optionIds];
         }
-        chrome.storage.local.get(optionIds, (items) => {
+        chrome.storage.local.get(optionIds.map((optionId) => this._prefix+optionId), (items) => {
             const optionsWithDefaultValues = {};
             optionIds.forEach((optionId) => {
-                if (items[optionId] !== undefined) {
-                    optionsWithDefaultValues[optionId] = items[optionId];
+                const realOptionId = this._prefix+optionId;
+                if (items[realOptionId] !== undefined) {
+                    optionsWithDefaultValues[optionId] = items[realOptionId];
                 } else {
-                    optionsWithDefaultValues[optionId] = this._defaults()[optionId];
+                    optionsWithDefaultValues[optionId] = this._defaults()[realOptionId];
                 }
             });
             callback(optionsWithDefaultValues);
+        });
+    }
+
+    /**
+     * Subscribe to be notified about options changes.
+     * @param optionId to watch changes
+     * @param callback function to call with the change object
+     */
+    subscribeToOptionChange(optionId, callback) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
+            if (changes[this._prefix+optionId]) {
+                callback(changes[this._prefix+optionId]);
+            }
         });
     }
 

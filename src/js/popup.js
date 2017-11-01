@@ -33,8 +33,8 @@ function withRemotePontoon(remotePontoon) {
     const teamInfoPopup = new TeamInfoPopup(options, remotePontoon);
 }
 
-const localeTeamOptionKey = 'options.locale_team';
+const localeTeamOptionKey = 'locale_team';
 options.get(localeTeamOptionKey, (items) => {
-    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
+    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey], options);
     withRemotePontoon(remotePontoon);
 });

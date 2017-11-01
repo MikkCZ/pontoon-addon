@@ -49,7 +49,7 @@ class ToolbarButton {
      * @private
      */
     _scheduleOrUpdateRefresh() {
-        const optionKey = 'options.data_update_interval';
+        const optionKey = 'data_update_interval';
         this._options.get(optionKey, (item) => {
             const intervalMinutes = parseInt(item[optionKey], 10);
             this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
@@ -79,23 +79,18 @@ class ToolbarButton {
      * @private
      */
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            const updateIntervalOptionKey = 'options.data_update_interval';
-            if (changes[updateIntervalOptionKey] !== undefined) {
-                const intervalMinutes = parseInt(changes[updateIntervalOptionKey].newValue, 10);
-                this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
-            }
-            const buttonActionOption = 'options.toolbar_button_action';
-            if (changes[buttonActionOption]) {
-                this._setButtonAction(changes[buttonActionOption].newValue);
-            }
-            const displayBadgeOption = 'options.display_toolbar_button_badge';
-            if (changes[displayBadgeOption]) {
-                if (changes[displayBadgeOption].newValue) {
-                    this._updateBadge(this._badgeText);
-                } else {
-                    this._hideBadge();
-                }
+        this._options.subscribeToOptionChange('data_update_interval', (change) => {
+            const intervalMinutes = parseInt(change.newValue, 10);
+            this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
+        });
+        this._options.subscribeToOptionChange('toolbar_button_action', (change) =>
+            this._setButtonAction(change.newValue)
+        );
+        this._options.subscribeToOptionChange('display_toolbar_button_badge', (change) => {
+            if (change.newValue) {
+                this._updateBadge(this._badgeText);
+            } else {
+                this._hideBadge();
             }
         });
     }
@@ -127,7 +122,7 @@ class ToolbarButton {
      * @private
      */
     _addOnClickAction() {
-        const buttonActionOption = 'options.toolbar_button_action';
+        const buttonActionOption = 'toolbar_button_action';
         this._options.get(buttonActionOption, (item) => this._setButtonAction(item[buttonActionOption]));
     }
 
@@ -257,7 +252,7 @@ class ToolbarButton {
         if (text.trim().length > 0) {
             this._badgeText = text;
         }
-        const optionKey = 'options.display_toolbar_button_badge';
+        const optionKey = 'display_toolbar_button_badge';
         this._options.get(optionKey, (item) => {
             if (item[optionKey]) {
                 chrome.browserAction.setBadgeText({text: text});

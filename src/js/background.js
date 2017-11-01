@@ -1,10 +1,10 @@
 'use strict';
 
 const options = new Options();
-const localeTeamOptionKey = 'options.locale_team';
+const localeTeamOptionKey = 'locale_team';
 options.get(localeTeamOptionKey, (items) => {
-    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
-    const remoteLinks = new RemoteLinks(items[localeTeamOptionKey]);
+    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey], options);
+    const remoteLinks = new RemoteLinks(items[localeTeamOptionKey], options);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
 
     const domainToProjectKvArray = remotePontoon.getDomainToProjectKvArray();

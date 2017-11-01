@@ -21,16 +21,12 @@ class PageAction {
      * @private
      */
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            const actionOption = 'options.page_action_item_action';
-            if (changes[actionOption]) {
-                this._setClickAction(changes[actionOption].newValue);
-            }
-            const displayPageAction = 'options.display_page_action';
-            if (changes[displayPageAction]) {
-                this._refreshAllTabsPageAction(changes[displayPageAction].newValue);
-            }
-        });
+        this._options.subscribeToOptionChange('page_action_item_action', (change) =>
+            this._setClickAction(change.newValue)
+        );
+        this._options.subscribeToOptionChange('display_page_action', (change) =>
+            this._refreshAllTabsPageAction(change.newValue)
+        );
     }
 
     /**
@@ -38,7 +34,7 @@ class PageAction {
      * @private
      */
     _addOnClickAction() {
-        const actionOption = 'options.page_action_item_action';
+        const actionOption = 'page_action_item_action';
         this._options.get(actionOption, (item) => this._setClickAction(item[actionOption]));
     }
 
@@ -81,7 +77,7 @@ class PageAction {
         browser.tabs.query({})
             .then((tabs) => {
                 if (show === undefined) {
-                    const optionKey = 'options.display_page_action';
+                    const optionKey = 'display_page_action';
                     this._options.get(optionKey, (item) => {
                         tabs.forEach((tab) => this._showPageActionForTab(tab, item[optionKey]));
                     });
@@ -102,7 +98,7 @@ class PageAction {
         if (projectData) {
             chrome.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             if (show === undefined) {
-                const optionKey = 'options.display_page_action';
+                const optionKey = 'display_page_action';
                 this._options.get(optionKey, (item) => {
                     if (item[optionKey]) {
                         this._activatePageAction(tab.id);

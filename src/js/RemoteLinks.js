@@ -2,9 +2,11 @@ class RemoteLinks {
     /**
      * Initialize instance and watch for options updates.
      * @param team locale
+     * @param options
      */
-    constructor(team) {
+    constructor(team, options) {
         this._team = team;
+        this._options = options;
         this._watchOptionsUpdates();
     }
 
@@ -87,10 +89,8 @@ class RemoteLinks {
      * @private
      */
     _watchOptionsUpdates() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (changes['options.locale_team'] !== undefined) {
-                this._team = changes['options.locale_team'].newValue;
-            }
-        });
+        this._options.subscribeToOptionChange('locale_team', (change) =>
+            this._team = change.newValue
+        );
     }
 }
