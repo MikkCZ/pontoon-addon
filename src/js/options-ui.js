@@ -38,3 +38,21 @@ options.loadAllFromLocalStorage();
 document.querySelectorAll('[data-option-id]').forEach((input) =>
     input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
 );
+
+function withRemotePontoon(remotePontoon) {
+    // Load locale from Pontoon
+    document.getElementById('load_locale_team').addEventListener('click', () =>
+        remotePontoon.getTeamFromPontoon(
+            (localeTeam) => {
+                localeTeamSelect.value = localeTeam;
+                options.updateOptionFromInput(localeTeamSelect);
+            }
+        )
+    );
+}
+
+const localeTeamOptionKey = 'options.locale_team';
+options.get(localeTeamOptionKey, (items) => {
+  const remotePontoon = new RemotePontoon(items[localeTeamOptionKey]);
+  withRemotePontoon(remotePontoon);
+});

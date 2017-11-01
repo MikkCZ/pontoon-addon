@@ -30,6 +30,14 @@ class RemotePontoon {
     }
 
     /**
+     * Get settings page URL.
+     * @returns {string}
+     */
+    getSettingsUrl() {
+        return `${this._baseUrl}/settings/`;
+    }
+
+    /**
      * Get machinery page URL.
      * @returns {string}
      */
@@ -289,5 +297,19 @@ class RemotePontoon {
         request.open('GET', this._markAsReadUrl, true);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.send(null);
+    }
+
+    /**
+     * Get locale team selected in Pontoon preferences.
+     * @param callback function to call with the locale code as string (fallback to current value if cannot be read from Pontoon)
+     */
+    getTeamFromPontoon(callback) {
+        fetch(this.getSettingsUrl(), {
+            credentials: 'include',
+        }).then(
+            (response) => response.text()
+        ).then(
+            (text) => callback(this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language').dataset['code'] || this._team)
+        );
     }
 }

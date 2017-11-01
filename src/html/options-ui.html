@@ -8,7 +8,7 @@
 <body>
   <section>
     <h3>General</h3>
-    <div><label for="locale_team">Use this locale team as preferred</label> <select id="locale_team" data-option-id="locale_team"></select></div>
+    <div><label for="locale_team">Use this locale team as preferred</label> <select id="locale_team" data-option-id="locale_team"></select> <button id="load_locale_team">Load from Pontoon</button></div>
     <div><label for="data_update_interval">Update data from Pontoon every</label> <select id="data_update_interval" data-option-id="data_update_interval"></select> <label for="data_update_interval">minutes</label></div>
   </section>
   <section>
@@ -33,6 +33,7 @@
     <button id="reset_defaults">Reset defaults</button>
   </section>
   <script src="../js/Options.js"></script>
+  <script src="../js/RemotePontoon.js"></script>
   <script src="../js/options-ui.js"></script>
 </body>
 </html>
