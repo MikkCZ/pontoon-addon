@@ -1,11 +1,12 @@
 class RemotePontoon {
     /**
      * Initialize instance, listen to messages from tabs content and watch for options updates.
+     * @param baseUrl Pontoon instance base URL
      * @param team locale
      * @param options
      */
-    constructor(team, options) {
-        this._baseUrl = 'https://pontoon.mozilla.org';
+    constructor(baseUrl, team, options) {
+        this._baseUrl = baseUrl;
         this._notificationsUrl = this._baseUrl + '/notifications/';
         this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
@@ -271,6 +272,9 @@ class RemotePontoon {
      * @private
      */
     _watchOptionsUpdates() {
+        this._options.subscribeToOptionChange('pontoon_base_url', (change) =>
+            this._baseUrl = change.newValue
+        );
         this._options.subscribeToOptionChange('locale_team', (change) =>
             this._team = change.newValue
         );

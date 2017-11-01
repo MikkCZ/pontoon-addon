@@ -51,8 +51,19 @@ function withRemotePontoon(remotePontoon) {
     );
 }
 
+// Allow remote Pontoon URL change
+document.getElementById('edit_pontoon_base_url').addEventListener('click', () => {
+    if (window.confirm('Changing Pontoon URL is for developers only. I know what I am doing!')) {
+        document.getElementById('pontoon_base_url').removeAttribute('disabled');
+        document.getElementById('pontoon_base_url').addEventListener('change', (e) =>
+            browser.permissions.request({origins: [e.target.value+'/*']})
+        );
+    }
+});
+
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
 const localeTeamOptionKey = 'locale_team';
-options.get(localeTeamOptionKey, (items) => {
-  const remotePontoon = new RemotePontoon(items[localeTeamOptionKey], options);
+options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
+  const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
   withRemotePontoon(remotePontoon);
 });

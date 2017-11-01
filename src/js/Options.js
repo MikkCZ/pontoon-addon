@@ -79,6 +79,7 @@ class Options {
      */
     _defaults() {
         const defaults = {};
+        defaults[`${this._prefix}pontoon_base_url`] = 'https://pontoon.mozilla.org';
         defaults[`${this._prefix}locale_team`] = chrome.i18n.getUILanguage();
         defaults[`${this._prefix}data_update_interval`] = 15;
         defaults[`${this._prefix}display_toolbar_button_badge`] = true;

@@ -22,6 +22,9 @@
     "contextMenus",
     "tabs"
   ],
+  "optional_permissions": [
+    "<all_urls>"
+  ],
   "options_ui": {
     "page": "html/options-ui.html",
     "browser_style": true

@@ -1,9 +1,10 @@
 'use strict';
 
 const options = new Options();
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
 const localeTeamOptionKey = 'locale_team';
-options.get(localeTeamOptionKey, (items) => {
-    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey], options);
+options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
+    const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
     const remoteLinks = new RemoteLinks(items[localeTeamOptionKey], options);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
 

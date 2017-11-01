@@ -33,8 +33,9 @@ function withRemotePontoon(remotePontoon) {
     const teamInfoPopup = new TeamInfoPopup(options, remotePontoon);
 }
 
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
 const localeTeamOptionKey = 'locale_team';
-options.get(localeTeamOptionKey, (items) => {
-    const remotePontoon = new RemotePontoon(items[localeTeamOptionKey], options);
+options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
+    const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
     withRemotePontoon(remotePontoon);
 });
