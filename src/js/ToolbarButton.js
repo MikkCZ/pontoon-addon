@@ -21,10 +21,6 @@ class ToolbarButton {
         this._watchStorageChanges();
         this._watchOptionsUpdates();
         this._refreshDataAndUpdateSchedule();
-        // Bug 1395885 workaround
-        chrome.windows.onCreated.addListener(() =>
-            chrome.browserAction.getBadgeText({}, (text) => this._updateBadge(text))
-        );
     }
 
     /**
