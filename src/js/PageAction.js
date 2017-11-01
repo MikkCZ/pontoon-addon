@@ -105,15 +105,47 @@ class PageAction {
                 const optionKey = 'options.display_page_action';
                 this._options.get(optionKey, (item) => {
                     if (item[optionKey]) {
-                        chrome.pageAction.show(tab.id);
+                        this._activatePageAction(tab.id);
                     }
                 })
             } else if(show) {
-                chrome.pageAction.show(tab.id);
+                this._activatePageAction(tab.id);
             } else {
-                chrome.pageAction.hide(tab.id);
+                this._deactivatePageAction(tab.id);
             }
         }
+    }
+
+    /**
+     * Activate the page action for tab with the right icon.
+     * @param tabId to show the page action for
+     * @private
+     */
+    _activatePageAction(tabId) {
+        chrome.pageAction.setIcon({
+            path: {
+              16: "img/pontoon-logo.svg",
+              32: "img/pontoon-logo.svg"
+            },
+            tabId: tabId,
+        });
+        chrome.pageAction.show(tabId);
+    }
+
+    /**
+     * Show the page action for tab with the right icon.
+     * @param tabId to show the page action for
+     * @private
+     */
+    _deactivatePageAction(tabId) {
+        chrome.pageAction.setIcon({
+            path: {
+                16: "img/pontoon-logo-gray-alpha.svg",
+                32: "img/pontoon-logo-gray-alpha.svg"
+            },
+            tabId: tabId,
+        });
+        chrome.pageAction.hide(tabId);
     }
 
     /**
