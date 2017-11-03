@@ -25,6 +25,7 @@ function updateTeamsList(teamsInPontoon) {
         localeTeamSelect.removeChild(localeTeamSelect.lastChild);
     }
     teamsInPontoon
+        .sort()
         .map((locale) => {
             const option = document.createElement('option');
             option.value = locale;
