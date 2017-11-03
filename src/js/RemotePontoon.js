@@ -259,8 +259,8 @@ class RemotePontoon {
     /**
      * Update list of teams in storage from Pontoon.
      */
-    updateTeamsList() {
-        fetch(this.getQueryURL('{locales{code}}')).then(
+    async updateTeamsList() {
+        await fetch(this.getQueryURL('{locales{code}}')).then(
             (response) => response.json()
         ).then(
             (data) => chrome.storage.local.set({teamsList: data.data.locales.map((locale) => locale.code)})
