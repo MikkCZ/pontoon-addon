@@ -93,6 +93,15 @@ class RemotePontoon {
     }
 
     /**
+    * Get URL for the given query.
+    * @param query
+    * @returns {string}
+    */
+    getQueryURL(query) {
+        return `${this._baseUrl}/graphql?query=${query}`;
+    }
+
+    /**
      * Get team locale code.
      * @returns {string}
      */
@@ -244,6 +253,17 @@ class RemotePontoon {
             (response) => response.text()
         ).then(
             (text) => this._updateDataFromTeamPageContent(text)
+        );
+    }
+
+    /**
+     * Update list of teams in storage from Pontoon.
+     */
+    updateTeamsList() {
+        fetch(this.getQueryURL('{locales{code}}')).then(
+            (response) => response.json()
+        ).then(
+            (data) => chrome.storage.local.set({teamsList: data.data.locales.map((locale) => locale.code)})
         );
     }
 

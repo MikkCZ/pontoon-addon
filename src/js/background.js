@@ -3,10 +3,22 @@
 const options = new Options();
 const pontoonBaseUrlOptionKey = 'pontoon_base_url';
 const localeTeamOptionKey = 'locale_team';
+
+let newInstallation = false;
+let onInstallFunction = () => newInstallation = true;
+browser.runtime.onInstalled.addListener(() => {
+    onInstallFunction.apply();
+});
+
 options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
     const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
     const remoteLinks = new RemoteLinks(items[localeTeamOptionKey], options);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
+
+    onInstallFunction = () => remotePontoon.updateTeamsList();
+    if (newInstallation) {
+        onInstallFunction.apply();
+    }
 
     const domainToProjectKvArray = remotePontoon.getDomainToProjectKvArray();
     const mozillaWebsitesUrlPatterns = domainToProjectKvArray
