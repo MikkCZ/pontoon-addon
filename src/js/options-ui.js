@@ -61,14 +61,13 @@ browser.storage.local.get(teamsListDataKey).then((items) =>
 function withRemotePontoon(remotePontoon) {
     // Load locale from Pontoon
     document.getElementById('load_locale_team').addEventListener('click', () =>
-        remotePontoon.updateTeamsList().then(() =>
-            remotePontoon.getTeamFromPontoon(
-                (localeTeam) => {
-                    localeTeamSelect.value = localeTeam;
-                    options.updateOptionFromInput(localeTeamSelect);
-                }
-            )
-        )
+        Promise.all([
+            remotePontoon.updateTeamsList(),
+            remotePontoon.getTeamFromPontoon()
+        ]).then(([_, localeTeam]) => {
+            localeTeamSelect.value = localeTeam;
+            options.updateOptionFromInput(localeTeamSelect);
+        })
     );
 }
 

@@ -325,15 +325,10 @@ class RemotePontoon {
 
     /**
      * Get locale team selected in Pontoon preferences.
-     * @param callback function to call with the locale code as string (fallback to current value if cannot be read from Pontoon)
      */
-    getTeamFromPontoon(callback) {
-        fetch(this.getSettingsUrl(), {
-            credentials: 'include',
-        }).then(
-            (response) => response.text()
-        ).then(
-            (text) => callback(this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language').dataset['code'] || this._team)
-        );
+    async getTeamFromPontoon() {
+        const response = await fetch(this.getSettingsUrl(), {credentials: 'include'});
+        const text = await response.text();
+        return this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language').dataset['code'] || this._team;
     }
 }
