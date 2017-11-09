@@ -314,29 +314,26 @@ class RemotePontoon {
      * Mark all notifications as read both in Pontoon and in the storage.
      */
     markAllNotificationsAsRead() {
-        browser.tabs.query({
-            url: this.getBaseUrl() + '/*',
-        }).then((pontoonTabs) => {
-            pontoonTabs.forEach((tab) =>
-                browser.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
-            );
-        });
-
-        const request = new XMLHttpRequest();
-        request.addEventListener('readystatechange', (e) => {
-            if(request.readyState === XMLHttpRequest.DONE) {
-                const dataKey = 'notificationsData';
-                browser.storage.local.get(dataKey).then(
-                    (item) => {
-                        Object.values(item[dataKey]).forEach(n => n.unread = false);
-                        browser.storage.local.set({notificationsData: item[dataKey]});
-                    }
+        const dataKey = 'notificationsData';
+        const headers = new Headers();
+        headers.append('X-Requested-With', 'XMLHttpRequest');
+        Promise.all([
+            browser.tabs.query({url: this.getBaseUrl() + '/*'}),
+            fetch(this._markAsReadUrl, {method: 'GET', credentials: 'include', headers: headers}),
+            browser.storage.local.get(dataKey)
+        ]).then(([
+            pontoonTabs,
+            response,
+            storageItem
+        ]) => {
+            if (response.ok) {
+                pontoonTabs.forEach((tab) =>
+                    browser.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
                 );
+                Object.values(storageItem[dataKey]).forEach(n => n.unread = false);
+                browser.storage.local.set({notificationsData: storageItem[dataKey]});
             }
         });
-        request.open('GET', this._markAsReadUrl, true);
-        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        request.send(null);
     }
 
     /**

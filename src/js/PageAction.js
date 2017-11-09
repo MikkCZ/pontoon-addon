@@ -76,19 +76,20 @@ class PageAction {
      * @private
      */
     _refreshAllTabsPageAction(show) {
-        browser.tabs.query({})
-            .then((tabs) => {
-                if (show === undefined) {
-                    const optionKey = 'display_page_action';
-                    this._options.get(optionKey).then(
-                        (item) => {
-                            tabs.forEach((tab) => this._showPageActionForTab(tab, item[optionKey]));
-                        }
-                    );
-                } else {
-                    tabs.forEach((tab) => this._showPageActionForTab(tab, show));
-                }
-            });
+        const optionKey = 'display_page_action';
+        Promise.all([
+            browser.tabs.query({}),
+            this._options.get(optionKey)
+        ]).then(([
+            tabs,
+            optionItem
+        ]) => {
+            if (show === undefined) {
+                tabs.forEach((tab) => this._showPageActionForTab(tab, optionItem[optionKey]));
+            } else {
+                tabs.forEach((tab) => this._showPageActionForTab(tab, show));
+            }
+        });
     }
 
     /**

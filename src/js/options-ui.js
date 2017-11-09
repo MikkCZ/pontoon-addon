@@ -38,30 +38,25 @@ function updateTeamsList(teamsInPontoon, localeTeam) {
         localeTeamSelect.value = localeTeam;
     }
 }
-const teamsListDataKey = 'teamsList';
-browser.storage.local.get(teamsListDataKey).then((items) =>
-        updateTeamsList(items[teamsListDataKey])
-    ).then(() => {
-        // Load options values from storage.
-        options.loadAllFromLocalStorage();
-        // Watch for input changes and store the new values.
-        document.querySelectorAll('[data-option-id]').forEach((input) =>
-            input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
-        );
-    }).then(() => {
-        const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-        const localeTeamOptionKey = 'locale_team';
-        options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then(
-            (items) => {
-                const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
-                withRemotePontoon(remotePontoon);
-            }
-        );
-    }
-);
 
-function withRemotePontoon(remotePontoon) {
-    // Load locale from Pontoon
+const teamsListDataKey = 'teamsList';
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
+const localeTeamOptionKey = 'locale_team';
+Promise.all([
+    browser.storage.local.get(teamsListDataKey),
+    options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey])
+]).then(([
+    storageItem,
+    optionItems
+]) => {
+    // Prepare list of teams
+    updateTeamsList(storageItem[teamsListDataKey])
+    // Watch for input changes and store the new values.
+    document.querySelectorAll('[data-option-id]').forEach((input) =>
+        input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
+    );
+    const remotePontoon = new RemotePontoon(optionItems[pontoonBaseUrlOptionKey], optionItems[localeTeamOptionKey], options);
+    // Handle reload button
     document.getElementById('load_locale_team').addEventListener('click', () => {
         localeTeamSelect.value = undefined;
         Promise.all([
@@ -72,7 +67,10 @@ function withRemotePontoon(remotePontoon) {
             options.updateOptionFromInput(localeTeamSelect);
         })
     });
-}
+}).then(() =>
+    // Load options values from storage.
+    options.loadAllFromLocalStorage()
+);
 
 // Allow remote Pontoon URL change
 document.getElementById('edit_pontoon_base_url').addEventListener('click', () => {
