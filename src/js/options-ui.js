@@ -15,7 +15,9 @@ const options = new Options();
 
 // Handle reset button
 document.getElementById('reset_defaults').addEventListener('click', () =>
-    options.resetDefaults(() => options.loadAllFromLocalStorage())
+    options.resetDefaults().then(
+        () => options.loadAllFromLocalStorage()
+    )
 );
 
 // Fill team options
@@ -49,10 +51,12 @@ browser.storage.local.get(teamsListDataKey).then((items) =>
     }).then(() => {
         const pontoonBaseUrlOptionKey = 'pontoon_base_url';
         const localeTeamOptionKey = 'locale_team';
-        options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
-            const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
-            withRemotePontoon(remotePontoon);
-        });
+        options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then(
+            (items) => {
+                const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
+                withRemotePontoon(remotePontoon);
+            }
+        );
     }
 );
 

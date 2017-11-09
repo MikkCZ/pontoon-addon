@@ -50,10 +50,12 @@ class ToolbarButton {
      */
     _scheduleOrUpdateRefresh() {
         const optionKey = 'data_update_interval';
-        this._options.get(optionKey, (item) => {
-            const intervalMinutes = parseInt(item[optionKey], 10);
-            this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
-        });
+        this._options.get(optionKey).then(
+            (item) => {
+                const intervalMinutes = parseInt(item[optionKey], 10);
+                this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
+            }
+        );
     }
 
     /**
@@ -123,7 +125,9 @@ class ToolbarButton {
      */
     _addOnClickAction() {
         const buttonActionOption = 'toolbar_button_action';
-        this._options.get(buttonActionOption, (item) => this._setButtonAction(item[buttonActionOption]));
+        this._options.get(buttonActionOption).then(
+            (item) => this._setButtonAction(item[buttonActionOption])
+        );
     }
 
     /**
@@ -253,19 +257,21 @@ class ToolbarButton {
             this._badgeText = text;
         }
         const optionKey = 'display_toolbar_button_badge';
-        this._options.get(optionKey, (item) => {
-            if (item[optionKey]) {
-                browser.browserAction.setBadgeText({text: text});
-                browser.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
-                if (text !== '0') {
-                    browser.browserAction.setBadgeBackgroundColor({color: '#F36'});
+        this._options.get(optionKey).then(
+            (item) => {
+                if (item[optionKey]) {
+                    browser.browserAction.setBadgeText({text: text});
+                    browser.browserAction.setTitle({title: `${this._defaultTitle} (${text})`});
+                    if (text !== '0') {
+                        browser.browserAction.setBadgeBackgroundColor({color: '#F36'});
+                    } else {
+                        browser.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
+                    }
                 } else {
-                    browser.browserAction.setBadgeBackgroundColor({color: '#4d5967'});
+                    this._hideBadge();
                 }
-            } else {
-                this._hideBadge();
             }
-        });
+         );
     }
 
     /**

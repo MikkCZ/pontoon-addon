@@ -133,13 +133,12 @@ class Options {
     /**
      * Get options values for given ids.
      * @param optionIds to retrieve
-     * @param callback function to call with the object of options values (fallback to default value if option value not found)
      */
-    get(optionIds, callback) {
+    async get(optionIds) {
         if (typeof optionIds === 'string') {
             optionIds = [optionIds];
         }
-        browser.storage.local.get(optionIds.map((optionId) => this._prefix+optionId)).then(
+        return await browser.storage.local.get(optionIds.map((optionId) => this._prefix+optionId)).then(
             (items) => {
                 const optionsWithDefaultValues = {};
                 optionIds.forEach((optionId) => {
@@ -150,7 +149,7 @@ class Options {
                         optionsWithDefaultValues[optionId] = this._defaults()[realOptionId];
                     }
                 });
-                callback(optionsWithDefaultValues);
+                return optionsWithDefaultValues;
             }
         );
     }
@@ -168,7 +167,10 @@ class Options {
         });
     }
 
-    resetDefaults(callback) {
-        browser.storage.local.set(this._defaults(), callback);
+    /**
+     * Reset all options to default values.
+     */
+    async resetDefaults() {
+        await browser.storage.local.set(this._defaults());
     }
 }

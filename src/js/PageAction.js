@@ -35,7 +35,9 @@ class PageAction {
      */
     _addOnClickAction() {
         const actionOption = 'page_action_item_action';
-        this._options.get(actionOption, (item) => this._setClickAction(item[actionOption]));
+        this._options.get(actionOption).then(
+            (item) => this._setClickAction(item[actionOption])
+        );
     }
 
     /**
@@ -78,9 +80,11 @@ class PageAction {
             .then((tabs) => {
                 if (show === undefined) {
                     const optionKey = 'display_page_action';
-                    this._options.get(optionKey, (item) => {
-                        tabs.forEach((tab) => this._showPageActionForTab(tab, item[optionKey]));
-                    });
+                    this._options.get(optionKey).then(
+                        (item) => {
+                            tabs.forEach((tab) => this._showPageActionForTab(tab, item[optionKey]));
+                        }
+                    );
                 } else {
                     tabs.forEach((tab) => this._showPageActionForTab(tab, show));
                 }
@@ -99,11 +103,13 @@ class PageAction {
             browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             if (show === undefined) {
                 const optionKey = 'display_page_action';
-                this._options.get(optionKey, (item) => {
-                    if (item[optionKey]) {
-                        this._activatePageAction(tab.id);
+                this._options.get(optionKey).then(
+                    (item) => {
+                        if (item[optionKey]) {
+                            this._activatePageAction(tab.id);
+                        }
                     }
-                })
+                )
             } else if(show) {
                 this._activatePageAction(tab.id);
             } else {
