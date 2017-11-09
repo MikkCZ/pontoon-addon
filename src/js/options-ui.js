@@ -20,12 +20,11 @@ document.getElementById('reset_defaults').addEventListener('click', () =>
 
 // Fill team options
 const localeTeamSelect = document.querySelector('select[data-option-id=locale_team]');
-function updateTeamsList(teamsInPontoon) {
+function updateTeamsList(teamsInPontoon, localeTeam) {
     while (localeTeamSelect.lastChild) {
         localeTeamSelect.removeChild(localeTeamSelect.lastChild);
     }
     teamsInPontoon
-        .sort()
         .map((locale) => {
             const option = document.createElement('option');
             option.value = locale;
@@ -33,13 +32,11 @@ function updateTeamsList(teamsInPontoon) {
             return option;
         })
         .forEach((option) => localeTeamSelect.appendChild(option));
+    if (localeTeam) {
+        localeTeamSelect.value = localeTeam;
+    }
 }
 const teamsListDataKey = 'teamsList';
-chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (changes[teamsListDataKey] !== undefined) {
-        updateTeamsList(changes[teamsListDataKey].newValue);
-    }
-});
 browser.storage.local.get(teamsListDataKey).then((items) =>
         updateTeamsList(items[teamsListDataKey])
     ).then(() => {
@@ -61,15 +58,16 @@ browser.storage.local.get(teamsListDataKey).then((items) =>
 
 function withRemotePontoon(remotePontoon) {
     // Load locale from Pontoon
-    document.getElementById('load_locale_team').addEventListener('click', () =>
+    document.getElementById('load_locale_team').addEventListener('click', () => {
+        localeTeamSelect.value = undefined;
         Promise.all([
             remotePontoon.updateTeamsList(),
             remotePontoon.getTeamFromPontoon()
-        ]).then(([_, localeTeam]) => {
-            localeTeamSelect.value = localeTeam;
+        ]).then(([teamsInPontoon, localeTeam]) => {
+            updateTeamsList(teamsInPontoon, localeTeam);
             options.updateOptionFromInput(localeTeamSelect);
         })
-    );
+    });
 }
 
 // Allow remote Pontoon URL change

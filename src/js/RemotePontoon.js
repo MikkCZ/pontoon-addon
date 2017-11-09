@@ -259,13 +259,16 @@ class RemotePontoon {
 
     /**
      * Update list of teams in storage from Pontoon.
+     * @returns sorted list of locale codes
      */
     async updateTeamsList() {
-        await fetch(this.getQueryURL('{locales{code}}')).then(
+        return await fetch(this.getQueryURL('{locales{code}}')).then(
             (response) => response.json()
-        ).then(
-            (data) => chrome.storage.local.set({teamsList: data.data.locales.map((locale) => locale.code)})
-        );
+        ).then((data) => {
+            const list = data.data.locales.map((locale) => locale.code).sort();
+            chrome.storage.local.set({teamsList: list});
+            return list;
+        });
     }
 
     /**
