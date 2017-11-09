@@ -32,10 +32,10 @@ a,
   text-align: right;
 }
 
+#notification-list,
 #error,
 #team-info
 {
-  padding: 1em;
   text-align: center;
 }
 
@@ -83,6 +83,10 @@ a,
 
 /* Empty list */
 
+#error {
+  margin: 1em;
+}
+
 #error p
 {
   text-align: center;
@@ -104,9 +108,13 @@ a,
 }
 
 /* Team info */
+#team-info h1,
+#team-info ul
+{
+  margin: 0 0.5em;
+}
 #team-info h1 {
   padding: 0;
-  margin: 0;
 }
 #team-info h1 .name {
   color: #ebebeb;
@@ -116,8 +124,7 @@ a,
   font-weight: normal;
 }
 #team-info ul {
-  padding: 0;
-  margin: 1em;
+  padding: 0.5em 1em 0.5em 0.5em;
   list-style-type: none;
   color: #aaa;
 }
