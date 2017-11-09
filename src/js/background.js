@@ -11,8 +11,9 @@ browser.runtime.onInstalled.addListener(() => {
 });
 
 options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
-    const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
-    const remoteLinks = new RemoteLinks(items[localeTeamOptionKey], options);
+    const team = items[localeTeamOptionKey];
+    const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], team, options);
+    const remoteLinks = new RemoteLinks(team, options);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
 
     onInstallFunction = () => remotePontoon.updateTeamsList();
@@ -34,7 +35,13 @@ options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
         documentUrlPatterns: mozillaWebsitesUrlPatterns,
         contexts: ['selection'],
         parentId: mozillaPageContextMenuParent,
-        onclick: (info, tab) => chrome.tabs.create({url: remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url)}),
+        onclick: (info, tab) => {
+            const teamsListDataKey = 'teamsList';
+            browser.storage.local.get(teamsListDataKey).then((items) => {
+                const teamComponent = items[teamsListDataKey][team].bz_component;
+                browser.tabs.create({url: remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url, teamComponent)});
+            });
+        },
     });
     chrome.contextMenus.create({
         title: 'Search for "%s" in Pontoon (Firefox)',

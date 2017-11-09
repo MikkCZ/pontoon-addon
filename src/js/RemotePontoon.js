@@ -262,12 +262,18 @@ class RemotePontoon {
      * @returns sorted list of locale codes
      */
     async updateTeamsList() {
-        return await fetch(this.getQueryURL('{locales{code}}')).then(
-            (response) => response.json()
-        ).then((data) => {
-            const list = data.data.locales.map((locale) => locale.code).sort();
-            chrome.storage.local.set({teamsList: list});
-            return list;
+        return await Promise.all([
+            fetch(this.getQueryURL('{locales{code}}')).then((response) => response.json()),
+            fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
+        ]).then(([pontoonData, bz_components]) => {
+            const teamsListObj = {};
+            pontoonData.data.locales.map((locale) => locale.code)
+                .sort()
+                .forEach((code) => {
+                    teamsListObj[code] = {code: code, bz_component: bz_components[code]}
+                });
+            chrome.storage.local.set({teamsList: teamsListObj});
+            return teamsListObj;
         });
     }
 
@@ -323,7 +329,6 @@ class RemotePontoon {
                 chrome.storage.local.get(dataKey, (item) => {
                     Object.values(item[dataKey]).forEach(n => n.unread = false);
                     chrome.storage.local.set({notificationsData: item[dataKey]});
-                    console.log(item[dataKey]);
                 });
             }
         });

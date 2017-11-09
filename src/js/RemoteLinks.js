@@ -78,10 +78,11 @@ class RemoteLinks {
      * Get Bugzilla URL for reporting localization bus.
      * @param selectedText to report bug in
      * @param pageUrl to report bug for
+     * @param teamComponent name of the Bugzilla component to report to
      * @returns {string}
      */
-    getBugzillaReportUrlForSelectedTextOnPage(selectedText, pageUrl) {
-        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${this._team}] Translation update proposed for "${selectedText}" on ${pageUrl}&comment=The translation:%0A${selectedText}%0A%0AShould be:%0A`;
+    getBugzillaReportUrlForSelectedTextOnPage(selectedText, pageUrl, teamComponent) {
+        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&component=${teamComponent}&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${this._team}] Translation update proposed for "${selectedText}" on ${pageUrl}&comment=The translation:%0A${selectedText}%0A%0AShould be:%0A`;
     }
 
     /**

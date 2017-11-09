@@ -24,7 +24,7 @@ function updateTeamsList(teamsInPontoon, localeTeam) {
     while (localeTeamSelect.lastChild) {
         localeTeamSelect.removeChild(localeTeamSelect.lastChild);
     }
-    teamsInPontoon
+    Object.keys(teamsInPontoon)
         .map((locale) => {
             const option = document.createElement('option');
             option.value = locale;
