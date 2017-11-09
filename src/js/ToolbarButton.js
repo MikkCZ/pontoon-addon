@@ -66,7 +66,7 @@ class ToolbarButton {
             if (changes[dataKey] !== undefined) {
                 const notificationsData = changes[dataKey].newValue;
                 if (notificationsData !== undefined) {
-                    this._updateBadge(`${Object.keys(notificationsData).length}`);
+                    this._updateBadge(`${Object.values(notificationsData).filter(n => n.unread).length}`);
                 } else {
                     this._updateBadge('!');
                 }

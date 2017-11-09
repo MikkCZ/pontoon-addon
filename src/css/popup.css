@@ -66,7 +66,14 @@ a,
 #notification-list li {
   padding: 0.5em;
   margin-bottom: 0.1em;
+}
+
+#notification-list li.unread {
   background-color: #333941;
+}
+
+#notification-list li.read {
+  border-bottom: 1px solid #333941;
 }
 
 #notification-list li:hover {
@@ -75,26 +82,18 @@ a,
 
 /* Empty list */
 
-#empty-list img {
-  max-height: 7em;
-  padding-bottom: 0.5em;
-}
-
 #empty-list p,
 #error p
 {
   text-align: center;
 }
 
-#empty-list .title,
-#empty-list .description,
 #error p
 {
   margin: 0;
   padding: 0;
 }
 
-#empty-list .description,
 #error .description
 {
   padding-top: 0.25em;
@@ -102,7 +101,6 @@ a,
   color: #aaa;
 }
 
-#empty-list .title,
 #error .title
 {
   font-size: 16px;

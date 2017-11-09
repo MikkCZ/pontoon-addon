@@ -142,14 +142,15 @@ class RemotePontoon {
     }
 
     /**
-     * Extract unread notification data from notification item to data object.
+     * Extract notification data from notification item to data object.
      * @param n notifications list item
      * @returns {{}} notification data object
      * @private
      */
-    static _createUnreadNotificationData(n) {
+    static _createNotificationsData(n) {
         const nObj = {};
         nObj.id = n.dataset.id;
+        nObj.unread = (n.dataset.unread === 'true');
         nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
         if (n.querySelector('.target')) {
             nObj.target = {text: n.querySelector('.target a').textContent, link: n.querySelector('.target a').getAttribute('href')};
@@ -171,8 +172,8 @@ class RemotePontoon {
         const notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
         if (notificationsPage.querySelector('header #notifications')) {
             const notificationsDataObj = {};
-            [...notificationsPage.querySelectorAll('header .notification-item[data-unread=true]')]
-                .map((n) => RemotePontoon._createUnreadNotificationData(n))
+            [...notificationsPage.querySelectorAll('header .notification-item')]
+                .map((n) => RemotePontoon._createNotificationsData(n))
                 .forEach((nObj) => notificationsDataObj[nObj.id] = nObj);
             chrome.storage.local.set({notificationsData: notificationsDataObj});
         } else {
@@ -315,7 +316,12 @@ class RemotePontoon {
         const request = new XMLHttpRequest();
         request.addEventListener('readystatechange', (e) => {
             if(request.readyState === XMLHttpRequest.DONE) {
-                chrome.storage.local.set({notificationsData: {}});
+                const dataKey = 'notificationsData';
+                chrome.storage.local.get(dataKey, (item) => {
+                    Object.values(item[dataKey]).forEach(n => n.unread = false);
+                    chrome.storage.local.set({notificationsData: item[dataKey]});
+                    console.log(item[dataKey]);
+                });
             }
         });
         request.open('GET', this._markAsReadUrl, true);

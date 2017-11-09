@@ -40,6 +40,11 @@ class NotificationsPopup {
      */
     _createNotificationListItem(notification) {
         const listItem = document.createElement('li');
+        if (notification.unread) {
+            listItem.classList.add('unread');
+        } else {
+            listItem.classList.add('read');
+        }
         if (notification.actor) {
             const actorLink = document.createElement('a');
             actorLink.textContent = notification.actor.text;
@@ -108,8 +113,13 @@ class NotificationsPopup {
                 .map((data) => this._createNotificationListItem(data))
                 .forEach((listItem) => notificationsList.appendChild(listItem));
             notificationsList.classList.remove('hidden');
-            fullList.classList.remove('hidden');
-            emptyList.classList.add('hidden');
+            if (Object.values(notificationsData).some(n => n.unread)) {
+                fullList.classList.remove('hidden');
+                emptyList.classList.add('hidden');
+            } else {
+                fullList.classList.add('hidden');
+                emptyList.classList.remove('hidden');
+            }
             error.classList.add('hidden');
         } else if (notificationsData !== undefined) {
             notificationsList.classList.add('hidden');
