@@ -4,13 +4,13 @@ const options = new Options();
 
 function withRemotePontoon(remotePontoon) {
     // See all notifications
-    document.querySelector('#empty-list .see-all').addEventListener('click', (e) => {
+    document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
         e.preventDefault();
         chrome.tabs.create({url: remotePontoon.getNotificationsUrl()});
         window.close();
     });
     // Mark all notifications as read
-    document.querySelector('#full-list .mark-all-as-read').addEventListener('click', (e) => {
+    document.querySelector('.notification-list .mark-all-as-read').addEventListener('click', (e) => {
         e.preventDefault();
         remotePontoon.markAllNotificationsAsRead();
     });

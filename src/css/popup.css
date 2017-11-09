@@ -19,7 +19,7 @@ a,
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .timeago,
@@ -32,9 +32,6 @@ a,
   text-align: right;
 }
 
-#notification-list,
-#full-list,
-#empty-list,
 #error,
 #team-info
 {
@@ -44,7 +41,6 @@ a,
 
 .bottom-link {
   display: block;
-  margin-top: 0.8em;
   padding: 0.5em;
   border-top: 1px solid #525a65;
   text-align: center;
@@ -61,18 +57,23 @@ a,
 
 #notification-list {
   list-style: none;
+  text-align: center;
+  max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
 }
 
 #notification-list li {
-  padding: 0.5em;
-  margin-bottom: 0.1em;
+  padding: 0.5em 1em;
 }
 
 #notification-list li.unread {
   background-color: #333941;
+  border-bottom: 1px solid transparent;
 }
 
-#notification-list li.read {
+#notification-list li.read:not(:last-child) {
   border-bottom: 1px solid #333941;
 }
 
@@ -82,14 +83,9 @@ a,
 
 /* Empty list */
 
-#empty-list p,
 #error p
 {
   text-align: center;
-}
-
-#error p
-{
   margin: 0;
   padding: 0;
 }

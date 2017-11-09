@@ -100,8 +100,8 @@ class NotificationsPopup {
      */
     _displayNotifications(notificationsData) {
         const notificationsList = document.getElementById('notification-list');
-        const fullList = document.getElementById('full-list');
-        const emptyList = document.getElementById('empty-list');
+        const markAllReadLink = document.querySelector('.notification-list .mark-all-as-read');
+        const seeAllLink = document.querySelector('.notification-list .see-all');
         const error = document.getElementById('error');
 
         if (notificationsData !== undefined && Object.keys(notificationsData).length > 0) {
@@ -114,22 +114,22 @@ class NotificationsPopup {
                 .forEach((listItem) => notificationsList.appendChild(listItem));
             notificationsList.classList.remove('hidden');
             if (Object.values(notificationsData).some(n => n.unread)) {
-                fullList.classList.remove('hidden');
-                emptyList.classList.add('hidden');
+                markAllReadLink.classList.remove('hidden');
+                seeAllLink.classList.add('hidden');
             } else {
-                fullList.classList.add('hidden');
-                emptyList.classList.remove('hidden');
+                markAllReadLink.classList.add('hidden');
+                seeAllLink.classList.remove('hidden');
             }
             error.classList.add('hidden');
         } else if (notificationsData !== undefined) {
             notificationsList.classList.add('hidden');
-            fullList.classList.add('hidden');
-            emptyList.classList.remove('hidden');
+            markAllReadLink.classList.add('hidden');
+            seeAllLink.classList.remove('hidden');
             error.classList.add('hidden');
         } else {
             notificationsList.classList.add('hidden');
-            fullList.classList.add('hidden');
-            emptyList.classList.add('hidden');
+            markAllReadLink.classList.add('hidden');
+            seeAllLink.classList.add('hidden');
             error.classList.remove('hidden');
         }
     }
