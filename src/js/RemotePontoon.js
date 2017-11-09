@@ -175,9 +175,9 @@ class RemotePontoon {
             [...notificationsPage.querySelectorAll('header .notification-item')]
                 .map((n) => RemotePontoon._createNotificationsData(n))
                 .forEach((nObj) => notificationsDataObj[nObj.id] = nObj);
-            chrome.storage.local.set({notificationsData: notificationsDataObj});
+            browser.storage.local.set({notificationsData: notificationsDataObj});
         } else {
-            chrome.storage.local.set({notificationsData: undefined});
+            browser.storage.local.set({notificationsData: undefined});
         }
     }
 
@@ -240,9 +240,9 @@ class RemotePontoon {
             [...teamPage.querySelectorAll('#heading .legend li')]
                 .map((item) => RemotePontoon._createTeamStringStatusObject(item))
                 .forEach((iObj) => teamDataObj.strings[iObj.status] = iObj);
-            chrome.storage.local.set({teamData: teamDataObj});
+            browser.storage.local.set({teamData: teamDataObj});
         } else {
-            chrome.storage.local.set({teamData: undefined});
+            browser.storage.local.set({teamData: undefined});
         }
     }
 
@@ -272,7 +272,7 @@ class RemotePontoon {
                 .forEach((code) => {
                     teamsListObj[code] = {code: code, bz_component: bz_components[code]}
                 });
-            chrome.storage.local.set({teamsList: teamsListObj});
+            browser.storage.local.set({teamsList: teamsListObj});
             return teamsListObj;
         });
     }
@@ -282,7 +282,7 @@ class RemotePontoon {
      * @private
      */
     _listenToMessagesFromContent() {
-        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
                 case 'pontoon-page-loaded':
                     this._updateNotificationsDataFromPageContent(request.value);
@@ -318,7 +318,7 @@ class RemotePontoon {
             url: this.getBaseUrl() + '/*',
         }).then((pontoonTabs) => {
             pontoonTabs.forEach((tab) =>
-                chrome.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
+                browser.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
             );
         });
 
@@ -328,7 +328,7 @@ class RemotePontoon {
                 const dataKey = 'notificationsData';
                 chrome.storage.local.get(dataKey, (item) => {
                     Object.values(item[dataKey]).forEach(n => n.unread = false);
-                    chrome.storage.local.set({notificationsData: item[dataKey]});
+                    browser.storage.local.set({notificationsData: item[dataKey]});
                 });
             }
         });

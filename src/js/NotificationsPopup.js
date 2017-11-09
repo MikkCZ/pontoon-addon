@@ -15,7 +15,7 @@ class NotificationsPopup {
      * @private
      */
     _watchStorageChanges() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
+        browser.storage.onChanged.addListener((changes, areaName) => {
             const dataKey = 'notificationsData';
             if (changes[dataKey] !== undefined) {
                 this._displayNotifications(changes[dataKey].newValue);
@@ -80,13 +80,13 @@ class NotificationsPopup {
                 child.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    chrome.tabs.create({url: linkUrl});
+                    browser.tabs.create({url: linkUrl});
                 });
             });
             listItem.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                chrome.tabs.create({url: linkUrl});
+                browser.tabs.create({url: linkUrl});
             });
             listItem.classList.add('pointer');
         }

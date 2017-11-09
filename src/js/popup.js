@@ -6,7 +6,7 @@ function withRemotePontoon(remotePontoon) {
     // See all notifications
     document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
         e.preventDefault();
-        chrome.tabs.create({url: remotePontoon.getNotificationsUrl()});
+        browser.tabs.create({url: remotePontoon.getNotificationsUrl()});
         window.close();
     });
     // Mark all notifications as read
@@ -17,14 +17,14 @@ function withRemotePontoon(remotePontoon) {
     // Link to Pontoon when not signed in
     document.querySelector('#error .sign-in').addEventListener('click', (e) => {
         e.preventDefault();
-        chrome.tabs.create({url: remotePontoon.getBaseUrl()});
+        browser.tabs.create({url: remotePontoon.getBaseUrl()});
         window.close();
     });
     // Team page links
     document.querySelectorAll('a.team-page,#team-info h1 a').forEach((hLink) => {
         hLink.addEventListener('click', (e) => {
             e.preventDefault();
-            chrome.tabs.create({url: remotePontoon.getTeamPageUrl()});
+            browser.tabs.create({url: remotePontoon.getTeamPageUrl()});
             window.close();
         });
     });

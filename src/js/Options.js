@@ -57,7 +57,7 @@ class Options {
     _saveOption(id, value) {
         const option = {};
         option[id] = value;
-        chrome.storage.local.set(option);
+        browser.storage.local.set(option);
     }
 
     /**
@@ -80,7 +80,7 @@ class Options {
     _defaults() {
         const defaults = {};
         defaults[`${this._prefix}pontoon_base_url`] = 'https://pontoon.mozilla.org';
-        defaults[`${this._prefix}locale_team`] = chrome.i18n.getUILanguage();
+        defaults[`${this._prefix}locale_team`] = browser.i18n.getUILanguage();
         defaults[`${this._prefix}data_update_interval`] = 15;
         defaults[`${this._prefix}display_toolbar_button_badge`] = true;
         defaults[`${this._prefix}toolbar_button_action`] = 'popup';
@@ -157,7 +157,7 @@ class Options {
      * @param callback function to call with the change object
      */
     subscribeToOptionChange(optionId, callback) {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
+        browser.storage.onChanged.addListener((changes, areaName) => {
             if (changes[this._prefix+optionId]) {
                 callback(changes[this._prefix+optionId]);
             }
@@ -165,6 +165,6 @@ class Options {
     }
 
     resetDefaults(callback) {
-        chrome.storage.local.set(this._defaults(), callback);
+        browser.storage.local.set(this._defaults(), callback);
     }
 }

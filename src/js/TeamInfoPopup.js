@@ -17,7 +17,7 @@ class TeamInfoPopup {
      * @private
      */
     _watchStorageChanges() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
+        browser.storage.onChanged.addListener((changes, areaName) => {
             if (changes['teamData'] !== undefined) {
                 this._loadTeamDataFromStorage(changes['teamData'].newValue);
             }

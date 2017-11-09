@@ -25,12 +25,12 @@ options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
     const mozillaWebsitesUrlPatterns = domainToProjectKvArray
         .map((kvArray) => kvArray[0])
         .map((domain) => `https://${domain}/*`);
-    const mozillaPageContextMenuParent = chrome.contextMenus.create({
+    const mozillaPageContextMenuParent = browser.contextMenus.create({
         title: 'Pontoon Tools',
         documentUrlPatterns: mozillaWebsitesUrlPatterns,
         contexts: ['selection'],
     });
-    chrome.contextMenus.create({
+    browser.contextMenus.create({
         title: 'Report l10n bug for "%s"',
         documentUrlPatterns: mozillaWebsitesUrlPatterns,
         contexts: ['selection'],
@@ -43,21 +43,21 @@ options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey], (items) => {
             });
         },
     });
-    chrome.contextMenus.create({
+    browser.contextMenus.create({
         title: 'Search for "%s" in Pontoon (Firefox)',
         documentUrlPatterns: ['https://support.mozilla.org/*'],
         contexts: ['selection'],
         parentId: mozillaPageContextMenuParent,
-        onclick: (info, tab) => chrome.tabs.create({url: remotePontoon.getSearchInFirefoxProjectUrl(info.selectionText)}),
+        onclick: (info, tab) => browser.tabs.create({url: remotePontoon.getSearchInFirefoxProjectUrl(info.selectionText)}),
     });
     domainToProjectKvArray.forEach((kvArray) => {
         const [domain, projectData] = kvArray;
-        chrome.contextMenus.create({
+        browser.contextMenus.create({
             title: `Search for "%s" in Pontoon (${projectData.name})`,
             documentUrlPatterns: [`https://${domain}/*`],
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
-            onclick: (info, tab) => chrome.tabs.create({url: remotePontoon.getSearchInProjectUrl(projectData.slug, info.selectionText)}),
+            onclick: (info, tab) => browser.tabs.create({url: remotePontoon.getSearchInProjectUrl(projectData.slug, info.selectionText)}),
         });
     });
 

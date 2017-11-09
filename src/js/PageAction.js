@@ -8,8 +8,8 @@ class PageAction {
         this._options = options;
         this._remotePontoon = remotePontoon;
 
-        this._openProjectTranslationView = (tab) => chrome.tabs.create({url: this._getPontoonProjectTranslationUrlForPageUrl(tab.url)});
-        this._openProjectPage = (tab) => chrome.tabs.create({url: this._getPontoonProjectPageUrlForPageUrl(tab.url)});
+        this._openProjectTranslationView = (tab) => browser.tabs.create({url: this._getPontoonProjectTranslationUrlForPageUrl(tab.url)});
+        this._openProjectPage = (tab) => browser.tabs.create({url: this._getPontoonProjectPageUrlForPageUrl(tab.url)});
         this._addOnClickAction();
         this._watchOptionsUpdates();
         this._watchTabsUpdates();
@@ -44,14 +44,14 @@ class PageAction {
      * @private
      */
     _setClickAction(action) {
-        chrome.pageAction.onClicked.removeListener(this._openProjectTranslationView);
-        chrome.pageAction.onClicked.removeListener(this._openProjectPage);
+        browser.pageAction.onClicked.removeListener(this._openProjectTranslationView);
+        browser.pageAction.onClicked.removeListener(this._openProjectPage);
         switch (action) {
             case 'translation-view':
-                chrome.pageAction.onClicked.addListener(this._openProjectTranslationView);
+                browser.pageAction.onClicked.addListener(this._openProjectTranslationView);
                 break;
             case 'project-page':
-                chrome.pageAction.onClicked.addListener(this._openProjectPage);
+                browser.pageAction.onClicked.addListener(this._openProjectPage);
                 break;
         }
     }
@@ -61,7 +61,7 @@ class PageAction {
      * @private
      */
     _watchTabsUpdates() {
-        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             if (changeInfo.status === 'complete') {
                 this._showPageActionForTab(tab);
             }
@@ -96,7 +96,7 @@ class PageAction {
     _showPageActionForTab(tab, show) {
         const projectData = this._getPontoonProjectForPageUrl(tab.url);
         if (projectData) {
-            chrome.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
+            browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             if (show === undefined) {
                 const optionKey = 'display_page_action';
                 this._options.get(optionKey, (item) => {
@@ -118,14 +118,14 @@ class PageAction {
      * @private
      */
     _activatePageAction(tabId) {
-        chrome.pageAction.setIcon({
+        browser.pageAction.setIcon({
             path: {
               16: "img/pontoon-logo.svg",
               32: "img/pontoon-logo.svg"
             },
             tabId: tabId,
         });
-        chrome.pageAction.show(tabId);
+        browser.pageAction.show(tabId);
     }
 
     /**
@@ -134,14 +134,14 @@ class PageAction {
      * @private
      */
     _deactivatePageAction(tabId) {
-        chrome.pageAction.setIcon({
+        browser.pageAction.setIcon({
             path: {
                 16: "img/pontoon-logo-gray-alpha.svg",
                 32: "img/pontoon-logo-gray-alpha.svg"
             },
             tabId: tabId,
         });
-        chrome.pageAction.hide(tabId);
+        browser.pageAction.hide(tabId);
     }
 
     /**
