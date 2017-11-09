@@ -326,10 +326,12 @@ class RemotePontoon {
         request.addEventListener('readystatechange', (e) => {
             if(request.readyState === XMLHttpRequest.DONE) {
                 const dataKey = 'notificationsData';
-                chrome.storage.local.get(dataKey, (item) => {
-                    Object.values(item[dataKey]).forEach(n => n.unread = false);
-                    browser.storage.local.set({notificationsData: item[dataKey]});
-                });
+                browser.storage.local.get(dataKey).then(
+                    (item) => {
+                        Object.values(item[dataKey]).forEach(n => n.unread = false);
+                        browser.storage.local.set({notificationsData: item[dataKey]});
+                    }
+                );
             }
         });
         request.open('GET', this._markAsReadUrl, true);

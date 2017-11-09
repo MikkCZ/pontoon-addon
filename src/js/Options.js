@@ -125,7 +125,9 @@ class Options {
      */
     loadAllFromLocalStorage() {
         this._loadAllFromObject(this._defaults());
-        chrome.storage.local.get((items) => this._loadAllFromObject(items));
+        browser.storage.local.get().then(
+            (items) => this._loadAllFromObject(items)
+        );
     }
 
     /**
@@ -137,18 +139,20 @@ class Options {
         if (typeof optionIds === 'string') {
             optionIds = [optionIds];
         }
-        chrome.storage.local.get(optionIds.map((optionId) => this._prefix+optionId), (items) => {
-            const optionsWithDefaultValues = {};
-            optionIds.forEach((optionId) => {
-                const realOptionId = this._prefix+optionId;
-                if (items[realOptionId] !== undefined) {
-                    optionsWithDefaultValues[optionId] = items[realOptionId];
-                } else {
-                    optionsWithDefaultValues[optionId] = this._defaults()[realOptionId];
-                }
-            });
-            callback(optionsWithDefaultValues);
-        });
+        browser.storage.local.get(optionIds.map((optionId) => this._prefix+optionId)).then(
+            (items) => {
+                const optionsWithDefaultValues = {};
+                optionIds.forEach((optionId) => {
+                    const realOptionId = this._prefix+optionId;
+                    if (items[realOptionId] !== undefined) {
+                        optionsWithDefaultValues[optionId] = items[realOptionId];
+                    } else {
+                        optionsWithDefaultValues[optionId] = this._defaults()[realOptionId];
+                    }
+                });
+                callback(optionsWithDefaultValues);
+            }
+        );
     }
 
     /**

@@ -29,7 +29,9 @@ class NotificationsPopup {
      */
     _loadNotificationsFromStorage() {
         const dataKey = 'notificationsData';
-        chrome.storage.local.get(dataKey, (item) => this._displayNotifications(item[dataKey]));
+        browser.storage.local.get(dataKey).then(
+            (item) => this._displayNotifications(item[dataKey])
+        );
     }
 
     /**
