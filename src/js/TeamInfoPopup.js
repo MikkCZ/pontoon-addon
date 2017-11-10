@@ -27,9 +27,10 @@ class TeamInfoPopup {
      * @private
      */
     _loadTeamDataFromStorage() {
-        const dataKey = 'teamData';
-        browser.storage.local.get(dataKey).then(
-            (item) => this._displayTeamInfo(item[dataKey])
+        const teamDataKey = 'teamData';
+        const latestTeamActivityKey = 'latestTeamActivity';
+        browser.storage.local.get([teamDataKey, latestTeamActivityKey]).then(
+            (item) => this._displayTeamInfo(item[teamDataKey], item[latestTeamActivityKey])
         );
     }
 
@@ -56,9 +57,10 @@ class TeamInfoPopup {
     /**
      * Display team info from data from storage.
      * @param teamData from storage
+     * @param latestTeamActivity
      * @private
      */
-    _displayTeamInfo(teamData) {
+    _displayTeamInfo(teamData, latestTeamActivity) {
         if(teamData) {
             document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
             document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
@@ -66,6 +68,20 @@ class TeamInfoPopup {
             while (infoList.lastChild) {
                 infoList.removeChild(infoList.lastChild);
             }
+
+            if (latestTeamActivity) {
+                const activityItem = document.createElement('li');
+                const title = document.createElement('span');
+                title.classList.add('title');
+                title.textContent = 'Activity';
+                activityItem.appendChild(title);
+                const text = document.createElement('span');
+                text.classList.add('text');
+                text.textContent = `${latestTeamActivity.user} ${latestTeamActivity.time}`;
+                activityItem.appendChild(text);
+                infoList.appendChild(activityItem);
+            }
+
             Object.keys(teamData.strings)
                 .map((iKey) => teamData.strings[iKey])
                 .map((dataItem) => TeamInfoPopup._createTeamStringStatusListItem(dataItem))

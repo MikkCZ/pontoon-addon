@@ -151,6 +151,8 @@ a,
 #team-info li .title {
   text-transform: uppercase;
 }
-#team-info li .count {
+#team-info li .count,
+#team-info li .text
+{
   float: right;
 }

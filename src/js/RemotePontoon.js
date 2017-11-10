@@ -244,11 +244,26 @@ class RemotePontoon {
      * Update team info in storage.
      */
     updateTeamData() {
-        fetch(this.getTeamPageUrl()).then(
-            (response) => response.text()
-        ).then(
-            (text) => this._updateDataFromTeamPageContent(text)
-        );
+        Promise.all([
+            fetch(this.getTeamPageUrl()).then((response) => response.text()),
+            fetch(`${this._baseUrl}/teams/`).then((response) => response.text()),
+        ]).then(([
+            teamPageContent,
+            allTeamsPageContent
+        ]) => {
+            this._updateDataFromTeamPageContent(teamPageContent);
+            const allTeamsPage = this._domParser.parseFromString(allTeamsPageContent, 'text/html');
+            const latestActivity = [...allTeamsPage.querySelectorAll('.team-list tbody tr')]
+                .filter((row) => row.querySelector('.code a').textContent === this._team)[0]
+                .querySelector('.latest-activity time');
+            if (latestActivity) {
+                const user = latestActivity.dataset.userName;
+                const time = latestActivity.textContent;
+                browser.storage.local.set({latestTeamActivity: {user: user, time: time}});
+            } else {
+                browser.storage.local.remove('latestTeamActivity');
+            }
+        });
     }
 
     /**
