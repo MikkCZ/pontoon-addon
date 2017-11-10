@@ -8,13 +8,13 @@
 <body>
   <section>
     <h3>General</h3>
-    <div><label for="locale_team">Use this locale team as preferred</label> <select id="locale_team" data-option-id="locale_team"></select> <button id="load_locale_team">Load from Pontoon</button></div>
-    <div><label for="data_update_interval">Update data from Pontoon every</label> <select id="data_update_interval" data-option-id="data_update_interval"></select> <label for="data_update_interval">minutes</label></div>
+    <div class="browser-style"><label for="locale_team" class="browser-style-label">Use this locale team as preferred</label> <select id="locale_team" data-option-id="locale_team" class="browser-style"></select> <button id="load_locale_team" class="browser-style">Load from Pontoon</button></div>
+    <div class="browser-style"><label for="data_update_interval" class="browser-style-label">Update data from Pontoon every</label> <select id="data_update_interval" data-option-id="data_update_interval" class="browser-style"></select> <label for="data_update_interval" class="browser-style-label">minutes</label></div>
   </section>
   <section>
     <h3>Toolbar button</h3>
-    <div><input id="display_toolbar_button_badge" data-option-id="display_toolbar_button_badge" type="checkbox"> <label for="display_toolbar_button_badge">Show number of unread notifications in the toolbar button</label></div>
-    <div><label for="toolbar_button_action">When you click the toolbar button</label> <select id="toolbar_button_action" data-option-id="toolbar_button_action">
+    <div class="browser-style"><input id="display_toolbar_button_badge" data-option-id="display_toolbar_button_badge" type="checkbox"> <label for="display_toolbar_button_badge" class="browser-style-label">Show number of unread notifications in the toolbar button</label></div>
+    <div class="browser-style"><label for="toolbar_button_action" class="browser-style-label">When you click the toolbar button</label> <select id="toolbar_button_action" data-option-id="toolbar_button_action" class="browser-style">
       <option value="popup">open popup with notifications and team information</option>
       <option value="team-page">open Pontoon team page (selected above)</option>
       <option value="home-page">open Pontoon home page (from Pontoon settings)</option>
@@ -22,16 +22,16 @@
   </section>
   <section>
     <h3>Page action</h3>
-    <div><input id="display_page_action" data-option-id="display_page_action" type="checkbox"> <label for="display_page_action">Display page action in the address bar for Mozilla pages</label></div>
-    <div><label for="page_action_item_action">When you click the page action item</label> <select id="page_action_item_action" data-option-id="page_action_item_action">
+    <div class="browser-style"><input id="display_page_action" data-option-id="display_page_action" type="checkbox"> <label for="display_page_action" class="browser-style-label">Display page action in the address bar for Mozilla pages</label></div>
+    <div class="browser-style"><label for="page_action_item_action" class="browser-style-label">When you click the page action item</label> <select id="page_action_item_action" data-option-id="page_action_item_action" class="browser-style">
       <option value="translation-view">open project translation view with all resources</option>
       <option value="project-page">open project page with overview and all files</option>
     </select></div>
   </section>
   <section>
     <h3>Advanced</h3>
-    <div><label for="pontoon_base_url">Pontoon URL:</label> <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled"> <button id="edit_pontoon_base_url">Edit</button></div>
-    <div><button id="reset_defaults">Reset all to defaults</button></div>
+    <div class="browser-style"><label for="pontoon_base_url" class="browser-style-label">Pontoon URL:</label> <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled"> <button id="edit_pontoon_base_url" class="browser-style">Edit</button></div>
+    <div class="browser-style"><button id="reset_defaults" class="browser-style">Reset all to defaults</button></div>
   </section>
   <script src="../js/Options.js"></script>
   <script src="../js/RemotePontoon.js"></script>
