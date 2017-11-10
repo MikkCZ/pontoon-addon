@@ -105,7 +105,7 @@ class ToolbarButton {
         browser.browserAction.onClicked.removeListener(this._openPontoonHomePage);
         switch (buttonAction) {
             case 'popup':
-                browser.browserAction.setPopup({popup: browser.extension.getURL('html/popup.html')});
+                browser.browserAction.setPopup({popup: browser.extension.getURL('html/browser-action.html')});
                 break;
             case 'team-page':
                 browser.browserAction.onClicked.addListener(this._openPontoonTeamPage);

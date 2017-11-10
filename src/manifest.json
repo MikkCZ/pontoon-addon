@@ -39,7 +39,8 @@
     "default_icon": {
       "19": "img/pontoon-logo-gray-alpha.svg",
       "38": "img/pontoon-logo-gray-alpha.svg"
-    }
+    },
+    "default_popup": "html/page-action.html"
   },
   "background": {
     "scripts": [

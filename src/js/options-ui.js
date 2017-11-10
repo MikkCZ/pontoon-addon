@@ -70,25 +70,7 @@ Promise.all([
 }).then(() =>
     // Load options values from storage.
     options.loadAllFromLocalStorage()
-).then(() => {
-    // Disable page action radio inputs when the page action is not shown
-    function updatePageActionRadios(enabled) {
-        [...document.querySelectorAll('input[type=radio][name=page_action_item_action]')].forEach(
-            (radio) => {
-                if (enabled) {
-                    radio.disabled = false;
-                    radio.parentNode.classList.remove('disabled');
-                } else {
-                    radio.disabled = true;
-                    radio.parentNode.classList.add('disabled');
-                }
-            }
-        );
-    }
-    const pageActionCheckbox = document.getElementById('display_page_action');
-    pageActionCheckbox.addEventListener('change', () => updatePageActionRadios(pageActionCheckbox.checked));
-    updatePageActionRadios(pageActionCheckbox.checked);
-});
+);
 
 // Allow remote Pontoon URL change
 document.getElementById('edit_pontoon_base_url').addEventListener('click', () => {

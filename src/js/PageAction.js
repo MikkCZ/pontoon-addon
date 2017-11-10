@@ -8,18 +8,10 @@ class PageAction {
         this._options = options;
         this._remotePontoon = remotePontoon;
 
-        this._openProjectTranslationView = (tab) =>
-            this._getPontoonProjectTranslationUrlForPageUrl(tab.url).then(
-                (projectTranslationUrl) => browser.tabs.create({url: projectTranslationUrl})
-            );
-        this._openProjectPage = (tab) =>
-            this._getPontoonProjectPageUrlForPageUrl(tab.url).then(
-                (projectPageUrl) => browser.tabs.create({url: projectPageUrl})
-            );
-        this._addOnClickAction();
         this._watchOptionsUpdates();
         this._watchStorageChanges();
         this._watchTabsUpdates();
+        this._listenToMessagesFromPageAction();
         this._refreshAllTabsPageAction();
     }
 
@@ -28,9 +20,6 @@ class PageAction {
      * @private
      */
     _watchOptionsUpdates() {
-        this._options.subscribeToOptionChange('page_action_item_action', (change) =>
-            this._setClickAction(change.newValue)
-        );
         this._options.subscribeToOptionChange('display_page_action', (change) =>
             this._refreshAllTabsPageAction(change.newValue)
         );
@@ -47,32 +36,28 @@ class PageAction {
     }
 
     /**
-     * Add click event handler.
+     * Listen to messages from opened page action menus
      * @private
      */
-    _addOnClickAction() {
-        const actionOption = 'page_action_item_action';
-        this._options.get(actionOption).then(
-            (item) => this._setClickAction(item[actionOption])
-        );
-    }
-
-    /**
-     * Set action for click.
-     * @param action from options
-     * @private
-     */
-    _setClickAction(action) {
-        browser.pageAction.onClicked.removeListener(this._openProjectTranslationView);
-        browser.pageAction.onClicked.removeListener(this._openProjectPage);
-        switch (action) {
-            case 'translation-view':
-                browser.pageAction.onClicked.addListener(this._openProjectTranslationView);
-                break;
-            case 'project-page':
-                browser.pageAction.onClicked.addListener(this._openProjectPage);
-                break;
-        }
+    _listenToMessagesFromPageAction() {
+        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            switch (request.type) {
+                case 'page-action-opened':
+                    browser.tabs.query({currentWindow: true, active: true}).then((tab) => {
+                        this._getPontoonProjectForPageUrl(tab[0].url).then((projectData) => {
+                            browser.runtime.sendMessage({
+                                type: 'page-action-project-data',
+                                project: {
+                                    name: projectData.name,
+                                    pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
+                                    translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
+                                }
+                            });
+                        });
+                    });
+                    break;
+            }
+        });
     }
 
     /**
@@ -118,21 +103,20 @@ class PageAction {
     async _showPageActionForTab(tab, show) {
         const projectData = await this._getPontoonProjectForPageUrl(tab.url);
         if (projectData) {
-            browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             if (show === undefined) {
                 const optionKey = 'display_page_action';
-                this._options.get(optionKey).then(
-                    (item) => {
-                        if (item[optionKey]) {
-                            this._activatePageAction(tab.id);
-                        }
-                    }
-                )
-            } else if(show) {
+                show = (await this._options.get(optionKey))[optionKey];
+            }
+            if(show) {
                 this._activatePageAction(tab.id);
+                browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             } else {
                 this._deactivatePageAction(tab.id);
+                browser.pageAction.setTitle({tabId: tab.id, title: 'Pontoon Tools page action is disabled'});
             }
+        } else {
+            this._deactivatePageAction(tab.id);
+            browser.pageAction.setTitle({tabId: tab.id, title: 'No project for this page'});
         }
     }
 
@@ -166,36 +150,6 @@ class PageAction {
             tabId: tabId,
         });
         browser.pageAction.hide(tabId);
-    }
-
-    /**
-     * Get Pontoon project page URL for the loaded page.
-     * @param pageUrl loaded in a tab
-     * @returns {string|undefined}
-     * @private
-     */
-    async _getPontoonProjectPageUrlForPageUrl(pageUrl) {
-        const projectData = await this._getPontoonProjectForPageUrl(pageUrl);
-        if (projectData) {
-            return this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`);
-        } else {
-            return undefined;
-        }
-    }
-
-    /**
-     * Get Pontoon project translation view URL for the loaded page.
-     * @param pageUrl loaded in a tab
-     * @returns {string|undefined}
-     * @private
-     */
-    async _getPontoonProjectTranslationUrlForPageUrl(pageUrl) {
-        const projectData = await this._getPontoonProjectForPageUrl(pageUrl);
-        if (projectData) {
-            return this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`);
-        } else {
-            return undefined;
-        }
     }
 
     /**
