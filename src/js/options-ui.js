@@ -72,6 +72,9 @@ Promise.all([
     options.loadAllFromLocalStorage()
 );
 
+// Open Pontoon Tools tour
+document.getElementById('open_tour').addEventListener('click', () => browser.tabs.create({url: '/html/intro.html'}));
+
 // Allow remote Pontoon URL change
 document.getElementById('edit_pontoon_base_url').addEventListener('click', () => {
     if (window.confirm('Changing Pontoon URL is for developers only. I know what I am doing!')) {

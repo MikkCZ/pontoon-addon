@@ -6,10 +6,10 @@ const localeTeamOptionKey = 'locale_team';
 const teamsListDataKey = 'teamsList';
 const projectsListDataKey = 'projectsList';
 
-let newInstallation = false;
-let onInstallFunction = () => newInstallation = true;
-browser.runtime.onInstalled.addListener(() => {
-    onInstallFunction.apply();
+let newInstallationDetails;
+let onInstallFunction = (details) => newInstallationDetails = details;
+browser.runtime.onInstalled.addListener((details) => {
+    onInstallFunction(details);
 });
 
 function createContextMenus(projects, team, remotePontoon, remoteLinks) {
@@ -79,7 +79,7 @@ Promise.all([
     }
 
     // When the add-on is installed or updated, update the teams and projects data too.
-    onInstallFunction = () => {
+    onInstallFunction = (details) => {
         Promise.all([
             remotePontoon.updateTeamsList(),
             remotePontoon.updateProjectsList(),
@@ -88,10 +88,16 @@ Promise.all([
             projects
         ]) => {
             createContextMenus(projects, teams[team], remotePontoon, remoteLinks);
+            if (
+                details.reason === 'install'
+                || parseInt(details.previousVersion.split('.')[0]) < parseInt(browser.runtime.getManifest().version.split('.')[0])
+            ) {
+                browser.tabs.create({url: '/html/intro.html'});
+            }
         });
     };
-    if (newInstallation) { // The event has already fired before.
-        onInstallFunction.apply();
+    if (newInstallationDetails) { // The event has already fired before.
+        onInstallFunction(newInstallationDetails);
     }
 
     const pageAction = new PageAction(options, remotePontoon);

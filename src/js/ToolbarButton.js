@@ -238,6 +238,11 @@ class ToolbarButton {
             onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl()}),
         });
         browser.contextMenus.create({
+            title: 'Open Pontoon Tools tour',
+            contexts: ['browser_action'],
+            onclick: () => browser.tabs.create({url: '/html/intro.html'}),
+        });
+        browser.contextMenus.create({
             title: 'Pontoon Tools options',
             contexts: ['browser_action'],
             onclick: () => browser.runtime.openOptionsPage(),
