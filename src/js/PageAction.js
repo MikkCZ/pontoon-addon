@@ -8,8 +8,14 @@ class PageAction {
         this._options = options;
         this._remotePontoon = remotePontoon;
 
-        this._openProjectTranslationView = (tab) => browser.tabs.create({url: this._getPontoonProjectTranslationUrlForPageUrl(tab.url)});
-        this._openProjectPage = (tab) => browser.tabs.create({url: this._getPontoonProjectPageUrlForPageUrl(tab.url)});
+        this._openProjectTranslationView = (tab) =>
+            this._getPontoonProjectTranslationUrlForPageUrl(tab.url).then(
+                (projectTranslationUrl) => browser.tabs.create({url: projectTranslationUrl})
+            );
+        this._openProjectPage = (tab) =>
+            this._getPontoonProjectPageUrlForPageUrl(tab.url).then(
+                (projectPageUrl) => browser.tabs.create({url: projectPageUrl})
+            );
         this._addOnClickAction();
         this._watchOptionsUpdates();
         this._watchTabsUpdates();
@@ -98,8 +104,8 @@ class PageAction {
      * @param show optional boolean to force show (true) or hide (false)
      * @private
      */
-    _showPageActionForTab(tab, show) {
-        const projectData = this._getPontoonProjectForPageUrl(tab.url);
+    async _showPageActionForTab(tab, show) {
+        const projectData = await this._getPontoonProjectForPageUrl(tab.url);
         if (projectData) {
             browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             if (show === undefined) {
@@ -157,8 +163,8 @@ class PageAction {
      * @returns {string|undefined}
      * @private
      */
-    _getPontoonProjectPageUrlForPageUrl(pageUrl) {
-        const projectData = this._getPontoonProjectForPageUrl(pageUrl);
+    async _getPontoonProjectPageUrlForPageUrl(pageUrl) {
+        const projectData = await this._getPontoonProjectForPageUrl(pageUrl);
         if (projectData) {
             return this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`);
         } else {
@@ -172,8 +178,8 @@ class PageAction {
      * @returns {string|undefined}
      * @private
      */
-    _getPontoonProjectTranslationUrlForPageUrl(pageUrl) {
-        const projectData = this._getPontoonProjectForPageUrl(pageUrl);
+    async _getPontoonProjectTranslationUrlForPageUrl(pageUrl) {
+        const projectData = await this._getPontoonProjectForPageUrl(pageUrl);
         if (projectData) {
             return this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`);
         } else {
@@ -187,10 +193,16 @@ class PageAction {
      * @returns {object|undefined}
      * @private
      */
-    _getPontoonProjectForPageUrl(pageUrl) {
+    async _getPontoonProjectForPageUrl(pageUrl) {
         const tmpLink = document.createElement('a');
         tmpLink.href = pageUrl;
-        const toProjectMap = this._remotePontoon.getDomainToProjectMap();
+        const toProjectMap = new Map();
+        const dataKey = 'projectsList';
+        await browser.storage.local.get(dataKey).then((item) => {
+            Object.values(item[dataKey]).forEach((project) =>
+                project.domains.forEach((domain) => toProjectMap.set(domain, project))
+            );
+        });
         return toProjectMap.get(tmpLink.hostname);
     }
 }
