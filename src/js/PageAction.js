@@ -18,6 +18,7 @@ class PageAction {
             );
         this._addOnClickAction();
         this._watchOptionsUpdates();
+        this._watchStorageChanges();
         this._watchTabsUpdates();
         this._refreshAllTabsPageAction();
     }
@@ -33,6 +34,19 @@ class PageAction {
         this._options.subscribeToOptionChange('display_page_action', (change) =>
             this._refreshAllTabsPageAction(change.newValue)
         );
+    }
+
+    /**
+     * Update page actions when the list of projects changes.
+     * @private
+     */
+    _watchStorageChanges() {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+            const dataKey = 'projectsList';
+            if (changes[dataKey] !== undefined) {
+                this._refreshAllTabsPageAction();
+            }
+        });
     }
 
     /**
@@ -199,9 +213,11 @@ class PageAction {
         const toProjectMap = new Map();
         const dataKey = 'projectsList';
         await browser.storage.local.get(dataKey).then((item) => {
-            Object.values(item[dataKey]).forEach((project) =>
-                project.domains.forEach((domain) => toProjectMap.set(domain, project))
-            );
+            if (item[dataKey]) {
+                Object.values(item[dataKey]).forEach((project) =>
+                    project.domains.forEach((domain) => toProjectMap.set(domain, project))
+                );
+            }
         });
         return toProjectMap.get(tmpLink.hostname);
     }
