@@ -31,7 +31,7 @@ class Options {
      * @private
      */
     static _isValidInput(input) {
-        return (input.nodeName.toLowerCase() === 'select') || (input.parentElement.querySelector(':valid') === input);
+        return (input.nodeName.toLowerCase() === 'select') || (input.type === 'radio') || (input.parentElement.querySelector(':valid') === input);
     }
 
     /**
@@ -91,15 +91,27 @@ class Options {
 
     /**
      * Set given value to the input.
-     * @param input to set the value
+     * @param inputs to set the value
      * @param value to set (boolean for checkbox)
      * @private
      */
-    static _setValueToInput(input, value) {
-        if (input.type !== 'checkbox') {
-            input.value = value;
+    static _setValueToInputs(inputs, value) {
+        if (inputs.length === 1) {
+            const input = inputs[0];
+            if (input.type !== 'checkbox' && input.type !== 'radio') {
+                input.value = value;
+            } else {
+                input.checked = value;
+            }
+        } else if (inputs.length > 1 && [...inputs].every((input) => input.type === 'radio')) {
+            const input = [...inputs].filter((input) => input.value === value);
+            if (input.length === 1) {
+                Options._setValueToInputs(input, true);
+            } else {
+                console.error(`The options inputs do not correspond with the stored value ${value}.`, inputs);
+            }
         } else {
-            input.checked = value;
+            console.error('The options inputs have wrong structure.', inputs);
         }
     }
 
@@ -112,10 +124,10 @@ class Options {
         Object.keys(object)
             .filter((key) => key.startsWith(this._prefix))
             .forEach((key) => {
-                const input = document.querySelector(`[data-option-id=${this._getInputId(key)}]`);
+                const inputs = document.querySelectorAll(`[data-option-id=${this._getInputId(key)}]`);
                 const value = object[key];
-                if (input) {
-                    Options._setValueToInput(input, value);
+                if (inputs) {
+                    Options._setValueToInputs(inputs, value);
                 }
             });
     }
@@ -123,9 +135,9 @@ class Options {
     /**
      * Load options page values from storage, handling the default values.
      */
-    loadAllFromLocalStorage() {
+    async loadAllFromLocalStorage() {
         this._loadAllFromObject(this._defaults());
-        browser.storage.local.get().then(
+        await browser.storage.local.get().then(
             (items) => this._loadAllFromObject(items)
         );
     }

@@ -1,0 +1,7 @@
+body {
+    padding: 0.3em;
+}
+
+input[type="radio"] + label {
+    display: block;
+}

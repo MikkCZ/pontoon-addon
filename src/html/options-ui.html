@@ -14,19 +14,19 @@
   <section>
     <h3>Toolbar button</h3>
     <div class="browser-style"><input id="display_toolbar_button_badge" data-option-id="display_toolbar_button_badge" type="checkbox"> <label for="display_toolbar_button_badge" class="browser-style-label">Show number of unread notifications in the toolbar button</label></div>
-    <div class="browser-style"><label for="toolbar_button_action" class="browser-style-label">When you click the toolbar button</label> <select id="toolbar_button_action" data-option-id="toolbar_button_action" class="browser-style">
-      <option value="popup">open popup with notifications and team information</option>
-      <option value="team-page">open Pontoon team page (selected above)</option>
-      <option value="home-page">open Pontoon home page (from Pontoon settings)</option>
-    </select></div>
+    <div class="browser-style"><label class="browser-style-label">When you click the toolbar button</label>
+      <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="popup" id="toolbar_button_action-popup"> <label for="toolbar_button_action-popup" class="browser-style-label">Open popup with notifications and team information</label>
+      <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="team-page" id="toolbar_button_action-team-page"> <label for="toolbar_button_action-team-page" class="browser-style-label">Open Pontoon team page (selected above)</label>
+      <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="home-page" id="toolbar_button_action-home-page"> <label for="toolbar_button_action-home-page" class="browser-style-label">Open Pontoon home page (from Pontoon settings)</label>
+    </div>
   </section>
   <section>
     <h3>Page action</h3>
     <div class="browser-style"><input id="display_page_action" data-option-id="display_page_action" type="checkbox"> <label for="display_page_action" class="browser-style-label">Display page action in the address bar for Mozilla pages</label></div>
-    <div class="browser-style"><label for="page_action_item_action" class="browser-style-label">When you click the page action item</label> <select id="page_action_item_action" data-option-id="page_action_item_action" class="browser-style">
-      <option value="translation-view">open project translation view with all resources</option>
-      <option value="project-page">open project page with overview and all files</option>
-    </select></div>
+    <div class="browser-style"><label class="browser-style-label">When you click the page action item</label>
+      <input name="page_action_item_action" data-option-id="page_action_item_action" type="radio" value="translation-view" id="page_action_item_action-translation-view"> <label for="page_action_item_action-translation-view" class="browser-style-label">Open project translation view with all resources</label>
+      <input name="page_action_item_action" data-option-id="page_action_item_action" type="radio" value="project-page" id="page_action_item_action-project-page"> <label for="page_action_item_action-project-page" class="browser-style-label">Open project page with overview and all files</label>
+    </div>
   </section>
   <section>
     <h3>Advanced</h3>
