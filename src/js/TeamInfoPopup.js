@@ -17,11 +17,9 @@ class TeamInfoPopup {
      * @private
      */
     _watchStorageChanges() {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            if (changes['teamData'] !== undefined) {
-                this._loadTeamDataFromStorage(changes['teamData'].newValue);
-            }
-        });
+        this._remotePontoon.subscribeToTeamDataChange(
+            (change) => this._loadTeamDataFromStorage(change.newValue)
+        );
     }
 
     /**

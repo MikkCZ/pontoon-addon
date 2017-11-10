@@ -63,15 +63,12 @@ class ToolbarButton {
      * @private
      */
     _watchStorageChanges() {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'notificationsData';
-            if (changes[dataKey] !== undefined) {
-                const notificationsData = changes[dataKey].newValue;
-                if (notificationsData !== undefined) {
-                    this._updateBadge(`${Object.values(notificationsData).filter(n => n.unread).length}`);
-                } else {
-                    this._updateBadge('!');
-                }
+        this._remotePontoon.subscribeToNotificationsChange((change) => {
+            const notificationsData = change.newValue;
+            if (notificationsData !== undefined) {
+                this._updateBadge(`${Object.values(notificationsData).filter(n => n.unread).length}`);
+            } else {
+                this._updateBadge('!');
             }
         });
     }

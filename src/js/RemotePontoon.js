@@ -150,6 +150,19 @@ class RemotePontoon {
     }
 
     /**
+     * Subscribe to notifications data change.
+     * @param callback function to call with the new value
+     */
+    subscribeToNotificationsChange(callback) {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+            const dataKey = 'notificationsData';
+            if (changes[dataKey] !== undefined) {
+                callback(changes[dataKey]);
+            }
+        });
+    }
+
+    /**
      * Update notifications data in storage.
      */
     updateNotificationsData() {
@@ -215,6 +228,19 @@ class RemotePontoon {
     }
 
     /**
+     * Subscribe to team data change.
+     * @param callback function to call with the new value
+     */
+    subscribeToTeamDataChange(callback) {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+            const dataKey = 'teamData';
+            if (changes[dataKey] !== undefined) {
+                callback(changes[dataKey]);
+            }
+        });
+    }
+
+    /**
      * Update team info in storage.
      */
     updateTeamData() {
@@ -242,6 +268,19 @@ class RemotePontoon {
                 });
             browser.storage.local.set({teamsList: teamsListObj});
             return teamsListObj;
+        });
+    }
+
+    /**
+     * Subscribe to projects list change.
+     * @param callback function to call with the new value
+     */
+    subscribeToProjectsListChange(callback) {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+            const dataKey = 'projectsList';
+            if (changes[dataKey] !== undefined) {
+                callback(changes[dataKey]);
+            }
         });
     }
 

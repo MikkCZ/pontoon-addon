@@ -41,12 +41,9 @@ class PageAction {
      * @private
      */
     _watchStorageChanges() {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'projectsList';
-            if (changes[dataKey] !== undefined) {
-                this._refreshAllTabsPageAction();
-            }
-        });
+        this._remotePontoon.subscribeToProjectsListChange(
+            (change) => this._refreshAllTabsPageAction()
+        );
     }
 
     /**

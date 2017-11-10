@@ -15,12 +15,9 @@ class NotificationsPopup {
      * @private
      */
     _watchStorageChanges() {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'notificationsData';
-            if (changes[dataKey] !== undefined) {
-                this._displayNotifications(changes[dataKey].newValue);
-            }
-        });
+        this._remotePontoon.subscribeToNotificationsChange(
+            (change) => this._displayNotifications(change.newValue)
+        );
     }
 
     /**
