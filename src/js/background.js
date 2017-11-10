@@ -73,22 +73,25 @@ Promise.all([
     const remoteLinks = new RemoteLinks(team, options);
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
 
-    onInstallFunction = () => {
-        remotePontoon.updateTeamsList();
-        remotePontoon.updateProjectsList();
-    };
-    if (newInstallation) {
-        onInstallFunction.apply();
+    // Create context menus. The data may be missing for new installation or update.
+    if (storageItems[projectsListDataKey] && storageItems[teamsListDataKey]) {
+        createContextMenus(storageItems[projectsListDataKey], storageItems[teamsListDataKey][team], remotePontoon, remoteLinks);
     }
 
-    browser.storage.onChanged.addListener((changes, areaName) => {
-        if (changes[projectsListDataKey] !== undefined) {
-            createContextMenus(changes[projectsListDataKey].newValue, storageItems[teamsListDataKey][team], remotePontoon, remoteLinks);
-        }
-    });
-    const projects = storageItems[projectsListDataKey];
-    if (projects) {
-        createContextMenus(projects, storageItems[teamsListDataKey][team], remotePontoon, remoteLinks);
+    // When the add-on is installed or updated, update the teams and projects data too.
+    onInstallFunction = () => {
+        Promise.all([
+            remotePontoon.updateTeamsList(),
+            remotePontoon.updateProjectsList(),
+        ]).then(([
+            teams,
+            projects
+        ]) => {
+            createContextMenus(projects, teams[team], remotePontoon, remoteLinks);
+        });
+    };
+    if (newInstallation) { // The event has already fired before.
+        onInstallFunction.apply();
     }
 
     const pageAction = new PageAction(options, remotePontoon);
