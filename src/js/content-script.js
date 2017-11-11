@@ -23,7 +23,7 @@ if (unreadNotificationsIcon !== null) {
     // Listen to messages from background to mark all notifications as read (change the bell icon color)
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.type === 'mark-all-notifications-as-read-from-extension') {
-            unreadNotificationsIcon.style.color = '#4D5967';
+            document.getElementById('notifications').classList.remove('unread');
         }
     });
 }
