@@ -1,0 +1,101 @@
+body {
+    background: #f5f5f5;
+    font-family: sans-serif;
+}
+
+#tour-dialog {
+    width: 950px;
+    height: 400px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin: 10% auto 0 auto;
+    box-shadow: 0 3px rgba(0, 0, 0, 0.05);
+    padding: 2em;
+    position: relative;
+}
+
+.above {
+    margin-bottom: 2em;
+}
+
+h1 {
+    display: inline;
+    font-weight: normal;
+    font-size: 1.5em;
+}
+
+#close {
+    display: inline-block;
+    position: absolute;
+    top: 2em;
+    right: 2em;
+    width: 16px;
+    height: 16px;
+    padding: 0.1em;
+    cursor: pointer;
+    background: url('../img/close-16.svg') no-repeat center;
+}
+
+#close:hover {
+    background-color: #eaeaea;
+}
+
+nav {
+    display: inline-block;
+    width: 190px;
+    vertical-align: top;
+    margin-right: 30px;
+    border: 1px black dashed;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    font-size: 1.1em;
+    padding: 16px;
+}
+
+nav li:hover,
+nav li.active {
+    cursor: pointer;
+    color: #0a84ff;
+}
+
+main {
+    display: inline-block;
+    width: 715px;
+    border: 1px black dashed;
+}
+
+main h2 {
+    font-weight: normal;
+    font-size: 2em;
+    padding-top: 16px;
+    margin: 0;
+}
+
+.below {
+    position: absolute;
+    bottom: 2em;
+    right: 2em;
+}
+
+.below button {
+    float: right;
+    background-color: #0060df;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.below button:hover {
+    background-color: #003eaa;
+}
