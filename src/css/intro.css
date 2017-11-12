@@ -46,7 +46,6 @@ nav {
     width: 190px;
     vertical-align: top;
     margin-right: 30px;
-    border: 1px black dashed;
 }
 
 nav ul {
@@ -69,7 +68,14 @@ nav li.active {
 main {
     display: inline-block;
     width: 715px;
-    border: 1px black dashed;
+}
+
+main > * {
+    display: none;
+}
+
+main > .active {
+    display: block;
 }
 
 main h2 {
@@ -86,6 +92,7 @@ main h2 {
 }
 
 .below button {
+    display: none;
     float: right;
     background-color: #0060df;
     border: 1px solid transparent;
@@ -94,6 +101,10 @@ main h2 {
     font-weight: bold;
     color: #fff;
     cursor: pointer;
+}
+
+.below button.active {
+    display: inline-block;
 }
 
 .below button:hover {
