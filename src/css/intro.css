@@ -85,6 +85,20 @@ main h2 {
     margin: 0;
 }
 
+main .image.right {
+    float: right;
+    height: 280px;
+}
+
+main .image.bottom {
+    height: 150px;
+    text-align: center;
+}
+
+.image img {
+    max-height: 100%;
+}
+
 .below {
     position: absolute;
     bottom: 2em;
