@@ -11,7 +11,7 @@ const options = new Options();
 const introSections = {
     toolbarButton: {
         title: 'Toolbar button',
-        text: `After installation, the Pontoon icon will appear in your browser toolbar. When there are new notifications for
+        text: `After installation is completed, Pontoon icon will appear in your browser toolbar. When there are new notifications for
                 you, a red badge will appear in its corner. Simply click the icon to see the list of notifications.
                 Below the list there is also an overview of your localization team progress.`,
         image: '../img/intro/toolbar-button.png',
