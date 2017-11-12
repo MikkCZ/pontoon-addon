@@ -20,7 +20,8 @@
     "https://pontoon.mozilla.org/*",
     "storage",
     "contextMenus",
-    "tabs"
+    "tabs",
+    "notifications"
   ],
   "optional_permissions": [
     "<all_urls>"
@@ -49,6 +50,7 @@
       "js/RemoteLinks.js",
       "js/ToolbarButton.js",
       "js/PageAction.js",
+      "js/Notifications.js",
       "js/background.js"
     ]
   },

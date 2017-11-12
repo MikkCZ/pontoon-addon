@@ -101,4 +101,5 @@ Promise.all([
     }
 
     const pageAction = new PageAction(options, remotePontoon);
+    const notifications = new Notifications(options, remotePontoon);
 });
