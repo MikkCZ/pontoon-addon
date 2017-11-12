@@ -50,7 +50,7 @@ const introSections = {
                 to ask you for feedback how Pontoon Tools help you, or how can it help you even more. You can send
                 a message to our mailing list "dev-l10n@lists.mozilla.org" or create a request in the GitHub
                 repository by clicking the blue button below.`,
-        image: '../img/intro/2-Lions-500px.png',
+        image: '../img/intro/2-Lions.png',
         imageClass: 'bottom',
         buttonText: 'Ask for a feature',
         buttonOnClick: () => browser.tabs.create({url: 'https://github.com/MikkCZ/pontoon-tools/issues'}),
