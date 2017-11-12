@@ -6,6 +6,8 @@ document.getElementById('close').addEventListener('click', () =>
     })
 );
 
+const options = new Options();
+
 const introSections = {
     toolbarButton: {
         title: 'Toolbar button',
@@ -16,6 +18,25 @@ const introSections = {
         imageClass: 'right',
         buttonText: 'Open toolbar button popup',
         buttonOnClick: () => browser.browserAction.openPopup(),
+    },
+    notifications: {
+        title: 'System notifications',
+        text: `The toolbar button and its popup is not the only way to get notified about something new and interesting
+                in Pontoon. Pontoon Tools can also display system notifications to inform you about new notifications
+                in Pontoon. However not everyone may be happy with notifications popping up in their system notification
+                area, so this is off by default. If you would like to see Pontoon notifications in the system area,
+                click the button below.`,
+        buttonText: 'Enable system notifications',
+        buttonOnClick: (e) => {
+            options.set('show_notifications', true);
+            e.target.textContent = 'System notifications are enabled';
+            browser.notifications.create({
+                type: 'basic',
+                iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
+                title: 'System notifications are enabled',
+                message: 'You can be disable them again in the add-on options.',
+            });
+        },
     },
     pageAction: {
         title: 'Page action',
@@ -35,9 +56,9 @@ const introSections = {
         imageClass: 'bottom',
     },
     addonOptions: {
-        title: 'Pontoon Tools Options',
-        text: `As simple Pontoon Tools may look like, no default settings can fit everyone. In the provided options you
-                can change your language you translate too, interval for checking new notifications or adjust
+        title: 'Add-on options',
+        text: `No default settings can fit everyone. In the provided options you can change your translation team,
+                interval for checking new notifications, their appearing in the system notification area or adjust
                 the toolbar button behaviour.`,
         image: '../img/intro/options.png',
         imageClass: 'bottom',

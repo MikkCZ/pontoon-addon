@@ -50,7 +50,7 @@ class Options {
 
     /**
      * Save the option.
-     * @param id of the option
+     * @param id of the option (including prefix)
      * @param value to save
      * @private
      */
@@ -58,6 +58,15 @@ class Options {
         const option = {};
         option[id] = value;
         browser.storage.local.set(option);
+    }
+
+    /**
+     * Save the option.
+     * @param id of the option
+     * @param value to save
+     */
+    set(id, value) {
+        this._saveOption(this._prefix+id, value);
     }
 
     /**
