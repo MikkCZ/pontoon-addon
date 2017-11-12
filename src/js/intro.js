@@ -11,8 +11,8 @@ const options = new Options();
 const introSections = {
     toolbarButton: {
         title: 'Toolbar button',
-        text: `After installation, Pontoon icon appears in your browser toolbar. When there are new notifications for
-                you, a red badge will appear in its corner. Simply click the icon to see the the notifications list.
+        text: `After installation is complete, a Pontoon icon will appear in your browser toolbar. When there are new notifications for
+                you, a red badge will appear in its corner. Simply click the icon to see the list of notifications.
                 Below the list there is also an overview of your localization team progress.`,
         image: '../img/intro/toolbar-button.png',
         imageClass: 'right',
@@ -21,10 +21,10 @@ const introSections = {
     },
     notifications: {
         title: 'System notifications',
-        text: `The toolbar button and its popup is not the only way to get notified about something new and interesting
+        text: `The toolbar button and its popup are not the only way to get notified about something new and interesting
                 in Pontoon. Pontoon Tools can also display system notifications to inform you about new notifications
-                in Pontoon. However not everyone may be happy with notifications popping up in their system notification
-                area, so this is off by default. If you would like to see Pontoon notifications in the system area,
+                in Pontoon. However, not everyone may be happy with notifications popping up in their system notification
+                area, so this is disabled by default. If you would like to see Pontoon notifications in the system area,
                 click the button below.`,
         buttonText: 'Enable system notifications',
         buttonOnClick: (e) => {
@@ -41,14 +41,14 @@ const introSections = {
     pageAction: {
         title: 'Page action',
         text: `Page action is a small icon that will appear in your browser address bar on websites that are available
-                for translation on Pontoon. Clicking it will open a list of options to open the project overview
+                for translation on Pontoon. Clicking it will display a list of options to open the project overview
                 in Pontoon or jump to translation view directly.`,
         image: '../img/intro/page-action.png',
         imageClass: 'bottom',
     },
     contextMenu: {
         title: 'Context menus',
-        text: `Context menus are hidden, but very useful feature in Pontoon Tools. If you see a typo on Mozilla website,
+        text: `Context menus are a hidden, but very useful feature in Pontoon Tools. If you see a typo on Mozilla websites,
                 highlight the text with you mouse, right-click it and select to find the string in Pontoon, or report it
                 to your team as a bug. If you are a SUMO localizer, you can search for Firefox strings you see
                 in articles the same way.`,
@@ -57,7 +57,7 @@ const introSections = {
     },
     addonOptions: {
         title: 'Add-on options',
-        text: `No default settings can fit everyone. In the provided options you can change your translation team,
+        text: `No default settings can fit everyone. In the provided options you can change your localization team,
                 interval for checking new notifications, their appearing in the system notification area or adjust
                 the toolbar button behaviour.`,
         image: '../img/intro/options.png',
@@ -67,8 +67,8 @@ const introSections = {
     },
     feedback: {
         title: 'Feedback',
-        text: `This add-on won't exist and cannot improve without you - Mozilla localizers. Therefore I would like
-                to ask you for feedback how Pontoon Tools help you, or how can it help you even more. You can send
+        text: `This add-on won't exist and cannot improve without you - Mozilla localizers. Therefore, I would like
+                to ask you for feedback on how Pontoon Tools helps you, or how can it help you even more. You can send
                 a message to our mailing list "dev-l10n@lists.mozilla.org" or create a request in the GitHub
                 repository by clicking the blue button below.`,
         image: '../img/intro/2-Lions.png',
