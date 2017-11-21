@@ -17,7 +17,7 @@ function withRemotePontoon(remotePontoon) {
     // Link to Pontoon when not signed in
     document.querySelector('#error .sign-in').addEventListener('click', (e) => {
         e.preventDefault();
-        browser.tabs.create({url: remotePontoon.getBaseUrl()});
+        browser.tabs.create({url: remotePontoon.getSignInURL()});
         window.close();
     });
     // Team page links

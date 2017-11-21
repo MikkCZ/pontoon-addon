@@ -102,6 +102,14 @@ class RemotePontoon {
     }
 
     /**
+    * Get URL to sign in.
+    * @returns {string}
+    */
+    getSignInURL() {
+        return `${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`;
+    }
+
+    /**
      * Get team locale code.
      * @returns {string}
      */
