@@ -1,9 +1,13 @@
+/**
+ * Encapsulates all communication with Pontoon and contains all information about it.
+ */
 class RemotePontoon {
     /**
      * Initialize instance, listen to messages from tabs content and watch for options updates.
      * @param baseUrl Pontoon instance base URL
      * @param team locale
      * @param options
+     * @todo get rid of the team parameter and use options to fetch is when needed
      */
     constructor(baseUrl, team, options) {
         this._baseUrl = baseUrl;
@@ -19,6 +23,7 @@ class RemotePontoon {
     /**
      * Get home page URL.
      * @returns {string}
+     * @public
      */
     getBaseUrl() {
         return this._baseUrl;
@@ -27,6 +32,7 @@ class RemotePontoon {
     /**
      * Get notifications page URL.
      * @returns {string}
+     * @public
      */
     getNotificationsUrl() {
         return this._notificationsUrl;
@@ -35,6 +41,7 @@ class RemotePontoon {
     /**
      * Get settings page URL.
      * @returns {string}
+     * @public
      */
     getSettingsUrl() {
         return `${this._baseUrl}/settings/`;
@@ -43,6 +50,7 @@ class RemotePontoon {
     /**
      * Get machinery page URL.
      * @returns {string}
+     * @public
      */
     getMachineryUrl() {
         return `${this._baseUrl}/machinery/`;
@@ -51,6 +59,7 @@ class RemotePontoon {
     /**
      * Get team page URL.
      * @returns {string}
+     * @public
      */
     getTeamPageUrl() {
         return `${this._baseUrl}/${this._team}/`;
@@ -59,6 +68,7 @@ class RemotePontoon {
     /**
      * Get team bugs list URL.
      * @returns {string}
+     * @public
      */
     getTeamBugsUrl() {
         return `${this._baseUrl}/${this._team}/bugs/`;
@@ -68,6 +78,7 @@ class RemotePontoon {
      * Get project URL for the team.
      * @param projectsUrl general project URL
      * @returns {string} team specific URL
+     * @public
      */
     getTeamProjectUrl(projectsUrl) {
         return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`);
@@ -78,6 +89,7 @@ class RemotePontoon {
      * @param projectSlug
      * @param textToSearch
      * @returns {string}
+     * @public
      */
     getSearchInProjectUrl(projectSlug, textToSearch) {
         return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(/ /g, '+')}`;
@@ -87,24 +99,27 @@ class RemotePontoon {
      * Get URL to search in Firefox project.
      * @param textToSearch
      * @returns {string}
+     * @public
      */
     getSearchInFirefoxProjectUrl(textToSearch) {
         return this.getSearchInProjectUrl('firefox', textToSearch);
     }
 
     /**
-    * Get URL for the given query.
-    * @param query
-    * @returns {string}
-    */
+     * Get URL for the given query.
+     * @param query
+     * @returns {string}
+     * @public
+     */
     getQueryURL(query) {
         return `${this._baseUrl}/graphql?query=${query}`;
     }
 
     /**
-    * Get URL to sign in.
-    * @returns {string}
-    */
+     * Get URL to sign in.
+     * @returns {string}
+     * @public
+     */
     getSignInURL() {
         return `${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`;
     }
@@ -112,6 +127,7 @@ class RemotePontoon {
     /**
      * Get team locale code.
      * @returns {string}
+     * @public
      */
     getTeamCode() {
         return this._team;
@@ -122,6 +138,7 @@ class RemotePontoon {
      * @param n notifications list item
      * @returns {{}} notification data object
      * @private
+     * @static
      */
     static _createNotificationsData(n) {
         const nObj = {};
@@ -160,6 +177,7 @@ class RemotePontoon {
     /**
      * Subscribe to notifications data change.
      * @param callback function to call with the new value
+     * @public
      */
     subscribeToNotificationsChange(callback) {
         browser.storage.onChanged.addListener((changes, areaName) => {
@@ -172,6 +190,7 @@ class RemotePontoon {
 
     /**
      * Update notifications data in storage.
+     * @public
      */
     updateNotificationsData() {
         fetch(this.getNotificationsUrl(), {
@@ -188,6 +207,7 @@ class RemotePontoon {
      * @param element
      * @returns {string}
      * @private
+     * @static
      */
     static _getTextFromElementWithoutChildrenText(element) {
         const text = [...element.childNodes]
@@ -206,6 +226,7 @@ class RemotePontoon {
      * @param item list item
      * @returns {{}} string status data object
      * @private
+     * @static
      */
     static _createTeamStringStatusObject(item) {
         const iObj = {};
@@ -238,6 +259,7 @@ class RemotePontoon {
     /**
      * Subscribe to team data change.
      * @param callback function to call with the new value
+     * @public
      */
     subscribeToTeamDataChange(callback) {
         browser.storage.onChanged.addListener((changes, areaName) => {
@@ -250,6 +272,7 @@ class RemotePontoon {
 
     /**
      * Update team info in storage.
+     * @public
      */
     updateTeamData() {
         Promise.all([
@@ -276,7 +299,9 @@ class RemotePontoon {
 
     /**
      * Update list of teams in storage from Pontoon.
-     * @returns sorted list of locale codes
+     * @returns promise fulfilled with sorted list of locale codes
+     * @public
+     * @async
      */
     async updateTeamsList() {
         return await Promise.all([
@@ -297,6 +322,7 @@ class RemotePontoon {
     /**
      * Subscribe to projects list change.
      * @param callback function to call with the new value
+     * @public
      */
     subscribeToProjectsListChange(callback) {
         browser.storage.onChanged.addListener((changes, areaName) => {
@@ -309,7 +335,9 @@ class RemotePontoon {
 
     /**
      * Update list of projects in storage from Pontoon.
-     * @returns object with projects for known domains
+     * @returns promise fulfilled with object containing projects in Pontoon and known domains
+     * @public
+     * @async
      */
     async updateProjectsList() {
         return await fetch(this.getQueryURL('{projects{slug,name}}')).then((response) => response.json()).then(
@@ -374,6 +402,7 @@ class RemotePontoon {
 
     /**
      * Mark all notifications as read both in Pontoon and in the storage.
+     * @public
      */
     markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
@@ -400,6 +429,9 @@ class RemotePontoon {
 
     /**
      * Get locale team selected in Pontoon preferences.
+     * @returns promise that will be fulfilled with the team code from the Pontoon settings page or from options
+     * @public
+     * @async
      */
     async getTeamFromPontoon() {
         const response = await fetch(this.getSettingsUrl(), {credentials: 'include'});

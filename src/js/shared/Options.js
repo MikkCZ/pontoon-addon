@@ -1,3 +1,6 @@
+/**
+ * Encapsulates storing and retrieving user preferences and notifying about their updates.
+ */
 class Options {
     constructor() {
         this._prefix = 'options.';
@@ -25,10 +28,11 @@ class Options {
     }
 
     /**
-     * Check if the given input element value is valid based on the HTML5 validation constraints.
+     * Check if the given input element value is valid based on the HTML5 validation constraints (select or radio are always valid).
      * @param input element to validate
      * @returns {boolean}
      * @private
+     * @static
      */
     static _isValidInput(input) {
         return (input.nodeName.toLowerCase() === 'select') || (input.type === 'radio') || (input.parentElement.querySelector(':valid') === input);
@@ -39,6 +43,7 @@ class Options {
      * @param input element to get value from
      * @returns {*} boolean for checkbox, else input.value
      * @private
+     * @static
      */
     static _getValueFromInput(input) {
         if (input.type !== 'checkbox') {
@@ -64,6 +69,7 @@ class Options {
      * Save the option.
      * @param id of the option
      * @param value to save
+     * @public
      */
     set(id, value) {
         this._saveOption(this._prefix+id, value);
@@ -72,6 +78,7 @@ class Options {
     /**
      * Update options from changed input, if the new value is valid.
      * @param input which value has changed
+     * @public
      */
     updateOptionFromInput(input) {
         if (Options._isValidInput(input)) {
@@ -103,6 +110,7 @@ class Options {
      * @param inputs to set the value
      * @param value to set (boolean for checkbox)
      * @private
+     * @static
      */
     static _setValueToInputs(inputs, value) {
         if (inputs.length === 1) {
@@ -143,6 +151,9 @@ class Options {
 
     /**
      * Load options page values from storage, handling the default values.
+     * @public
+     * @async
+     * @todo This should be moved out of here to not touch the DOM
      */
     async loadAllFromLocalStorage() {
         this._loadAllFromObject(this._defaults());
@@ -154,6 +165,9 @@ class Options {
     /**
      * Get options values for given ids.
      * @param optionIds to retrieve
+     * @returns promise that will be fulfilled with the retrieved options or their default values, if not set
+     * @public
+     * @async
      */
     async get(optionIds) {
         if (typeof optionIds === 'string') {
@@ -179,6 +193,7 @@ class Options {
      * Subscribe to be notified about options changes.
      * @param optionId to watch changes
      * @param callback function to call with the change object
+     * @public
      */
     subscribeToOptionChange(optionId, callback) {
         browser.storage.onChanged.addListener((changes, areaName) => {
@@ -190,6 +205,9 @@ class Options {
 
     /**
      * Reset all options to default values.
+     * @returns promise that will be fulfilled with nothing after the defaults are reset
+     * @public
+     * @async
      */
     async resetDefaults() {
         await browser.storage.local.set(this._defaults());
