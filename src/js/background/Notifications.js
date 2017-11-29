@@ -1,11 +1,22 @@
+/**
+ * Handles native system notifications for new unread notifications in Pontoon.
+ */
 class Notifications {
-
+    /**
+     * Initialize instance and watch for storage updates.
+     * @param options
+     * @param remotePontoon
+     */
     constructor(options, remotePontoon) {
         this._options = options;
         this._remotePontoon = remotePontoon;
         this._watchStorageChanges();
     }
 
+    /**
+     * Check for new unread notifications if the storage gets updated.
+     * @private
+     */
     _watchStorageChanges() {
         this._remotePontoon.subscribeToNotificationsChange(
             (change) => {
@@ -25,6 +36,13 @@ class Notifications {
         );
     }
 
+    /**
+     * Get new unread notifications that the user hasn't been notified about.
+     * @param notificationsData
+     * @returns {Promise.<Array.<number>>} promise that will be fulfilled with the list of unread notification ids
+     * @private
+     * @async
+     */
     async _getNewUnreadNotifications(notificationsData) {
         let unreadNotificationIds = [0];
         if (notificationsData !== undefined) {
@@ -39,6 +57,12 @@ class Notifications {
         return unreadNotificationIds.filter((id) => id > lastKnownUnreadNotificationId);
     }
 
+    /**
+     * Show a system notification about new unread notifications in Pontoon.
+     * @param unreadNotificationIds
+     * @param notificationsData
+     * @private
+     */
     _notifyAboutUnreadNotifications(unreadNotificationIds, notificationsData) {
         const notificationItems = unreadNotificationIds.sort().reverse()
             .map((id) => notificationsData[id])
