@@ -4,7 +4,9 @@
   "description": "Tools for Pontoon and its integration into the browser.",
   "main": "src/manifest.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src",
+    "pretest": "npm run lint",
+    "test": "echo 'No tests!'"
   },
   "repository": {
     "type": "git",
