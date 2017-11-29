@@ -3,6 +3,8 @@ body {
     font-family: sans-serif;
 }
 
+/*** Dialog "window" ***/
+
 #tour-dialog {
     width: 950px;
     height: 400px;
@@ -25,6 +27,8 @@ h1 {
     font-size: 1.5em;
 }
 
+/*** Tour close button ***/
+
 #close {
     display: inline-block;
     position: absolute;
@@ -40,6 +44,8 @@ h1 {
 #close:hover {
     background-color: #eaeaea;
 }
+
+/*** Tour navigation ***/
 
 nav {
     display: inline-block;
@@ -64,6 +70,8 @@ nav li.active {
     cursor: pointer;
     color: #0a84ff;
 }
+
+/*** Tour steps content ***/
 
 main {
     display: inline-block;
@@ -95,7 +103,7 @@ main .image.bottom {
     text-align: center;
 }
 
-.image img {
+main .image img {
     max-height: 100%;
 }
 
