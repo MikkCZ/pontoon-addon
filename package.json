@@ -1,0 +1,22 @@
+{
+  "name": "pontoon-tools",
+  "version": "3.0.1",
+  "description": "Tools for Pontoon and its integration into the browser.",
+  "main": "src/manifest.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MikkCZ/pontoon-tools.git"
+  },
+  "author": "Michal Stanke <mstanke@mozilla.cz>",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/MikkCZ/pontoon-tools/issues"
+  },
+  "homepage": "https://github.com/MikkCZ/pontoon-tools#readme",
+  "devDependencies": {
+    "jsdoc": "^3.5.5"
+  }
+}
