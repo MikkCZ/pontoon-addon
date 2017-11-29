@@ -48,8 +48,8 @@
       "js/shared/Options.js",
       "js/shared/RemotePontoon.js",
       "js/background/RemoteLinks.js",
-      "js/browser-action/ToolbarButton.js",
-      "js/page-action/PageAction.js",
+      "js/background/ToolbarButton.js",
+      "js/background/PageAction.js",
       "js/background/Notifications.js",
       "js/background/background.js"
     ]
