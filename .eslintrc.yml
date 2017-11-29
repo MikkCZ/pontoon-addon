@@ -1,0 +1,14 @@
+extends: eslint:recommended
+
+rules:
+  no-undef: ["off"]
+  no-unused-vars: ["off"]
+  no-console: ["warn"]
+
+parserOptions:
+  ecmaVersion: 2017
+
+env:
+  browser: true
+  es6: true
+  webextensions: true

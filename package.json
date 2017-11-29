@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MikkCZ/pontoon-tools#readme",
   "devDependencies": {
+    "eslint": "^4.12.0",
     "jsdoc": "^3.5.5"
   }
 }
