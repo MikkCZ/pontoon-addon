@@ -1,3 +1,6 @@
+/**
+ * Runs in the background and takes care of proper page actions displaying and project data.
+ */
 class PageAction {
     /**
      * Initialize instance, watch tabs navigation and options changes.
@@ -100,6 +103,7 @@ class PageAction {
      * @param tab to recognize and show page action for
      * @param show optional boolean to force show (true) or hide (false)
      * @private
+     * @async
      */
     async _showPageActionForTab(tab, show) {
         const projectData = await this._getPontoonProjectForPageUrl(tab.url);
@@ -156,7 +160,7 @@ class PageAction {
     /**
      * Get Pontoon project for the loaded page.
      * @param pageUrl loaded in a tab
-     * @returns {object|undefined}
+     * @returns promise that will be fulfilled with project information or undefined, if not project is known for the url
      * @private
      */
     async _getPontoonProjectForPageUrl(pageUrl) {
