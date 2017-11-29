@@ -96,7 +96,7 @@ class Notifications {
             browser.notifications.create({
                 type: 'list',
                 iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
-                title: `You have new unread notifications`,
+                title: 'You have new unread notifications',
                 message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
                 items: notificationItems,
             });

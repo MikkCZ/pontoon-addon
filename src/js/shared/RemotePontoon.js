@@ -311,9 +311,9 @@ class RemotePontoon {
             const teamsListObj = {};
             pontoonData.data.locales.map((locale) => locale.code)
                 .sort()
-                .forEach((code) => {
+                .forEach((code) =>
                     teamsListObj[code] = {code: code, bz_component: bz_components[code]}
-                });
+                );
             browser.storage.local.set({teamsList: teamsListObj});
             return teamsListObj;
         });
@@ -345,20 +345,22 @@ class RemotePontoon {
                 const projectsListObj = {};
                 const projectsMap = new Map();
                 data.data.projects.forEach((project) => projectsMap.set(project.slug, project));
-                [{slug: 'amo', domains: ['addons.mozilla.org']},
-                 {slug: 'copyright-campaign', domains: ['www.changecopyright.org']},
-                 {slug: 'firefox-accounts', domains: ['accounts.firefox.com']},
-                 {slug: 'firefox-screenshots', domains: ['screenshots.firefox.com']},
-                 {slug: 'fundraising', domains: ['donate.mozilla.org']},
-                 {slug: 'mdn', domains: ['developer.mozilla.org']},
-                 {slug: 'mozilla-advocacy', domains: ['advocacy.mozilla.org']},
-                 {slug: 'mozilla-learning-network', domains: ['learning.mozilla.org']},
-                 {slug: 'mozillaorg', domains: ['www.mozilla.org', 'www-dev.allizom.org']},
-                 {slug: 'mozillians', domains: ['mozillians.org']},
-                 {slug: 'sumo', domains: ['support.mozilla.org']},
-                 {slug: 'test-pilot-firefox-send', domains: ['send.firefox.com']},
-                 {slug: 'test-pilot-website', domains: ['testpilot.firefox.com']},
-                 {slug: 'thimble', domains: ['thimble.mozilla.org']}]
+                [
+                    {slug: 'amo', domains: ['addons.mozilla.org']},
+                    {slug: 'copyright-campaign', domains: ['www.changecopyright.org']},
+                    {slug: 'firefox-accounts', domains: ['accounts.firefox.com']},
+                    {slug: 'firefox-screenshots', domains: ['screenshots.firefox.com']},
+                    {slug: 'fundraising', domains: ['donate.mozilla.org']},
+                    {slug: 'mdn', domains: ['developer.mozilla.org']},
+                    {slug: 'mozilla-advocacy', domains: ['advocacy.mozilla.org']},
+                    {slug: 'mozilla-learning-network', domains: ['learning.mozilla.org']},
+                    {slug: 'mozillaorg', domains: ['www.mozilla.org', 'www-dev.allizom.org']},
+                    {slug: 'mozillians', domains: ['mozillians.org']},
+                    {slug: 'sumo', domains: ['support.mozilla.org']},
+                    {slug: 'test-pilot-firefox-send', domains: ['send.firefox.com']},
+                    {slug: 'test-pilot-website', domains: ['testpilot.firefox.com']},
+                    {slug: 'thimble', domains: ['thimble.mozilla.org']}
+                ]
                     .map((project) => Object.assign(project, projectsMap.get(project.slug)))
                     .forEach((project) => projectsListObj[project.slug] = project);
                 browser.storage.local.set({projectsList: projectsListObj});

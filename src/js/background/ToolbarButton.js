@@ -278,7 +278,7 @@ class ToolbarButton {
                     this._hideBadge();
                 }
             }
-         );
+        );
     }
 
     /**

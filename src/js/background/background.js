@@ -1,4 +1,4 @@
-/***
+/**
  * This is the main script for the background "page". Initiates all background staff like toolbar button, page actions
  * or notifications.
  * @requires Options.js, RemotePontoon.js, RemoteLinks.js, ToolbarButton.js, PageAction.js, Notifications.js
@@ -74,7 +74,7 @@ function createContextMenus(projects, team, remotePontoon, remoteLinks) {
                 parentId: mozillaPageContextMenuParent,
                 onclick: (info, tab) => browser.tabs.create({url: remotePontoon.getSearchInProjectUrl(project.slug, info.selectionText)}),
             });
-        })
+        });
     });
 }
 

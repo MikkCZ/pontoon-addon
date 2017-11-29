@@ -65,7 +65,7 @@ class TeamInfoPopup {
      * @private
      */
     _displayTeamInfo(teamData, latestTeamActivity) {
-        if(teamData) {
+        if (teamData) {
             document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
             document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
             const infoList = document.querySelector('#team-info ul');

@@ -112,7 +112,7 @@ class PageAction {
                 const optionKey = 'display_page_action';
                 show = (await this._options.get(optionKey))[optionKey];
             }
-            if(show) {
+            if (show) {
                 this._activatePageAction(tab.id);
                 browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
             } else {
@@ -133,8 +133,8 @@ class PageAction {
     _activatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-              16: "img/pontoon-logo.svg",
-              32: "img/pontoon-logo.svg"
+                16: 'img/pontoon-logo.svg',
+                32: 'img/pontoon-logo.svg'
             },
             tabId: tabId,
         });
@@ -149,8 +149,8 @@ class PageAction {
     _deactivatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-                16: "img/pontoon-logo-gray-alpha.svg",
-                32: "img/pontoon-logo-gray-alpha.svg"
+                16: 'img/pontoon-logo-gray-alpha.svg',
+                32: 'img/pontoon-logo-gray-alpha.svg'
             },
             tabId: tabId,
         });

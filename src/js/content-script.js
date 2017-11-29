@@ -13,7 +13,7 @@ browser.runtime.sendMessage({
 // Notifications bell icon, if any are unread
 const unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon');
 
-/**unreadNotificationsIcon.removeEventListener('click', unreadNotificationsIconClick);
+/**
  * Removes itself as a listener for further clicks and sends message to RemotePontoon.js to mark all notifications as read.
  */
 function unreadNotificationsIconClick() {

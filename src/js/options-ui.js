@@ -61,7 +61,7 @@ Promise.all([
     optionItems
 ]) => {
     // Prepare list of teams
-    updateTeamsList(storageItem[teamsListDataKey])
+    updateTeamsList(storageItem[teamsListDataKey]);
     // Watch for input changes and store the new values.
     document.querySelectorAll('[data-option-id]').forEach((input) =>
         input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
@@ -76,7 +76,7 @@ Promise.all([
         ]).then(([teamsInPontoon, localeTeam]) => {
             updateTeamsList(teamsInPontoon, localeTeam);
             options.updateOptionFromInput(localeTeamSelect);
-        })
+        });
     });
 }).then(() =>
     // Load options values from storage.
