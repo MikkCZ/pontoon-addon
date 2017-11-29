@@ -1,3 +1,6 @@
+/**
+ * Displays notifications in the browser-action popup.
+ */
 class NotificationsPopup {
     /**
      * Initialize instance, load notifications from storage and watch future data updates.

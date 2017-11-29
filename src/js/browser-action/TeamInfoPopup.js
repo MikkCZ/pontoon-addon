@@ -1,3 +1,6 @@
+/**
+ * Display team information in the browser-action popup.
+ */
 class TeamInfoPopup {
     /**
      * Initialize instance, load team info from storage and watch future info updates.
@@ -39,6 +42,7 @@ class TeamInfoPopup {
      * @param data data object
      * @returns {Element} team info strings status list item
      * @private
+     * @static
      */
     static _createTeamStringStatusListItem(data) {
         const listItem = document.createElement('li');
