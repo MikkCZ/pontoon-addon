@@ -45,13 +45,13 @@
   },
   "background": {
     "scripts": [
-      "js/Options.js",
-      "js/RemotePontoon.js",
-      "js/RemoteLinks.js",
-      "js/ToolbarButton.js",
-      "js/PageAction.js",
-      "js/Notifications.js",
-      "js/background.js"
+      "js/shared/Options.js",
+      "js/shared/RemotePontoon.js",
+      "js/background/RemoteLinks.js",
+      "js/browser-action/ToolbarButton.js",
+      "js/page-action/PageAction.js",
+      "js/background/Notifications.js",
+      "js/background/background.js"
     ]
   },
   "content_scripts": [
