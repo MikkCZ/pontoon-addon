@@ -1,7 +1,18 @@
+/**
+ * This is the main script for the content of the toolbar button popup. Registers handlers for actions and initiates
+ * objects taking care of the content.
+ * @requires Options.js, NotificationsPopup.js, TeamInfoPopup.js, RemotePontoon.js
+ */
 'use strict';
 
 const options = new Options();
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
+const localeTeamOptionKey = 'locale_team';
 
+/**
+ * Does everything depending on data about or from Pontoon.
+ * @param remotePontoon RemotePontoon instance used in the toolbar button popup
+ */
 function withRemotePontoon(remotePontoon) {
     // See all notifications
     document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
@@ -29,12 +40,14 @@ function withRemotePontoon(remotePontoon) {
         });
     });
 
-    const notificationsPopup = new NotificationsPopup(remotePontoon);
-    const teamInfoPopup = new TeamInfoPopup(options, remotePontoon);
+    // Create objects to fill and handle the content
+    const notifications = new NotificationsPopup(remotePontoon);
+    const teamInfo = new TeamInfoPopup(options, remotePontoon);
 }
 
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
+/**
+ * With the necessary options, create RemotePontoon instance and trigger actions depending on it.
+ */
 options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then(
     (items) => {
         const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);

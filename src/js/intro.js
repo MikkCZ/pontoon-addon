@@ -1,5 +1,9 @@
+/**
+ * This script contains all the logic of the introduction tour.
+ */
 'use strict';
 
+// Add close button click even handler
 document.getElementById('close').addEventListener('click', () =>
     browser.tabs.query({currentWindow: true, active: true}).then((tabs) => {
         tabs.forEach((tab) => browser.tabs.remove(tab.id));
@@ -8,6 +12,10 @@ document.getElementById('close').addEventListener('click', () =>
 
 const options = new Options();
 
+/**
+ * Data and actions for all steps of the tour
+ * { sectionId: { title, text, image, imageClass, buttonText, buttonOnClick } }
+ */
 const introSections = {
     toolbarButton: {
         title: 'Toolbar button',
@@ -78,13 +86,18 @@ const introSections = {
     },
 };
 
+// Get the main DOM elements of the introduction tour
 const navigation = document.querySelector('nav ul');
 const main = document.querySelector('main');
 const aside = document.querySelector('aside');
 
+/**
+ * For each step specified in the data above, create a navigation item, prepare content and create navigation handlers.
+ */
 Object.keys(introSections).forEach((sectionId) => {
     const section = introSections[sectionId];
 
+    // Create navigation item including the click event handler
     section.navItem = document.createElement('li');
     section.navItem.classList.add(sectionId);
     section.navItem.textContent = section.title;
@@ -98,6 +111,7 @@ Object.keys(introSections).forEach((sectionId) => {
     });
     navigation.appendChild(section.navItem);
 
+    // Create step content (title, text and image)
     section.mainContent = document.createElement('section');
     section.mainContent.classList.add(sectionId);
     if (section.image && section.imageClass === 'right') {
@@ -118,6 +132,7 @@ Object.keys(introSections).forEach((sectionId) => {
     }
     main.appendChild(section.mainContent);
 
+    // Create button for the tour step, including the click event handler
     if (section.buttonText) {
         section.asideButton = document.createElement('button');
         section.asideButton.classList.add(sectionId);
@@ -127,6 +142,7 @@ Object.keys(introSections).forEach((sectionId) => {
     }
 });
 
+// Activate the first step
 [...document.getElementsByClassName(Object.keys(introSections)[0])].forEach(
     elem => elem.classList.add('active')
 );

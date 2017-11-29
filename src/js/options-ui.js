@@ -1,7 +1,17 @@
+/**
+ * This is the main script for the options custom page and updating the options.
+ * @requires Options.js, RemotePontoon.js
+ */
 'use strict';
 
-// Fill update interval options
+const options = new Options();
+const teamsListDataKey = 'teamsList';
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
+const localeTeamOptionKey = 'locale_team';
 const dataUpdateSelect = document.querySelector('select[data-option-id=data_update_interval]');
+const localeTeamSelect = document.querySelector('select[data-option-id=locale_team]');
+
+// Fill update interval options
 [5, 15, 30, 60, 120]
     .map((interval) => {
         const option = document.createElement('option');
@@ -11,8 +21,6 @@ const dataUpdateSelect = document.querySelector('select[data-option-id=data_upda
     })
     .forEach((option) => dataUpdateSelect.appendChild(option));
 
-const options = new Options();
-
 // Handle reset button
 document.getElementById('reset_defaults').addEventListener('click', () =>
     options.resetDefaults().then(
@@ -20,8 +28,11 @@ document.getElementById('reset_defaults').addEventListener('click', () =>
     )
 );
 
-// Fill team options
-const localeTeamSelect = document.querySelector('select[data-option-id=locale_team]');
+/**
+ * Recreate the list of team offered in the options
+ * @param teamsInPontoon list of teams in Pontoon
+ * @param localeTeam the team that should be selected (if not provided, need to be selected later)
+ */
 function updateTeamsList(teamsInPontoon, localeTeam) {
     while (localeTeamSelect.lastChild) {
         localeTeamSelect.removeChild(localeTeamSelect.lastChild);
@@ -39,9 +50,9 @@ function updateTeamsList(teamsInPontoon, localeTeam) {
     }
 }
 
-const teamsListDataKey = 'teamsList';
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
+/**
+ * With the necessary options and data from storage, fill the options and select the current values.
+ */
 Promise.all([
     browser.storage.local.get(teamsListDataKey),
     options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey])
@@ -55,8 +66,8 @@ Promise.all([
     document.querySelectorAll('[data-option-id]').forEach((input) =>
         input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
     );
-    const remotePontoon = new RemotePontoon(optionItems[pontoonBaseUrlOptionKey], optionItems[localeTeamOptionKey], options);
     // Handle reload button
+    const remotePontoon = new RemotePontoon(optionItems[pontoonBaseUrlOptionKey], optionItems[localeTeamOptionKey], options);
     document.getElementById('load_locale_team').addEventListener('click', () => {
         localeTeamSelect.value = undefined;
         Promise.all([
