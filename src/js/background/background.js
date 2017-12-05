@@ -49,8 +49,7 @@ function createContextMenus(projects, team, remotePontoon, remoteLinks) {
         contexts: ['selection'],
         parentId: mozillaPageContextMenuParent,
         onclick: (info, tab) => {
-            const teamComponent = team.bz_component;
-            browser.tabs.create({url: remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url, teamComponent)});
+            browser.tabs.create({url: remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url, team.code, team.bz_component)});
         },
     });
     browser.contextMenus.remove('sumo-context-menu-search-firefox');

@@ -136,8 +136,10 @@ class ToolbarButton {
     /**
      * Add button context menu.
      * @private
+     * @async
      */
-    _addContextMenu() {
+    async _addContextMenu() {
+        const localeTeam = await this._options.get('locale_team').then((item) => item['locale_team']);
         browser.contextMenus.create({
             title: 'Mark all Notifications as read',
             contexts: ['browser_action'],
@@ -184,7 +186,7 @@ class ToolbarButton {
             title: 'Transvision',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getTransvisionUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getTransvisionUrl(localeTeam)}),
         });
         browser.contextMenus.create({
             title: 'amaGama.locamotion.org',
@@ -218,7 +220,7 @@ class ToolbarButton {
             title: 'Mozilla Style Guides',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl(localeTeam)}),
         });
         browser.contextMenus.create({
             type: 'separator',
@@ -229,19 +231,19 @@ class ToolbarButton {
             title: 'Mozilla l10n Team dashboard',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getElmoDashboardUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getElmoDashboardUrl(localeTeam)}),
         });
         browser.contextMenus.create({
             title: 'Mozilla Web l10n Dashboard',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getWebDashboardUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getWebDashboardUrl(localeTeam)}),
         });
         browser.contextMenus.create({
             title: 'MozillaWiki L10n Team',
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam)}),
         });
         browser.contextMenus.create({
             title: 'Open Pontoon Tools tour',
