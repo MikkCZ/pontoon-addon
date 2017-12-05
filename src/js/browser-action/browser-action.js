@@ -41,7 +41,7 @@ function withRemotePontoon(remotePontoon) {
     });
 
     // Create objects to fill and handle the content
-    const notifications = new NotificationsPopup(remotePontoon);
+    const notifications = new NotificationsPopup(options, remotePontoon);
     const teamInfo = new TeamInfoPopup(options, remotePontoon);
 }
 

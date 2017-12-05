@@ -4,9 +4,11 @@
 class NotificationsPopup {
     /**
      * Initialize instance, load notifications from storage and watch future data updates.
+     * @param options
      * @param remotePontoon
      */
-    constructor(remotePontoon) {
+    constructor(options, remotePontoon) {
+        this._options = options;
         this._remotePontoon = remotePontoon;
 
         this._watchStorageChanges();
@@ -99,12 +101,16 @@ class NotificationsPopup {
      * Display notifications from data from storage.
      * @param notificationsData from storage
      * @private
+     * @async
      */
-    _displayNotifications(notificationsData) {
+    async _displayNotifications(notificationsData) {
         const notificationsList = document.getElementById('notification-list');
         const markAllReadLink = document.querySelector('.notification-list .mark-all-as-read');
         const seeAllLink = document.querySelector('.notification-list .see-all');
         const error = document.getElementById('error');
+
+        const optionKey = 'toolbar_button_popup_always_hide_read_notifications';
+        const hideReadNotifications = await this._options.get(optionKey).then((item) => item[optionKey]);
 
         if (notificationsData !== undefined && Object.keys(notificationsData).length > 0) {
             while (notificationsList.lastChild) {
@@ -112,6 +118,7 @@ class NotificationsPopup {
             }
             Object.keys(notificationsData).sort().reverse()
                 .map((nKey) => notificationsData[nKey])
+                .filter((notification) => notification.unread || !hideReadNotifications)
                 .map((data) => this._createNotificationListItem(data))
                 .forEach((listItem) => notificationsList.appendChild(listItem));
             notificationsList.classList.remove('hidden');

@@ -100,6 +100,7 @@ class Options {
         defaults[`${this._prefix}data_update_interval`] = 15;
         defaults[`${this._prefix}display_toolbar_button_badge`] = true;
         defaults[`${this._prefix}toolbar_button_action`] = 'popup';
+        defaults[`${this._prefix}toolbar_button_popup_always_hide_read_notifications`] = false;
         defaults[`${this._prefix}display_page_action`] = true;
         defaults[`${this._prefix}show_notifications`] = false;
         return defaults;
