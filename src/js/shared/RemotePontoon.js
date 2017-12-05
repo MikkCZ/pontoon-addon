@@ -201,16 +201,24 @@ class RemotePontoon {
         fetch(`${this._baseUrl}/teams/`).then(
             (response) => response.text()
         ).then((allTeamsPageContent) => {
+            const latestActivityObj = {};
             const allTeamsPage = this._domParser.parseFromString(allTeamsPageContent, 'text/html');
-            const latestActivity = [...allTeamsPage.querySelectorAll('.team-list tbody tr')]
-                .filter((row) => row.querySelector('.code a').textContent === this._team)[0]
-                .querySelector('.latest-activity time');
-            if (latestActivity) {
-                const user = latestActivity.dataset.userName;
-                const time = latestActivity.textContent;
-                browser.storage.local.set({latestTeamActivity: {user: user, time: time}});
+            [...allTeamsPage.querySelectorAll('.team-list tbody tr')]
+                .map((row) => {
+                    const latestActivityTime = row.querySelector('.latest-activity time');
+                    return {
+                        team: row.querySelector('.code a').textContent,
+                        user: latestActivityTime !== null ? latestActivityTime.dataset.userName : '',
+                        time: latestActivityTime !== null ? latestActivityTime.textContent : '―',
+                    }
+                })
+                .forEach((teamActivity) => {
+                    latestActivityObj[teamActivity.team] = teamActivity;
+                });
+            if (Object.keys(latestActivityObj).length > 0) {
+                browser.storage.local.set({latestTeamsActivity: latestActivityObj});
             } else {
-                browser.storage.local.remove('latestTeamActivity');
+                browser.storage.local.remove('latestTeamsActivity');
             }
         });
     }

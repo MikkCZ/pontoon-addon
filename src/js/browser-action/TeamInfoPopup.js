@@ -20,17 +20,17 @@ class TeamInfoPopup {
      */
     _loadTeamDataFromStorage() {
         const teamDataKey = 'teamsList';
-        const latestTeamActivityKey = 'latestTeamActivity';
+        const latestTeamsActivityKey = 'latestTeamsActivity';
         Promise.all([
             this._options.get('locale_team').then((item) => item['locale_team']),
             browser.storage.local.get(teamDataKey).then((item) => item[teamDataKey]),
-            browser.storage.local.get(latestTeamActivityKey).then((item) => item[latestTeamActivityKey]),
+            browser.storage.local.get(latestTeamsActivityKey).then((item) => item[latestTeamsActivityKey]),
         ]).then(([
             locale_team,
             teamsList,
-            latestTeamActivity
+            latestTeamsActivity
         ]) => {
-            this._displayTeamInfo(teamsList[locale_team], latestTeamActivity);
+            this._displayTeamInfo(teamsList[locale_team], latestTeamsActivity[locale_team]);
         });
     }
 
