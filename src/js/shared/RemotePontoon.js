@@ -209,8 +209,8 @@ class RemotePontoon {
                     return {
                         team: row.querySelector('.code a').textContent,
                         user: latestActivityTime !== null ? latestActivityTime.dataset.userName : '',
-                        time: latestActivityTime !== null ? latestActivityTime.textContent : '―',
-                    }
+                        date: latestActivityTime !== null ? new Date(latestActivityTime.attributes.datetime.value) : undefined,
+                    };
                 })
                 .forEach((teamActivity) => {
                     latestActivityObj[teamActivity.team] = teamActivity;
