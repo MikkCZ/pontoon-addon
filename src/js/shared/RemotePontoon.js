@@ -125,15 +125,6 @@ class RemotePontoon {
     }
 
     /**
-     * Get team locale code.
-     * @returns {string}
-     * @public
-     */
-    getTeamCode() {
-        return this._team;
-    }
-
-    /**
      * Extract notification data from notification item to data object.
      * @param n notifications list item
      * @returns {{}} notification data object
@@ -257,20 +248,6 @@ class RemotePontoon {
     }
 
     /**
-     * Subscribe to team data change.
-     * @param callback function to call with the new value
-     * @public
-     */
-    subscribeToTeamDataChange(callback) {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'teamData';
-            if (changes[dataKey] !== undefined) {
-                callback(changes[dataKey]);
-            }
-        });
-    }
-
-    /**
      * Update team info in storage.
      * @public
      */
@@ -315,11 +292,13 @@ class RemotePontoon {
                     teamsListObj[locale.code] = {
                         code: locale.code,
                         name: locale.name,
-                        totalStrings: locale.totalStrings,
-                        approvedStrings: locale.approvedStrings,
-                        fuzzyStrings: locale.fuzzyStrings,
-                        missingStrings: locale.missingStrings,
-                        suggestedStrings: locale.totalStrings - (locale.approvedStrings+locale.fuzzyStrings+locale.missingStrings),
+                        strings: {
+                            totalStrings: locale.totalStrings,
+                            approvedStrings: locale.approvedStrings,
+                            fuzzyStrings: locale.fuzzyStrings,
+                            missingStrings: locale.missingStrings,
+                            suggestedStrings: locale.totalStrings - (locale.approvedStrings+locale.fuzzyStrings+locale.missingStrings),
+                        },
                         bz_component: bz_components[locale.code],
                     }
                 );

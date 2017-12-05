@@ -11,18 +11,7 @@ class TeamInfoPopup {
         this._options = options;
         this._remotePontoon = remotePontoon;
 
-        this._watchStorageChanges();
         this._loadTeamDataFromStorage();
-    }
-
-    /**
-     * Update team info when data change in storage.
-     * @private
-     */
-    _watchStorageChanges() {
-        this._remotePontoon.subscribeToTeamDataChange(
-            (change) => this._loadTeamDataFromStorage(change.newValue)
-        );
     }
 
     /**
@@ -30,30 +19,40 @@ class TeamInfoPopup {
      * @private
      */
     _loadTeamDataFromStorage() {
-        const teamDataKey = 'teamData';
+        const teamDataKey = 'teamsList';
         const latestTeamActivityKey = 'latestTeamActivity';
-        browser.storage.local.get([teamDataKey, latestTeamActivityKey]).then(
-            (item) => this._displayTeamInfo(item[teamDataKey], item[latestTeamActivityKey])
-        );
+        Promise.all([
+            this._options.get('locale_team').then((item) => item['locale_team']),
+            browser.storage.local.get(teamDataKey).then((item) => item[teamDataKey]),
+            browser.storage.local.get(latestTeamActivityKey).then((item) => item[latestTeamActivityKey]),
+        ]).then(([
+            locale_team,
+            teamsList,
+            latestTeamActivity
+        ]) => {
+            this._displayTeamInfo(teamsList[locale_team], latestTeamActivity);
+        });
     }
 
     /**
      * Create team info strings status list item from data object.
-     * @param data data object
+     * @param cssClass
+     * @param titleText
+     * @param stringsCount
      * @returns {Element} team info strings status list item
      * @private
      * @static
      */
-    static _createTeamStringStatusListItem(data) {
+    static _createTeamStringStatusListItem(cssClass, titleText, stringsCount) {
         const listItem = document.createElement('li');
-        listItem.classList.add(data.status);
+        listItem.classList.add(cssClass);
         const title = document.createElement('span');
         title.classList.add('title');
-        title.textContent = data.title;
+        title.textContent = titleText;
         listItem.appendChild(title);
         const count = document.createElement('span');
         count.classList.add('count');
-        count.textContent = data.count;
+        count.textContent = stringsCount;
         listItem.appendChild(count);
         return listItem;
     }
@@ -66,8 +65,8 @@ class TeamInfoPopup {
      */
     _displayTeamInfo(teamData, latestTeamActivity) {
         if (teamData) {
-            document.querySelector('#team-info h1 .name').textContent = teamData.teamName;
-            document.querySelector('#team-info h1 .code').textContent = this._remotePontoon.getTeamCode();
+            document.querySelector('#team-info h1 .name').textContent = teamData.name;
+            document.querySelector('#team-info h1 .code').textContent = teamData.code;
             const infoList = document.querySelector('#team-info ul');
             while (infoList.lastChild) {
                 infoList.removeChild(infoList.lastChild);
@@ -86,10 +85,19 @@ class TeamInfoPopup {
                 infoList.appendChild(activityItem);
             }
 
-            Object.keys(teamData.strings)
-                .map((iKey) => teamData.strings[iKey])
-                .map((dataItem) => TeamInfoPopup._createTeamStringStatusListItem(dataItem))
-                .forEach((listItem) => infoList.appendChild(listItem));
+            [
+                {class: 'translated', text: 'translated strings', dataProperty: 'approvedStrings'},
+                {class: 'suggested', text: 'suggested strings', dataProperty: 'suggestedStrings'},
+                {class: 'fuzzy', text: 'fuzzy strings', dataProperty: 'fuzzyStrings'},
+                {class: 'missing', text: 'missing strings', dataProperty: 'missingStrings'},
+                {class: 'all', text: 'all strings', dataProperty: 'totalStrings'}
+            ].map((strings) =>
+                TeamInfoPopup._createTeamStringStatusListItem(strings.class, strings.text, teamData.strings[strings.dataProperty])
+            )
+            .forEach((listItem) => {
+                console.log(listItem.innerHTML);
+                infoList.appendChild(listItem);
+            });
         }
     }
 }

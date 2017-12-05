@@ -37,6 +37,7 @@ class ToolbarButton {
         this._remotePontoon.updateNotificationsData();
 
         this._remotePontoon.updateTeamData();
+        this._remotePontoon.updateTeamsList();
     }
 
     /**
