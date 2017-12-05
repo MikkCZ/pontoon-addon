@@ -305,14 +305,23 @@ class RemotePontoon {
      */
     async updateTeamsList() {
         return await Promise.all([
-            fetch(this.getQueryURL('{locales{code}}')).then((response) => response.json()),
+            fetch(this.getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings}}')).then((response) => response.json()),
             fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
-            pontoonData.data.locales.map((locale) => locale.code)
-                .sort()
-                .forEach((code) =>
-                    teamsListObj[code] = {code: code, bz_component: bz_components[code]}
+            pontoonData.data.locales
+                .sort((locale1, locale2) => locale1.code.localeCompare(locale2.code))
+                .forEach((locale) =>
+                    teamsListObj[locale.code] = {
+                        code: locale.code,
+                        name: locale.name,
+                        totalStrings: locale.totalStrings,
+                        approvedStrings: locale.approvedStrings,
+                        fuzzyStrings: locale.fuzzyStrings,
+                        missingStrings: locale.missingStrings,
+                        suggestedStrings: locale.totalStrings - (locale.approvedStrings+locale.fuzzyStrings+locale.missingStrings),
+                        bz_component: bz_components[locale.code],
+                    }
                 );
             browser.storage.local.set({teamsList: teamsListObj});
             return teamsListObj;
