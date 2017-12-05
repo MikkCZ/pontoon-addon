@@ -31,7 +31,7 @@ document.getElementById('reset_defaults').addEventListener('click', () =>
 /**
  * Recreate the list of team offered in the options
  * @param teamsInPontoon list of teams in Pontoon
- * @param localeTeam the team that should be selected (if not provided, need to be selected later)
+ * @param localeTeam the team that should be selected
  */
 function updateTeamsList(teamsInPontoon, localeTeam) {
     while (localeTeamSelect.lastChild) {
@@ -45,9 +45,7 @@ function updateTeamsList(teamsInPontoon, localeTeam) {
             return option;
         })
         .forEach((option) => localeTeamSelect.appendChild(option));
-    if (localeTeam) {
-        localeTeamSelect.value = localeTeam;
-    }
+    localeTeamSelect.value = localeTeam;
 }
 
 /**
@@ -72,10 +70,13 @@ Promise.all([
         localeTeamSelect.value = undefined;
         Promise.all([
             remotePontoon.updateTeamsList(),
-            remotePontoon.getTeamFromPontoon()
-        ]).then(([teamsInPontoon, localeTeam]) => {
-            updateTeamsList(teamsInPontoon, localeTeam);
-            options.updateOptionFromInput(localeTeamSelect);
+            remotePontoon.getTeamFromPontoon(),
+            options.get('locale_team').then((item) => item['locale_team']),
+        ]).then(([teamsInPontoon, localeTeamFromPontoon, localeTeamFromOptions]) => {
+            updateTeamsList(teamsInPontoon, localeTeamFromPontoon || localeTeamFromOptions);
+            if (localeTeamFromPontoon && localeTeamFromPontoon !== localeTeamFromOptions) {
+                options.updateOptionFromInput(localeTeamSelect);
+            }
         });
     });
 }).then(() =>

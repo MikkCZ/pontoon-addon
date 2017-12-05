@@ -372,6 +372,7 @@ class RemotePontoon {
     async getTeamFromPontoon() {
         const response = await fetch(this.getSettingsUrl(), {credentials: 'include'});
         const text = await response.text();
-        return this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language').dataset['code'] || this._team;
+        const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
+        return language !== null ? language.dataset['code'] : undefined;
     }
 }
