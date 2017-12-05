@@ -36,7 +36,7 @@ class ToolbarButton {
         this._hideBadge();
         this._remotePontoon.updateNotificationsData();
 
-        this._remotePontoon.updateTeamData();
+        this._remotePontoon.updateLatestTeamActivity();
         this._remotePontoon.updateTeamsList();
     }
 

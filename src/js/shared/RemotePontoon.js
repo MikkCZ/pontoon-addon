@@ -194,72 +194,13 @@ class RemotePontoon {
     }
 
     /**
-     * Get text contained directly in the element (ignore content of children).
-     * @param element
-     * @returns {string}
-     * @private
-     * @static
-     */
-    static _getTextFromElementWithoutChildrenText(element) {
-        const text = [...element.childNodes]
-            .filter((child) => child.nodeName === '#text')
-            .map((child) => child.textContent.trim())
-            .find((text) => text.length > 0);
-        if (text !== undefined) {
-            return text;
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Extract strings status data from list item to data object.
-     * @param item list item
-     * @returns {{}} string status data object
-     * @private
-     * @static
-     */
-    static _createTeamStringStatusObject(item) {
-        const iObj = {};
-        iObj.status = item.getAttribute('class');
-        iObj.title = RemotePontoon._getTextFromElementWithoutChildrenText(item);
-        iObj.count = item.querySelector('.value').textContent;
-        return iObj;
-    }
-
-    /**
-     * Update team info in storage from team page content.
-     * @param teamPageContent
-     * @private
-     */
-    _updateDataFromTeamPageContent(teamPageContent) {
-        const teamPage = this._domParser.parseFromString(teamPageContent, 'text/html');
-        if (teamPage.querySelector('#heading .legend')) {
-            const teamDataObj = {};
-            teamDataObj.teamName = teamPage.querySelector('h1 .None').textContent;
-            teamDataObj.strings = {};
-            [...teamPage.querySelectorAll('#heading .legend li')]
-                .map((item) => RemotePontoon._createTeamStringStatusObject(item))
-                .forEach((iObj) => teamDataObj.strings[iObj.status] = iObj);
-            browser.storage.local.set({teamData: teamDataObj});
-        } else {
-            browser.storage.local.set({teamData: undefined});
-        }
-    }
-
-    /**
-     * Update team info in storage.
+     * Update latest team activity in storage.
      * @public
      */
-    updateTeamData() {
-        Promise.all([
-            fetch(this.getTeamPageUrl()).then((response) => response.text()),
-            fetch(`${this._baseUrl}/teams/`).then((response) => response.text()),
-        ]).then(([
-            teamPageContent,
-            allTeamsPageContent
-        ]) => {
-            this._updateDataFromTeamPageContent(teamPageContent);
+    updateLatestTeamActivity() {
+        fetch(`${this._baseUrl}/teams/`).then(
+            (response) => response.text()
+        ).then((allTeamsPageContent) => {
             const allTeamsPage = this._domParser.parseFromString(allTeamsPageContent, 'text/html');
             const latestActivity = [...allTeamsPage.querySelectorAll('.team-list tbody tr')]
                 .filter((row) => row.querySelector('.code a').textContent === this._team)[0]
@@ -366,9 +307,6 @@ class RemotePontoon {
             switch (request.type) {
                 case 'pontoon-page-loaded':
                     this._updateNotificationsDataFromPageContent(request.value);
-                    if (request.url === this.getTeamPageUrl()) {
-                        this._updateDataFromTeamPageContent(request.value);
-                    }
                     break;
                 case 'mark-all-notifications-as-read-from-page':
                     this.markAllNotificationsAsRead();
