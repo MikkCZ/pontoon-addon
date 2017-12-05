@@ -17,7 +17,7 @@ rules:
   spaced-comment: ["warn"]
   no-undef: ["off"]
   no-unused-vars: ["off"]
-  no-console: ["warn"]
+  no-console: ["error", { "allow": ["error"] }]
 
 parserOptions:
   ecmaVersion: 2017
