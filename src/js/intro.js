@@ -42,7 +42,7 @@ const introSections = {
                 type: 'basic',
                 iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
                 title: 'System notifications are enabled',
-                message: 'You can be disable them again in the add-on options.',
+                message: 'You can disable them again in the add-on options.',
             });
         },
     },
