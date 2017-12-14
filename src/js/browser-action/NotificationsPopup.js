@@ -116,7 +116,9 @@ class NotificationsPopup {
             while (notificationsList.lastChild) {
                 notificationsList.removeChild(notificationsList.lastChild);
             }
-            Object.keys(notificationsData).sort().reverse()
+            Object.keys(notificationsData)
+                .map((nKey) => parseInt(nKey))
+                .sort((a, b) => a - b).reverse()
                 .map((nKey) => notificationsData[nKey])
                 .filter((notification) => notification.unread || !hideReadNotifications)
                 .map((data) => this._createNotificationListItem(data))
