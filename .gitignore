@@ -1,3 +1,4 @@
+build-chrome/*
 web-ext-artifacts/*
 *.xpi
 *.zip

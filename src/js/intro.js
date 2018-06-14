@@ -86,6 +86,10 @@ const introSections = {
     },
 };
 
+if (!browser.extension.getURL('/').startsWith('moz-extension:')) {
+    delete introSections.pageAction;
+}
+
 // Get the main DOM elements of the introduction tour
 const navigation = document.querySelector('nav ul');
 const main = document.querySelector('main');

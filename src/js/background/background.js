@@ -127,6 +127,8 @@ Promise.all([
 
     // Create toolbar button, page action and object handling system notifications
     const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
-    const pageAction = new PageAction(options, remotePontoon);
+    if (typeof PageAction === 'function') {
+        const pageAction = new PageAction(options, remotePontoon);
+    }
     const notifications = new Notifications(options, remotePontoon);
 });
