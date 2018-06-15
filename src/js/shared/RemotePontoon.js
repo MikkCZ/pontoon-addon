@@ -69,9 +69,10 @@ class RemotePontoon {
      * Get team bugs list URL.
      * @returns {string}
      * @public
+     * @todo add utm_source, see https://github.com/MikkCZ/pontoon-tools/pull/76#discussion_r195809548
      */
     getTeamBugsUrl() {
-        return `${this._baseUrl}/${this._team}/bugs/?utm_source=pontoon-tools`;
+        return `${this._baseUrl}/${this._team}/bugs/`;
     }
 
     /**
@@ -184,7 +185,7 @@ class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        fetch(this.getNotificationsUrl(), {
+        fetch(`${this.getNotificationsUrl()}?utm_source=pontoon-tools-automation`, {
             credentials: 'include',
         }).then(
             (response) => response.text()
@@ -198,7 +199,7 @@ class RemotePontoon {
      * @public
      */
     updateLatestTeamActivity() {
-        fetch(`${this._baseUrl}/teams/`).then(
+        fetch(`${this._baseUrl}/teams/?utm_source=pontoon-tools-automation`).then(
             (response) => response.text()
         ).then((allTeamsPageContent) => {
             const latestActivityObj = {};
@@ -370,7 +371,7 @@ class RemotePontoon {
      * @async
      */
     async getTeamFromPontoon() {
-        const response = await fetch(this.getSettingsUrl(), {credentials: 'include'});
+        const response = await fetch(`${this.getSettingsUrl()}?utm_source=pontoon-tools-automation`, {credentials: 'include'});
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
         return language !== null ? language.dataset['code'] : undefined;
