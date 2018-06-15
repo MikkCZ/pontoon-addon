@@ -11,21 +11,10 @@ class PageAction {
         this._options = options;
         this._remotePontoon = remotePontoon;
 
-        this._watchOptionsUpdates();
         this._watchStorageChanges();
         this._watchTabsUpdates();
         this._listenToMessagesFromPageAction();
         this._refreshAllTabsPageAction();
-    }
-
-    /**
-     * Keep click action in sync with options.
-     * @private
-     */
-    _watchOptionsUpdates() {
-        this._options.subscribeToOptionChange('display_page_action', (change) =>
-            this._refreshAllTabsPageAction(change.newValue)
-        );
     }
 
     /**
@@ -77,48 +66,24 @@ class PageAction {
     }
 
     /**
-     * Refresh page action for all tab.
-     * @param show optional boolean to force show (true) or hide (false)
+     * Refresh page action for all tabs.
      * @private
      */
-    _refreshAllTabsPageAction(show) {
-        const optionKey = 'display_page_action';
-        Promise.all([
-            browser.tabs.query({}),
-            this._options.get(optionKey)
-        ]).then(([
-            tabs,
-            optionItem
-        ]) => {
-            if (show === undefined) {
-                tabs.forEach((tab) => this._showPageActionForTab(tab, optionItem[optionKey]));
-            } else {
-                tabs.forEach((tab) => this._showPageActionForTab(tab, show));
-            }
-        });
+    _refreshAllTabsPageAction() {
+        browser.tabs.query({}).then((tabs) => tabs.forEach((tab) => this._showPageActionForTab(tab)));
     }
 
     /**
      * Show page action if the tab is recognized.
      * @param tab to recognize and show page action for
-     * @param show optional boolean to force show (true) or hide (false)
      * @private
      * @async
      */
-    async _showPageActionForTab(tab, show) {
+    async _showPageActionForTab(tab) {
         const projectData = await this._getPontoonProjectForPageUrl(tab.url);
         if (projectData) {
-            if (show === undefined) {
-                const optionKey = 'display_page_action';
-                show = (await this._options.get(optionKey))[optionKey];
-            }
-            if (show) {
-                this._activatePageAction(tab.id);
-                browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
-            } else {
-                this._deactivatePageAction(tab.id);
-                browser.pageAction.setTitle({tabId: tab.id, title: 'Pontoon Tools page action is disabled'});
-            }
+            this._activatePageAction(tab.id);
+            browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
         } else {
             this._deactivatePageAction(tab.id);
             browser.pageAction.setTitle({tabId: tab.id, title: 'No project for this page'});
