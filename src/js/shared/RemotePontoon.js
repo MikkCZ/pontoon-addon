@@ -31,19 +31,27 @@ class RemotePontoon {
 
     /**
      * Get notifications page URL.
+     * @param utm_source to include into the URL
      * @returns {string}
      * @public
      */
-    getNotificationsUrl() {
+    getNotificationsUrl(utm_source) {
+        if (utm_source !== undefined) {
+            return `${this._notificationsUrl}?utm_source=${utm_source}`;
+        }
         return this._notificationsUrl;
     }
 
     /**
      * Get settings page URL.
+     * @param utm_source to include into the URL
      * @returns {string}
      * @public
      */
-    getSettingsUrl() {
+    getSettingsUrl(utm_source) {
+        if (utm_source !== undefined) {
+            return `${this._baseUrl}/settings/?utm_source=${utm_source}`;
+        }
         return `${this._baseUrl}/settings/`;
     }
 
@@ -104,6 +112,19 @@ class RemotePontoon {
      */
     getSearchInFirefoxProjectUrl(textToSearch) {
         return this.getSearchInProjectUrl('firefox', textToSearch);
+    }
+
+    /**
+     * Get URL of the list of teams.
+     * @param utm_source to include into the URL
+     * @returns {string}
+     * @public
+     */
+    getTeamsListUrl(utm_source) {
+        if (utm_source !== undefined) {
+            return `${this._baseUrl}/teams/?utm_source=${utm_source}`;
+        }
+        return `${this._baseUrl}/teams/`;
     }
 
     /**
@@ -185,7 +206,7 @@ class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        fetch(`${this.getNotificationsUrl()}?utm_source=pontoon-tools-automation`, {
+        fetch(this.getNotificationsUrl('pontoon-tools-automation'), {
             credentials: 'include',
         }).then(
             (response) => response.text()
@@ -199,7 +220,7 @@ class RemotePontoon {
      * @public
      */
     updateLatestTeamActivity() {
-        fetch(`${this._baseUrl}/teams/?utm_source=pontoon-tools-automation`).then(
+        fetch(this.getTeamsListUrl('pontoon-tools-automation')).then(
             (response) => response.text()
         ).then((allTeamsPageContent) => {
             const latestActivityObj = {};
@@ -371,7 +392,7 @@ class RemotePontoon {
      * @async
      */
     async getTeamFromPontoon() {
-        const response = await fetch(`${this.getSettingsUrl()}?utm_source=pontoon-tools-automation`, {credentials: 'include'});
+        const response = await fetch(this.getSettingsUrl('pontoon-tools-automation'), {credentials: 'include'});
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
         return language !== null ? language.dataset['code'] : undefined;
