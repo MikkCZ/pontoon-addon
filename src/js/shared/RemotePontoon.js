@@ -341,6 +341,9 @@ class RemotePontoon {
                 case 'mark-all-notifications-as-read-from-page':
                     this.markAllNotificationsAsRead();
                     break;
+                case 'mark-all-notifications-as-read-from-browser-action':
+                    this.markAllNotificationsAsRead();
+                    break;
             }
         });
     }
