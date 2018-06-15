@@ -53,7 +53,7 @@ class RemotePontoon {
      * @public
      */
     getMachineryUrl() {
-        return `${this._baseUrl}/machinery/`;
+        return `${this._baseUrl}/machinery/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -62,7 +62,7 @@ class RemotePontoon {
      * @public
      */
     getTeamPageUrl() {
-        return `${this._baseUrl}/${this._team}/`;
+        return `${this._baseUrl}/${this._team}/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -71,7 +71,7 @@ class RemotePontoon {
      * @public
      */
     getTeamBugsUrl() {
-        return `${this._baseUrl}/${this._team}/bugs/`;
+        return `${this._baseUrl}/${this._team}/bugs/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -81,7 +81,7 @@ class RemotePontoon {
      * @public
      */
     getTeamProjectUrl(projectsUrl) {
-        return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`);
+        return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`) + '?utm_source=pontoon-tools';
     }
 
     /**
@@ -92,7 +92,7 @@ class RemotePontoon {
      * @public
      */
     getSearchInProjectUrl(projectSlug, textToSearch) {
-        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(/ /g, '+')}`;
+        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(/ /g, '+')}&utm_source=pontoon-tools`;
     }
 
     /**
