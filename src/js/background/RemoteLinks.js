@@ -17,7 +17,7 @@ class RemoteLinks {
      * @public
      */
     getTransvisionUrl(team) {
-        return `https://transvision.mozfr.org/?locale=${team}`;
+        return `https://transvision.mozfr.org/?locale=${team}&utm_source=pontoon-tools`;
     }
 
     /**
@@ -27,7 +27,7 @@ class RemoteLinks {
      * @public
      */
     getMozillaStyleGuidesUrl(team) {
-        return `https://mozilla-l10n.github.io/styleguides/${team}/`;
+        return `https://mozilla-l10n.github.io/styleguides/${team}/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -37,7 +37,7 @@ class RemoteLinks {
      * @public
      */
     getElmoDashboardUrl(team) {
-        return `https://l10n.mozilla.org/teams/${team}`;
+        return `https://l10n.mozilla.org/teams/${team}?utm_source=pontoon-tools`;
     }
 
     /**
@@ -47,7 +47,7 @@ class RemoteLinks {
      * @public
      */
     getWebDashboardUrl(team) {
-        return `https://l10n.mozilla-community.org/webdashboard/?locale=${team}`;
+        return `https://l10n.mozilla-community.org/webdashboard/?locale=${team}&utm_source=pontoon-tools`;
     }
 
     /**

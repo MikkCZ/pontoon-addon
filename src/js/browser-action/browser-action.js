@@ -17,7 +17,7 @@ function withRemotePontoon(remotePontoon) {
     // See all notifications
     document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
         e.preventDefault();
-        browser.tabs.create({url: remotePontoon.getNotificationsUrl()});
+        browser.tabs.create({url: remotePontoon.getNotificationsUrl('pontoon-tools')});
         window.close();
     });
     // Mark all notifications as read
