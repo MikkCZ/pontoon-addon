@@ -10,7 +10,35 @@ class Notifications {
     constructor(options, remotePontoon) {
         this._options = options;
         this._remotePontoon = remotePontoon;
+
+        this._watchNotificationClicks();
         this._watchStorageChanges();
+    }
+
+    /**
+     * Register a listener for notification clicks.
+     * @private
+     */
+    _watchNotificationClicks() {
+        browser.notifications.onClicked.addListener((notificationId) => this._notificationClick(notificationId));
+    }
+
+    /**
+     * Handle click to a system notification.
+     * @param notificationId corresponding to the Pontoon notification id, if the notification is not grouped
+     * @private
+     */
+    async _notificationClick(notificationId) {
+        const dataKey = 'notificationsData';
+        const item = await browser.storage.local.get(dataKey);
+        const notificationsData = item[dataKey];
+        const notification = notificationsData[notificationId];
+        if (notification && !notification.target) {
+            browser.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.link)});
+        } else {
+            browser.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
+        }
+        browser.notifications.clear(notificationId);
     }
 
     /**
@@ -85,13 +113,17 @@ class Notifications {
                 }
                 return item;
             });
+        const lastNotificationId = unreadNotificationIds.sort().reverse()[0];
         if (notificationItems.length === 1) {
-            browser.notifications.create({
-                type: 'basic',
-                iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
-                title: notificationItems[0].title,
-                message: notificationItems[0].message,
-            });
+            browser.notifications.create(
+                `${lastNotificationId}`,
+                {
+                    type: 'basic',
+                    iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
+                    title: notificationItems[0].title,
+                    message: notificationItems[0].message,
+                }
+            );
         } else {
             browser.notifications.create({
                 type: 'list',
@@ -101,7 +133,6 @@ class Notifications {
                 items: notificationItems,
             });
         }
-        browser.storage.local.set({lastUnreadNotificationId: unreadNotificationIds.sort().reverse()[0]});
+        browser.storage.local.set({lastUnreadNotificationId: lastNotificationId});
     }
 }
-
