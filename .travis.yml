@@ -6,3 +6,24 @@ node_js:
 cache:
   directories:
     - "node_modules"
+
+after_success:
+  - npm run build
+
+before_deploy:
+  - mkdir -p ./web-ext-artifacts/_deploy
+  - mv web-ext-artifacts/mozilla/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-mozilla.zip
+  - mv web-ext-artifacts/chrome/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-chrome.zip
+
+deploy:
+  - provider: releases
+    skip_cleanup: true
+    file_glob: true
+    file: web-ext-artifacts/_deploy/*
+    api_key: $GITHUB_TOKEN
+    on:
+      branch: master
+      tags: true
+
+after_deploy:
+  - npm run clean
