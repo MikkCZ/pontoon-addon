@@ -153,10 +153,6 @@ a,
   background-color: #7bc876;
 }
 
-#team-info li.suggested::before {
-  background-color: #4fc4f6;
-}
-
 #team-info li.fuzzy::before {
   background-color: #fed271;
 }
