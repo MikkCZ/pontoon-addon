@@ -115,6 +115,16 @@ class RemotePontoon {
     }
 
     /**
+     * Get URL to display translation view with all string in given state.
+     * @param status
+     * @returns {string}
+     * @public
+     */
+    getStringsWithStatusSearchUrl(status) {
+        return `${this._baseUrl}/${this._team}/all-projects/all-resources/?status=${status}&utm_source=pontoon-tools`;
+    }
+
+    /**
      * Get URL of the list of teams.
      * @param utm_source to include into the URL
      * @returns {string}

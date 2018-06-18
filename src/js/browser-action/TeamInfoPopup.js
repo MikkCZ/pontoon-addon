@@ -36,24 +36,26 @@ class TeamInfoPopup {
 
     /**
      * Create team info strings status list item from data object.
-     * @param cssClass
+     * @param status
      * @param titleText
      * @param stringsCount
      * @returns {Element} team info strings status list item
      * @private
-     * @static
      */
-    static _createTeamStringStatusListItem(cssClass, titleText, stringsCount) {
+    _createTeamStringStatusListItem(status, titleText, stringsCount) {
         const listItem = document.createElement('li');
-        listItem.classList.add(cssClass);
+        listItem.classList.add(status);
+        const link = document.createElement('a');
+        link.setAttribute('href', this._remotePontoon.getStringsWithStatusSearchUrl(status));
         const title = document.createElement('span');
         title.classList.add('title');
         title.textContent = titleText;
-        listItem.appendChild(title);
+        link.appendChild(title);
         const count = document.createElement('span');
         count.classList.add('count');
         count.textContent = stringsCount;
-        listItem.appendChild(count);
+        link.appendChild(count);
+        listItem.appendChild(link);
         return listItem;
     }
 
@@ -128,14 +130,14 @@ class TeamInfoPopup {
             }
 
             [
-                {class: 'translated', text: 'translated strings', dataProperty: 'approvedStrings'},
-                {class: 'suggested', text: 'suggested strings', dataProperty: 'suggestedStrings'},
-                {class: 'fuzzy', text: 'fuzzy strings', dataProperty: 'fuzzyStrings'},
-                {class: 'missing', text: 'missing strings', dataProperty: 'missingStrings'},
-                {class: 'all', text: 'all strings', dataProperty: 'totalStrings'}
+                {status: 'translated', text: 'translated strings', dataProperty: 'approvedStrings'},
+                {status: 'suggested', text: 'suggested strings', dataProperty: 'suggestedStrings'},
+                {status: 'fuzzy', text: 'fuzzy strings', dataProperty: 'fuzzyStrings'},
+                {status: 'missing', text: 'missing strings', dataProperty: 'missingStrings'},
+                {status: 'all', text: 'all strings', dataProperty: 'totalStrings'}
             ]
                 .map((strings) =>
-                    TeamInfoPopup._createTeamStringStatusListItem(strings.class, strings.text, teamData.strings[strings.dataProperty])
+                    this._createTeamStringStatusListItem(strings.status, strings.text, teamData.strings[strings.dataProperty])
                 )
                 .forEach((listItem) => {
                     infoList.appendChild(listItem);

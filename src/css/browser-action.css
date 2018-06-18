@@ -132,6 +132,14 @@ a,
   color: #aaa;
 }
 
+#team-info li a {
+  color: #ebebeb;
+}
+
+#team-info li a:hover {
+  color: #7bc876;
+}
+
 #team-info li::before {
   display: inline-block;
   content: '';
