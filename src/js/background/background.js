@@ -69,7 +69,7 @@ function createContextMenus(projects, team, remotePontoon, remoteLinks) {
             browser.contextMenus.remove(allProjectsSearchMenuId);
             browser.contextMenus.create({
                 id: allProjectsSearchMenuId,
-                title: `Search for "%s" in Pontoon (all projects)`,
+                title: 'Search for "%s" in Pontoon (all projects)',
                 documentUrlPatterns: [`https://${domain}/*`],
                 contexts: ['selection'],
                 parentId: mozillaPageContextMenuParent,
