@@ -105,13 +105,13 @@ class RemotePontoon {
     }
 
     /**
-     * Get URL to search in Firefox project.
+     * Get URL to search in all projects.
      * @param textToSearch
      * @returns {string}
      * @public
      */
-    getSearchInFirefoxProjectUrl(textToSearch) {
-        return this.getSearchInProjectUrl('firefox', textToSearch);
+    getSearchInAllProjectsUrl(textToSearch) {
+        return this.getSearchInProjectUrl('all-projects', textToSearch);
     }
 
     /**

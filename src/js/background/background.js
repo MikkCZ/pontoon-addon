@@ -52,26 +52,28 @@ function createContextMenus(projects, team, remotePontoon, remoteLinks) {
             browser.tabs.create({url: remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(info.selectionText, tab.url, team.code, team.bz_component)});
         },
     });
-    browser.contextMenus.remove('sumo-context-menu-search-firefox');
-    browser.contextMenus.create({
-        id: 'sumo-page-context-menu-search-firefox',
-        title: 'Search for "%s" in Pontoon (Firefox)',
-        documentUrlPatterns: projects['sumo'].domains.map((domain) => `https://${domain}/*`),
-        contexts: ['selection'],
-        parentId: mozillaPageContextMenuParent,
-        onclick: (info, tab) => browser.tabs.create({url: remotePontoon.getSearchInFirefoxProjectUrl(info.selectionText)}),
-    });
     Object.values(projects).forEach((project) => {
         project.domains.forEach((domain) => {
-            const menuId = `page-context-menu-search-${project.slug}-${domain}`;
-            browser.contextMenus.remove(menuId);
+            const projectSearchMenuId = `page-context-menu-search-${project.slug}-${domain}`;
+            browser.contextMenus.remove(projectSearchMenuId);
             browser.contextMenus.create({
-                id: menuId,
+                id: projectSearchMenuId,
                 title: `Search for "%s" in Pontoon (${project.name})`,
                 documentUrlPatterns: [`https://${domain}/*`],
                 contexts: ['selection'],
                 parentId: mozillaPageContextMenuParent,
                 onclick: (info, tab) => browser.tabs.create({url: remotePontoon.getSearchInProjectUrl(project.slug, info.selectionText)}),
+            });
+
+            const allProjectsSearchMenuId = `page-context-menu-search-all-${domain}`;
+            browser.contextMenus.remove(allProjectsSearchMenuId);
+            browser.contextMenus.create({
+                id: allProjectsSearchMenuId,
+                title: `Search for "%s" in Pontoon (all projects)`,
+                documentUrlPatterns: [`https://${domain}/*`],
+                contexts: ['selection'],
+                parentId: mozillaPageContextMenuParent,
+                onclick: (info, tab) => browser.tabs.create({url: remotePontoon.getSearchInAllProjectsUrl(info.selectionText)}),
             });
         });
     });
