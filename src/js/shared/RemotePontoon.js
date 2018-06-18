@@ -101,7 +101,7 @@ class RemotePontoon {
      * @public
      */
     getSearchInProjectUrl(projectSlug, textToSearch) {
-        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search=${textToSearch.trim().replace(/ /g, '+')}&utm_source=pontoon-tools`;
+        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search="${textToSearch.trim().replace(/ /g, '+')}"&utm_source=pontoon-tools`;
     }
 
     /**
