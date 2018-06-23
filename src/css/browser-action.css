@@ -140,29 +140,31 @@ a,
   color: #7bc876;
 }
 
-#team-info li::before {
+#team-info li.activity::before,
+#team-info li a::before {
   display: inline-block;
   content: '';
   border-radius: 0.1em;
-  width: 0.7em;
-  height: 0.7em;
+  width: 0.9em;
+  height: 0.9em;
   margin-right: 0.5em;
 }
 
-#team-info li.translated::before {
+#team-info li.translated a::before {
   background-color: #7bc876;
 }
 
-#team-info li.suggested::before {
-  background-color: #4fc4f6;
-}
-
-#team-info li.fuzzy::before {
+#team-info li.fuzzy a::before {
   background-color: #fed271;
 }
 
-#team-info li.missing::before {
+#team-info li.missing a::before {
   background-color: #4d5967;
+}
+
+#team-info li.unreviewed a::before {
+  background: center / contain no-repeat url('../img/lightbulb-blue.svg');
+  height: 1em;
 }
 
 #team-info li .title {

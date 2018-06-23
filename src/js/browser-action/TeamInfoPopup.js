@@ -118,6 +118,7 @@ class TeamInfoPopup {
 
             if (latestTeamActivity) {
                 const activityItem = document.createElement('li');
+                activityItem.classList.add('activity');
                 const title = document.createElement('span');
                 title.classList.add('title');
                 title.textContent = 'Activity';
@@ -131,9 +132,9 @@ class TeamInfoPopup {
 
             [
                 {status: 'translated', text: 'translated strings', dataProperty: 'approvedStrings'},
-                {status: 'suggested', text: 'suggested strings', dataProperty: 'suggestedStrings'},
                 {status: 'fuzzy', text: 'fuzzy strings', dataProperty: 'fuzzyStrings'},
                 {status: 'missing', text: 'missing strings', dataProperty: 'missingStrings'},
+                {status: 'unreviewed', text: 'unreviewed strings', dataProperty: 'unreviewedStrings'},
                 {status: 'all', text: 'all strings', dataProperty: 'totalStrings'}
             ]
                 .map((strings) =>
