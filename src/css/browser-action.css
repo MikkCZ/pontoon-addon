@@ -161,6 +161,10 @@ a,
   background-color: #4d5967;
 }
 
+#team-info li.unreviewed::before {
+  background: center / contain no-repeat url('../img/lightbulb-blue.svg');
+}
+
 #team-info li .title {
   text-transform: uppercase;
 }
