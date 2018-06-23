@@ -1,5 +1,5 @@
 # Pontoon Tools
-Pontoon Tools is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) into Firefox or Chromium based browsers. The aim is to ease localization work and provide tools beyond what a web app can do.
+[Pontoon Tools](https://wiki.mozilla.org/L10n:Pontoon-Tools) is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) into Firefox or Chromium based browsers. The aim is to ease localization work and provide tools beyond what a web app can do.
 
 [![Build Status](https://travis-ci.org/MikkCZ/pontoon-tools.svg?branch=master)](https://travis-ci.org/MikkCZ/pontoon-tools) [![Waffle.io - Columns and their card count](https://badge.waffle.io/MikkCZ/pontoon-tools.svg?columns=inbox,backlog,in%20progress)](https://waffle.io/MikkCZ/pontoon-tools)
 
