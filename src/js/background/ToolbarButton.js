@@ -141,24 +141,13 @@ class ToolbarButton {
     async _addContextMenu() {
         const localeTeam = await this._options.get('locale_team').then((item) => item['locale_team']);
         browser.contextMenus.create({
-            title: 'Mark all Notifications as read',
-            contexts: ['browser_action'],
-            onclick: () => this._remotePontoon.markAllNotificationsAsRead(),
-        });
-        browser.contextMenus.create({
             title: 'Reload notifications',
             contexts: ['browser_action'],
             onclick: () => this._refreshDataAndUpdateSchedule(),
         });
         const pontoonPagesMenuId = browser.contextMenus.create({
-            title: 'Pontoon pages',
+            title: 'Pontoon',
             contexts: ['browser_action'],
-        });
-        browser.contextMenus.create({
-            title: 'Home',
-            contexts: ['browser_action'],
-            parentId: pontoonPagesMenuId,
-            onclick: () => browser.tabs.create({url: this._remotePontoon.getBaseUrl()}),
         });
         browser.contextMenus.create({
             title: 'Team page',
@@ -173,32 +162,48 @@ class ToolbarButton {
             onclick: () => browser.tabs.create({url: this._remotePontoon.getTeamBugsUrl()}),
         });
         browser.contextMenus.create({
-            title: 'Machinery',
+            title: 'Search all projects',
             contexts: ['browser_action'],
             parentId: pontoonPagesMenuId,
-            onclick: () => browser.tabs.create({url: this._remotePontoon.getMachineryUrl()}),
+            onclick: () => browser.tabs.create({url: this._remotePontoon.getSearchInAllProjectsUrl()}),
+        });
+        const searchMenuId = browser.contextMenus.create({
+            title: 'Search l10n',
+            contexts: ['browser_action'],
+        });
+        browser.contextMenus.create({
+            title: 'Search in Pontoon',
+            contexts: ['browser_action'],
+            parentId: searchMenuId,
+            onclick: () => browser.tabs.create({url: this._remotePontoon.getSearchInAllProjectsUrl()}),
+        });
+        browser.contextMenus.create({
+            title: 'Transvision',
+            contexts: ['browser_action'],
+            parentId: searchMenuId,
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getTransvisionUrl(localeTeam)}),
+        });
+        browser.contextMenus.create({
+            title: 'Microsoft Terminology Search',
+            contexts: ['browser_action'],
+            parentId: searchMenuId,
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getMicrosoftTerminologySearchUrl()}),
         });
         const localizationResourcesMenuId = browser.contextMenus.create({
             title: 'Other l10n sources',
             contexts: ['browser_action'],
         });
         browser.contextMenus.create({
-            title: 'Transvision',
+            title: `Mozilla Style Guide (${localeTeam})`,
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getTransvisionUrl(localeTeam)}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl(localeTeam)}),
         });
         browser.contextMenus.create({
-            title: 'amaGama.locamotion.org',
+            title: `L10n:Teams:${localeTeam} - MozillaWiki`,
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getAmaGamaUrl()}),
-        });
-        browser.contextMenus.create({
-            title: 'Microsoft Terminology Search',
-            contexts: ['browser_action'],
-            parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getMicrosoftTerminologySearchUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam)}),
         });
         browser.contextMenus.create({
             type: 'separator',
@@ -217,43 +222,21 @@ class ToolbarButton {
             parentId: localizationResourcesMenuId,
         });
         browser.contextMenus.create({
-            title: 'Mozilla Style Guides',
-            contexts: ['browser_action'],
-            parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaStyleGuidesUrl(localeTeam)}),
-        });
-        browser.contextMenus.create({
-            type: 'separator',
-            contexts: ['browser_action'],
-            parentId: localizationResourcesMenuId,
-        });
-        browser.contextMenus.create({
-            title: 'Mozilla l10n Team dashboard',
+            title: `Mozilla L10n Team Dashboard - ${localeTeam}`,
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
             onclick: () => browser.tabs.create({url: this._remoteLinks.getElmoDashboardUrl(localeTeam)}),
         });
         browser.contextMenus.create({
-            title: 'Mozilla Web l10n Dashboard',
+            title: `Mozilla Web L10n Dashboard - ${localeTeam}`,
             contexts: ['browser_action'],
             parentId: localizationResourcesMenuId,
             onclick: () => browser.tabs.create({url: this._remoteLinks.getWebDashboardUrl(localeTeam)}),
         });
         browser.contextMenus.create({
-            title: 'MozillaWiki L10n Team',
-            contexts: ['browser_action'],
-            parentId: localizationResourcesMenuId,
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam)}),
-        });
-        browser.contextMenus.create({
             title: 'Open Pontoon Tools tour',
             contexts: ['browser_action'],
             onclick: () => browser.tabs.create({url: '/html/intro.html'}),
-        });
-        browser.contextMenus.create({
-            title: 'Pontoon Tools options',
-            contexts: ['browser_action'],
-            onclick: () => browser.runtime.openOptionsPage(),
         });
     }
 

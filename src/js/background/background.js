@@ -92,7 +92,7 @@ Promise.all([
     // Create objects for fetching data from Pontoon and encapsulating remote links.
     const team = optionsItems[localeTeamOptionKey];
     const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], team, options);
-    const remoteLinks = new RemoteLinks(team, options);
+    const remoteLinks = new RemoteLinks();
 
     // Create context menus. For new installations the data are missing and the menus are created by onInstallFunction below.
     if (storageItems[projectsListDataKey] && storageItems[teamsListDataKey]) {

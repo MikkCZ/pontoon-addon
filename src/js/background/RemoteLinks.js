@@ -3,14 +3,6 @@
  */
 class RemoteLinks {
     /**
-     * Initialize instance and watch for options updates.
-     * @param options
-     */
-    constructor(options) {
-        this._options = options;
-    }
-
-    /**
      * Get the Transvision URL for the team.
      * @param team locale
      * @returns {string}
@@ -70,21 +62,12 @@ class RemoteLinks {
     }
 
     /**
-     * Get amaGama search page URL (not team specific).
-     * @returns {string}
-     * @public
-     */
-    getAmaGamaUrl() {
-        return 'https://amagama-live.translatehouse.org/';
-    }
-
-    /**
      * Get Microsoft Terminology search URL (not team specific).
      * @returns {string}
      * @public
      */
     getMicrosoftTerminologySearchUrl() {
-        return 'https://www.microsoft.com/Language/en-US/Search.aspx';
+        return 'https://www.microsoft.com/language/';
     }
 
     /**

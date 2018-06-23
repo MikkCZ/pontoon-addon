@@ -56,15 +56,6 @@ class RemotePontoon {
     }
 
     /**
-     * Get machinery page URL.
-     * @returns {string}
-     * @public
-     */
-    getMachineryUrl() {
-        return `${this._baseUrl}/machinery/?utm_source=pontoon-tools`;
-    }
-
-    /**
      * Get team page URL.
      * @returns {string}
      * @public
@@ -101,7 +92,10 @@ class RemotePontoon {
      * @public
      */
     getSearchInProjectUrl(projectSlug, textToSearch) {
-        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search="${textToSearch.trim().replace(/ /g, '+')}"&utm_source=pontoon-tools`;
+        if (textToSearch !== undefined) {
+            return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search="${textToSearch.trim().replace(/ /g, '+')}"&utm_source=pontoon-tools`;
+        }
+        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -349,10 +343,10 @@ class RemotePontoon {
                     this._updateNotificationsDataFromPageContent(request.value);
                     break;
                 case 'mark-all-notifications-as-read-from-page':
-                    this.markAllNotificationsAsRead();
+                    this._markAllNotificationsAsRead();
                     break;
                 case 'mark-all-notifications-as-read-from-browser-action':
-                    this.markAllNotificationsAsRead();
+                    this._markAllNotificationsAsRead();
                     break;
             }
         });
@@ -375,7 +369,7 @@ class RemotePontoon {
      * Mark all notifications as read both in Pontoon and in the storage.
      * @public
      */
-    markAllNotificationsAsRead() {
+    _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
