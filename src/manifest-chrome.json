@@ -27,7 +27,7 @@
   },
   "background": {
     "scripts": [
-      "js/browser-polyfill.min.js",
+      "vendor/mozilla/browser-polyfill.min.js",
       "js/shared/Options.js",
       "js/shared/RemotePontoon.js",
       "js/background/RemoteLinks.js",
@@ -40,7 +40,7 @@
     {
       "matches": ["https://pontoon.mozilla.org/*"],
       "js": [
-        "js/browser-polyfill.min.js",
+        "vendor/mozilla/browser-polyfill.min.js",
         "js/content-script.js"
       ],
       "run_at": "document_idle"
