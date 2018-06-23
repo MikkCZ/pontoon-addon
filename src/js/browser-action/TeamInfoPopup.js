@@ -118,6 +118,7 @@ class TeamInfoPopup {
 
             if (latestTeamActivity) {
                 const activityItem = document.createElement('li');
+                activityItem.classList.add('activity');
                 const title = document.createElement('span');
                 title.classList.add('title');
                 title.textContent = 'Activity';
