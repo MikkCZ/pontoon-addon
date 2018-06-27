@@ -74,7 +74,7 @@ class NotificationsPopup {
         }
         if (notification.message) {
             const message = document.createElement('div');
-            message.textContent = notification.message;
+            message.innerHTML = notification.message;
             message.classList.add('message');
             listItem.appendChild(message);
         }

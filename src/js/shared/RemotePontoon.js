@@ -168,7 +168,7 @@ class RemotePontoon {
         nObj.verb = n.querySelector('.verb').textContent;
         nObj.timeago = n.querySelector('.timeago').textContent;
         if (n.querySelector('.message')) {
-            nObj.message = n.querySelector('.message').textContent;
+            nObj.message = n.querySelector('.message').innerHTML;
         }
         return nObj;
     }
