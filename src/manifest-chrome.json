@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Pontoon Tools",
   "description": "Tools for Pontoon and its integration into the browser.",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "author": "Michal Stanke",
   "icons": {
     "32": "img/pontoon-logo-32.png",
