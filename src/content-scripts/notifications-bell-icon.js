@@ -1,24 +1,25 @@
 /**
- * This is the content script used for live date updates from loaded Pontoon pages.
+ * This content script syncs the status of the notifications bell icon in Pontoon with the extension.
+ * - https://developer.mozilla.org/Add-ons/WebExtensions/Content_scripts
  */
 'use strict';
 
-// Send page content to RemotePontoon.js to update data live
-browser.runtime.sendMessage({
-    type: 'pontoon-page-loaded',
-    url: document.location.toString(),
-    value: document.documentElement.innerHTML
-});
-
-// Notifications bell icon, if any are unread
+// Notifications bell icon, if there are any unread notifications.
 const unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon');
 
 /**
  * Removes itself as a listener for further clicks and sends message to RemotePontoon.js to mark all notifications as read.
  */
 function unreadNotificationsIconClick() {
-    unreadNotificationsIcon.removeEventListener('click', unreadNotificationsIconClick);
+    removeUnreadNotificationsIconClickListener();
     browser.runtime.sendMessage({type: 'mark-all-notifications-as-read-from-page'});
+}
+
+/**
+ * Remove the notifications icon click listener.
+ */
+function removeUnreadNotificationsIconClickListener() {
+    unreadNotificationsIcon.removeEventListener('click', unreadNotificationsIconClick);
 }
 
 /**
@@ -30,6 +31,7 @@ if (unreadNotificationsIcon !== null) {
     // Listen to message from RemotePontoon.js to mark all notifications as read (change the bell icon color)
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.type === 'mark-all-notifications-as-read-from-extension') {
+            removeUnreadNotificationsIconClickListener();
             document.getElementById('notifications').classList.remove('unread');
         }
     });

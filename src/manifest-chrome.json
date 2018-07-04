@@ -43,7 +43,8 @@
       "matches": ["https://pontoon.mozilla.org/*"],
       "js": [
         "vendor/mozilla/browser-polyfill.min.js",
-        "content/content-script.js"
+        "content-scripts/live-data-provider.js",
+        "content-scripts/notifications-bell-icon.js"
       ],
       "run_at": "document_idle"
     }

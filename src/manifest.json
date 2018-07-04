@@ -59,7 +59,10 @@
   "content_scripts": [
     {
       "matches": ["https://pontoon.mozilla.org/*"],
-      "js": ["content/content-script.js"],
+      "js": [
+        "content-scripts/live-data-provider.js",
+        "content-scripts/notifications-bell-icon.js"
+      ],
       "run_at": "document_idle"
     }
   ]
