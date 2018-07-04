@@ -1,7 +1,7 @@
 /**
  * This is the main script for the background "page". Initiates all background staff like toolbar button, page actions
  * or notifications.
- * @requires Options.js, RemotePontoon.js, RemoteLinks.js, ToolbarButton.js, PageAction.js, Notifications.js
+ * @requires commons/js/Options.js, commons/js/RemotePontoon.js, commons/js/RemoteLinks.js, ToolbarButton.js, PageAction.js, SystemNotifications.js
  */
 'use strict';
 
@@ -128,9 +128,9 @@ Promise.all([
     }
 
     // Create toolbar button, page action and object handling system notifications
-    const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
+    const toolbarButtonBackground = new ToolbarButton(options, remotePontoon, remoteLinks);
+    const systemNotifications = new SystemNotifications(options, remotePontoon);
     if (typeof PageAction === 'function') {
         const pageAction = new PageAction(options, remotePontoon);
     }
-    const notifications = new Notifications(options, remotePontoon);
 });

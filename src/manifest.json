@@ -47,10 +47,10 @@
     "scripts": [
       "commons/js/Options.js",
       "commons/js/RemotePontoon.js",
-      "background/RemoteLinks.js",
+      "commons/js/RemoteLinks.js",
       "background/ToolbarButton.js",
       "background/PageAction.js",
-      "background/Notifications.js",
+      "background/SystemNotifications.js",
       "background/background.js"
     ]
   },
