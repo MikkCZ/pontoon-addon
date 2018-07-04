@@ -27,7 +27,7 @@ options.get([
         // Mark all notifications as read
         document.querySelector('.notification-list .mark-all-as-read').addEventListener('click', (e) => {
             e.preventDefault();
-            browser.runtime.sendMessage({type: 'mark-all-notifications-as-read-from-browser-action'});
+            browser.runtime.sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ});
         });
         // Link to Pontoon when not signed in
         document.querySelector('#error .sign-in').addEventListener('click', (e) => {

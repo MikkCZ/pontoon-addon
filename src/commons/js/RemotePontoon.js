@@ -1,5 +1,6 @@
 /**
  * Encapsulates all communication with Pontoon and contains all information about it.
+ * @requires BackgroundPontoonMessageType.js
  */
 class RemotePontoon {
     /**
@@ -339,13 +340,10 @@ class RemotePontoon {
     _listenToMessagesFromContent() {
         browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
-                case 'pontoon-page-loaded':
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.PAGE_LOADED:
                     this._updateNotificationsDataFromPageContent(request.value);
                     break;
-                case 'mark-all-notifications-as-read-from-page':
-                    this._markAllNotificationsAsRead();
-                    break;
-                case 'mark-all-notifications-as-read-from-browser-action':
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
                     this._markAllNotificationsAsRead();
                     break;
             }
@@ -367,7 +365,7 @@ class RemotePontoon {
 
     /**
      * Mark all notifications as read both in Pontoon and in the storage.
-     * @public
+     * @private
      */
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
@@ -384,7 +382,7 @@ class RemotePontoon {
         ]) => {
             if (response.ok) {
                 pontoonTabs.forEach((tab) =>
-                    browser.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
+                    browser.tabs.sendMessage(tab.id, {type: BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_READ})
                 );
                 Object.values(storageItem[dataKey]).forEach(n => n.unread = false);
                 browser.storage.local.set({notificationsData: storageItem[dataKey]});

@@ -47,6 +47,7 @@
   "background": {
     "scripts": [
       "commons/js/Options.js",
+      "commons/js/BackgroundPontoonMessageType.js",
       "commons/js/RemotePontoon.js",
       "commons/js/RemoteLinks.js",
       "background/DataRefresher.js",
@@ -60,6 +61,7 @@
     {
       "matches": ["https://pontoon.mozilla.org/*"],
       "js": [
+        "commons/js/BackgroundPontoonMessageType.js",
         "content-scripts/live-data-provider.js",
         "content-scripts/notifications-bell-icon.js"
       ],
