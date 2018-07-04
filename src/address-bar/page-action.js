@@ -3,7 +3,7 @@
  */
 'use strict';
 
-// Listen to message from PageAction.js with the project information
+// Listen to message from background/PageAction.js with the project information.
 browser.runtime.onMessage.addListener((response, sender, sendResponse) => {
     switch (response.type) {
         case 'page-action-project-data': {
@@ -20,7 +20,7 @@ browser.runtime.onMessage.addListener((response, sender, sendResponse) => {
     }
 });
 
-// Send a message to PageAction.js to get the project data.
+// Send a message to background/PageAction.js to get the project data.
 // NOTE: The request-response messaging does not work here, as the project data are fetched asynchronously.
 browser.runtime.sendMessage({
     type: 'page-action-opened',

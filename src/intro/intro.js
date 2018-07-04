@@ -1,7 +1,10 @@
 /**
  * This script contains all the logic of the introduction tour.
+ * @requires commons/js/Options.js
  */
 'use strict';
+
+const options = new Options();
 
 // Add close button click even handler
 document.getElementById('close').addEventListener('click', () =>
@@ -9,8 +12,6 @@ document.getElementById('close').addEventListener('click', () =>
         tabs.forEach((tab) => browser.tabs.remove(tab.id));
     })
 );
-
-const options = new Options();
 
 /**
  * Data and actions for all steps of the tour
@@ -86,6 +87,7 @@ const introSections = {
 };
 
 if (!browser.runtime.getURL('/').startsWith('moz-extension:')) {
+    // Address bar button is only supported in Firefox at this moment.
     delete introSections.pageAction;
 }
 

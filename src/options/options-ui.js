@@ -1,6 +1,6 @@
 /**
  * This is the main script for the options custom page and updating the options.
- * @requires Options.js, RemotePontoon.js
+ * @requires commons/js/Options.js, commons/js/RemotePontoon.js
  */
 'use strict';
 

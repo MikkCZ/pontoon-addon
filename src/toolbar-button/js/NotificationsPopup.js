@@ -1,5 +1,6 @@
 /**
  * Displays notifications in the browser-action popup.
+ * @requires commons/js/Options.js, commons/js/RemotePontoon.js
  */
 class NotificationsPopup {
     /**

@@ -1,7 +1,7 @@
 /**
  * This is the main script for the content of the toolbar button popup. Registers handlers for actions and initiates
  * objects taking care of the content.
- * @requires Options.js, NotificationsPopup.js, TeamInfoPopup.js, RemotePontoon.js
+ * @requires commons/js/Options.js, commons/js/RemotePontoon.js, NotificationsPopup.js, TeamInfoPopup.js
  */
 'use strict';
 
