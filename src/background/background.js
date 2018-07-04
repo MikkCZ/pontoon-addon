@@ -116,7 +116,7 @@ Promise.all([
                 details.reason === 'install'
                 || parseInt(details.previousVersion.split('.')[0]) < parseInt(browser.runtime.getManifest().version.split('.')[0])
             ) {
-                browser.tabs.create({url: '/html/intro.html'});
+                browser.tabs.create({url: browser.runtime.getURL('intro/index.html')});
             }
         });
     };

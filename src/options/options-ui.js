@@ -85,7 +85,7 @@ Promise.all([
 );
 
 // Open Pontoon Tools tour
-document.getElementById('open_tour').addEventListener('click', () => browser.tabs.create({url: '/html/intro.html'}));
+document.getElementById('open_tour').addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}));
 
 // Allow remote Pontoon URL change
 document.getElementById('edit_pontoon_base_url').addEventListener('click', () => {

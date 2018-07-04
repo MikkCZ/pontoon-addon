@@ -111,7 +111,7 @@ class ToolbarButton {
         browser.browserAction.onClicked.removeListener(this._openPontoonHomePage);
         switch (buttonAction) {
             case 'popup':
-                browser.browserAction.setPopup({popup: browser.extension.getURL('html/browser-action.html')});
+                browser.browserAction.setPopup({popup: browser.runtime.getURL('toolbar-button/index.html')});
                 break;
             case 'team-page':
                 browser.browserAction.onClicked.addListener(this._openPontoonTeamPage);
@@ -236,7 +236,7 @@ class ToolbarButton {
         browser.contextMenus.create({
             title: 'Open Pontoon Tools tour',
             contexts: ['browser_action'],
-            onclick: () => browser.tabs.create({url: '/html/intro.html'}),
+            onclick: () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}),
         });
     }
 

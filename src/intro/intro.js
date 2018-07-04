@@ -22,7 +22,7 @@ const introSections = {
         text: `After installation is complete, a Pontoon icon will appear in your browser toolbar. When there are new notifications for
                 you, a red badge will appear in its corner. Simply click the icon to see the list of notifications.
                 Below the list there is also an overview of your localization team progress.`,
-        image: '../img/intro/toolbar-button.png',
+        image: 'img/toolbar-button.png',
         imageClass: 'right',
         buttonText: 'Open toolbar button popup',
         buttonOnClick: () => browser.browserAction.openPopup(),
@@ -38,7 +38,7 @@ const introSections = {
             options.set('show_notifications', true);
             browser.notifications.create({
                 type: 'basic',
-                iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
+                iconUrl: browser.runtime.getURL('commons/img/pontoon-logo.svg'),
                 title: 'Pontoon notification',
                 message: 'Similar notification will appear if there is something new in Pontoon. If you click it, related ' +
                         'project or your Pontoon team page will open.',
@@ -50,7 +50,7 @@ const introSections = {
         text: `Page action is a small icon that will appear in your browser address bar on websites that are available
                 for translation on Pontoon. Clicking it will display a list of options to open the project overview
                 in Pontoon or jump to translation view directly.`,
-        image: '../img/intro/page-action.png',
+        image: 'img/page-action.png',
         imageClass: 'bottom',
     },
     contextMenu: {
@@ -59,7 +59,7 @@ const introSections = {
                 highlight the text with you mouse, right-click it and select to find the string in Pontoon, or report it
                 to your team as a bug. If you are a SUMO localizer, you can search for Firefox strings you see
                 in articles the same way.`,
-        image: '../img/intro/context-menu.png',
+        image: 'img/context-menu.png',
         imageClass: 'bottom',
     },
     addonOptions: {
@@ -67,7 +67,7 @@ const introSections = {
         text: `No default settings can fit everyone. In the provided options you can change your localization team,
                 interval for checking new notifications, their appearing in the system notification area or adjust
                 the toolbar button behaviour.`,
-        image: '../img/intro/options.png',
+        image: 'img/options.png',
         imageClass: 'bottom',
         buttonText: 'Open Pontoon Tools options',
         buttonOnClick: () => browser.runtime.openOptionsPage(),
@@ -78,14 +78,14 @@ const introSections = {
                 to ask you for feedback on how Pontoon Tools helps you, or how can it help you even more. You can send
                 a message to our mailing list "dev-l10n@lists.mozilla.org" or create a request in the GitHub
                 repository by clicking the blue button below.`,
-        image: '../img/intro/2-Lions.png',
+        image: 'img/2-Lions.png',
         imageClass: 'bottom',
         buttonText: 'Ask for a feature',
         buttonOnClick: () => browser.tabs.create({url: 'https://github.com/MikkCZ/pontoon-tools/issues'}),
     },
 };
 
-if (!browser.extension.getURL('/').startsWith('moz-extension:')) {
+if (!browser.runtime.getURL('/').startsWith('moz-extension:')) {
     delete introSections.pageAction;
 }
 

@@ -11,10 +11,10 @@
   "version": "3.2.1",
   "author": "Michal Stanke",
   "icons": {
-    "16": "img/pontoon-logo.svg",
-    "48": "img/pontoon-logo.svg",
-    "96": "img/pontoon-logo.svg",
-    "128": "img/pontoon-logo.svg"
+    "16": "commons/img/pontoon-logo.svg",
+    "48": "commons/img/pontoon-logo.svg",
+    "96": "commons/img/pontoon-logo.svg",
+    "128": "commons/img/pontoon-logo.svg"
   },
   "permissions": [
     "https://pontoon.mozilla.org/*",
@@ -27,37 +27,37 @@
     "<all_urls>"
   ],
   "options_ui": {
-    "page": "html/options-ui.html",
+    "page": "options/index.html",
     "browser_style": true
   },
   "browser_action": {
     "default_title": "Pontoon notifications",
-    "default_icon": "img/pontoon-logo.svg",
+    "default_icon": "commons/img/pontoon-logo.svg",
     "browser_style": true
   },
   "page_action": {
     "browser_style": true,
     "default_icon": {
-      "19": "img/pontoon-logo-gray-alpha.svg",
-      "38": "img/pontoon-logo-gray-alpha.svg"
+      "19": "commons/img/pontoon-logo-gray-alpha.svg",
+      "38": "commons/img/pontoon-logo-gray-alpha.svg"
     },
-    "default_popup": "html/page-action.html"
+    "default_popup": "address-bar/index.html"
   },
   "background": {
     "scripts": [
-      "js/shared/Options.js",
-      "js/shared/RemotePontoon.js",
-      "js/background/RemoteLinks.js",
-      "js/background/ToolbarButton.js",
-      "js/background/PageAction.js",
-      "js/background/Notifications.js",
-      "js/background/background.js"
+      "commons/js/Options.js",
+      "commons/js/RemotePontoon.js",
+      "background/RemoteLinks.js",
+      "background/ToolbarButton.js",
+      "background/PageAction.js",
+      "background/Notifications.js",
+      "background/background.js"
     ]
   },
   "content_scripts": [
     {
       "matches": ["https://pontoon.mozilla.org/*"],
-      "js": ["js/content-script.js"],
+      "js": ["content/content-script.js"],
       "run_at": "document_idle"
     }
   ]

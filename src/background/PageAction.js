@@ -98,8 +98,8 @@ class PageAction {
     _activatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-                16: 'img/pontoon-logo.svg',
-                32: 'img/pontoon-logo.svg'
+                16: 'commons/img/pontoon-logo.svg',
+                32: 'commons/img/pontoon-logo.svg'
             },
             tabId: tabId,
         });
@@ -114,8 +114,8 @@ class PageAction {
     _deactivatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-                16: 'img/pontoon-logo-gray-alpha.svg',
-                32: 'img/pontoon-logo-gray-alpha.svg'
+                16: 'commons/img/pontoon-logo-gray-alpha.svg',
+                32: 'commons/img/pontoon-logo-gray-alpha.svg'
             },
             tabId: tabId,
         });
