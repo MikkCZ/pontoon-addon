@@ -21,7 +21,8 @@
     "storage",
     "contextMenus",
     "tabs",
-    "notifications"
+    "notifications",
+    "alarms"
   ],
   "optional_permissions": [
     "<all_urls>"
@@ -48,6 +49,7 @@
       "commons/js/Options.js",
       "commons/js/RemotePontoon.js",
       "commons/js/RemoteLinks.js",
+      "background/DataRefresher.js",
       "background/ToolbarButton.js",
       "background/PageAction.js",
       "background/SystemNotifications.js",
