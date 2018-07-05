@@ -5,17 +5,15 @@
 class PageAction {
     /**
      * Initialize instance, watch tabs navigation and options changes.
-     * @param options
      * @param remotePontoon
      */
-    constructor(options, remotePontoon) {
-        this._options = options;
+    constructor(remotePontoon) {
         this._remotePontoon = remotePontoon;
 
         this._watchStorageChanges();
         this._watchTabsUpdates();
         this._listenToMessagesFromPageAction();
-        this._refreshAllTabsPageAction();
+        this._refreshAllTabsPageActions();
     }
 
     /**
@@ -24,7 +22,7 @@ class PageAction {
      */
     _watchStorageChanges() {
         this._remotePontoon.subscribeToProjectsListChange(
-            (change) => this._refreshAllTabsPageAction()
+            (change) => this._refreshAllTabsPageActions()
         );
     }
 
@@ -42,7 +40,8 @@ class PageAction {
                         return {
                             name: projectData.name,
                             pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
-                            translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),                                   };
+                            translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
+                        };
                     });
             }
         });
@@ -64,7 +63,7 @@ class PageAction {
      * Refresh page action for all tabs.
      * @private
      */
-    _refreshAllTabsPageAction() {
+    _refreshAllTabsPageActions() {
         browser.tabs.query({}).then((tabs) => tabs.forEach((tab) => this._showPageActionForTab(tab)));
     }
 
@@ -107,13 +106,7 @@ class PageAction {
      * @private
      */
     _deactivatePageAction(tabId) {
-        browser.pageAction.setIcon({
-            path: {
-                16: 'commons/img/pontoon-logo-gray-alpha.svg',
-                32: 'commons/img/pontoon-logo-gray-alpha.svg'
-            },
-            tabId: tabId,
-        });
+        browser.pageAction.setIcon({tabId: tabId});
         browser.pageAction.hide(tabId);
     }
 

@@ -127,11 +127,13 @@ Promise.all([
         onInstallFunction(newInstallationDetails);
     }
 
-    // Create toolbar button, page action and object handling system notifications
-    const dataRefresher = new DataRefresher(options, remotePontoon);
-    const toolbarButtonBackground = new ToolbarButton(options, remotePontoon, remoteLinks, dataRefresher);
+    // Create background objects for toolbar button, system notifications, page actions and data refreshing.
+    const toolbarButton = new ToolbarButton(options, remotePontoon);
     const systemNotifications = new SystemNotifications(options, remotePontoon);
     if (typeof PageAction === 'function') {
-        const pageAction = new PageAction(options, remotePontoon);
+        const pageAction = new PageAction(remotePontoon);
     }
+
+    const dataRefresher = new DataRefresher(options, remotePontoon);
+    const toolbarButtonContextMenu = new ToolbarButtonContextMenu(options, remotePontoon, remoteLinks, dataRefresher, toolbarButton);
 });

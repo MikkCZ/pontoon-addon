@@ -136,9 +136,9 @@ class RemotePontoon {
      * Get URL for the given query.
      * @param query
      * @returns {string}
-     * @public
+     * @private
      */
-    getQueryURL(query) {
+    _getQueryURL(query) {
         return `${this._baseUrl}/graphql?query=${query}`;
     }
 
@@ -258,7 +258,7 @@ class RemotePontoon {
      */
     async updateTeamsList() {
         return await Promise.all([
-            fetch(this.getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}')).then((response) => response.json()),
+            fetch(this._getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}')).then((response) => response.json()),
             fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
@@ -304,7 +304,7 @@ class RemotePontoon {
      * @async
      */
     async updateProjectsList() {
-        return await fetch(this.getQueryURL('{projects{slug,name}}')).then((response) => response.json()).then(
+        return await fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()).then(
             (data) => {
                 const projectsListObj = {};
                 const projectsMap = new Map();

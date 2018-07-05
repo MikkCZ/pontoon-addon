@@ -16,6 +16,8 @@ class DataRefresher {
         this._listenToAlarm();
         this._watchOptionsUpdates();
         this._setupAlarm();
+
+        this.refreshData();
     }
 
     /**
@@ -34,7 +36,7 @@ class DataRefresher {
     _listenToAlarm() {
         browser.alarms.onAlarm.addListener((alarm) => {
             if (alarm.name === this._alarmName) {
-                this._triggerDataRefresh();
+                this.refreshData();
             }
         });
     }

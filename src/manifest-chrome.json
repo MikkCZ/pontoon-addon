@@ -35,6 +35,7 @@
       "commons/js/RemoteLinks.js",
       "background/DataRefresher.js",
       "background/ToolbarButton.js",
+      "background/ToolbarButtonContextMenu.js",
       "background/SystemNotifications.js",
       "background/background.js"
     ]
