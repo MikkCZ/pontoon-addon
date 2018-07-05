@@ -36,20 +36,14 @@ class PageAction {
         browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
                 case 'page-action-opened':
-                    browser.tabs.query({currentWindow: true, active: true}).then((tab) => {
-                        this._getPontoonProjectForPageUrl(tab[0].url).then((projectData) => {
-                            // NOTE: The request-response messaging does not work here, because we are in async code here.
-                            browser.runtime.sendMessage({
-                                type: 'page-action-project-data',
-                                project: {
-                                    name: projectData.name,
-                                    pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
-                                    translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
-                                }
-                            });
-                        });
+                    return browser.tabs.query({currentWindow: true, active: true}).then((tab) =>
+                        this._getPontoonProjectForPageUrl(tab[0].url)
+                    ).then((projectData) => {
+                        return {
+                            name: projectData.name,
+                            pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
+                            translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),                                   };
                     });
-                    break;
             }
         });
     }
