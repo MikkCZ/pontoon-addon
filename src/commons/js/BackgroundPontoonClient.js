@@ -1,5 +1,5 @@
 /**
- * Encapsulates communication to background/RemotePontoon.js.
+ * Client to communicate with background/RemotePontoon.js. Should be used in all contexts outside of background itself.
  * @requires BackgroundPontoonMessageType.js
  */
 class BackgroundPontoonClient {

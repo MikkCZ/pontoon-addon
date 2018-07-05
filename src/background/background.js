@@ -1,7 +1,7 @@
 /**
- * This is the main script for the background "page". Initiates all background staff like toolbar button, page actions
- * or notifications.
- * @requires commons/js/Options.js, background/RemotePontoon.js, commons/js/RemoteLinks.js, ToolbarButton.js, PageAction.js, SystemNotifications.js
+ * This is the main script for the background "page". Initiates all backend stuff running permanently in background like
+ * toolbar button, page actions or notifications.
+ * @requires commons/js/Options.js, commons/js/RemoteLinks.js, RemotePontoon.js, ToolbarButton.js, PageAction.js, SystemNotifications.js
  */
 'use strict';
 

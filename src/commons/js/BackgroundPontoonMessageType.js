@@ -1,5 +1,5 @@
 /**
- * This is the enum of message type, that can be sent to or from RemotePontoon.js.
+ * The enum of message types, that can be sent to or from RemotePontoon.js.
  */
 'use strict';
 

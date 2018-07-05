@@ -1,5 +1,5 @@
 /**
- * Encapsulates all communication with Pontoon and contains all information about it.
+ * Handles all communication with Pontoon web app and contains all information about it.
  * @requires BackgroundPontoonMessageType.js
  */
 class RemotePontoon {

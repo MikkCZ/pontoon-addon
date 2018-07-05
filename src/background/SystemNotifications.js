@@ -1,6 +1,6 @@
 /**
  * Handles native system notifications for new unread notifications in Pontoon.
- * @requires commons/js/Options.js, background/RemotePontoon.js
+ * @requires commons/js/Options.js, RemotePontoon.js
  */
 class SystemNotifications {
     /**
