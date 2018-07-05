@@ -21,6 +21,13 @@ class DataRefresher {
     }
 
     /**
+     * Trigger refresh of rather 'static' data after add-on is updated or installed.
+     */
+    refreshDataOnInstallOrUpdate() {
+        this._remotePontoon.updateProjectsList();
+    }
+
+    /**
      * Trigger notifications and team data refresh.
      */
     refreshData() {

@@ -1,6 +1,6 @@
 /**
  * Runs in the background and takes care of proper page actions displaying and project data.
- * @requires commons/js/Options.js, RemotePontoon.js
+ * @requires RemotePontoon.js
  */
 class PageAction {
     /**

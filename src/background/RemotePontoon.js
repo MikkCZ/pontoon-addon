@@ -298,6 +298,20 @@ class RemotePontoon {
     }
 
     /**
+     * Subscribe to teams list change.
+     * @param callback function to call with the new value
+     * @public
+     */
+    subscribeToTeamsListChange(callback) {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+            const dataKey = 'teamsList';
+            if (changes[dataKey] !== undefined) {
+                callback(changes[dataKey]);
+            }
+        });
+    }
+
+    /**
      * Update list of projects in storage from Pontoon.
      * @returns promise fulfilled with object containing projects in Pontoon and known domains
      * @public

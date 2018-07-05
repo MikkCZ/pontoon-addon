@@ -50,6 +50,7 @@
       "commons/js/BackgroundPontoonMessageType.js",
       "background/RemotePontoon.js",
       "commons/js/RemoteLinks.js",
+      "background/PageContextMenu.js",
       "background/DataRefresher.js",
       "background/ToolbarButton.js",
       "background/ToolbarButtonContextMenu.js",
