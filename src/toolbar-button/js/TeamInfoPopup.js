@@ -1,16 +1,16 @@
 /**
  * Display team information in the browser-action popup.
- * @requires commons/js/Options.js, commons/js/RemotePontoon.js
+ * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
  */
 class TeamInfoPopup {
     /**
      * Initialize instance, load team info from storage and watch future info updates.
      * @param options
-     * @param remotePontoon
+     * @param backgroundPontoonClient
      */
-    constructor(options, remotePontoon) {
+    constructor(options, backgroundPontoonClient) {
         this._options = options;
-        this._remotePontoon = remotePontoon;
+        this._backgroundPontoonClient = backgroundPontoonClient;
 
         this._loadTeamDataFromStorage();
     }
@@ -47,7 +47,9 @@ class TeamInfoPopup {
         const listItem = document.createElement('li');
         listItem.classList.add(status);
         const link = document.createElement('a');
-        link.setAttribute('href', this._remotePontoon.getStringsWithStatusSearchUrl(status));
+        this._backgroundPontoonClient.getStringsWithStatusSearchUrl(status).then((searchUrl) =>
+            link.setAttribute('href', searchUrl)
+        );
         const title = document.createElement('span');
         title.classList.add('title');
         title.textContent = titleText;

@@ -8,9 +8,14 @@ var BackgroundPontoon = Object.freeze({
         TO_BACKGROUND: {
             PAGE_LOADED: 'pontoon-page-loaded',
             NOTIFICATIONS_READ: 'notifications-read',
+            GET_NOTIFICATIONS_URL: 'get-notifications-url',
+            GET_SIGN_IN_URL: 'get-sign-in-url',
+            GET_TEAM_PAGE_URL: 'get-team-page-url',
+            GET_TEAM_PROJECT_URL: 'get-team-project-url',
+            GET_STRINGS_WITH_STATUS_SEARCH_URL: 'get-strings-with-status-search-url',
         },
         FROM_BACKGROUND: {
-            NOTIFICATIONS_READ: 'notifications-read-in-extension',
+            NOTIFICATIONS_UPDATED: 'notifications-updated',
         },
     }
 });

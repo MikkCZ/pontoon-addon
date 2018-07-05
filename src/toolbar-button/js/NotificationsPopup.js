@@ -1,16 +1,16 @@
 /**
  * Displays notifications in the browser-action popup.
- * @requires commons/js/Options.js, commons/js/RemotePontoon.js
+ * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
  */
 class NotificationsPopup {
     /**
      * Initialize instance, load notifications from storage and watch future data updates.
      * @param options
-     * @param remotePontoon
+     * @param backgroundPontoonClient
      */
-    constructor(options, remotePontoon) {
+    constructor(options, backgroundPontoonClient) {
         this._options = options;
-        this._remotePontoon = remotePontoon;
+        this._backgroundPontoonClient = backgroundPontoonClient;
 
         this._watchStorageChanges();
         this._loadNotificationsFromStorage();
@@ -21,7 +21,7 @@ class NotificationsPopup {
      * @private
      */
     _watchStorageChanges() {
-        this._remotePontoon.subscribeToNotificationsChange(
+        this._backgroundPontoonClient.subscribeToNotificationsChange(
             (change) => this._displayNotifications(change.newValue)
         );
     }
@@ -53,7 +53,9 @@ class NotificationsPopup {
         if (notification.actor) {
             const actorLink = document.createElement('a');
             actorLink.textContent = notification.actor.text;
-            actorLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.actor.link));
+            this._backgroundPontoonClient.getTeamProjectUrl(notification.actor.link).then((teamProjectUrl) =>
+                actorLink.setAttribute('href', teamProjectUrl)
+            );
             listItem.appendChild(actorLink);
         }
         if (notification.verb) {
@@ -64,7 +66,9 @@ class NotificationsPopup {
         if (notification.target) {
             const targetLink = document.createElement('a');
             targetLink.textContent = ` ${notification.target.text}`;
-            targetLink.setAttribute('href', this._remotePontoon.getTeamProjectUrl(notification.target.link));
+            this._backgroundPontoonClient.getTeamProjectUrl(notification.target.link).then((teamProjectUrl) =>
+                actorLink.setAttribute('href', targetLink)
+            );
             listItem.appendChild(targetLink);
         }
         if (notification.timeago) {

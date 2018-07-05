@@ -1,51 +1,44 @@
 /**
  * This is the main script for the content of the toolbar button popup. Registers handlers for actions and initiates
  * objects taking care of the content.
- * @requires commons/js/Options.js, commons/js/RemotePontoon.js, NotificationsPopup.js, TeamInfoPopup.js
+ * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js, NotificationsPopup.js, TeamInfoPopup.js
  */
 'use strict';
 
 const options = new Options();
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
+const backgroundPontoonClient = new BackgroundPontoonClient();
 
-/**
- * With the necessary options, create RemotePontoon instance and trigger actions depending on it.
- */
-options.get([
-    pontoonBaseUrlOptionKey,
-    localeTeamOptionKey
-]).then(
-    (items) => {
-        const remotePontoon = new RemotePontoon(items[pontoonBaseUrlOptionKey], items[localeTeamOptionKey], options);
-        // See all notifications
-        document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
-            e.preventDefault();
-            browser.tabs.create({url: remotePontoon.getNotificationsUrl('pontoon-tools')});
+// See all notifications
+document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
+    e.preventDefault();
+    backgroundPontoonClient.getNotificationsUrl().then((notificationsUrl) => {
+        browser.tabs.create({url: notificationsUrl});
+        window.close();
+    });
+});
+// Mark all notifications as read
+document.querySelector('.notification-list .mark-all-as-read').addEventListener('click', (e) => {
+    e.preventDefault();
+    backgroundPontoonClient.markAllNotificationsAsRead();
+});
+// Link to Pontoon when not signed in
+document.querySelector('#error .sign-in').addEventListener('click', (e) => {
+    e.preventDefault();
+    backgroundPontoonClient.getSignInURL().then((signInUrl) => {
+        browser.tabs.create({url: signInUrl});
+        window.close();
+    });
+});
+// Team page links
+document.querySelectorAll('a.team-page,#team-info h1 a').forEach((hLink) => {
+    hLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        backgroundPontoonClient.getTeamPageUrl().then((teamPageUrl) => {
+            browser.tabs.create({url: teamPageUrl});
             window.close();
         });
-        // Mark all notifications as read
-        document.querySelector('.notification-list .mark-all-as-read').addEventListener('click', (e) => {
-            e.preventDefault();
-            browser.runtime.sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ});
-        });
-        // Link to Pontoon when not signed in
-        document.querySelector('#error .sign-in').addEventListener('click', (e) => {
-            e.preventDefault();
-            browser.tabs.create({url: remotePontoon.getSignInURL()});
-            window.close();
-        });
-        // Team page links
-        document.querySelectorAll('a.team-page,#team-info h1 a').forEach((hLink) => {
-            hLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                browser.tabs.create({url: remotePontoon.getTeamPageUrl()});
-                window.close();
-            });
-        });
+    });
+});
 
-        // Create objects to fill and handle the content
-        const notifications = new NotificationsPopup(options, remotePontoon);
-        const teamInfo = new TeamInfoPopup(options, remotePontoon);
-    }
-);
+const notifications = new NotificationsPopup(options, backgroundPontoonClient);
+const teamInfo = new TeamInfoPopup(options, backgroundPontoonClient);
