@@ -361,6 +361,10 @@ class RemotePontoon {
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL:
                     sendResponse({response: this._getStringsWithStatusSearchUrl(request.args[0])});
                     break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
+                    return this.updateTeamsList();
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
+                    return this._getTeamFromPontoon();
             }
         });
         this.subscribeToNotificationsChange((newNotificationsData) => {
@@ -417,10 +421,10 @@ class RemotePontoon {
     /**
      * Get locale team selected in Pontoon preferences.
      * @returns promise that will be fulfilled with the team code from the Pontoon settings page or from options
-     * @public
+     * @private
      * @async
      */
-    async getTeamFromPontoon() {
+    async _getTeamFromPontoon() {
         const response = await fetch(this.getSettingsUrl('pontoon-tools-automation'), {credentials: 'include'});
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');

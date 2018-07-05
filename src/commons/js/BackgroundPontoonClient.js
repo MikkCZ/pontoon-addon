@@ -74,6 +74,28 @@ class BackgroundPontoonClient {
     }
 
     /**
+     * Update list of teams in storage from Pontoon.
+     * @returns promise fulfilled with sorted list of locale codes
+     * @public
+     * @async
+     */
+    async updateTeamsList() {
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST});
+    }
+
+    /**
+     * Get locale team selected in Pontoon preferences.
+     * @returns promise that will be fulfilled with the team code from the Pontoon settings page or from options
+     * @public
+     * @async
+     */
+    async getTeamFromPontoon() {
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON});
+    }
+
+    /**
      * Update data in storage from Pontoon page content.
      * @param pageUrl
      * @param documentHTML of the page

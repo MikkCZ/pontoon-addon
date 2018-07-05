@@ -1,13 +1,12 @@
 /**
  * This is the main script for the options custom page and updating the options.
- * @requires commons/js/Options.js, commons/js/RemotePontoon.js
+ * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
  */
 'use strict';
 
 const options = new Options();
+const backgroundPontoonClient = new BackgroundPontoonClient();
 const teamsListDataKey = 'teamsList';
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
 const dataUpdateSelect = document.querySelector('select[data-option-id=data_update_interval]');
 const localeTeamSelect = document.querySelector('select[data-option-id=locale_team]');
 
@@ -51,34 +50,13 @@ function updateTeamsList(teamsInPontoon, localeTeam) {
 /**
  * With the necessary options and data from storage, fill the options and select the current values.
  */
-Promise.all([
-    browser.storage.local.get(teamsListDataKey),
-    options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey])
-]).then(([
-    storageItem,
-    optionItems
-]) => {
+browser.storage.local.get(teamsListDataKey).then((storageItem) => {
     // Prepare list of teams
     updateTeamsList(storageItem[teamsListDataKey]);
     // Watch for input changes and store the new values.
     document.querySelectorAll('[data-option-id]').forEach((input) =>
         input.addEventListener('change', (e) => options.updateOptionFromInput(e.target))
     );
-    // Handle reload button
-    const remotePontoon = new RemotePontoon(optionItems[pontoonBaseUrlOptionKey], optionItems[localeTeamOptionKey], options);
-    document.getElementById('load_locale_team').addEventListener('click', () => {
-        localeTeamSelect.value = undefined;
-        Promise.all([
-            remotePontoon.updateTeamsList(),
-            remotePontoon.getTeamFromPontoon(),
-            options.get('locale_team').then((item) => item['locale_team']),
-        ]).then(([teamsInPontoon, localeTeamFromPontoon, localeTeamFromOptions]) => {
-            updateTeamsList(teamsInPontoon, localeTeamFromPontoon || localeTeamFromOptions);
-            if (localeTeamFromPontoon && localeTeamFromPontoon !== localeTeamFromOptions) {
-                options.updateOptionFromInput(localeTeamSelect);
-            }
-        });
-    });
 }).then(() =>
     // Load options values from storage.
     options.loadAllFromLocalStorage()
@@ -86,6 +64,21 @@ Promise.all([
 
 // Open Pontoon Tools tour
 document.getElementById('open_tour').addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}));
+
+// Handle reload button
+document.getElementById('load_locale_team').addEventListener('click', () => {
+    localeTeamSelect.value = undefined;
+    Promise.all([
+        backgroundPontoonClient.updateTeamsList(),
+        backgroundPontoonClient.getTeamFromPontoon(),
+        options.get('locale_team').then((item) => item['locale_team']),
+    ]).then(([teamsInPontoon, localeTeamFromPontoon, localeTeamFromOptions]) => {
+        updateTeamsList(teamsInPontoon, localeTeamFromPontoon || localeTeamFromOptions);
+        if (localeTeamFromPontoon && localeTeamFromPontoon !== localeTeamFromOptions) {
+            options.updateOptionFromInput(localeTeamSelect);
+        }
+    });
+});
 
 // Allow remote Pontoon URL change
 document.getElementById('edit_pontoon_base_url').addEventListener('click', () => {
