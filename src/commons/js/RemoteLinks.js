@@ -1,5 +1,5 @@
 /**
- * Encapsulate all links to remote sources or websites, except those to Pontoon.
+ * Provides all links to remote sources or websites outside of Pontoon.
  */
 class RemoteLinks {
     /**

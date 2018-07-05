@@ -163,7 +163,7 @@ a,
 }
 
 #team-info li.unreviewed a::before {
-  background: center / contain no-repeat url('../img/lightbulb-blue.svg');
+  background: center / contain no-repeat url('img/lightbulb-blue.svg');
   height: 1em;
 }
 

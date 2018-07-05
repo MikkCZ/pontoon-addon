@@ -1,7 +1,8 @@
 /**
  * Handles native system notifications for new unread notifications in Pontoon.
+ * @requires commons/js/Options.js, RemotePontoon.js
  */
-class Notifications {
+class SystemNotifications {
     /**
      * Initialize instance and watch for storage updates.
      * @param options
@@ -119,7 +120,7 @@ class Notifications {
                 `${lastNotificationId}`,
                 {
                     type: 'basic',
-                    iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
+                    iconUrl: browser.runtime.getURL('commons/img/pontoon-logo.svg'),
                     title: notificationItems[0].title,
                     message: notificationItems[0].message,
                 }
@@ -127,7 +128,7 @@ class Notifications {
         } else {
             browser.notifications.create({
                 type: 'list',
-                iconUrl: browser.extension.getURL('/img/pontoon-logo.svg'),
+                iconUrl: browser.runtime.getURL('commons/img/pontoon-logo.svg'),
                 title: 'You have new unread notifications',
                 message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
                 items: notificationItems,

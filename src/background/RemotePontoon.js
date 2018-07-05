@@ -1,5 +1,6 @@
 /**
- * Encapsulates all communication with Pontoon and contains all information about it.
+ * Handles all communication with Pontoon web app and contains all information about it.
+ * @requires BackgroundPontoonMessageType.js
  */
 class RemotePontoon {
     /**
@@ -16,7 +17,7 @@ class RemotePontoon {
         this._team = team;
         this._options = options;
         this._domParser = new DOMParser();
-        this._listenToMessagesFromContent();
+        this._listenToMessagesFromClients();
         this._watchOptionsUpdates();
     }
 
@@ -33,9 +34,9 @@ class RemotePontoon {
      * Get notifications page URL.
      * @param utm_source to include into the URL
      * @returns {string}
-     * @public
+     * @private
      */
-    getNotificationsUrl(utm_source) {
+    _getNotificationsUrl(utm_source) {
         if (utm_source !== undefined) {
             return `${this._notificationsUrl}?utm_source=${utm_source}`;
         }
@@ -76,12 +77,12 @@ class RemotePontoon {
 
     /**
      * Get project URL for the team.
-     * @param projectsUrl general project URL
+     * @param projectUrl general project URL
      * @returns {string} team specific URL
      * @public
      */
-    getTeamProjectUrl(projectsUrl) {
-        return this._baseUrl + projectsUrl.replace('/projects/', `/${this._team}/`) + '?utm_source=pontoon-tools';
+    getTeamProjectUrl(projectUrl) {
+        return this._baseUrl + projectUrl.replace('/projects/', `/${this._team}/`) + '?utm_source=pontoon-tools';
     }
 
     /**
@@ -112,9 +113,9 @@ class RemotePontoon {
      * Get URL to display translation view with all string in given state.
      * @param status
      * @returns {string}
-     * @public
+     * @private
      */
-    getStringsWithStatusSearchUrl(status) {
+    _getStringsWithStatusSearchUrl(status) {
         return `${this._baseUrl}/${this._team}/all-projects/all-resources/?status=${status}&utm_source=pontoon-tools`;
     }
 
@@ -144,9 +145,9 @@ class RemotePontoon {
     /**
      * Get URL to sign in.
      * @returns {string}
-     * @public
+     * @private
      */
-    getSignInURL() {
+    _getSignInURL() {
         return `${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`;
     }
 
@@ -174,15 +175,15 @@ class RemotePontoon {
     }
 
     /**
-     * Update notifications data in storage from notifications page content.
-     * @param notificationsPageContent
+     * Update notifications data in storage from Pontoon page content.
+     * @param pageContent
      * @private
      */
-    _updateNotificationsDataFromPageContent(notificationsPageContent) {
-        const notificationsPage = this._domParser.parseFromString(notificationsPageContent, 'text/html');
-        if (notificationsPage.querySelector('header #notifications')) {
+    _updateNotificationsDataFromPageContent(pageContent) {
+        const page = this._domParser.parseFromString(pageContent, 'text/html');
+        if (page.querySelector('header #notifications')) {
             const notificationsDataObj = {};
-            [...notificationsPage.querySelectorAll('header .notification-item')]
+            [...page.querySelectorAll('header .notification-item')]
                 .map((n) => RemotePontoon._createNotificationsData(n))
                 .forEach((nObj) => notificationsDataObj[nObj.id] = nObj);
             browser.storage.local.set({notificationsData: notificationsDataObj});
@@ -210,7 +211,7 @@ class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        fetch(this.getNotificationsUrl('pontoon-tools-automation'), {
+        fetch(this._getNotificationsUrl('pontoon-tools-automation'), {
             credentials: 'include',
         }).then(
             (response) => response.text()
@@ -333,22 +334,50 @@ class RemotePontoon {
     }
 
     /**
-     * Listen to messages from tabs content to update storage data accordingly.
+     * Listen to messages from commons/js/BackgroundPontoonClient.js.
      * @private
      */
-    _listenToMessagesFromContent() {
+    _listenToMessagesFromClients() {
         browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
-                case 'pontoon-page-loaded':
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.PAGE_LOADED:
                     this._updateNotificationsDataFromPageContent(request.value);
                     break;
-                case 'mark-all-notifications-as-read-from-page':
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
                     this._markAllNotificationsAsRead();
                     break;
-                case 'mark-all-notifications-as-read-from-browser-action':
-                    this._markAllNotificationsAsRead();
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
+                    sendResponse(this._getNotificationsUrl('pontoon-tools'));
                     break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
+                    sendResponse(this._getSignInURL());
+                    break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
+                    sendResponse(this.getTeamPageUrl());
+                    break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL:
+                    sendResponse(this.getTeamProjectUrl(request.args[0]));
+                    break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL:
+                    sendResponse(this._getStringsWithStatusSearchUrl(request.args[0]));
+                    break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
+                    return this.updateTeamsList();
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
+                    return this._getTeamFromPontoon();
             }
+        });
+        this.subscribeToNotificationsChange((newNotificationsData) => {
+            const message = {
+                type: BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED,
+                data: newNotificationsData,
+            };
+            browser.runtime.sendMessage(message);
+            browser.tabs.query({url: this.getBaseUrl() + '/*'}).then(
+                (pontoonTabs) => pontoonTabs.forEach((tab) =>
+                    browser.tabs.sendMessage(tab.id, message)
+                )
+            );
         });
     }
 
@@ -367,7 +396,7 @@ class RemotePontoon {
 
     /**
      * Mark all notifications as read both in Pontoon and in the storage.
-     * @public
+     * @private
      */
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
@@ -383,9 +412,6 @@ class RemotePontoon {
             storageItem
         ]) => {
             if (response.ok) {
-                pontoonTabs.forEach((tab) =>
-                    browser.tabs.sendMessage(tab.id, {type: 'mark-all-notifications-as-read-from-extension'})
-                );
                 Object.values(storageItem[dataKey]).forEach(n => n.unread = false);
                 browser.storage.local.set({notificationsData: storageItem[dataKey]});
             }
@@ -395,10 +421,10 @@ class RemotePontoon {
     /**
      * Get locale team selected in Pontoon preferences.
      * @returns promise that will be fulfilled with the team code from the Pontoon settings page or from options
-     * @public
+     * @private
      * @async
      */
-    async getTeamFromPontoon() {
+    async _getTeamFromPontoon() {
         const response = await fetch(this.getSettingsUrl('pontoon-tools-automation'), {credentials: 'include'});
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');

@@ -1,67 +1,32 @@
 /**
  * Takes care of displaying the toolbar button badge, context menu and if the popup should be open on click or not. Also
  * triggers data refreshing.
- * @todo the data refreshing should be moved out to background.js or some cron task container
+ * @requires commons/js/Options.js, RemotePontoon.js, commons/js/RemoteLinks.js, DataRefresher.js
  */
 class ToolbarButton {
     /**
-     * Initialize instance, add button click action and context menu, load data from Pontoon and schedule data updates
-     * trigger, watch for future data and options changes.
+     * Initialize instance, add button click action and context menu, watch for future data and options changes.
      * @param options
      * @param remotePontoon
      * @param remoteLinks
+     * @param dataRefresher
      */
-    constructor(options, remotePontoon, remoteLinks) {
+    constructor(options, remotePontoon, remoteLinks, dataRefresher) {
         this._options = options;
         this._remotePontoon = remotePontoon;
         this._remoteLinks = remoteLinks;
+        this._dataRefresher = dataRefresher;
         this._defaultTitle = 'Pontoon notifications';
-        this._refreshInterval = undefined;
         this._badgeText = '';
 
         this._openPontoonTeamPage = () => browser.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
-        this._openPontoonHomePage= () => browser.tabs.create({url: this._remotePontoon.getBaseUrl()});
+        this._openPontoonHomePage = () => browser.tabs.create({url: this._remotePontoon.getBaseUrl()});
         this._addOnClickAction();
         this._addContextMenu();
         this._watchStorageChanges();
         this._watchOptionsUpdates();
-        this._refreshDataAndUpdateSchedule();
-    }
 
-    /**
-     * Trigger notifications and team data refresh.
-     * @private
-     */
-    _triggerDataRefresh() {
-        this._hideBadge();
-        this._remotePontoon.updateNotificationsData();
-
-        this._remotePontoon.updateLatestTeamActivity();
-        this._remotePontoon.updateTeamsList();
-    }
-
-    /**
-     * Schedule data update to repeat with given interval.
-     * @param intervalMinutes interval to update in minutes
-     * @private
-     */
-    _scheduleOrUpdateRefreshWithInterval(intervalMinutes) {
-        clearInterval(this._refreshInterval);
-        this._refreshInterval = setInterval(() => this._triggerDataRefresh(), intervalMinutes * 60 * 1000);
-    }
-
-    /**
-     * Schedule data update with interval from options.
-     * @private
-     */
-    _scheduleOrUpdateRefresh() {
-        const optionKey = 'data_update_interval';
-        this._options.get(optionKey).then(
-            (item) => {
-                const intervalMinutes = parseInt(item[optionKey], 10);
-                this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
-            }
-        );
+        this._dataRefresher.refreshData();
     }
 
     /**
@@ -80,14 +45,10 @@ class ToolbarButton {
     }
 
     /**
-     * Keep data update interval and button click action in sync with options.
+     * Keep button click action in sync with options.
      * @private
      */
     _watchOptionsUpdates() {
-        this._options.subscribeToOptionChange('data_update_interval', (change) => {
-            const intervalMinutes = parseInt(change.newValue, 10);
-            this._scheduleOrUpdateRefreshWithInterval(intervalMinutes);
-        });
         this._options.subscribeToOptionChange('toolbar_button_action', (change) =>
             this._setButtonAction(change.newValue)
         );
@@ -111,7 +72,7 @@ class ToolbarButton {
         browser.browserAction.onClicked.removeListener(this._openPontoonHomePage);
         switch (buttonAction) {
             case 'popup':
-                browser.browserAction.setPopup({popup: browser.extension.getURL('html/browser-action.html')});
+                browser.browserAction.setPopup({popup: browser.runtime.getURL('toolbar-button/index.html')});
                 break;
             case 'team-page':
                 browser.browserAction.onClicked.addListener(this._openPontoonTeamPage);
@@ -143,7 +104,10 @@ class ToolbarButton {
         browser.contextMenus.create({
             title: 'Reload notifications',
             contexts: ['browser_action'],
-            onclick: () => this._refreshDataAndUpdateSchedule(),
+            onclick: () => {
+                this._hideBadge();
+                this._dataRefresher.refreshData();
+            }
         });
         const pontoonPagesMenuId = browser.contextMenus.create({
             title: 'Pontoon',
@@ -236,7 +200,7 @@ class ToolbarButton {
         browser.contextMenus.create({
             title: 'Open Pontoon Tools tour',
             contexts: ['browser_action'],
-            onclick: () => browser.tabs.create({url: '/html/intro.html'}),
+            onclick: () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}),
         });
     }
 
@@ -274,14 +238,5 @@ class ToolbarButton {
     _hideBadge() {
         browser.browserAction.setBadgeText({text: ''});
         browser.browserAction.setTitle({title: this._defaultTitle});
-    }
-
-    /**
-     * Reload data and schedule further updates.
-     * @private
-     */
-    _refreshDataAndUpdateSchedule() {
-        this._triggerDataRefresh();
-        this._scheduleOrUpdateRefresh();
     }
 }

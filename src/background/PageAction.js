@@ -1,5 +1,6 @@
 /**
  * Runs in the background and takes care of proper page actions displaying and project data.
+ * @requires commons/js/Options.js, RemotePontoon.js
  */
 class PageAction {
     /**
@@ -35,20 +36,14 @@ class PageAction {
         browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             switch (request.type) {
                 case 'page-action-opened':
-                    browser.tabs.query({currentWindow: true, active: true}).then((tab) => {
-                        this._getPontoonProjectForPageUrl(tab[0].url).then((projectData) => {
-                            // NOTE: The request-response messaging does not work here, because we are in async code here.
-                            browser.runtime.sendMessage({
-                                type: 'page-action-project-data',
-                                project: {
-                                    name: projectData.name,
-                                    pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
-                                    translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
-                                }
-                            });
-                        });
+                    return browser.tabs.query({currentWindow: true, active: true}).then((tab) =>
+                        this._getPontoonProjectForPageUrl(tab[0].url)
+                    ).then((projectData) => {
+                        return {
+                            name: projectData.name,
+                            pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
+                            translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),                                   };
                     });
-                    break;
             }
         });
     }
@@ -98,8 +93,8 @@ class PageAction {
     _activatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-                16: 'img/pontoon-logo.svg',
-                32: 'img/pontoon-logo.svg'
+                16: 'commons/img/pontoon-logo.svg',
+                32: 'commons/img/pontoon-logo.svg'
             },
             tabId: tabId,
         });
@@ -114,8 +109,8 @@ class PageAction {
     _deactivatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-                16: 'img/pontoon-logo-gray-alpha.svg',
-                32: 'img/pontoon-logo-gray-alpha.svg'
+                16: 'commons/img/pontoon-logo-gray-alpha.svg',
+                32: 'commons/img/pontoon-logo-gray-alpha.svg'
             },
             tabId: tabId,
         });

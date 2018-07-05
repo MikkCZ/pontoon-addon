@@ -1,7 +1,7 @@
 /**
- * This is the main script for the background "page". Initiates all background staff like toolbar button, page actions
- * or notifications.
- * @requires Options.js, RemotePontoon.js, RemoteLinks.js, ToolbarButton.js, PageAction.js, Notifications.js
+ * This is the main script for the background "page". Initiates all backend stuff running permanently in background like
+ * toolbar button, page actions or notifications.
+ * @requires commons/js/Options.js, commons/js/RemoteLinks.js, RemotePontoon.js, ToolbarButton.js, PageAction.js, SystemNotifications.js
  */
 'use strict';
 
@@ -116,7 +116,7 @@ Promise.all([
                 details.reason === 'install'
                 || parseInt(details.previousVersion.split('.')[0]) < parseInt(browser.runtime.getManifest().version.split('.')[0])
             ) {
-                browser.tabs.create({url: '/html/intro.html'});
+                browser.tabs.create({url: browser.runtime.getURL('intro/index.html')});
             }
         });
     };
@@ -128,9 +128,10 @@ Promise.all([
     }
 
     // Create toolbar button, page action and object handling system notifications
-    const toolbarButton = new ToolbarButton(options, remotePontoon, remoteLinks);
+    const dataRefresher = new DataRefresher(options, remotePontoon);
+    const toolbarButtonBackground = new ToolbarButton(options, remotePontoon, remoteLinks, dataRefresher);
+    const systemNotifications = new SystemNotifications(options, remotePontoon);
     if (typeof PageAction === 'function') {
         const pageAction = new PageAction(options, remotePontoon);
     }
-    const notifications = new Notifications(options, remotePontoon);
 });
