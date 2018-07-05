@@ -2,7 +2,7 @@
   "applications": {
     "gecko": {
       "id": "pontoon-tools@mikk.cz",
-      "strict_min_version": "55.0"
+      "strict_min_version": "58.0"
     }
   },
   "manifest_version": 2,
