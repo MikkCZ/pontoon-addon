@@ -33,6 +33,8 @@
     "web-ext": "^2.7.0"
   },
   "dependencies": {
+    "moment": "^2.22.2",
+    "moment-duration-format": "^2.2.2",
     "webextension-polyfill": "^0.2.1"
   }
 }

@@ -70,38 +70,17 @@ class TeamInfoPopup {
      * @static
      */
     static _timeAgo(date) {
-        let diff = Math.floor(Math.abs(Date.now() - date)/1000);
-        if (isNaN(diff)) {
+        const dateMoment = moment.utc(date);
+        if (!date || !dateMoment.isValid()) {
             return '―';
         }
-        const diff_years = Math.floor( diff/(60*60*24*365) );
-        diff = diff%(60*60*24*365);
-        const diff_months = Math.floor( diff/(60*60*24*30) );
-        diff = diff%(60*60*24*30);
-        const diff_weeks = Math.floor( diff/(60*60*24*7) );
-        diff = diff%(60*60*24*7);
-        const diff_days = Math.floor( diff/(60*60*24) );
-        diff = diff%(60*60*24);
-        const diff_hrs = Math.floor( diff/(60*60) );
-        diff = diff%(60*60);
-        const diff_mins = Math.floor( diff/60 );
-        const diff_secs = diff%60;
-
-        if (diff_years > 0) {
-            return `${diff_years} years, ${diff_months} months ago`;
-        } else if (diff_months > 0) {
-            return `${diff_months} months, ${diff_weeks} weeks ago`;
-        } else if (diff_weeks > 0) {
-            return `${diff_weeks} weeks, ${diff_days} days ago`;
-        } else if (diff_days > 0) {
-            return `${diff_days} days, ${diff_hrs} hours ago`;
-        } else if (diff_hrs > 0) {
-            return `${diff_hrs} hours ago`;
-        } else if (diff_mins > 0) {
-            return `${diff_mins} minutes ago`;
-        } else {
-            return `${diff_secs} seconds ago`;
-        }
+        const duration = moment.duration(moment.utc().diff(dateMoment));
+        const durationString = duration.format({
+        	template: "Y __, M __, W __, D __, h __, m __, s __",
+        	largest: 2,
+        	minValue: 60,
+        });
+        return `${durationString} ago`;
     }
 
     /**
