@@ -76,9 +76,9 @@ class TeamInfoPopup {
         }
         const duration = moment.duration(moment.utc().diff(dateMoment));
         const durationString = duration.format({
-        	template: "Y __, M __, W __, D __, h __, m __, s __",
-        	largest: 2,
-        	minValue: 60,
+            template: 'Y __, M __, W __, D __, h __, m __, s __',
+            largest: 2,
+            minValue: 60,
         });
         return `${durationString} ago`;
     }
