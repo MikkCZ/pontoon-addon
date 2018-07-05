@@ -1,7 +1,7 @@
 build-chrome/*
+docs/*
 node_modules/*
 web-ext-artifacts/*
 *.xpi
 *.zip
 *~
-

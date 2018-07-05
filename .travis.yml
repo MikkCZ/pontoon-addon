@@ -11,11 +11,18 @@ after_success:
   - npm run build
 
 before_deploy:
+  - npm run doc
   - mkdir -p ./web-ext-artifacts/_deploy
   - mv web-ext-artifacts/mozilla/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-mozilla.zip
   - mv web-ext-artifacts/chrome/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-chrome.zip
 
 deploy:
+  - provider: pages
+    skip-cleanup: true
+    local-dir: docs
+    github-token: $GITHUB_TOKEN
+    on:
+      branch: master
   - provider: releases
     skip_cleanup: true
     file_glob: true
