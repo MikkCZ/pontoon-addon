@@ -1,5 +1,5 @@
 /**
- * Encapsulates communication to commons/js/RemotePontoon.js.
+ * Encapsulates communication to background/RemotePontoon.js.
  * @requires BackgroundPontoonMessageType.js
  */
 class BackgroundPontoonClient {

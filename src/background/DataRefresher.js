@@ -1,6 +1,6 @@
 /**
  * Takes care of regular refreshing notifications and other data from Pontoon.
- * @requires commons/js/Options.js, commons/js/RemotePontoon.js
+ * @requires commons/js/Options.js, background/RemotePontoon.js
  */
 class DataRefresher {
     /**

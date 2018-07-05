@@ -1,7 +1,7 @@
 /**
  * Takes care of displaying the toolbar button badge, context menu and if the popup should be open on click or not. Also
  * triggers data refreshing.
- * @requires commons/js/Options.js, commons/js/RemotePontoon.js, commons/js/RemoteLinks.js, DataRefresher.js
+ * @requires commons/js/Options.js, background/RemotePontoon.js, commons/js/RemoteLinks.js, DataRefresher.js
  */
 class ToolbarButton {
     /**
