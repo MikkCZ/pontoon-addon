@@ -347,19 +347,19 @@ class RemotePontoon {
                     this._markAllNotificationsAsRead();
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
-                    sendResponse({response: this._getNotificationsUrl('pontoon-tools')});
+                    sendResponse(this._getNotificationsUrl('pontoon-tools'));
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
-                    sendResponse({response: this._getSignInURL()});
+                    sendResponse(this._getSignInURL());
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
-                    sendResponse({response: this.getTeamPageUrl()});
+                    sendResponse(this.getTeamPageUrl());
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL:
-                    sendResponse({response: this.getTeamProjectUrl(request.args[0])});
+                    sendResponse(this.getTeamProjectUrl(request.args[0]));
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL:
-                    sendResponse({response: this._getStringsWithStatusSearchUrl(request.args[0])});
+                    sendResponse(this._getStringsWithStatusSearchUrl(request.args[0]));
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
                     return this.updateTeamsList();

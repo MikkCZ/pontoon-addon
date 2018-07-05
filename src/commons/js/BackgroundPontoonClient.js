@@ -12,9 +12,8 @@ class BackgroundPontoonClient {
      * @async
      */
     async getNotificationsUrl() {
-        return (await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL})
-        ).response;
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL});
     }
 
     /**
@@ -24,9 +23,8 @@ class BackgroundPontoonClient {
      * @async
      */
     async getTeamPageUrl() {
-        return (await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL})
-        ).response;
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL});
     }
 
     /**
@@ -37,12 +35,11 @@ class BackgroundPontoonClient {
      * @async
      */
     async getTeamProjectUrl(projectUrl) {
-        return await (browser.runtime
+        return await browser.runtime
             .sendMessage({
                 type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
                 args: [projectUrl],
-            })
-        ).response;
+            });
     }
 
     /**
@@ -53,12 +50,11 @@ class BackgroundPontoonClient {
      * @async
      */
     async getStringsWithStatusSearchUrl(status) {
-        return (await browser.runtime
+        return await browser.runtime
             .sendMessage({
                 type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL,
                 args: [status],
-            })
-        ).response;
+            });
     }
 
     /**
@@ -68,9 +64,8 @@ class BackgroundPontoonClient {
      * @async
      */
     async getSignInURL() {
-        return (await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL})
-        ).response;
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL});
     }
 
     /**
