@@ -324,20 +324,20 @@ class RemotePontoon {
                 const projectsMap = new Map();
                 data.data.projects.forEach((project) => projectsMap.set(project.slug, project));
                 [
-                    {slug: 'amo', domains: ['addons.mozilla.org']},
-                    {slug: 'copyright-campaign', domains: ['www.changecopyright.org']},
-                    {slug: 'firefox-accounts', domains: ['accounts.firefox.com']},
-                    {slug: 'firefox-screenshots', domains: ['screenshots.firefox.com']},
-                    {slug: 'fundraising', domains: ['donate.mozilla.org']},
-                    {slug: 'mdn', domains: ['developer.mozilla.org']},
-                    {slug: 'mozilla-advocacy', domains: ['advocacy.mozilla.org']},
-                    {slug: 'mozilla-learning-network', domains: ['learning.mozilla.org']},
+                    {slug: 'amo', domains: ['addons.mozilla.org', 'addons.allizom.org', 'addons-dev.allizom.org']},
+                    {slug: 'common-voice', domains: ['voice.mozilla.org', 'voice.allizom.org']},
+                    {slug: 'copyright-campaign', domains: ['www.changecopyright.org', 'changecopyright-org-staging.herokuapp.com']},
+                    {slug: 'firefox-accounts', domains: ['accounts.firefox.com', 'latest.dev.lcip.org']},
+                    {slug: 'firefox-screenshots', domains: ['screenshots.firefox.com', 'screenshots.dev.mozaws.net']},
+                    {slug: 'fundraising', domains: ['donate.mozilla.org', 'donate.mofostaging.net']},
+                    {slug: 'mdn', domains: ['developer.mozilla.org', 'developer.allizom.org']},
                     {slug: 'mozillaorg', domains: ['www.mozilla.org', 'www-dev.allizom.org']},
-                    {slug: 'mozillians', domains: ['mozillians.org']},
+                    {slug: 'mozillians', domains: ['mozillians.org', 'mozillians-dev.allizom.org']},
                     {slug: 'sumo', domains: ['support.mozilla.org']},
-                    {slug: 'test-pilot-firefox-send', domains: ['send.firefox.com']},
-                    {slug: 'test-pilot-website', domains: ['testpilot.firefox.com']},
-                    {slug: 'thimble', domains: ['thimble.mozilla.org']}
+                    {slug: 'test-pilot-firefox-send', domains: ['send.firefox.com', 'send.dev.mozaws.net']},
+                    {slug: 'test-pilot-website', domains: ['testpilot.firefox.com', 'testpilot-l10n.dev.mozaws.net']},
+                    {slug: 'thimble', domains: ['thimble.mozilla.org', 'bramble.mofostaging.net']},
+                    {slug: 'thunderbirdnet', domains: ['www.thunderbird.net', 'start.thunderbird.net']},
                 ]
                     .map((project) => Object.assign(project, projectsMap.get(project.slug)))
                     .forEach((project) => projectsListObj[project.slug] = project);
