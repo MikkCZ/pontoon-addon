@@ -318,33 +318,21 @@ class RemotePontoon {
      * @async
      */
     async updateProjectsList() {
-        return await fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()).then(
-            (data) => {
-                const projectsListObj = {};
-                const projectsMap = new Map();
-                data.data.projects.forEach((project) => projectsMap.set(project.slug, project));
-                [
-                    {slug: 'amo', domains: ['addons.mozilla.org', 'addons.allizom.org', 'addons-dev.allizom.org']},
-                    {slug: 'common-voice', domains: ['voice.mozilla.org', 'voice.allizom.org']},
-                    {slug: 'copyright-campaign', domains: ['www.changecopyright.org', 'changecopyright-org-staging.herokuapp.com']},
-                    {slug: 'firefox-accounts', domains: ['accounts.firefox.com', 'latest.dev.lcip.org']},
-                    {slug: 'firefox-screenshots', domains: ['screenshots.firefox.com', 'screenshots.dev.mozaws.net']},
-                    {slug: 'fundraising', domains: ['donate.mozilla.org', 'donate.mofostaging.net']},
-                    {slug: 'mdn', domains: ['developer.mozilla.org', 'developer.allizom.org']},
-                    {slug: 'mozillaorg', domains: ['www.mozilla.org', 'www-dev.allizom.org']},
-                    {slug: 'mozillians', domains: ['mozillians.org', 'mozillians-dev.allizom.org']},
-                    {slug: 'sumo', domains: ['support.mozilla.org']},
-                    {slug: 'test-pilot-firefox-send', domains: ['send.firefox.com', 'send.dev.mozaws.net']},
-                    {slug: 'test-pilot-website', domains: ['testpilot.firefox.com', 'testpilot-l10n.dev.mozaws.net']},
-                    {slug: 'thimble', domains: ['thimble.mozilla.org', 'bramble.mofostaging.net']},
-                    {slug: 'thunderbirdnet', domains: ['www.thunderbird.net', 'start.thunderbird.net']},
-                ]
-                    .map((project) => Object.assign(project, projectsMap.get(project.slug)))
-                    .forEach((project) => projectsListObj[project.slug] = project);
-                browser.storage.local.set({projectsList: projectsListObj});
-                return projectsListObj;
-            }
-        );
+        return await Promise.all([
+            fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()),
+            fetch(browser.runtime.getURL('background/projects-list.json')).then((response) => response.json())
+        ]).then(([
+            pontoonData,
+            projectsListJson
+        ]) => {
+            const projectsListObj = {};
+            const projectsMap = new Map();
+            pontoonData.data.projects.forEach((project) => projectsMap.set(project.slug, project));
+            projectsListJson.map((project) => Object.assign(project, projectsMap.get(project.slug)))
+                .forEach((project) => projectsListObj[project.slug] = project);
+            browser.storage.local.set({projectsList: projectsListObj});
+            return projectsListObj;
+        });
     }
 
     /**
