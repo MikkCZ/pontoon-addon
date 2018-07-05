@@ -3,7 +3,7 @@ Pontoon Tools started as my personal project, but it's dedicated to the communit
 
 For Mozilla localizers the easiest way to get involved is to use Pontoon Tools, [report bugs, request features](https://github.com/MikkCZ/pontoon-tools/issues) or send some short feedback to the [dev-l10n list](https://lists.mozilla.org/listinfo/dev-l10n).
 
-For those, who prefer coding, Pontoon Tools add-on is written in pure JS, HTML and CSS. If you know these and a bit of [WebExtensions API](https://developer.mozilla.org/Add-ons/WebExtensions), [pick a task here](https://github.com/MikkCZ/pontoon-tools/issues) and leave a comment you would like to work on it. In the meantime, before I get back to you, here are few tips to help you start.
+For those, who prefer coding, Pontoon Tools add-on is written in pure JS, HTML and CSS. The JS code is documented using JSDoc and [documentation published here](https://mikkcz.github.io/pontoon-tools/). If you know these and a bit of [WebExtensions API](https://developer.mozilla.org/Add-ons/WebExtensions), [pick a task here](https://github.com/MikkCZ/pontoon-tools/issues) and leave a comment you would like to work on it. In the meantime, before I get back to you, here are few tips to help you start.
 
 Prior making any changes in the code, make sure bulding the add-on works on your machine. The only dependency you should need is [npm](https://www.npmjs.com/get-npm). After installing npm, [fork](https://help.github.com/articles/fork-a-repo/) this repository, [clone](https://help.github.com/articles/cloning-a-repository/) it and use this command to run linting and all applicable tests.
 
