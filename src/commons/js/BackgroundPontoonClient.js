@@ -14,7 +14,7 @@ class BackgroundPontoonClient {
     async getNotificationsUrl() {
         return (await browser.runtime
             .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL})
-            ).response;
+        ).response;
     }
 
     /**
@@ -26,7 +26,7 @@ class BackgroundPontoonClient {
     async getTeamPageUrl() {
         return (await browser.runtime
             .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL})
-            ).response;
+        ).response;
     }
 
     /**
@@ -42,7 +42,7 @@ class BackgroundPontoonClient {
                 type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
                 args: [projectUrl],
             })
-            ).response;
+        ).response;
     }
 
     /**
@@ -58,7 +58,7 @@ class BackgroundPontoonClient {
                 type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL,
                 args: [status],
             })
-            ).response;
+        ).response;
     }
 
     /**
@@ -70,7 +70,7 @@ class BackgroundPontoonClient {
     async getSignInURL() {
         return (await browser.runtime
             .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL})
-            ).response;
+        ).response;
     }
 
     /**

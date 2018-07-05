@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var BackgroundPontoon = Object.freeze({
+const BackgroundPontoon = Object.freeze({
     MessageType: {
         TO_BACKGROUND: {
             PAGE_LOADED: 'pontoon-page-loaded',
