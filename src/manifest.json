@@ -33,8 +33,7 @@
   },
   "browser_action": {
     "default_title": "Pontoon notifications",
-    "default_icon": "commons/img/pontoon-logo.svg",
-    "browser_style": true
+    "default_icon": "commons/img/pontoon-logo.svg"
   },
   "page_action": {
     "browser_style": true,
