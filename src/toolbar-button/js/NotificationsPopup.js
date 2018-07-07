@@ -53,8 +53,8 @@ class NotificationsPopup {
         if (notification.actor) {
             const actorLink = document.createElement('a');
             actorLink.textContent = notification.actor.text;
-            this._backgroundPontoonClient.getTeamProjectUrl(notification.actor.link).then((teamProjectUrl) =>
-                actorLink.setAttribute('href', teamProjectUrl)
+            this._backgroundPontoonClient.getTeamProjectUrl(notification.actor.link).then(
+                (teamProjectUrl) => actorLink.setAttribute('href', teamProjectUrl)
             );
             listItem.appendChild(actorLink);
         }
@@ -66,8 +66,8 @@ class NotificationsPopup {
         if (notification.target) {
             const targetLink = document.createElement('a');
             targetLink.textContent = ` ${notification.target.text}`;
-            this._backgroundPontoonClient.getTeamProjectUrl(notification.target.link).then((teamProjectUrl) =>
-                actorLink.setAttribute('href', targetLink)
+            this._backgroundPontoonClient.getTeamProjectUrl(notification.target.link).then(
+                (teamProjectUrl) => targetLink.setAttribute('href', teamProjectUrl)
             );
             listItem.appendChild(targetLink);
         }
@@ -84,19 +84,15 @@ class NotificationsPopup {
             listItem.appendChild(message);
         }
         if (listItem.querySelectorAll('a').length === 1) {
-            const linkUrl  = listItem.querySelector('a').href;
-            listItem.querySelectorAll('*').forEach((child) => {
-                child.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    browser.tabs.create({url: linkUrl});
-                });
-            });
-            listItem.addEventListener('click', (e) => {
+            const listItemClick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                browser.tabs.create({url: linkUrl});
-            });
+                browser.tabs.create({url: listItem.querySelector('a').href});
+            };
+            listItem.querySelectorAll('*').forEach((child) =>
+                child.addEventListener('click', listItemClick)
+            );
+            listItem.addEventListener('click', listItemClick);
             listItem.classList.add('pointer');
         }
         return listItem;
