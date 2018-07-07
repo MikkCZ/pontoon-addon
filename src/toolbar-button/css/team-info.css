@@ -1,0 +1,67 @@
+#team-info h1,
+#team-info-list {
+  margin: 0 0.5em;
+}
+
+#team-info h1 {
+  padding: 0;
+}
+
+#team-info h1 .name {
+  color: #ebebeb;
+}
+
+#team-info h1 .code {
+  color: #7bc876;
+  font-weight: normal;
+}
+
+#team-info-list {
+  padding: 0.5em 1em 0.5em 0.5em;
+  list-style-type: none;
+  color: #aaa;
+}
+
+#team-info-list a {
+  color: #ebebeb;
+}
+
+#team-info-list a:hover {
+  color: #7bc876;
+}
+
+#team-info-list .activity::before,
+#team-info-list li a::before {
+  display: inline-block;
+  content: '';
+  border-radius: 0.1em;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.5em;
+}
+
+#team-info-list .translated a::before {
+  background-color: #7bc876;
+}
+
+#team-info-list .fuzzy a::before {
+  background-color: #fed271;
+}
+
+#team-info-list .missing a::before {
+  background-color: #4d5967;
+}
+
+#team-info-list .unreviewed a::before {
+  background: center / contain no-repeat url('img/lightbulb-blue.svg');
+  height: 1em;
+}
+
+#team-info-list .title {
+  text-transform: uppercase;
+}
+
+#team-info-list .count,
+#team-info-list .text {
+  float: right;
+}

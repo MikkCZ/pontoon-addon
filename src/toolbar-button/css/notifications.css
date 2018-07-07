@@ -1,0 +1,72 @@
+#notification-list a,
+#notification-list a:hover {
+  color: #f36;
+}
+
+#notification-list .pointer {
+  cursor: pointer;
+}
+
+#notification-list {
+  list-style: none;
+  text-align: center;
+  max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+}
+
+#notification-list li {
+  padding: 0.5em 1em;
+}
+
+#notification-list li.unread {
+  background-color: #333941;
+  border-bottom: 1px solid transparent;
+}
+
+#notification-list li.read:not(:last-child) {
+  border-bottom: 1px solid #333941;
+}
+
+#notification-list li:hover {
+  background-color: #3f4752;
+}
+
+#notification-list .timeago,
+#notification-list .message {
+  color: #888;
+}
+
+#notification-list .timeago {
+  text-align: right;
+}
+
+/*** Error or not signed in ***/
+
+#error {
+  text-align: center;
+  margin: 1em;
+}
+
+#error a,
+#error a:hover {
+  color: #f36;
+}
+
+#error p {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#error .description {
+  padding-top: 0.25em;
+  font-size: 12px;
+  color: #aaa;
+}
+
+#error .title {
+  font-size: 16px;
+  color: #ebebeb;
+}

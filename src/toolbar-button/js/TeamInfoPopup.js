@@ -93,7 +93,7 @@ class TeamInfoPopup {
         if (teamData) {
             document.querySelector('#team-info h1 .name').textContent = teamData.name;
             document.querySelector('#team-info h1 .code').textContent = teamData.code;
-            const infoList = document.querySelector('#team-info ul');
+            const infoList = document.getElementById('team-info-list');
             while (infoList.lastChild) {
                 infoList.removeChild(infoList.lastChild);
             }

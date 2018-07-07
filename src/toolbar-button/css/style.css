@@ -1,0 +1,23 @@
+body {
+  min-width: 350px;
+  max-width: 500px;
+  font: caption;
+}
+
+body * {
+  text-align: left;
+}
+
+.bottom-link {
+  display: block;
+  padding: 0.5em;
+  border-top: 1px solid #525a65;
+  text-align: center;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.bottom-link:hover {
+  background-color: #3f4752;
+  color: #fff;
+}
