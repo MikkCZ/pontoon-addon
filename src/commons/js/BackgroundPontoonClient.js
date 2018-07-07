@@ -17,6 +17,18 @@ class BackgroundPontoonClient {
     }
 
     /**
+     * Get settings page URL.
+     * @param utm_source to include into the URL
+     * @returns {string} promise fulfilled with the url
+     * @public
+     * @async
+     */
+    async getSettingsUrl(utm_source) {
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL});
+    }
+
+    /**
      * Get team page URL.
      * @returns {string} promise fulfilled with the url
      * @public

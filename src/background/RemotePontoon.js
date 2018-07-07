@@ -47,9 +47,9 @@ class RemotePontoon {
      * Get settings page URL.
      * @param utm_source to include into the URL
      * @returns {string}
-     * @public
+     * @private
      */
-    getSettingsUrl(utm_source) {
+    _getSettingsUrl(utm_source) {
         if (utm_source !== undefined) {
             return `${this._baseUrl}/settings/?utm_source=${utm_source}`;
         }
@@ -351,6 +351,9 @@ class RemotePontoon {
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
                     sendResponse(this._getNotificationsUrl('pontoon-tools'));
                     break;
+                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL:
+                    sendResponse(this._getSettingsUrl('pontoon-tools'));
+                    break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
                     sendResponse(this._getSignInURL());
                     break;
@@ -427,7 +430,7 @@ class RemotePontoon {
      * @async
      */
     async _getTeamFromPontoon() {
-        const response = await fetch(this.getSettingsUrl('pontoon-tools-automation'), {credentials: 'include'});
+        const response = await fetch(this._getSettingsUrl('pontoon-tools-automation'), {credentials: 'include'});
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
         return language !== null ? language.dataset['code'] : undefined;

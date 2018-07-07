@@ -29,7 +29,7 @@
   ],
   "options_ui": {
     "page": "options/index.html",
-    "browser_style": true
+    "open_in_tab": true
   },
   "browser_action": {
     "default_title": "Pontoon notifications",

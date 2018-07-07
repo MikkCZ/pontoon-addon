@@ -6,35 +6,89 @@ This is the options page, which can be opened in the add-ons manager.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Pontoon Tools - Options</title>
+  <title>Pontoon Tools - Settings</title>
+  <link rel="icon" href="../commons/img/pontoon-logo.svg">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <section>
-    <h3>General</h3>
-    <div class="browser-style"><button id="open_tour" class="browser-style">Open Pontoon Tools tour</button></div>
-    <div class="browser-style"><label for="locale_team" class="browser-style-label">Use this locale team as preferred</label> <select id="locale_team" data-option-id="locale_team" class="browser-style"></select> <button id="load_locale_team" class="browser-style">Load from Pontoon</button></div>
-    <div class="browser-style"><label for="data_update_interval" class="browser-style-label">Update data from Pontoon every</label> <select id="data_update_interval" data-option-id="data_update_interval" class="browser-style"></select> <label for="data_update_interval" class="browser-style-label">minutes</label></div>
+  <header>
+    <img class="logo" src="../commons/img/pontoon-logo.svg">
+    <nav>
+      <ul>
+        <li><a class="open_tour">Tour</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section id="heading">
+    <h2>Pontoon Tools</h2>
+    <h2>Settings</h2>
   </section>
-  <section>
-    <h3>Toolbar button</h3>
-    <div class="browser-style"><input id="display_toolbar_button_badge" data-option-id="display_toolbar_button_badge" type="checkbox"> <label for="display_toolbar_button_badge" class="browser-style-label">Show number of unread notifications in the toolbar button</label></div>
-    <div class="browser-style"><label class="browser-style-label">When you click the toolbar button</label>
-      <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="popup" id="toolbar_button_action-popup"> <label for="toolbar_button_action-popup" class="browser-style-label">Open popup with notifications and team information</label>
-      <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="team-page" id="toolbar_button_action-team-page"> <label for="toolbar_button_action-team-page" class="browser-style-label">Open Pontoon team page (selected above)</label>
-      <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="home-page" id="toolbar_button_action-home-page"> <label for="toolbar_button_action-home-page" class="browser-style-label">Open Pontoon home page (from Pontoon settings)</label>
-    </div>
-    <div class="browser-style"><input id="always_hide_read_notifications" data-option-id="toolbar_button_popup_always_hide_read_notifications" type="checkbox"> <label for="always_hide_read_notifications" class="browser-style-label">Always hide read notifications from the list</label></div>
-  </section>
-  <section>
-    <h3>Notifications</h3>
-    <div class="browser-style"><input id="show_notifications" data-option-id="show_notifications" type="checkbox"> <label for="show_notifications" class="browser-style-label">Use system notifications to show new unread notifications from Pontoon</label></div>
-  </section>
-  <section>
-    <h3>Advanced</h3>
-    <div class="browser-style"><label for="pontoon_base_url" class="browser-style-label">Pontoon URL:</label> <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled"> <button id="edit_pontoon_base_url" class="browser-style">Edit</button></div>
-    <div class="browser-style"><button id="reset_defaults" class="browser-style">Reset all to defaults</button></div>
-  </section>
+  <main>
+    <section>
+      <h3>General</h3>
+      <div>
+        <label for="locale_team">Select your locale team</label>
+        <select id="locale_team" data-option-id="locale_team"></select>
+        <button id="load_locale_team" title="Sync with your Pontoon homepage preference">Load from Pontoon</button>
+      </div>
+      <div>
+        <label for="data_update_interval" title="How frequently Pontoon Tools check for new notifications and updates your team information">Select how frequently data should be updated from Pontoon</label>
+        <select id="data_update_interval" data-option-id="data_update_interval"></select>
+      </div>
+    </section>
+    <section>
+      <h3>Toolbar button</h3>
+      <div>
+        <label>
+          <input data-option-id="display_toolbar_button_badge" type="checkbox">
+          Show the number of unread notifications in the toolbar button
+        </label>
+      </div>
+      <div>
+        <label>When you click the toolbar button</label>
+        <label>
+          <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="popup">
+          Open popup with notifications and team information
+        </label>
+        <label>
+          <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="team-page">
+          Open your locale team page
+        </label>
+        <label>
+          <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="home-page">
+          Open your Pontoon homepage
+        </label>
+        <aside>You can set your Pontoon homepage in <a class="pontoon_settings" target="_blank">Pontoon Settings</a>.</aside>
+      </div>
+      <div>
+        <label>
+          <input data-option-id="toolbar_button_popup_always_hide_read_notifications" type="checkbox">
+          In the popup, display unread notifications only
+        </label>
+        <aside>By default the popup always show some recent (even read) notifications.</aside>
+      </div>
+    </section>
+    <section>
+      <h3>System notifications</h3>
+      <div>
+        <label>
+          <input data-option-id="show_notifications" type="checkbox">
+          Use system notifications to show what's new in Pontoon
+        </label>
+        <aside>See the <a class="open_tour">Tour</a> for a preview.</aside>
+      </div>
+    </section>
+    <section>
+      <h3>Advanced</h3>
+      <div>
+        <label for="pontoon_base_url">Pontoon URL</label>
+        <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled"> <button id="edit_pontoon_base_url">Edit</button>
+      </div>
+      <div>
+        <a id="reset_defaults">Reset all settings to default</a>
+      </div>
+    </section>
+  </main>
   <script src="../vendor/mozilla/browser-polyfill.min.js"></script>
   <script src="../commons/js/Options.js"></script>
   <script src="../commons/js/BackgroundPontoonMessageType.js"></script>

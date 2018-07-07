@@ -15,17 +15,17 @@ const localeTeamSelect = document.querySelector('select[data-option-id=locale_te
     .map((interval) => {
         const option = document.createElement('option');
         option.value = interval;
-        option.text = interval;
+        option.text = `${interval} min`;
         return option;
     })
     .forEach((option) => dataUpdateSelect.appendChild(option));
 
 // Handle reset button
-document.getElementById('reset_defaults').addEventListener('click', () =>
-    options.resetDefaults().then(
-        () => options.loadAllFromLocalStorage()
-    )
-);
+document.getElementById('reset_defaults').addEventListener('click', () => {
+    if (window.confirm('Do you really want to reset all Pontoon Tools settings to default?')) {
+        options.resetDefaults().then(() => options.loadAllFromLocalStorage());
+    }
+});
 
 /**
  * Recreate the list of team offered in the options
@@ -40,7 +40,7 @@ function updateTeamsList(teamsInPontoon, localeTeam) {
         .map((locale) => {
             const option = document.createElement('option');
             option.value = locale;
-            option.text = locale;
+            option.text = `${teamsInPontoon[locale].name} (${locale})`;
             return option;
         })
         .forEach((option) => localeTeamSelect.appendChild(option));
@@ -62,8 +62,13 @@ browser.storage.local.get(teamsListDataKey).then((storageItem) => {
     options.loadAllFromLocalStorage()
 );
 
-// Open Pontoon Tools tour
-document.getElementById('open_tour').addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}));
+// Links
+document.querySelectorAll('a.open_tour').forEach((tourLink) =>
+    tourLink.addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}))
+);
+backgroundPontoonClient.getSettingsUrl().then((settingsUrl) =>
+    document.querySelector('a.pontoon_settings').setAttribute('href', settingsUrl)
+);
 
 // Handle reload button
 document.getElementById('load_locale_team').addEventListener('click', () => {

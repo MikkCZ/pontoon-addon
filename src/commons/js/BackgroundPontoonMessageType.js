@@ -9,6 +9,7 @@ const BackgroundPontoon = Object.freeze({
             PAGE_LOADED: 'pontoon-page-loaded',
             NOTIFICATIONS_READ: 'notifications-read',
             GET_NOTIFICATIONS_URL: 'get-notifications-url',
+            GET_SETTINGS_URL: 'get-settings-url',
             GET_SIGN_IN_URL: 'get-sign-in-url',
             GET_TEAM_PAGE_URL: 'get-team-page-url',
             GET_TEAM_PROJECT_URL: 'get-team-project-url',
