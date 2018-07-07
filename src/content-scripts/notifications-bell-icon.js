@@ -31,7 +31,8 @@ if (unreadNotificationsIcon !== null) {
     unreadNotificationsIcon.addEventListener('click', unreadNotificationsIconClick);
 
     // Listen to message from RemotePontoon to mark all notifications as read (change the bell icon color)
-    backgroundPontoonClient.subscribeToNotificationsChange((notificationsData) => {
+    backgroundPontoonClient.subscribeToNotificationsChange((change) => {
+        const notificationsData = change.newValue;
         const unreadNotifications = Object.values(notificationsData)
             .filter(n => n.unread)
             .length;

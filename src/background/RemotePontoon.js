@@ -369,10 +369,10 @@ class RemotePontoon {
                     return this._getTeamFromPontoon();
             }
         });
-        this.subscribeToNotificationsChange((newNotificationsData) => {
+        this.subscribeToNotificationsChange((change) => {
             const message = {
                 type: BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED,
-                data: newNotificationsData,
+                data: change,
             };
             browser.runtime.sendMessage(message);
             browser.tabs.query({url: this.getBaseUrl() + '/*'}).then(
