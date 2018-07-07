@@ -32,7 +32,7 @@ const introSections = {
         title: 'System notifications',
         text: `The toolbar button and its popup are not the only way to get notified about something new and interesting
                 in Pontoon. Pontoon Tools can also display system notifications to inform you about new notifications
-                in Pontoon. Of course these notifications are configurable in the add-on options. If you would like to
+                in Pontoon. Of course these notifications are configurable in the add-on settings. If you would like to
                 preview Pontoon notifications in the system area, click the button below.`,
         buttonText: 'Preview system notifications',
         buttonOnClick: (e) => {
@@ -63,14 +63,14 @@ const introSections = {
         image: 'img/context-menu.png',
         imageClass: 'bottom',
     },
-    addonOptions: {
-        title: 'Add-on options',
-        text: `No default settings can fit everyone. In the provided options you can change your localization team,
+    addonSettings: {
+        title: 'Add-on settings',
+        text: `No default settings can fit everyone. In the add-on setting you can change your localization team,
                 interval for checking new notifications, their appearing in the system notification area or adjust
                 the toolbar button behaviour.`,
-        image: 'img/options.png',
+        image: 'img/settings.png',
         imageClass: 'bottom',
-        buttonText: 'Open Pontoon Tools options',
+        buttonText: 'Open Pontoon Tools settings',
         buttonOnClick: () => browser.runtime.openOptionsPage(),
     },
     feedback: {
