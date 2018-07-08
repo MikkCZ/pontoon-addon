@@ -9,6 +9,7 @@ const backgroundPontoonClient = new BackgroundPontoonClient();
 const teamsListDataKey = 'teamsList';
 const dataUpdateSelect = document.querySelector('select[data-option-id=data_update_interval]');
 const localeTeamSelect = document.querySelector('select[data-option-id=locale_team]');
+const containerSelect = document.querySelector('select[data-option-id=contextual_identity]');
 
 // Fill update interval options
 [5, 15, 30, 60, 120]
@@ -19,6 +20,23 @@ const localeTeamSelect = document.querySelector('select[data-option-id=locale_te
         return option;
     })
     .forEach((option) => dataUpdateSelect.appendChild(option));
+
+// Fill select with Firefox containers
+if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
+    browser.contextualIdentities.query({}).then((containers) => {
+        const defaultOption = document.createElement('option');
+        defaultOption.value = 'none';
+        defaultOption.text = 'Default (no container)';
+        containerSelect.appendChild(defaultOption);
+        containers.map((container) => {
+            const option = document.createElement('option');
+            option.value = container.cookieStoreId;
+            option.text = container.name;
+            return option;
+        })
+        .forEach((option) => containerSelect.appendChild(option));
+    });
+}
 
 // Handle reset button
 document.getElementById('reset_defaults').addEventListener('click', () => {

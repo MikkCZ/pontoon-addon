@@ -22,7 +22,8 @@
     "contextMenus",
     "tabs",
     "notifications",
-    "alarms"
+    "alarms",
+    "contextualIdentities"
   ],
   "optional_permissions": [
     "<all_urls>"
