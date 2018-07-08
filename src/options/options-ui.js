@@ -18,8 +18,7 @@ const containerSelect = document.querySelector('select[data-option-id=contextual
         option.value = interval;
         option.text = `${interval} min`;
         return option;
-    })
-    .forEach((option) => dataUpdateSelect.appendChild(option));
+    }).forEach((option) => dataUpdateSelect.appendChild(option));
 
 // Fill select with Firefox containers
 if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
@@ -28,13 +27,14 @@ if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
         defaultOption.value = 'none';
         defaultOption.text = 'Default (no container)';
         containerSelect.appendChild(defaultOption);
-        containers.map((container) => {
-            const option = document.createElement('option');
-            option.value = container.cookieStoreId;
-            option.text = container.name;
-            return option;
-        })
-        .forEach((option) => containerSelect.appendChild(option));
+        containers
+            .map((container) => {
+                const option = document.createElement('option');
+                option.value = container.cookieStoreId;
+                option.text = container.name;
+                return option;
+            })
+            .forEach((option) => containerSelect.appendChild(option));
     });
 }
 
