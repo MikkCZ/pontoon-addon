@@ -23,10 +23,10 @@ const containerSelect = document.querySelector('select[data-option-id=contextual
 // Fill select with Firefox containers
 if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
     browser.contextualIdentities.query({}).then((containers) => {
-        const defaultOption = document.createElement('option');
-        defaultOption.value = 'none';
-        defaultOption.text = 'Default (no container)';
-        containerSelect.appendChild(defaultOption);
+        containers.unshift({
+            cookieStoreId: 'none',
+            name: 'Default (no container)',
+        });
         containers
             .map((container) => {
                 const option = document.createElement('option');
