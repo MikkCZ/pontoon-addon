@@ -57,6 +57,9 @@ class DataRefresher {
             const intervalMinutes = parseInt(change.newValue, 10);
             this._setupAlarmWithInterval(intervalMinutes);
         });
+        this._options.subscribeToOptionChange('contextual_identity', (change) =>
+            this.refreshData()
+        );
     }
 
     /**
