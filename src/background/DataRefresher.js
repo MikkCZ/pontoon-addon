@@ -82,7 +82,7 @@ class DataRefresher {
     /**
      * Schedule data update with interval from options.
      * @private
-    */
+     */
     _setupAlarm() {
         const optionKey = 'data_update_interval';
         this._options.get(optionKey).then((item) => {
