@@ -18,7 +18,8 @@ const containerSelect = document.querySelector('select[data-option-id=contextual
         option.value = interval;
         option.text = `${interval} min`;
         return option;
-    }).forEach((option) => dataUpdateSelect.appendChild(option));
+    })
+    .forEach((option) => dataUpdateSelect.appendChild(option));
 
 // Fill select with Firefox containers
 if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
