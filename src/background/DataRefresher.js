@@ -15,6 +15,7 @@ class DataRefresher {
 
         this._listenToAlarm();
         this._watchOptionsUpdates();
+        this._watchTabsUpdates();
         this._setupAlarm();
 
         this.refreshData();
@@ -63,9 +64,25 @@ class DataRefresher {
     }
 
     /**
-     * Schedule data update with interval from options.
+     * Load live update content script in recognized tabs.
      * @private
      */
+    _watchTabsUpdates() {
+        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            if (changeInfo.status === 'complete') {
+                this._options.get('contextual_identity').then((item) => {
+                    if (item['contextual_identity'] === tab.cookieStoreId) {
+                        browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Schedule data update with interval from options.
+     * @private
+    */
     _setupAlarm() {
         const optionKey = 'data_update_interval';
         this._options.get(optionKey).then((item) => {
