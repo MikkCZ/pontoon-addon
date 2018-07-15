@@ -37,6 +37,12 @@ if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
             })
             .forEach((option) => containerSelect.appendChild(option));
     });
+
+    document.getElementById('edit_contextual_identity').addEventListener('click', () => {
+        if (window.confirm('If you do not login to Pontoon in a container tab, it’s better to keep this option to default. Do you really want to change it?')) {
+            containerSelect.removeAttribute('disabled');
+        }
+    });
 }
 
 // Handle reset button

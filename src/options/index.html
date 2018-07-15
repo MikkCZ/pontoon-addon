@@ -83,11 +83,15 @@ This is the options page, which can be opened in the add-ons manager.
       <h3>Advanced</h3>
       <div>
         <label for="contextual_identity">Select container to use for data updates</label>
-        <select id="contextual_identity" data-option-id="contextual_identity"></select>
+        <select id="contextual_identity" data-option-id="contextual_identity" disabled="disabled"></select>
+        <button id="edit_contextual_identity">Edit</button>
+        <aside>If you use a specific <a href="https://support.mozilla.org/kb/containers" target="_blank">container</a> for Pontoon, select it here.</aside>
       </div>
       <div>
         <label for="pontoon_base_url">Pontoon URL</label>
-        <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled"> <button id="edit_pontoon_base_url">Edit</button>
+        <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled">
+        <button id="edit_pontoon_base_url">Edit</button>
+        <aside>Changing Pontoon URL is for developers or debugging only.</aside>
       </div>
       <div>
         <a id="reset_defaults">Reset all settings to default</a>
