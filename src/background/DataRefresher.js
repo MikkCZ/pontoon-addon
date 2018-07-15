@@ -12,13 +12,18 @@ class DataRefresher {
         this._options = options;
         this._remotePontoon = remotePontoon;
         this._alarmName = 'data-refresher-alarm';
+        this._tabUpdateListener = (tabId, changeInfo, tab) => this._addLiveDataProvider(tabId, changeInfo, tab);
 
-        this._listenToAlarm();
         this._watchOptionsUpdates();
         this._watchTabsUpdates();
-        this._setupAlarm();
+        this._listenToMessagesFromNotificationsBellContentScript();
 
-        this.refreshData();
+        this._listenToAlarm();
+        this._setupAlarm();
+    }
+
+    _watchOptionsUpdates() {
+        this._remotePontoon.subscribeToBaseUrlChange(() => this._watchTabsUpdates());
     }
 
     /**
@@ -76,18 +81,14 @@ class DataRefresher {
      * @private
      */
     _watchTabsUpdates() {
+        browser.tabs.onUpdated.removeListener(this._tabUpdateListener);
         browser.tabs.onUpdated.addListener(
-            (tabId, changeInfo, tab) => {
-                if (changeInfo.status === 'complete') {
-                    this._options.get('contextual_identity').then((item) => {
-                        if (item['contextual_identity'] === tab.cookieStoreId || !_isFirefox()) {
-                            browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
-                        }
-                    });
-                }
-            },
+            this._tabUpdateListener,
             {urls: [this._remotePontoon.getBaseUrl() + '/*']}
         );
+    }
+
+    _listenToMessagesFromNotificationsBellContentScript() {
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === 'notifications-bell-script-loaded') {
                 return this._options.get('contextual_identity').then((item) => {
@@ -97,6 +98,16 @@ class DataRefresher {
                 });
             }
         });
+    }
+
+    _addLiveDataProvider(tabId, changeInfo, tab) {
+        if (changeInfo.status === 'complete') {
+            this._options.get('contextual_identity').then((item) => {
+                if (item['contextual_identity'] === tab.cookieStoreId || !_isFirefox()) {
+                    browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
+                }
+            });
+        }
     }
 
     /**

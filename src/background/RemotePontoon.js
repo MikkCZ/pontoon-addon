@@ -1,6 +1,6 @@
 /**
  * Handles all communication with Pontoon web app and contains all information about it.
- * @requires BackgroundPontoonMessageType.js
+ * @requires BackgroundPontoonMessageType.js, DataFetcher.js
  */
 class RemotePontoon {
     /**
@@ -8,19 +8,17 @@ class RemotePontoon {
      * @param baseUrl Pontoon instance base URL
      * @param team locale
      * @param options
-     * @param requestsToken
      * @todo get rid of the team parameter and use options to fetch is when needed
      */
-    constructor(baseUrl, team, options, requestsToken) {
+    constructor(baseUrl, team, options) {
         this._baseUrl = baseUrl;
+        this._baseUrlChangeListeners = new Set();
         this._notificationsUrl = this._baseUrl + '/notifications/';
         this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
         this._options = options;
         this._domParser = new DOMParser();
-        this._credentialsHeaders = new Headers();
-        this._credentialsHeaders.append('X-Requested-With', 'XMLHttpRequest');
-        this._credentialsHeaders.append('pontoon-tools-token', requestsToken); // TODO: better secure this
+        this._dataFetcher = new DataFetcher(this._options, this);
 
         this._listenToMessagesFromClients();
         this._watchOptionsUpdates();
@@ -212,14 +210,22 @@ class RemotePontoon {
     }
 
     /**
+     * Subscribe to change of Pontoon url.
+     * @param callback function to call when the value changes
+     * @public
+     */
+    subscribeToBaseUrlChange(callback) {
+        this._baseUrlChangeListeners.add(callback);
+    }
+
+    /**
      * Update notifications data in storage.
      * @public
      */
     updateNotificationsData() {
-        fetch(this._getNotificationsUrl('pontoon-tools-automation'), {
-            credentials: 'omit',
-            headers: this._credentialsHeaders,
-        }).then(
+        this._dataFetcher.fetchFromPontoonSession(
+            this._getNotificationsUrl('pontoon-tools-automation')
+        ).then(
             (response) => response.text()
         ).then(
             (text) => this._updateNotificationsDataFromPageContent(text)
@@ -231,7 +237,7 @@ class RemotePontoon {
      * @public
      */
     updateLatestTeamActivity() {
-        fetch(this.getTeamsListUrl('pontoon-tools-automation'), {credentials: 'omit'}).then(
+        this._dataFetcher.fetch(this.getTeamsListUrl('pontoon-tools-automation')).then(
             (response) => response.text()
         ).then((allTeamsPageContent) => {
             const latestActivityObj = {};
@@ -264,8 +270,8 @@ class RemotePontoon {
      */
     async updateTeamsList() {
         return await Promise.all([
-            fetch(this._getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}'), {credentials: 'omit'}).then((response) => response.json()),
-            fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product', {credentials: 'omit'}).then((response) => response.json())
+            this._dataFetcher.fetch(this._getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}')).then((response) => response.json()),
+            this._dataFetcher.fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
             pontoonData.data.locales
@@ -325,8 +331,8 @@ class RemotePontoon {
      */
     async updateProjectsList() {
         return await Promise.all([
-            fetch(this._getQueryURL('{projects{slug,name}}'), {credentials: 'omit'}).then((response) => response.json()),
-            fetch(browser.runtime.getURL('background/projects-list.json'), {credentials: 'omit'}).then((response) => response.json())
+            this._dataFetcher.fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()),
+            fetch(browser.runtime.getURL('background/projects-list.json')).then((response) => response.json())
         ]).then(([
             pontoonData,
             projectsListJson
@@ -397,9 +403,10 @@ class RemotePontoon {
      * @private
      */
     _watchOptionsUpdates() {
-        this._options.subscribeToOptionChange('pontoon_base_url', (change) =>
-            this._baseUrl = change.newValue
-        );
+        this._options.subscribeToOptionChange('pontoon_base_url', (change) => {
+            this._baseUrl = change.newValue;
+            this._baseUrlChangeListeners.forEach((callback) => callback());
+        });
         this._options.subscribeToOptionChange('locale_team', (change) =>
             this._team = change.newValue
         );
@@ -413,7 +420,7 @@ class RemotePontoon {
         const dataKey = 'notificationsData';
         Promise.all([
             browser.tabs.query({url: this.getBaseUrl() + '/*'}),
-            fetch(this._markAsReadUrl, {method: 'GET', credentials: 'omit', headers: this._credentialsHeaders}),
+            this._dataFetcher.fetchFromPontoonSession(this._markAsReadUrl),
             browser.storage.local.get(dataKey)
         ]).then(([
             pontoonTabs,
@@ -434,7 +441,7 @@ class RemotePontoon {
      * @async
      */
     async _getTeamFromPontoon() {
-        const response = await fetch(this._getSettingsUrl('pontoon-tools-automation'), {credentials: 'omit', headers: this._credentialsHeaders});
+        const response = await this._dataFetcher.fetchFromPontoonSession(this._getSettingsUrl('pontoon-tools-automation'));
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
         return language !== null ? language.dataset['code'] : undefined;

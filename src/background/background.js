@@ -28,9 +28,7 @@ const localeTeamOptionKey = 'locale_team';
  * With the necessary options, create all parts of the UI and objects for data updates and access.
  */
 options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) => {
-    const requestsToken = 'foo'; // TODO: better secure this (https://www.npmjs.com/package/uuid)
-    const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], optionsItems[localeTeamOptionKey], options, requestsToken);
-    const remotePontoonRequestsFilter = new RemotePontoonAuthenticationFilter(options, remotePontoon, requestsToken);
+    const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], optionsItems[localeTeamOptionKey], options);
     const toolbarButton = new ToolbarButton(options, remotePontoon);
     if (typeof PageAction === 'function') {
         const pageAction = new PageAction(remotePontoon);
@@ -46,4 +44,6 @@ options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) 
     if (newInstallationDetails) {
         onInstallFunction(newInstallationDetails);
     }
+
+    setTimeout(() => dataRefresher.refreshData(), 1000);
 });

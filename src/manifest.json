@@ -59,7 +59,7 @@
       "background/ToolbarButtonContextMenu.js",
       "background/PageAction.js",
       "background/SystemNotifications.js",
-      "background/RemotePontoonAuthenticationFilter.js",
+      "background/DataFetcher.js",
       "background/background.js"
     ]
   },
