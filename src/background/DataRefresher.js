@@ -76,26 +76,24 @@ class DataRefresher {
      * @private
      */
     _watchTabsUpdates() {
-        if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
-            browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-                if (changeInfo.status === 'complete') {
-                    this._options.get('contextual_identity').then((item) => {
-                        if (item['contextual_identity'] === tab.cookieStoreId) {
-                            browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
-                        }
-                    });
-                }
-            });
-            browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-                if (message.type === 'notifications-bell-script-loaded') {
-                    return this._options.get('contextual_identity').then((item) => {
-                        if (item['contextual_identity'] === sender.tab.cookieStoreId) {
-                            return {type: 'enable-notifications-bell-script'};
-                        }
-                    });
-                }
-            });
-        }
+        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            if (changeInfo.status === 'complete') {
+                this._options.get('contextual_identity').then((item) => {
+                    if (item['contextual_identity'] === tab.cookieStoreId || !_isFirefox()) {
+                        browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
+                    }
+                });
+            }
+        });
+        browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message.type === 'notifications-bell-script-loaded') {
+                return this._options.get('contextual_identity').then((item) => {
+                    if (item['contextual_identity'] === sender.tab.cookieStoreId || !_isFirefox()) {
+                        return {type: 'enable-notifications-bell-script'};
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -117,5 +115,9 @@ class DataRefresher {
      */
     _setupAlarmWithInterval(intervalMinutes) {
         browser.alarms.create(this._alarmName, {periodInMinutes: intervalMinutes});
+    }
+
+    _isFirefox() {
+        return browser.runtime.getURL('/').startsWith('moz-extension:');
     }
 }
