@@ -76,15 +76,18 @@ class DataRefresher {
      * @private
      */
     _watchTabsUpdates() {
-        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            if (changeInfo.status === 'complete') {
-                this._options.get('contextual_identity').then((item) => {
-                    if (item['contextual_identity'] === tab.cookieStoreId || !_isFirefox()) {
-                        browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
-                    }
-                });
-            }
-        });
+        browser.tabs.onUpdated.addListener(
+            (tabId, changeInfo, tab) => {
+                if (changeInfo.status === 'complete') {
+                    this._options.get('contextual_identity').then((item) => {
+                        if (item['contextual_identity'] === tab.cookieStoreId || !_isFirefox()) {
+                            browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
+                        }
+                    });
+                }
+            },
+            {urls: [this._remotePontoon.getBaseUrl() + '/*']}
+        );
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === 'notifications-bell-script-loaded') {
                 return this._options.get('contextual_identity').then((item) => {
