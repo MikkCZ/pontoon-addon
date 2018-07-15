@@ -24,7 +24,9 @@
     "notifications",
     "alarms",
     "contextualIdentities",
-    "cookies"
+    "cookies",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "optional_permissions": [
     "<all_urls>"
@@ -57,6 +59,7 @@
       "background/ToolbarButtonContextMenu.js",
       "background/PageAction.js",
       "background/SystemNotifications.js",
+      "background/RemotePontoonAuthenticationFilter.js",
       "background/background.js"
     ]
   },

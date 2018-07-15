@@ -8,15 +8,20 @@ class RemotePontoon {
      * @param baseUrl Pontoon instance base URL
      * @param team locale
      * @param options
+     * @param requestsToken
      * @todo get rid of the team parameter and use options to fetch is when needed
      */
-    constructor(baseUrl, team, options) {
+    constructor(baseUrl, team, options, requestsToken) {
         this._baseUrl = baseUrl;
         this._notificationsUrl = this._baseUrl + '/notifications/';
         this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
         this._options = options;
         this._domParser = new DOMParser();
+        this._credentialsHeaders = new Headers();
+        this._credentialsHeaders.append('X-Requested-With', 'XMLHttpRequest');
+        this._credentialsHeaders.append('pontoon-tools-token', requestsToken); // TODO: better secure this
+
         this._listenToMessagesFromClients();
         this._watchOptionsUpdates();
     }
@@ -212,7 +217,8 @@ class RemotePontoon {
      */
     updateNotificationsData() {
         fetch(this._getNotificationsUrl('pontoon-tools-automation'), {
-            credentials: 'include',
+            credentials: 'omit',
+            headers: this._credentialsHeaders,
         }).then(
             (response) => response.text()
         ).then(
@@ -225,7 +231,7 @@ class RemotePontoon {
      * @public
      */
     updateLatestTeamActivity() {
-        fetch(this.getTeamsListUrl('pontoon-tools-automation')).then(
+        fetch(this.getTeamsListUrl('pontoon-tools-automation'), {credentials: 'omit'}).then(
             (response) => response.text()
         ).then((allTeamsPageContent) => {
             const latestActivityObj = {};
@@ -258,8 +264,8 @@ class RemotePontoon {
      */
     async updateTeamsList() {
         return await Promise.all([
-            fetch(this._getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}')).then((response) => response.json()),
-            fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
+            fetch(this._getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}'), {credentials: 'omit'}).then((response) => response.json()),
+            fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product', {credentials: 'omit'}).then((response) => response.json())
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
             pontoonData.data.locales
@@ -319,8 +325,8 @@ class RemotePontoon {
      */
     async updateProjectsList() {
         return await Promise.all([
-            fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()),
-            fetch(browser.runtime.getURL('background/projects-list.json')).then((response) => response.json())
+            fetch(this._getQueryURL('{projects{slug,name}}'), {credentials: 'omit'}).then((response) => response.json()),
+            fetch(browser.runtime.getURL('background/projects-list.json'), {credentials: 'omit'}).then((response) => response.json())
         ]).then(([
             pontoonData,
             projectsListJson
@@ -405,11 +411,9 @@ class RemotePontoon {
      */
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
-        const headers = new Headers();
-        headers.append('X-Requested-With', 'XMLHttpRequest');
         Promise.all([
             browser.tabs.query({url: this.getBaseUrl() + '/*'}),
-            fetch(this._markAsReadUrl, {method: 'GET', credentials: 'include', headers: headers}),
+            fetch(this._markAsReadUrl, {method: 'GET', credentials: 'omit', headers: this._credentialsHeaders}),
             browser.storage.local.get(dataKey)
         ]).then(([
             pontoonTabs,
@@ -430,7 +434,7 @@ class RemotePontoon {
      * @async
      */
     async _getTeamFromPontoon() {
-        const response = await fetch(this._getSettingsUrl('pontoon-tools-automation'), {credentials: 'include'});
+        const response = await fetch(this._getSettingsUrl('pontoon-tools-automation'), {credentials: 'omit', headers: this._credentialsHeaders});
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
         return language !== null ? language.dataset['code'] : undefined;
