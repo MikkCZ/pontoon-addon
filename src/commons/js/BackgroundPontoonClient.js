@@ -3,6 +3,9 @@
  * @requires BackgroundPontoonMessageType.js
  */
 class BackgroundPontoonClient {
+    constructor() {
+        this._notificationsChangeCallbacks = new Set();
+    }
 
     /**
      * Get notifications page URL.
@@ -132,10 +135,31 @@ class BackgroundPontoonClient {
      * @public
      */
     subscribeToNotificationsChange(callback) {
-        browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-            if (message.type === BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED) {
-                callback(message.data);
-            }
-        });
+        this._notificationsChangeCallbacks.add(callback);
+        if (!browser.runtime.onMessage.hasListener(this._notificationsChangeListener)) {
+            browser.runtime.onMessage.addListener(this._notificationsChangeListener);
+        }
+    }
+
+    /**
+     * Unsubscribe from notifications data change.
+     * @param callback function to remove as a listener
+     * @public
+     */
+    unsubscribeFromNotificationsChange(callback) {
+        const deleted = this._notificationsChangeCallbacks.delete(callback);
+        if (deleted && this._notificationsChangeCallbacks.size === 0) {
+            browser.runtime.onMessage.removeListener(this._notificationsChangeListener);
+        }
+    }
+
+    /**
+     * Listener to be called when notification data change in the background.
+     * @private
+     */
+    _notificationsChangeListener(message, sender, sendResponse) {
+        if (message.type === BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED) {
+            this._notificationsChangeCallbacks.forEach((callback) => callback(message.data));
+        }
     }
 }

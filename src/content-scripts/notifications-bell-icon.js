@@ -12,33 +12,77 @@ const backgroundPontoonClient = new BackgroundPontoonClient();
 /**
  * Removes itself as a listener for further clicks and sends message via BackgroundPontoonClient to mark all notifications as read.
  */
-function unreadNotificationsIconClick() {
+function unreadNotificationsIconClickListener() {
     removeUnreadNotificationsIconClickListener();
     backgroundPontoonClient.markAllNotificationsAsRead();
+}
+
+/**
+ * Add the notifications icon click listener.
+ */
+function addUnreadNotificationsIconClickListener() {
+    unreadNotificationsIcon.addEventListener('click', unreadNotificationsIconClickListener);
 }
 
 /**
  * Remove the notifications icon click listener.
  */
 function removeUnreadNotificationsIconClickListener() {
-    unreadNotificationsIcon.removeEventListener('click', unreadNotificationsIconClick);
+    unreadNotificationsIcon.removeEventListener('click', unreadNotificationsIconClickListener);
 }
 
 /**
- * If there are any unread notifications, register a listener for marking them as read from the add-on.
+ * Mark notifications in the tab as read (change the bell icon color) if they have been marked as read from the add-on.
+ * @param change of the notifications data
  */
-if (unreadNotificationsIcon !== null) {
-    unreadNotificationsIcon.addEventListener('click', unreadNotificationsIconClick);
-
-    // Listen to message from RemotePontoon to mark all notifications as read (change the bell icon color)
-    backgroundPontoonClient.subscribeToNotificationsChange((change) => {
-        const notificationsData = change.newValue;
-        const unreadNotifications = Object.values(notificationsData)
-            .filter(n => n.unread)
-            .length;
-        if (unreadNotifications === 0) {
-            removeUnreadNotificationsIconClickListener();
-            document.getElementById('notifications').classList.remove('unread');
-        }
-    });
+function notificationsDataChangeListener(change) {
+    const notificationsData = change.newValue;
+    const unreadNotifications = Object.values(notificationsData)
+        .filter(n => n.unread)
+        .length;
+    if (unreadNotifications === 0) {
+        removeUnreadNotificationsIconClickListener();
+        document.getElementById('notifications').classList.remove('unread');
+    }
 }
+
+/**
+ * Register listeners for unread icon click and notifications data updates.
+ */
+function registerAllListeners() {
+    if (unreadNotificationsIcon !== null) {
+        addUnreadNotificationsIconClickListener();
+        backgroundPontoonClient.subscribeToNotificationsChange(notificationsDataChangeListener);
+    }
+}
+
+/**
+ * Remove listeners for unread icon click and notifications data updates.
+ */
+function deregisterAllListeners() {
+    if (unreadNotificationsIcon !== null) {
+        removeUnreadNotificationsIconClickListener();
+        backgroundPontoonClient.unsubscribeFromNotificationsChange(notificationsDataChangeListener);
+    }
+}
+
+/**
+ * (De)activate this script based on the messages from background/DataRefresher.js.
+ */
+function backgroundMessageHandler(message) {
+    switch (message.type) {
+        case 'enable-notifications-bell-script':
+            registerAllListeners();
+            break;
+        case 'disable-notifications-bell-script':
+            deregisterAllListeners();
+            break;
+    }
+}
+
+browser.runtime.onMessage.addListener(
+    (request, sender, sendResponse) => backgroundMessageHandler(request)
+);
+
+browser.runtime.sendMessage({type: 'notifications-bell-script-loaded'})
+    .then((response) => backgroundMessageHandler(response));

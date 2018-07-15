@@ -50,7 +50,7 @@ class DataRefresher {
     }
 
     /**
-     * Keep data update interval in sync with options.
+     * Keep data update interval in sync with options and watch for container settings changes.
      * @private
      */
     _watchOptionsUpdates() {
@@ -58,13 +58,21 @@ class DataRefresher {
             const intervalMinutes = parseInt(change.newValue, 10);
             this._setupAlarmWithInterval(intervalMinutes);
         });
-        this._options.subscribeToOptionChange('contextual_identity', (change) =>
-            this.refreshData()
-        );
+        this._options.subscribeToOptionChange('contextual_identity', (change) => {
+            browser.tabs.query(
+                {url: this._remotePontoon.getBaseUrl() + '/*'}
+            ).then((pontoonTabs) =>
+                pontoonTabs
+                    .filter((tab) => change.newValue !== tab.cookieStoreId)
+                    .forEach((tab) =>
+                        browser.tabs.sendMessage(tab.id, {type: 'disable-notifications-bell-script'})
+                    )
+            ).then(() => this.refreshData());
+        });
     }
 
     /**
-     * Load live update content script in recognized tabs.
+     * Load/activate content scripts in recognized tabs.
      * @private
      */
     _watchTabsUpdates() {
@@ -74,6 +82,15 @@ class DataRefresher {
                     this._options.get('contextual_identity').then((item) => {
                         if (item['contextual_identity'] === tab.cookieStoreId) {
                             browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
+                        }
+                    });
+                }
+            });
+            browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+                if (message.type === 'notifications-bell-script-loaded') {
+                    return this._options.get('contextual_identity').then((item) => {
+                        if (item['contextual_identity'] === sender.tab.cookieStoreId) {
+                            return {type: 'enable-notifications-bell-script'};
                         }
                     });
                 }
