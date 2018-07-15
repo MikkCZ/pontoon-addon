@@ -25,7 +25,7 @@ const containerSelect = document.querySelector('select[data-option-id=contextual
 if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
     browser.contextualIdentities.query({}).then((containers) => {
         containers.unshift({
-            cookieStoreId: 'none',
+            cookieStoreId: 'firefox-default',
             name: 'Default (no container)',
         });
         containers

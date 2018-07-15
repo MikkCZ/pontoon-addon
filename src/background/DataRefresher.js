@@ -68,15 +68,17 @@ class DataRefresher {
      * @private
      */
     _watchTabsUpdates() {
-        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            if (changeInfo.status === 'complete') {
-                this._options.get('contextual_identity').then((item) => {
-                    if (item['contextual_identity'] === tab.cookieStoreId) {
-                        browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
-                    }
-                });
-            }
-        });
+        if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
+            browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+                if (changeInfo.status === 'complete') {
+                    this._options.get('contextual_identity').then((item) => {
+                        if (item['contextual_identity'] === tab.cookieStoreId) {
+                            browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /**
