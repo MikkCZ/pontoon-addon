@@ -22,10 +22,6 @@ class DataRefresher {
         this._setupAlarm();
     }
 
-    _watchOptionsUpdates() {
-        this._remotePontoon.subscribeToBaseUrlChange(() => this._watchTabsUpdates());
-    }
-
     /**
      * Trigger refresh of rather 'static' data after add-on is updated or installed.
      */
@@ -59,6 +55,7 @@ class DataRefresher {
      * @private
      */
     _watchOptionsUpdates() {
+        this._remotePontoon.subscribeToBaseUrlChange(() => this._watchTabsUpdates());
         this._options.subscribeToOptionChange('data_update_interval', (change) => {
             const intervalMinutes = parseInt(change.newValue, 10);
             this._setupAlarmWithInterval(intervalMinutes);
