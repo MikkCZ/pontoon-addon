@@ -59,6 +59,7 @@
 
 #team-info-list .title {
   text-transform: uppercase;
+  margin-right: 1em;
 }
 
 #team-info-list .count,
