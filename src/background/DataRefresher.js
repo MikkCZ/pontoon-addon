@@ -92,7 +92,7 @@ class DataRefresher {
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === 'notifications-bell-script-loaded') {
                 return this._options.get('contextual_identity').then((item) => {
-                    if (item['contextual_identity'] === sender.tab.cookieStoreId || !_isFirefox()) {
+                    if (item['contextual_identity'] === sender.tab.cookieStoreId || !_supportsContainers()) {
                         return {type: 'enable-notifications-bell-script'};
                     }
                 });
@@ -103,7 +103,7 @@ class DataRefresher {
     _addLiveDataProvider(tabId, changeInfo, tab) {
         if (changeInfo.status === 'complete') {
             this._options.get('contextual_identity').then((item) => {
-                if (item['contextual_identity'] === tab.cookieStoreId || !_isFirefox()) {
+                if (item['contextual_identity'] === tab.cookieStoreId || !_supportsContainers()) {
                     browser.tabs.executeScript(tabId, {file: '/content-scripts/live-data-provider.js'});
                 }
             });
@@ -131,7 +131,7 @@ class DataRefresher {
         browser.alarms.create(this._alarmName, {periodInMinutes: intervalMinutes});
     }
 
-    _isFirefox() {
-        return browser.runtime.getURL('/').startsWith('moz-extension:');
+    _supportsContainers() {
+        return browser.contextualIdentities !== undefined;
     }
 }

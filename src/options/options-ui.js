@@ -22,7 +22,7 @@ const containerSelect = document.querySelector('select[data-option-id=contextual
     .forEach((option) => dataUpdateSelect.appendChild(option));
 
 // Fill select with Firefox containers
-if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
+if (browser.contextualIdentities !== undefined) {
     browser.contextualIdentities.query({}).then((containers) => {
         containers.unshift({
             cookieStoreId: 'firefox-default',

@@ -86,7 +86,7 @@ const introSections = {
     },
 };
 
-if (!browser.runtime.getURL('/').startsWith('moz-extension:')) {
+if (browser.pageAction === undefined) {
     // Address bar button is only supported in Firefox at this moment.
     delete introSections.pageAction;
 }
