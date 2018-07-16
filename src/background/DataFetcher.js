@@ -1,4 +1,13 @@
+/**
+ * Manually adds cookies from the selected container to HTTP requests to Pontoon.
+ * @requires commons/js/Options.js, RemotePontoon.js
+ */
 class DataFetcher {
+    /**
+     * Initialize instance, and watch for requests to Pontoon.
+     * @param options
+     * @param remotePontoon
+     */
     constructor(options, remotePontoon) {
         this._options = options;
         this._remotePontoon = remotePontoon;
@@ -9,10 +18,18 @@ class DataFetcher {
         this._watchPontoonRequests();
     }
 
+    /**
+     * Update requests watcher when Pontoon URL changes.
+     * @private
+     */
     _watchOptionsUpdates() {
         this._remotePontoon.subscribeToBaseUrlChange(() => this._watchPontoonRequests());
     }
 
+    /**
+     * Register listener to add cookies to requests Pontoon.
+     * @private
+     */
     _watchPontoonRequests() {
         browser.webRequest.onBeforeSendHeaders.removeListener(this._pontoonRequestsListener);
         browser.webRequest.onBeforeSendHeaders.addListener(
@@ -22,10 +39,18 @@ class DataFetcher {
         );
     }
 
+    /**
+     * Fetch remote HTTP resource without including any cookies to the request.
+     * @public
+     */
     fetch(url) {
         return fetch(url, {credentials: 'omit'});
     }
 
+    /**
+     * Fetch remote HTTP resource from Pontoon including session cookie to the request.
+     * @public
+     */
     fetchFromPontoonSession(url) {
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
@@ -33,35 +58,55 @@ class DataFetcher {
         return fetch(url, {credentials: 'omit', headers: headers});
     }
 
+    /**
+     * Create new token to mark request to add cookies to.
+     * @private
+     */
     _issueNewToken() {
         const token = this._uuidv4();
         this._pontoonRequestTokens.add(token);
         return token;
     }
 
+    /**
+     * Generate random UUID.
+     * @private
+     */
     _uuidv4() {
         return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
     }
 
-    _validateToken(token) {
+    /**
+     * Verify token and invalidate it for future use.
+     * @private
+     */
+    _verifyToken(token) {
         const valid = this._pontoonRequestTokens.has(token);
         this._pontoonRequestTokens.delete(token);
         return valid;
     }
 
-    _validateOrigin(requestOrigin) {
-        return new URL(browser.runtime.getUrl('/')).origin === requestOrigin;
+    /**
+     * Verify the request comes from this add-on.
+     * @private
+     */
+    _verifyOrigin(requestOrigin) {
+        return new URL(browser.runtime.getURL('/')).origin === requestOrigin;
     }
 
+    /**
+     * HTTP request listener to add Pontoon session cookie.
+     * @private
+     */
     _updatePontoonRequest(details) {
         const tokenHeaders = details.requestHeaders
             .filter((header) => header.name === 'pontoon-tools-token');
-        const isMarked = tokenHeaders.length > 0 && tokenHeaders.every((header) => this._validateToken(header.value));
+        const isMarked = tokenHeaders.length > 0 && tokenHeaders.every((header) => this._verifyToken(header.value));
         const originHeaders = details.requestHeaders
             .filter((header) => header.name.toLowerCase() === 'origin');
-        const validOrigin = originHeaders.length > 0 && originHeaders.every((header) => this._validateOrigin(header.value));
+        const validOrigin = originHeaders.length > 0 && originHeaders.every((header) => this._verifyOrigin(header.value));
         if (isMarked && validOrigin) {
             return this._options.get('contextual_identity').then((item) =>
                 browser.cookies.get({

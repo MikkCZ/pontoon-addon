@@ -74,7 +74,7 @@ class DataRefresher {
     }
 
     /**
-     * Load/activate content scripts in recognized tabs.
+     * Load content scripts in recognized tabs.
      * @private
      */
     _watchTabsUpdates() {
@@ -85,6 +85,10 @@ class DataRefresher {
         );
     }
 
+    /**
+     * Activate notifications bell sync script in recognized tabs.
+     * @private
+     */
     _listenToMessagesFromNotificationsBellContentScript() {
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === 'notifications-bell-script-loaded') {
@@ -97,6 +101,10 @@ class DataRefresher {
         });
     }
 
+    /**
+     * Load liva data update content script in recognized tabs.
+     * @private
+     */
     _addLiveDataProvider(tabId, changeInfo, tab) {
         if (changeInfo.status === 'complete') {
             this._options.get('contextual_identity').then((item) => {
@@ -128,6 +136,10 @@ class DataRefresher {
         browser.alarms.create(this._alarmName, {periodInMinutes: intervalMinutes});
     }
 
+    /**
+     * Detect if the browser supports containers (contextual identities).
+     * @private
+     */
     _supportsContainers() {
         return browser.contextualIdentities !== undefined;
     }
