@@ -9,6 +9,10 @@ class Options {
         this._initDefaults();
     }
 
+    /**
+     * Load default values from JSON files or calculate them from the browser runtime.
+     * @private
+     */
     _initDefaults() {
         let browserFamily = '';
         if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
@@ -29,7 +33,6 @@ class Options {
             this._defaults = {};
             Object.keys(loadedDefaults)
                 .forEach((key) => this._defaults[`${this._prefix}${key}`] = loadedDefaults[key]);
-            console.log(this._defaults);
         });
     }
 
