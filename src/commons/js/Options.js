@@ -5,6 +5,32 @@ class Options {
     constructor() {
         this._prefix = 'options.';
         this._prefixRegExp = new RegExp('^' + this._prefix);
+
+        this._initDefaults();
+    }
+
+    _initDefaults() {
+        let browserFamily = '';
+        if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
+            browserFamily = 'mozilla';
+        } else {
+            browserFamily = 'chromium';
+        }
+        Promise.all([
+            fetch(browser.runtime.getURL('commons/js/default-options.json')).then((response) => response.json()),
+            fetch(browser.runtime.getURL(`commons/js/default-options-${browserFamily}.json`)).then((response) => response.json()),
+            Promise.resolve({locale_team: browser.i18n.getUILanguage()}),
+        ]).then(([
+            defaultOptionsFromJSON,
+            defaultOptionsForBrowser,
+            defaultOptionsFromRuntime,
+        ]) => {
+            const loadedDefaults = Object.assign({}, defaultOptionsFromJSON, defaultOptionsForBrowser, defaultOptionsFromRuntime);
+            this._defaults = {};
+            Object.keys(loadedDefaults)
+                .forEach((key) => this._defaults[`${this._prefix}${key}`] = loadedDefaults[key]);
+            console.log(this._defaults);
+        });
     }
 
     /**
@@ -89,24 +115,6 @@ class Options {
     }
 
     /**
-     * Get default option values.
-     * @returns {{}} default values for option keys
-     * @private
-     */
-    _defaults() {
-        const defaults = {};
-        defaults[`${this._prefix}pontoon_base_url`] = 'https://pontoon.mozilla.org';
-        defaults[`${this._prefix}locale_team`] = browser.i18n.getUILanguage();
-        defaults[`${this._prefix}data_update_interval`] = 15;
-        defaults[`${this._prefix}display_toolbar_button_badge`] = true;
-        defaults[`${this._prefix}toolbar_button_action`] = 'popup';
-        defaults[`${this._prefix}toolbar_button_popup_always_hide_read_notifications`] = false;
-        defaults[`${this._prefix}show_notifications`] = true;
-        defaults[`${this._prefix}contextual_identity`] = 'firefox-default';
-        return defaults;
-    }
-
-    /**
      * Set given value to the input.
      * @param inputs to set the value
      * @param value to set (boolean for checkbox)
@@ -157,7 +165,7 @@ class Options {
      * @todo This should be moved out of here to not touch the DOM
      */
     async loadAllFromLocalStorage() {
-        this._loadAllFromObject(this._defaults());
+        this._loadAllFromObject(this._defaults);
         await browser.storage.local.get().then(
             (items) => this._loadAllFromObject(items)
         );
@@ -182,7 +190,7 @@ class Options {
                     if (items[realOptionId] !== undefined) {
                         optionsWithDefaultValues[optionId] = items[realOptionId];
                     } else {
-                        optionsWithDefaultValues[optionId] = this._defaults()[realOptionId];
+                        optionsWithDefaultValues[optionId] = this._defaults[realOptionId];
                     }
                 });
                 return optionsWithDefaultValues;
@@ -211,6 +219,6 @@ class Options {
      * @async
      */
     async resetDefaults() {
-        await browser.storage.local.set(this._defaults());
+        await browser.storage.local.set(this._defaults);
     }
 }
