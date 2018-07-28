@@ -43,6 +43,8 @@ if (browser.contextualIdentities !== undefined) {
             containerSelect.removeAttribute('disabled');
         }
     });
+} else {
+    containerSelect.parentNode.parentNode.removeChild(containerSelect.parentNode);
 }
 
 // Handle reset button
