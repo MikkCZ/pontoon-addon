@@ -352,7 +352,7 @@ class RemotePontoon {
      * @private
      */
     _listenToMessagesFromClients() {
-        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        browser.runtime.onMessage.addListener((request, sender) => {
             switch (request.type) {
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.PAGE_LOADED:
                     this._updateNotificationsDataFromPageContent(request.value);
@@ -361,23 +361,17 @@ class RemotePontoon {
                     this._markAllNotificationsAsRead();
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
-                    sendResponse(this._getNotificationsUrl('pontoon-tools'));
-                    break;
+                    return Promise.resolve(this._getNotificationsUrl('pontoon-tools'));
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL:
-                    sendResponse(this._getSettingsUrl('pontoon-tools'));
-                    break;
+                    return Promise.resolve(this._getSettingsUrl('pontoon-tools'));
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
-                    sendResponse(this._getSignInURL());
-                    break;
+                    return Promise.resolve(this._getSignInURL());
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
-                    sendResponse(this.getTeamPageUrl());
-                    break;
+                    return Promise.resolve(this.getTeamPageUrl());
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL:
-                    sendResponse(this.getTeamProjectUrl(request.args[0]));
-                    break;
+                    return Promise.resolve(this.getTeamProjectUrl(request.args[0]));
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL:
-                    sendResponse(this._getStringsWithStatusSearchUrl(request.args[0]));
-                    break;
+                    return Promise.resolve(this._getStringsWithStatusSearchUrl(request.args[0]));
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
                     return this.updateTeamsList();
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:

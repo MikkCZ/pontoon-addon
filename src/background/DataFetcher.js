@@ -9,13 +9,18 @@ class DataFetcher {
      * @param remotePontoon
      */
     constructor(options, remotePontoon) {
+        this._requiredPermissions = ['cookies', 'webRequest', 'webRequestBlocking'];
         this._options = options;
         this._remotePontoon = remotePontoon;
         this._pontoonRequestTokens = new Set();
         this._pontoonRequestsListener = (details) => this._updatePontoonRequest(details);
 
-        this._watchOptionsUpdates();
-        this._watchPontoonRequests();
+        chrome.permissions.contains({permissions: this._requiredPermissions}, (hasPermissions) => {
+            if (hasPermissions) {
+                this._watchOptionsUpdates();
+                this._watchPontoonRequests();
+            }
+        });
     }
 
     /**
@@ -54,8 +59,12 @@ class DataFetcher {
     fetchFromPontoonSession(url) {
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
-        headers.append('pontoon-tools-token', this._issueNewToken());
-        return fetch(url, {credentials: 'omit', headers: headers});
+        if (browser.webRequest && browser.webRequest.onBeforeSendHeaders.hasListener(this._pontoonRequestsListener)) {
+            headers.append('pontoon-tools-token', this._issueNewToken());
+            return fetch(url, {credentials: 'omit', headers: headers});
+        } else {
+            return fetch(url, {credentials: 'include', headers: headers});
+        }
     }
 
     /**
