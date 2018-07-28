@@ -71,7 +71,7 @@
         "commons/js/BackgroundPontoonClient.js",
         "content-scripts/notifications-bell-icon.js"
       ],
-      "run_at": "document_idle"
+      "run_at": "document_end"
     }
   ]
 }
