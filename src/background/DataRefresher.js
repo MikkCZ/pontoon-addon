@@ -84,7 +84,7 @@ class DataRefresher {
      * @private
      */
     _listenToMessagesFromNotificationsBellContentScript() {
-        browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        browser.runtime.onMessage.addListener((message, sender) => {
             if (message.type === 'notifications-bell-script-loaded') {
                 return this._options.get('contextual_identity').then((item) => {
                     if (item['contextual_identity'] === sender.tab.cookieStoreId || !this._supportsContainers()) {

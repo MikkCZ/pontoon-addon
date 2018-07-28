@@ -81,7 +81,7 @@ function backgroundMessageHandler(message) {
 }
 
 browser.runtime.onMessage.addListener(
-    (request, sender, sendResponse) => backgroundMessageHandler(request)
+    (request, sender) => backgroundMessageHandler(request)
 );
 
 browser.runtime.sendMessage({type: 'notifications-bell-script-loaded'})

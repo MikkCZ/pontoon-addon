@@ -31,7 +31,7 @@ class PageAction {
      * @private
      */
     _listenToMessagesFromPageAction() {
-        browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        browser.runtime.onMessage.addListener((request, sender) => {
             switch (request.type) {
                 case 'page-action-opened':
                     return browser.tabs.query({currentWindow: true, active: true}).then((tab) =>

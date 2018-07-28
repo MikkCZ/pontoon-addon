@@ -5,6 +5,7 @@
 class BackgroundPontoonClient {
     constructor() {
         this._notificationsChangeCallbacks = new Set();
+        this._notificationsChangeListener = (message, sender) => this._backgroundMessage(message);
     }
 
     /**
@@ -157,7 +158,7 @@ class BackgroundPontoonClient {
      * Listener to be called when notification data change in the background.
      * @private
      */
-    _notificationsChangeListener(message, sender, sendResponse) {
+    _backgroundMessage(message) {
         if (message.type === BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED) {
             this._notificationsChangeCallbacks.forEach((callback) => callback(message.data));
         }
