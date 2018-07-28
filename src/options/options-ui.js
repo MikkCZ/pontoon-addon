@@ -9,6 +9,7 @@ const backgroundPontoonClient = new BackgroundPontoonClient();
 const teamsListDataKey = 'teamsList';
 const dataUpdateSelect = document.querySelector('select[data-option-id=data_update_interval]');
 const localeTeamSelect = document.querySelector('select[data-option-id=locale_team]');
+const containerSelect = document.querySelector('select[data-option-id=contextual_identity]');
 
 // Fill update interval options
 [5, 15, 30, 60, 120]
@@ -19,6 +20,32 @@ const localeTeamSelect = document.querySelector('select[data-option-id=locale_te
         return option;
     })
     .forEach((option) => dataUpdateSelect.appendChild(option));
+
+// Fill select with Firefox containers
+if (browser.contextualIdentities !== undefined) {
+    browser.contextualIdentities.query({}).then((containers) => {
+        containers.unshift({
+            cookieStoreId: 'firefox-default',
+            name: 'Default (no container)',
+        });
+        containers
+            .map((container) => {
+                const option = document.createElement('option');
+                option.value = container.cookieStoreId;
+                option.text = container.name;
+                return option;
+            })
+            .forEach((option) => containerSelect.appendChild(option));
+    });
+
+    document.getElementById('edit_contextual_identity').addEventListener('click', () => {
+        if (window.confirm('If you do not login to Pontoon in a container tab, it’s better to keep this option to default. Do you really want to change it?')) {
+            containerSelect.removeAttribute('disabled');
+        }
+    });
+} else {
+    containerSelect.parentNode.parentNode.removeChild(containerSelect.parentNode);
+}
 
 // Handle reset button
 document.getElementById('reset_defaults').addEventListener('click', () => {

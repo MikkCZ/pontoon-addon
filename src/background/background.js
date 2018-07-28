@@ -44,4 +44,6 @@ options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) 
     if (newInstallationDetails) {
         onInstallFunction(newInstallationDetails);
     }
+
+    setTimeout(() => dataRefresher.refreshData(), 1000);
 });

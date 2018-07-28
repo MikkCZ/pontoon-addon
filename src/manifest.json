@@ -22,7 +22,11 @@
     "contextMenus",
     "tabs",
     "notifications",
-    "alarms"
+    "alarms",
+    "contextualIdentities",
+    "cookies",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "optional_permissions": [
     "<all_urls>"
@@ -55,6 +59,7 @@
       "background/ToolbarButtonContextMenu.js",
       "background/PageAction.js",
       "background/SystemNotifications.js",
+      "background/DataFetcher.js",
       "background/background.js"
     ]
   },
@@ -64,7 +69,6 @@
       "js": [
         "commons/js/BackgroundPontoonMessageType.js",
         "commons/js/BackgroundPontoonClient.js",
-        "content-scripts/live-data-provider.js",
         "content-scripts/notifications-bell-icon.js"
       ],
       "run_at": "document_idle"

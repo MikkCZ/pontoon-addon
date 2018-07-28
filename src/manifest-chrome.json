@@ -39,6 +39,7 @@
       "background/ToolbarButton.js",
       "background/ToolbarButtonContextMenu.js",
       "background/SystemNotifications.js",
+      "background/DataFetcher.js",
       "background/background.js"
     ]
   },
@@ -49,7 +50,6 @@
         "vendor/mozilla/browser-polyfill.min.js",
         "commons/js/BackgroundPontoonMessageType.js",
         "commons/js/BackgroundPontoonClient.js",
-        "content-scripts/live-data-provider.js",
         "content-scripts/notifications-bell-icon.js"
       ],
       "run_at": "document_idle"
