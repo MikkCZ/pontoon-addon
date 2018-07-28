@@ -2,25 +2,32 @@
  * Encapsulates storing and retrieving user preferences and notifying about their updates.
  */
 class Options {
-    constructor() {
-        this._prefix = 'options.';
-        this._prefixRegExp = new RegExp('^' + this._prefix);
+    static async create() {
+        const prefix = 'options.';
+        const defaults = await Options._loadDefaults(prefix);
+        return new Options(prefix, defaults);
+    }
 
-        this._initDefaults();
+    constructor(prefix, defaults) {
+        this._prefix = prefix;
+        this._prefixRegExp = new RegExp('^' + this._prefix);
+        this._defaults = defaults;
     }
 
     /**
      * Load default values from JSON files or calculate them from the browser runtime.
      * @private
+     * @async
      */
-    _initDefaults() {
+    static async _loadDefaults(prefix) {
+        const defaults = {};
         let browserFamily = '';
         if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
             browserFamily = 'mozilla';
         } else {
             browserFamily = 'chromium';
         }
-        Promise.all([
+        await Promise.all([
             fetch(browser.runtime.getURL('commons/js/default-options.json')).then((response) => response.json()),
             fetch(browser.runtime.getURL(`commons/js/default-options-${browserFamily}.json`)).then((response) => response.json()),
             Promise.resolve({locale_team: browser.i18n.getUILanguage()}),
@@ -30,10 +37,10 @@ class Options {
             defaultOptionsFromRuntime,
         ]) => {
             const loadedDefaults = Object.assign({}, defaultOptionsFromJSON, defaultOptionsForBrowser, defaultOptionsFromRuntime);
-            this._defaults = {};
             Object.keys(loadedDefaults)
-                .forEach((key) => this._defaults[`${this._prefix}${key}`] = loadedDefaults[key]);
+                .forEach((key) => defaults[`${prefix}${key}`] = loadedDefaults[key]);
         });
+        return defaults;
     }
 
     /**

@@ -103,7 +103,7 @@ class PageContextMenu {
         const teamsListDataKey = 'teamsList';
         const projectsListDataKey = 'projectsList';
         Promise.all([
-            options.get(localeTeamOptionKey),
+            this._options.get(localeTeamOptionKey),
             browser.storage.local.get([teamsListDataKey, projectsListDataKey]),
         ]).then(([
             optionsItems,

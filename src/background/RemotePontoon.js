@@ -275,6 +275,7 @@ class RemotePontoon {
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
             pontoonData.data.locales
+                .filter((locale) => locale.totalStrings > 0)
                 .sort((locale1, locale2) => locale1.code.localeCompare(locale2.code))
                 .forEach((locale) =>
                     teamsListObj[locale.code] = {

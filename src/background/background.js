@@ -20,30 +20,33 @@ browser.runtime.onInstalled.addListener((details) => {
     }
 });
 
-const options = new Options();
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
+function withOptions(options) {
+    const pontoonBaseUrlOptionKey = 'pontoon_base_url';
+    const localeTeamOptionKey = 'locale_team';
 
-/**
- * With the necessary options, create all parts of the UI and objects for data updates and access.
- */
-options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) => {
-    const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], optionsItems[localeTeamOptionKey], options);
-    const toolbarButton = new ToolbarButton(options, remotePontoon);
-    if (typeof PageAction === 'function') {
-        const pageAction = new PageAction(remotePontoon);
-    }
-    const systemNotifications = new SystemNotifications(options, remotePontoon);
-    const remoteLinks = new RemoteLinks();
-    const pageContextMenu = new PageContextMenu(options, remotePontoon, remoteLinks);
-    const dataRefresher = new DataRefresher(options, remotePontoon);
-    const toolbarButtonContextMenu = new ToolbarButtonContextMenu(options, remotePontoon, remoteLinks, dataRefresher, toolbarButton);
+    /**
+     * With the necessary options, create all parts of the UI and objects for data updates and access.
+     */
+    options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) => {
+        const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], optionsItems[localeTeamOptionKey], options);
+        const toolbarButton = new ToolbarButton(options, remotePontoon);
+        if (typeof PageAction === 'function') {
+            const pageAction = new PageAction(remotePontoon);
+        }
+        const systemNotifications = new SystemNotifications(options, remotePontoon);
+        const remoteLinks = new RemoteLinks();
+        const pageContextMenu = new PageContextMenu(options, remotePontoon, remoteLinks);
+        const dataRefresher = new DataRefresher(options, remotePontoon);
+        const toolbarButtonContextMenu = new ToolbarButtonContextMenu(options, remotePontoon, remoteLinks, dataRefresher, toolbarButton);
 
-    // If the onInstalled event has already fired, the details are stored by the function registered above.
-    onInstallFunction = (details) => dataRefresher.refreshDataOnInstallOrUpdate();
-    if (newInstallationDetails) {
-        onInstallFunction(newInstallationDetails);
-    }
+        // If the onInstalled event has already fired, the details are stored by the function registered above.
+        onInstallFunction = (details) => dataRefresher.refreshDataOnInstallOrUpdate();
+        if (newInstallationDetails) {
+            onInstallFunction(newInstallationDetails);
+        }
 
-    setTimeout(() => dataRefresher.refreshData(), 1000);
-});
+        setTimeout(() => dataRefresher.refreshData(), 1000);
+    });
+}
+
+Options.create().then(withOptions);
