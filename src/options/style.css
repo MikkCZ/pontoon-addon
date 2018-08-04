@@ -4,6 +4,14 @@ body {
   font-weight: 300;
 }
 
+nav li {
+  display: inline-block;
+}
+
+nav li:not(:last-child) {
+  margin: 0 1em;
+}
+
 main {
   max-width: 37.5em;
   margin: 0 auto;

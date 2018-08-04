@@ -82,4 +82,13 @@ class RemoteLinks {
     getBugzillaReportUrlForSelectedTextOnPage(selectedText, pageUrl, team, teamComponent) {
         return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&component=${teamComponent}&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${team}] Translation update proposed for "${selectedText}" on ${pageUrl}&comment=The translation:%0A${selectedText}%0A%0AShould be:%0A`;
     }
+
+    /**
+     * Get Pontoon Tools wiki URL.
+     * @returns {string}
+     * @public
+     */
+    getPontoonToolsWikiUrl() {
+        return 'https://github.com/MikkCZ/pontoon-tools/wiki';
+    }
 }

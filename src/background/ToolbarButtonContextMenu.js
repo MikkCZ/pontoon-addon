@@ -125,6 +125,11 @@ class ToolbarButtonContextMenu {
             onclick: () => browser.tabs.create({url: this._remoteLinks.getWebDashboardUrl(localeTeam)}),
         });
         browser.contextMenus.create({
+            title: 'Pontoon Tools wiki',
+            contexts: ['browser_action'],
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getPontoonToolsWikiUrl()}),
+        });
+        browser.contextMenus.create({
             title: 'Open Pontoon Tools tour',
             contexts: ['browser_action'],
             onclick: () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}),

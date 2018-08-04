@@ -16,6 +16,7 @@ function withOptions(options) {
      * Data and actions for all steps of the tour
      * { sectionId: { title, text, image, imageClass, buttonText, buttonOnClick } }
      */
+    const remoteLinks = new RemoteLinks();
     const introSections = {
         toolbarButton: {
             title: 'Toolbar button',
@@ -72,15 +73,14 @@ function withOptions(options) {
             buttonOnClick: () => browser.runtime.openOptionsPage(),
         },
         feedback: {
-            title: 'Feedback',
-            text: `This add-on won't exist and cannot improve without you - Mozilla localizers. Therefore, I would like
-                    to ask you for feedback on how Pontoon Tools helps you, or how can it help you even more. You can send
-                    a message to our mailing list "dev-l10n@lists.mozilla.org" or create a request in the GitHub
-                    repository by clicking the blue button below.`,
+            title: 'Feedback and more',
+            text: `This add-on won't exist and improve without you - Mozilla localizers. I would like to ask you for feedback
+                    on how Pontoon Tools helps you, or how can it help you even more. Please <strong>check the wiki</strong>
+                    for more information about Pontoon Tools features and how to share your feedback and request new features.`,
             image: 'img/2-Lions.png',
             imageClass: 'bottom',
-            buttonText: 'Ask for a feature',
-            buttonOnClick: () => browser.tabs.create({url: 'https://github.com/MikkCZ/pontoon-tools/issues'}),
+            buttonText: 'Check Pontoon Tools wiki',
+            buttonOnClick: () => browser.tabs.create({url: remoteLinks.getPontoonToolsWikiUrl()}),
         },
     };
 

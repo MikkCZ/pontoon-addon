@@ -13,6 +13,6 @@ Pontoon Tools is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) i
 This add-on is a WebExtension and works both in Firefox and Chrome. Please read the [wiki](https://github.com/MikkCZ/pontoon-tools/wiki), how to install and use it.
 
 ## Get involved
-Pontoon Tools started as [Michal's](https://mozillians.org/u/mstanke/) personal project, but is dedicated to all Mozilla localizers. You are welcome to [report bugs, request new features](https://github.com/MikkCZ/pontoon-tools/issues) or send your feedback to the [dev-l10n list](https://lists.mozilla.org/listinfo/dev-l10n).
+Pontoon Tools started as [Michal's](https://mozillians.org/u/mstanke/) personal project, but is dedicated to all Mozilla localizers. You are welcome to [report bugs, request new features](https://github.com/MikkCZ/pontoon-tools/issues) or send your feedback to [Mozilla Discourse](https://discourse.mozilla.org/c/pontoon).
 
 Those, who prefer coding, please see the [contributing guidelines](CONTRIBUTING.md).

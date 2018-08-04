@@ -90,8 +90,12 @@ function withOptions(options) {
     );
 
     // Links
+    const remoteLinks = new RemoteLinks();
     document.querySelectorAll('a.open_tour').forEach((tourLink) =>
         tourLink.addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('intro/index.html')}))
+    );
+    document.querySelectorAll('a.open_wiki').forEach((wikiLink) =>
+        wikiLink.addEventListener('click', () => browser.tabs.create({url: remoteLinks.getPontoonToolsWikiUrl()}))
     );
     backgroundPontoonClient.getSettingsUrl().then((settingsUrl) =>
         document.querySelector('a.pontoon_settings').setAttribute('href', settingsUrl)
