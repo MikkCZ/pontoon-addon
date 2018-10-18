@@ -270,7 +270,7 @@ class RemotePontoon {
      */
     async updateTeamsList() {
         return await Promise.all([
-            this._dataFetcher.fetch(this._getQueryURL('{locales{code,name,totalStrings,approvedStrings,fuzzyStrings,missingStrings,unreviewedStrings}}')).then((response) => response.json()),
+            this._dataFetcher.fetch(this._getQueryURL('{locales{code,name,approvedStrings,fuzzyStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}')).then((response) => response.json()),
             this._dataFetcher.fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
@@ -282,11 +282,13 @@ class RemotePontoon {
                         code: locale.code,
                         name: locale.name,
                         strings: {
-                            totalStrings: locale.totalStrings,
                             approvedStrings: locale.approvedStrings,
                             fuzzyStrings: locale.fuzzyStrings,
+                            stringsWithWarnings: locale.stringsWithWarnings,
+                            stringsWithErrors: locale.stringsWithErrors,
                             missingStrings: locale.missingStrings,
                             unreviewedStrings: locale.unreviewedStrings,
+                            totalStrings: locale.totalStrings,
                         },
                         bz_component: bz_components[locale.code],
                     }

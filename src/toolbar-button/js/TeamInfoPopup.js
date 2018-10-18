@@ -113,10 +113,12 @@ class TeamInfoPopup {
             }
 
             [
-                {status: 'translated', text: 'translated strings', dataProperty: 'approvedStrings'},
-                {status: 'fuzzy', text: 'fuzzy strings', dataProperty: 'fuzzyStrings'},
-                {status: 'missing', text: 'missing strings', dataProperty: 'missingStrings'},
-                {status: 'unreviewed', text: 'unreviewed strings', dataProperty: 'unreviewedStrings'},
+                {status: 'translated', text: 'translated', dataProperty: 'approvedStrings'},
+                {status: 'fuzzy', text: 'fuzzy', dataProperty: 'fuzzyStrings'},
+                {status: 'warnings', text: 'warnings', dataProperty: 'stringsWithWarnings'},
+                {status: 'errors', text: 'errors', dataProperty: 'stringsWithErrors'},
+                {status: 'missing', text: 'missing', dataProperty: 'missingStrings'},
+                {status: 'unreviewed', text: 'unreviewed', dataProperty: 'unreviewedStrings'},
                 {status: 'all', text: 'all strings', dataProperty: 'totalStrings'}
             ]
                 .map((strings) =>

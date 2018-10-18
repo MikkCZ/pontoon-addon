@@ -48,12 +48,20 @@
   background-color: #fed271;
 }
 
+#team-info-list .warnings a::before {
+  background-color: #ffa10f;
+}
+
+#team-info-list .errors a::before {
+  background-color: #f36;
+}
+
 #team-info-list .missing a::before {
   background-color: #4d5967;
 }
 
 #team-info-list .unreviewed a::before {
-  background: center / contain no-repeat url('img/lightbulb-blue.svg');
+  background: center / contain no-repeat url('../img/lightbulb-blue.svg');
   height: 1em;
 }
 
