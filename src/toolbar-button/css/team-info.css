@@ -23,6 +23,8 @@
 }
 
 #team-info-list a {
+  display: inline-block;
+  width: 100%;
   color: #ebebeb;
 }
 
