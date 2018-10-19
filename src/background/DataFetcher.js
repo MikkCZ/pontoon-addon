@@ -15,7 +15,7 @@ class DataFetcher {
         this._pontoonRequestTokens = new Set();
         this._pontoonRequestsListener = (details) => this._updatePontoonRequest(details);
 
-        chrome.permissions.contains({permissions: this._requiredPermissions}, (hasPermissions) => {
+        browser.permissions.contains({permissions: this._requiredPermissions}).then((hasPermissions) => {
             if (hasPermissions) {
                 this._watchOptionsUpdates();
                 this._watchPontoonRequests();
