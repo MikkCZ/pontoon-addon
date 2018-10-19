@@ -16,6 +16,7 @@ const BackgroundPontoon = Object.freeze({
             GET_STRINGS_WITH_STATUS_SEARCH_URL: 'get-strings-with-status-search-url',
             UPDATE_TEAMS_LIST: 'update-teams-list',
             GET_TEAM_FROM_PONTOON: 'get-team-from-pontoon',
+            GET_CURRENT_TAB_PROJECT: 'get-current-tab-project',
         },
         FROM_BACKGROUND: {
             NOTIFICATIONS_UPDATED: 'notifications-updated',

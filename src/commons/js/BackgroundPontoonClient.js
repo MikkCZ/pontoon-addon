@@ -107,6 +107,17 @@ class BackgroundPontoonClient {
     }
 
     /**
+     * Get Pontoon project for the loaded page.
+     * @returns promise that will be fulfilled with project information or undefined, if no project is known for the url
+     * @public
+     * @async
+     */
+    async getPontoonProjectForTheCurrentTab() {
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoon.MessageType.GET_CURRENT_TAB_PROJECT});
+    }
+
+    /**
      * Update data in storage from Pontoon page content.
      * @param pageUrl
      * @param documentHTML of the page

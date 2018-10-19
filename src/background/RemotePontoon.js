@@ -313,6 +313,36 @@ class RemotePontoon {
     }
 
     /**
+     * Get Pontoon project for the loaded page.
+     * @param pageUrl loaded in a tab
+     * @returns promise that will be fulfilled with project information or undefined, if no project is known for the url
+     * @public
+     */
+    async getPontoonProjectForPageUrl(pageUrl) {
+        const tmpLink = document.createElement('a');
+        tmpLink.href = pageUrl;
+        const toProjectMap = new Map();
+        const dataKey = 'projectsList';
+        await browser.storage.local.get(dataKey).then((item) => {
+            if (item[dataKey]) {
+                Object.values(item[dataKey]).forEach((project) =>
+                    project.domains.forEach((domain) => toProjectMap.set(domain, project))
+                );
+            }
+        });
+        const projectData = toProjectMap.get(tmpLink.hostname);
+        if (projectData) {
+            return {
+                name: projectData.name,
+                pageUrl: this.getTeamProjectUrl(`/projects/${projectData.slug}/`),
+                translationUrl: this.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
+            };
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
      * Subscribe to teams list change.
      * @param callback function to call with the new value
      * @public
@@ -379,6 +409,10 @@ class RemotePontoon {
                     return this.updateTeamsList();
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
                     return this._getTeamFromPontoon();
+                case BackgroundPontoon.MessageType.GET_CURRENT_TAB_PROJECT:
+                    return browser.tabs.query({currentWindow: true, active: true}).then((tab) =>
+                        this.getPontoonProjectForPageUrl(tab[0].url)
+                    );
             }
         });
         this.subscribeToNotificationsChange((change) => {

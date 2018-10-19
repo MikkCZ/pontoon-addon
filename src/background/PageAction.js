@@ -12,7 +12,6 @@ class PageAction {
 
         this._watchStorageChanges();
         this._watchTabsUpdates();
-        this._listenToMessagesFromPageAction();
         this._refreshAllTabsPageActions();
     }
 
@@ -24,27 +23,6 @@ class PageAction {
         this._remotePontoon.subscribeToProjectsListChange(
             (change) => this._refreshAllTabsPageActions()
         );
-    }
-
-    /**
-     * Listen to messages from opened page action menus
-     * @private
-     */
-    _listenToMessagesFromPageAction() {
-        browser.runtime.onMessage.addListener((request, sender) => {
-            switch (request.type) {
-                case 'page-action-opened':
-                    return browser.tabs.query({currentWindow: true, active: true}).then((tab) =>
-                        this._getPontoonProjectForPageUrl(tab[0].url)
-                    ).then((projectData) => {
-                        return {
-                            name: projectData.name,
-                            pageUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/`),
-                            translationUrl: this._remotePontoon.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
-                        };
-                    });
-            }
-        });
     }
 
     /**
@@ -74,7 +52,7 @@ class PageAction {
      * @async
      */
     async _showPageActionForTab(tab) {
-        const projectData = await this._getPontoonProjectForPageUrl(tab.url);
+        const projectData = await this._remotePontoon.getPontoonProjectForPageUrl(tab.url);
         if (projectData) {
             this._activatePageAction(tab.id);
             browser.pageAction.setTitle({tabId: tab.id, title: `Open ${projectData.name} in Pontoon`});
@@ -108,26 +86,5 @@ class PageAction {
     _deactivatePageAction(tabId) {
         browser.pageAction.setIcon({tabId: tabId});
         browser.pageAction.hide(tabId);
-    }
-
-    /**
-     * Get Pontoon project for the loaded page.
-     * @param pageUrl loaded in a tab
-     * @returns promise that will be fulfilled with project information or undefined, if not project is known for the url
-     * @private
-     */
-    async _getPontoonProjectForPageUrl(pageUrl) {
-        const tmpLink = document.createElement('a');
-        tmpLink.href = pageUrl;
-        const toProjectMap = new Map();
-        const dataKey = 'projectsList';
-        await browser.storage.local.get(dataKey).then((item) => {
-            if (item[dataKey]) {
-                Object.values(item[dataKey]).forEach((project) =>
-                    project.domains.forEach((domain) => toProjectMap.set(domain, project))
-                );
-            }
-        });
-        return toProjectMap.get(tmpLink.hostname);
     }
 }

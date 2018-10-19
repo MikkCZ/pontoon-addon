@@ -3,10 +3,9 @@
  */
 'use strict';
 
-// Get the project data from background/PageAction.js.
-browser.runtime.sendMessage({
-    type: 'page-action-opened',
-}).then((response) => {
+// Get the project data from background/RemotePontoon.js.
+const backgroundPontoonClient = new BackgroundPontoonClient();
+backgroundPontoonClient.getPontoonProjectForTheCurrentTab().then((response) => {
     // Link to open project page in Pontoon
     const openProjectPage = document.getElementById('open-project-page');
     openProjectPage.textContent = `Open ${response.name} project page`;
