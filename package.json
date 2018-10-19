@@ -1,6 +1,6 @@
 {
   "name": "pontoon-tools",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Tools for Pontoon and its integration into the browser.",
   "main": "src/manifest.js",
   "scripts": {
