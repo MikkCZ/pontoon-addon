@@ -54,13 +54,12 @@ function withOptions(options) {
             image: 'img/page-action.png',
             imageClass: 'bottom',
         },
-        contextMenu: {
-            title: 'Context menus',
-            text: `Context menus are a hidden, but very useful feature in Pontoon Tools. If you see a typo on Mozilla websites,
-                    highlight the text with you mouse, right-click it and select to find the string in Pontoon, or report it
-                    to your team as a bug. If you are a SUMO localizer, you can search for Firefox strings you see
-                    in articles the same way.`,
-            image: 'img/context-menu.png',
+        contextButtons: {
+            title: 'Context buttons',
+            text: `Context buttons are a quick way to resolve localization issues as you spot them. Highlight the text
+                    on a page with you mouse and two icons will appear. You can choose between searching the text in Pontoon
+                    or reporting it to your team into Bugzilla.`,
+            image: 'img/context-buttons.png',
             imageClass: 'bottom',
         },
         addonSettings: {
