@@ -36,6 +36,7 @@ function withOptions(options) {
         const systemNotifications = new SystemNotifications(options, remotePontoon);
         const remoteLinks = new RemoteLinks();
         const pageContextMenu = new PageContextMenu(options, remotePontoon, remoteLinks);
+        const contextButtons = new ContextButtons(options, remotePontoon, remoteLinks);
         const dataRefresher = new DataRefresher(options, remotePontoon);
         const toolbarButtonContextMenu = new ToolbarButtonContextMenu(options, remotePontoon, remoteLinks, dataRefresher, toolbarButton);
 

@@ -80,7 +80,7 @@ class RemoteLinks {
      * @public
      */
     getBugzillaReportUrlForSelectedTextOnPage(selectedText, pageUrl, team, teamComponent) {
-        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&component=${teamComponent}&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${team}] Translation update proposed for "${selectedText}" on ${pageUrl}&comment=The translation:%0A${selectedText}%0A%0AShould be:%0A`;
+        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&component=${teamComponent}&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${team}] Translation update proposed for "${selectedText.trim()}" on ${pageUrl}&comment=The translation:%0A${selectedText.trim()}%0A%0AShould be:%0A`;
     }
 
     /**
