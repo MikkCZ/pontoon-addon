@@ -104,6 +104,8 @@ class DataFetcher {
     _updatePontoonRequest(details) {
         const tokenHeaders = details.requestHeaders
             .filter((header) => header.name === 'pontoon-tools-token');
+        details.requestHeaders = details.requestHeaders
+            .filter((header) => header.name !== 'pontoon-tools-token');
         const isMarked = tokenHeaders.length > 0 && tokenHeaders.every((header) => this._verifyToken(header.value));
         if (isMarked) {
             return this._options.get('contextual_identity').then((item) =>
