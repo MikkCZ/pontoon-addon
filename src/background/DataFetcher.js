@@ -98,14 +98,6 @@ class DataFetcher {
     }
 
     /**
-     * Verify the request comes from this add-on.
-     * @private
-     */
-    _verifyOrigin(requestOrigin) {
-        return new URL(browser.runtime.getURL('/')).origin === requestOrigin;
-    }
-
-    /**
      * HTTP request listener to add Pontoon session cookie.
      * @private
      */
@@ -113,10 +105,7 @@ class DataFetcher {
         const tokenHeaders = details.requestHeaders
             .filter((header) => header.name === 'pontoon-tools-token');
         const isMarked = tokenHeaders.length > 0 && tokenHeaders.every((header) => this._verifyToken(header.value));
-        const originHeaders = details.requestHeaders
-            .filter((header) => header.name.toLowerCase() === 'origin');
-        const validOrigin = originHeaders.length > 0 && originHeaders.every((header) => this._verifyOrigin(header.value));
-        if (isMarked && validOrigin) {
+        if (isMarked) {
             return this._options.get('contextual_identity').then((item) =>
                 browser.cookies.get({
                     url: this._remotePontoon.getBaseUrl(),
