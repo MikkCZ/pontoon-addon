@@ -1,6 +1,6 @@
 # Pontoon Tools
 
-[![Build Status](https://travis-ci.org/MikkCZ/pontoon-tools.svg?branch=master)](https://travis-ci.org/MikkCZ/pontoon-tools)
+[![Build Status](https://travis-ci.com/MikkCZ/pontoon-tools.svg?branch=master)](https://travis-ci.com/MikkCZ/pontoon-tools)
 [![Mozilla Add-on](https://img.shields.io/amo/v/pontoon-tools.svg?label=Firefox)](https://addons.mozilla.org/firefox/addon/pontoon-tools/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=Chrome)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
