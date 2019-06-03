@@ -5,7 +5,6 @@
 [![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=Chrome)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?text=users)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/MikkCZ/pontoon-tools.svg?columns=inbox,backlog,in%20progress)](https://waffle.io/MikkCZ/pontoon-tools)
 
 Pontoon Tools is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) into your browser. The aim is to ease localization work and provide tools beyond what a web app can do.
 
