@@ -13,6 +13,7 @@ class RemotePontoon {
     constructor(baseUrl, team, options) {
         this._baseUrl = baseUrl;
         this._baseUrlChangeListeners = new Set();
+        this._userDataUrl = this._baseUrl + '/user-data/';
         this._notificationsUrl = this._baseUrl + '/notifications/';
         this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
@@ -165,9 +166,9 @@ class RemotePontoon {
         const nObj = {};
         nObj.id = n.dataset.id;
         nObj.unread = (n.dataset.unread === 'true');
-        nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
+        nObj.actor = {anchor: n.querySelector('.actor a').textContent, url: n.querySelector('.actor a').getAttribute('href')};
         if (n.querySelector('.target')) {
-            nObj.target = {text: n.querySelector('.target a').textContent, link: n.querySelector('.target a').getAttribute('href')};
+            nObj.target = {anchor: n.querySelector('.target a').textContent, url: n.querySelector('.target a').getAttribute('href')};
         }
         nObj.verb = n.querySelector('.verb').textContent;
         nObj.timeago = n.querySelector('.timeago').textContent;
@@ -175,6 +176,27 @@ class RemotePontoon {
             nObj.message = n.querySelector('.message').innerHTML;
         }
         return nObj;
+    }
+
+    /**
+     * Update notifications data in storage from user data response.
+     * @param userDataNotifications notifications from user data JSON
+     * @private
+     */
+    _updateNotificationsDataFromUserData(userDataNotifications) {
+        const notifications = userDataNotifications.notifications;
+
+        const notificationsDataObj = {};
+        // TODO:
+        // when https://github.com/mozilla/pontoon/pull/1311 is fixed and deployed
+        // mapping `n` to `nObj` is not needed anymore
+        notifications.map((n) => {
+            const nObj = n;
+            nObj.date_iso = n.date_iso.split('+', 2).join('+');
+            return nObj;
+        }).forEach((n) => notificationsDataObj[n.id] = n);
+
+        browser.storage.local.set({notificationsData: notificationsDataObj});
     }
 
     /**
@@ -225,12 +247,12 @@ class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        this._dataFetcher.fetchFromPontoonSession(
-            this._getNotificationsUrl('pontoon-tools-automation')
+        this._dataFetcher.fetchFromPontoonSession(this._userDataUrl).then(
+            (response) => response.json()
         ).then(
-            (response) => response.text()
-        ).then(
-            (text) => this._updateNotificationsDataFromPageContent(text)
+            (userData) => this._updateNotificationsDataFromUserData(userData.notifications)
+        ).catch(
+            (error) => browser.storage.local.set({notificationsData: undefined})
         );
     }
 

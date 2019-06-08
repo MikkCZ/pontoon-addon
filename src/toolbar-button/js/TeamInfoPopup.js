@@ -1,6 +1,7 @@
 /**
  * Display team information in the browser-action popup.
  * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
+ * @requires moment
  */
 class TeamInfoPopup {
     /**
