@@ -452,11 +452,9 @@ class RemotePontoon {
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
         Promise.all([
-            browser.tabs.query({url: this.getBaseUrl() + '/*'}),
             this._dataFetcher.fetchFromPontoonSession(this._markAsReadUrl),
             browser.storage.local.get(dataKey)
         ]).then(([
-            pontoonTabs,
             response,
             storageItem
         ]) => {

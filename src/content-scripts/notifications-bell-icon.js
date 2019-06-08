@@ -6,7 +6,8 @@
 'use strict';
 
 // Notifications bell icon, if there are any unread notifications.
-const unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon');
+const unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon') || document.querySelector('header .user-notifications-menu.unread');
+const unreadDOMElement = document.querySelector('#notifications.unread') || document.querySelector('header .user-notifications-menu.unread');
 const backgroundPontoonClient = new BackgroundPontoonClient();
 
 /**
@@ -42,7 +43,7 @@ function notificationsDataChangeListener(change) {
         .length;
     if (unreadNotifications === 0) {
         removeUnreadNotificationsIconClickListener();
-        document.getElementById('notifications').classList.remove('unread');
+        unreadDOMElement.classList.remove('unread');
     }
 }
 
