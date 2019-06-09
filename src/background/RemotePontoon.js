@@ -13,9 +13,6 @@ class RemotePontoon {
     constructor(baseUrl, team, options) {
         this._baseUrl = baseUrl;
         this._baseUrlChangeListeners = new Set();
-        this._userDataUrl = this._baseUrl + '/user-data/';
-        this._notificationsUrl = this._baseUrl + '/notifications/';
-        this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
         this._options = options;
         this._domParser = new DOMParser();
@@ -40,7 +37,7 @@ class RemotePontoon {
      * @private
      */
     _getNotificationsUrl() {
-        return `${this._notificationsUrl}?utm_source=pontoon-tools`;
+        return `${this._baseUrl}/notifications/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -222,7 +219,7 @@ class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        this._dataFetcher.fetchFromPontoonSession(this._userDataUrl).then(
+        this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/user-data/?utm_source=pontoon-tools-automation`).then(
             (response) => response.json()
         ).then((userData) => {
             const notificationsDataObj = {};
@@ -459,7 +456,7 @@ class RemotePontoon {
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
         Promise.all([
-            this._dataFetcher.fetchFromPontoonSession(this._markAsReadUrl),
+            this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-tools-automation`),
             browser.storage.local.get(dataKey)
         ]).then(([
             response,
