@@ -176,17 +176,17 @@ class RemotePontoon {
 
     /**
      * Update notifications data in storage from user data response.
-     * @param userDataNotifications notifications from user data JSON
+     * @param userDataNotifications notifications object from user data JSON
      * @private
      */
     _updateNotificationsDataFromUserData(userDataNotifications) {
-        const notifications = userDataNotifications.notifications;
+        const notificationsArray = userDataNotifications.notifications;
 
         const notificationsDataObj = {};
         // TODO:
         // when https://github.com/mozilla/pontoon/pull/1311 is fixed and deployed
         // mapping `n` to `nObj` is not needed anymore
-        notifications.map((n) => {
+        notificationsArray.map((n) => {
             const nObj = n;
             nObj.date_iso = n.date_iso.split('+', 2).join('+');
             return nObj;
