@@ -175,27 +175,6 @@ class RemotePontoon {
     }
 
     /**
-     * Update notifications data in storage from user data response.
-     * @param userDataNotifications notifications object from user data JSON
-     * @private
-     */
-    _updateNotificationsDataFromUserData(userDataNotifications) {
-        const notificationsArray = userDataNotifications.notifications;
-
-        const notificationsDataObj = {};
-        // TODO:
-        // when https://github.com/mozilla/pontoon/pull/1311 is fixed and deployed
-        // mapping `n` to `nObj` is not needed anymore
-        notificationsArray.map((n) => {
-            const nObj = n;
-            nObj.date_iso = n.date_iso.split('+', 2).join('+');
-            return nObj;
-        }).forEach((n) => notificationsDataObj[n.id] = n);
-
-        browser.storage.local.set({notificationsData: notificationsDataObj});
-    }
-
-    /**
      * Update notifications data in storage from Pontoon page content.
      * @param pageContent
      * @private
@@ -245,8 +224,18 @@ class RemotePontoon {
     updateNotificationsData() {
         this._dataFetcher.fetchFromPontoonSession(this._userDataUrl).then(
             (response) => response.json()
-        ).then(
-            (userData) => this._updateNotificationsDataFromUserData(userData.notifications)
+        ).then((userData) => {
+            const notificationsDataObj = {};
+            // TODO:
+            // when https://github.com/mozilla/pontoon/pull/1311 is fixed and deployed
+            // mapping of `date_iso` is not needed anymore
+            userData.notifications.notifications.map((n) => {
+                n.date_iso = n.date_iso.split('+', 2).join('+');
+                return n;
+            }).forEach((n) => notificationsDataObj[n.id] = n);
+            return notificationsDataObj;
+        }).then(
+            (nData) => browser.storage.local.set({notificationsData: nData})
         ).catch(
             (error) => browser.storage.local.set({notificationsData: undefined})
         );
