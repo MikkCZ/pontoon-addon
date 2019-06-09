@@ -36,15 +36,11 @@ class RemotePontoon {
 
     /**
      * Get notifications page URL.
-     * @param utm_source to include into the URL
      * @returns {string}
      * @private
      */
-    _getNotificationsUrl(utm_source) {
-        if (utm_source !== undefined) {
-            return `${this._notificationsUrl}?utm_source=${utm_source}`;
-        }
-        return this._notificationsUrl;
+    _getNotificationsUrl() {
+        return `${this._notificationsUrl}?utm_source=pontoon-tools`;
     }
 
     /**
@@ -418,7 +414,7 @@ class RemotePontoon {
                     this._markAllNotificationsAsRead();
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
-                    return Promise.resolve(this._getNotificationsUrl('pontoon-tools'));
+                    return Promise.resolve(this._getNotificationsUrl());
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL:
                     return Promise.resolve(this._getSettingsUrl('pontoon-tools'));
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
