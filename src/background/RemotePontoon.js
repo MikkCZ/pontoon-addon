@@ -190,6 +190,8 @@ class RemotePontoon {
                 .map((n) => RemotePontoon._createNotificationsData(n))
                 .forEach((nObj) => notificationsDataObj[nObj.id] = nObj);
             browser.storage.local.set({notificationsData: notificationsDataObj});
+        } else if (page.title === 'Translate.Next') {
+            // Translate.Next does not contain notifications in DOM
         } else {
             browser.storage.local.set({notificationsData: undefined});
         }
@@ -450,11 +452,9 @@ class RemotePontoon {
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
         Promise.all([
-            browser.tabs.query({url: this.getBaseUrl() + '/*'}),
             this._dataFetcher.fetchFromPontoonSession(this._markAsReadUrl),
             browser.storage.local.get(dataKey)
         ]).then(([
-            pontoonTabs,
             response,
             storageItem
         ]) => {
