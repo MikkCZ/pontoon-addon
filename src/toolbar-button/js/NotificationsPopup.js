@@ -53,6 +53,7 @@ class NotificationsPopup {
         }
         if (notification.actor) {
             const actorLink = document.createElement('a');
+            // TODO: remove notification.actor.text and notification.actor.link which are for backward compatibility only
             actorLink.textContent = notification.actor.anchor || notification.actor.text;
             this._backgroundPontoonClient.getTeamProjectUrl(notification.actor.url || notification.actor.link).then(
                 (teamProjectUrl) => actorLink.setAttribute('href', teamProjectUrl)
@@ -66,6 +67,7 @@ class NotificationsPopup {
         }
         if (notification.target) {
             const targetLink = document.createElement('a');
+            // TODO: remove notification.target.text and notification.target.link which are for backward compatibility only
             targetLink.textContent = ` ${notification.target.anchor || notification.target.text}`;
             this._backgroundPontoonClient.getTeamProjectUrl(notification.target.url || notification.target.link).then(
                 (teamProjectUrl) => targetLink.setAttribute('href', teamProjectUrl)
