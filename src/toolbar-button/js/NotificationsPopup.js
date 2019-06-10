@@ -1,6 +1,7 @@
 /**
  * Displays notifications in the browser-action popup.
  * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
+ * @requires moment
  */
 class NotificationsPopup {
     /**
@@ -52,8 +53,9 @@ class NotificationsPopup {
         }
         if (notification.actor) {
             const actorLink = document.createElement('a');
-            actorLink.textContent = notification.actor.text;
-            this._backgroundPontoonClient.getTeamProjectUrl(notification.actor.link).then(
+            // TODO: remove notification.actor.text and notification.actor.link which are for backward compatibility only
+            actorLink.textContent = notification.actor.anchor || notification.actor.text;
+            this._backgroundPontoonClient.getTeamProjectUrl(notification.actor.url || notification.actor.link).then(
                 (teamProjectUrl) => actorLink.setAttribute('href', teamProjectUrl)
             );
             listItem.appendChild(actorLink);
@@ -65,13 +67,19 @@ class NotificationsPopup {
         }
         if (notification.target) {
             const targetLink = document.createElement('a');
-            targetLink.textContent = ` ${notification.target.text}`;
-            this._backgroundPontoonClient.getTeamProjectUrl(notification.target.link).then(
+            // TODO: remove notification.target.text and notification.target.link which are for backward compatibility only
+            targetLink.textContent = ` ${notification.target.anchor || notification.target.text}`;
+            this._backgroundPontoonClient.getTeamProjectUrl(notification.target.url || notification.target.link).then(
                 (teamProjectUrl) => targetLink.setAttribute('href', teamProjectUrl)
             );
             listItem.appendChild(targetLink);
         }
-        if (notification.timeago) {
+        if (notification.date_iso) {
+            const timeago = document.createElement('div');
+            timeago.textContent = NotificationsPopup._timeAgo(new Date(notification.date_iso));
+            timeago.classList.add('timeago');
+            listItem.appendChild(timeago);
+        } else if (notification.timeago) {
             const timeago = document.createElement('div');
             timeago.textContent = notification.timeago;
             timeago.classList.add('timeago');
@@ -144,5 +152,26 @@ class NotificationsPopup {
             seeAllLink.classList.add('hidden');
             error.classList.remove('hidden');
         }
+    }
+
+    /**
+     * Return string of how much is the given date in past.
+     * @param date
+     * @returns {String}
+     * @private
+     * @static
+     */
+    static _timeAgo(date) {
+        const dateMoment = moment.utc(date);
+        if (!date || !dateMoment.isValid()) {
+            return '―';
+        }
+        const duration = moment.duration(moment.utc().diff(dateMoment));
+        const durationString = duration.format({
+            template: 'Y __, M __, W __, D __, h __, m __, s __',
+            largest: 2,
+            minValue: 60,
+        });
+        return `${durationString} ago`;
     }
 }

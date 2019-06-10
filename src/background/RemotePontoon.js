@@ -13,8 +13,6 @@ class RemotePontoon {
     constructor(baseUrl, team, options) {
         this._baseUrl = baseUrl;
         this._baseUrlChangeListeners = new Set();
-        this._notificationsUrl = this._baseUrl + '/notifications/';
-        this._markAsReadUrl = this._notificationsUrl + 'mark-all-as-read/';
         this._team = team;
         this._options = options;
         this._domParser = new DOMParser();
@@ -35,15 +33,11 @@ class RemotePontoon {
 
     /**
      * Get notifications page URL.
-     * @param utm_source to include into the URL
      * @returns {string}
      * @private
      */
-    _getNotificationsUrl(utm_source) {
-        if (utm_source !== undefined) {
-            return `${this._notificationsUrl}?utm_source=${utm_source}`;
-        }
-        return this._notificationsUrl;
+    _getNotificationsUrl() {
+        return `${this._baseUrl}/notifications/?utm_source=pontoon-tools`;
     }
 
     /**
@@ -165,9 +159,9 @@ class RemotePontoon {
         const nObj = {};
         nObj.id = n.dataset.id;
         nObj.unread = (n.dataset.unread === 'true');
-        nObj.actor = {text: n.querySelector('.actor a').textContent, link: n.querySelector('.actor a').getAttribute('href')};
+        nObj.actor = {anchor: n.querySelector('.actor a').textContent, url: n.querySelector('.actor a').getAttribute('href')};
         if (n.querySelector('.target')) {
-            nObj.target = {text: n.querySelector('.target a').textContent, link: n.querySelector('.target a').getAttribute('href')};
+            nObj.target = {anchor: n.querySelector('.target a').textContent, url: n.querySelector('.target a').getAttribute('href')};
         }
         nObj.verb = n.querySelector('.verb').textContent;
         nObj.timeago = n.querySelector('.timeago').textContent;
@@ -225,12 +219,22 @@ class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        this._dataFetcher.fetchFromPontoonSession(
-            this._getNotificationsUrl('pontoon-tools-automation')
-        ).then(
-            (response) => response.text()
-        ).then(
-            (text) => this._updateNotificationsDataFromPageContent(text)
+        this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/user-data/?utm_source=pontoon-tools-automation`).then(
+            (response) => response.json()
+        ).then((userData) => {
+            const notificationsDataObj = {};
+            // TODO:
+            // when https://github.com/mozilla/pontoon/pull/1311 is fixed and deployed
+            // mapping of `date_iso` is not needed anymore
+            userData.notifications.notifications.map((n) => {
+                n.date_iso = n.date_iso.split('+', 2).join('+');
+                return n;
+            }).forEach((n) => notificationsDataObj[n.id] = n);
+            return notificationsDataObj;
+        }).then(
+            (nData) => browser.storage.local.set({notificationsData: nData})
+        ).catch(
+            (error) => browser.storage.local.set({notificationsData: undefined})
         );
     }
 
@@ -396,7 +400,7 @@ class RemotePontoon {
                     this._markAllNotificationsAsRead();
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
-                    return Promise.resolve(this._getNotificationsUrl('pontoon-tools'));
+                    return Promise.resolve(this._getNotificationsUrl());
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL:
                     return Promise.resolve(this._getSettingsUrl('pontoon-tools'));
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
@@ -452,7 +456,7 @@ class RemotePontoon {
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
         Promise.all([
-            this._dataFetcher.fetchFromPontoonSession(this._markAsReadUrl),
+            this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-tools-automation`),
             browser.storage.local.get(dataKey)
         ]).then(([
             response,
