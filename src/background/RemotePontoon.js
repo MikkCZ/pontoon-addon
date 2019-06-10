@@ -224,7 +224,7 @@ class RemotePontoon {
         ).then((userData) => {
             const notificationsDataObj = {};
             userData.notifications.notifications.forEach(
-              (n) => notificationsDataObj[n.id] = n
+                (n) => notificationsDataObj[n.id] = n
             );
             return notificationsDataObj;
         }).then(
