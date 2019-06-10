@@ -223,13 +223,9 @@ class RemotePontoon {
             (response) => response.json()
         ).then((userData) => {
             const notificationsDataObj = {};
-            // TODO:
-            // when https://github.com/mozilla/pontoon/pull/1311 is fixed and deployed
-            // mapping of `date_iso` is not needed anymore
-            userData.notifications.notifications.map((n) => {
-                n.date_iso = n.date_iso.split('+', 2).join('+');
-                return n;
-            }).forEach((n) => notificationsDataObj[n.id] = n);
+            userData.notifications.notifications.forEach(
+              (n) => notificationsDataObj[n.id] = n
+            );
             return notificationsDataObj;
         }).then(
             (nData) => browser.storage.local.set({notificationsData: nData})
