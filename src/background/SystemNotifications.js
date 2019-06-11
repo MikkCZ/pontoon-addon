@@ -35,7 +35,7 @@ class SystemNotifications {
         const notificationsData = item[dataKey];
         const notification = notificationsData[notificationId];
         if (notification && !notification.target) {
-            browser.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.link)});
+            browser.tabs.create({url: this._remotePontoon.getTeamProjectUrl(notification.actor.url)});
         } else {
             browser.tabs.create({url: this._remotePontoon.getTeamPageUrl()});
         }
@@ -101,13 +101,13 @@ class SystemNotifications {
                     message: '',
                 };
                 if (notification.actor) {
-                    item.title = `${item.title} ${notification.actor.text}`;
+                    item.title = `${item.title} ${notification.actor.anchor}`;
                 }
                 if (notification.verb) {
                     item.title = `${item.title} ${notification.verb}`;
                 }
                 if (notification.target) {
-                    item.title = `${item.title} ${notification.target.text}`;
+                    item.title = `${item.title} ${notification.target.anchor}`;
                 }
                 if (notification.message) {
                     item.message = notification.message;
