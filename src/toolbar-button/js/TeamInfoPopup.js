@@ -108,7 +108,7 @@ class TeamInfoPopup {
                 activityItem.appendChild(title);
                 const text = document.createElement('span');
                 text.classList.add('text');
-                text.textContent = `${latestTeamActivity.user} ${TeamInfoPopup._timeAgo(latestTeamActivity.date)}`;
+                text.textContent = `${latestTeamActivity.user} ${TeamInfoPopup._timeAgo(new Date(latestTeamActivity.date_iso))}`;
                 activityItem.appendChild(text);
                 infoList.appendChild(activityItem);
             }

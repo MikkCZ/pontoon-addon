@@ -1,6 +1,5 @@
 body {
-  min-width: 350px;
-  max-width: 500px;
+  width: fit-content;
   font: caption;
 }
 
