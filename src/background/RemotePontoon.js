@@ -149,41 +149,26 @@ class RemotePontoon {
     }
 
     /**
-     * Extract notification data from notification item to data object.
-     * @param n notifications list item
-     * @returns {{}} notification data object
-     * @private
-     * @static
-     */
-    static _createNotificationsData(n) {
-        const nObj = {};
-        nObj.id = n.dataset.id;
-        nObj.unread = (n.dataset.unread === 'true');
-        nObj.actor = {anchor: n.querySelector('.actor a').textContent, url: n.querySelector('.actor a').getAttribute('href')};
-        if (n.querySelector('.target')) {
-            nObj.target = {anchor: n.querySelector('.target a').textContent, url: n.querySelector('.target a').getAttribute('href')};
-        }
-        nObj.verb = n.querySelector('.verb').textContent;
-        nObj.timeago = n.querySelector('.timeago').textContent;
-        if (n.querySelector('.message')) {
-            nObj.message = n.querySelector('.message').innerHTML;
-        }
-        return nObj;
-    }
-
-    /**
-     * Update notifications data in storage from Pontoon page content.
-     * @param pageContent
+     * Update notifications data if the Pontoon page contains a new one.
+     * @param pageContent to check for new notifications
      * @private
      */
-    _updateNotificationsDataFromPageContent(pageContent) {
+    _updateNotificationsIfThereAreNew(pageContent) {
         const page = this._domParser.parseFromString(pageContent, 'text/html');
         if (page.querySelector('header #notifications')) {
-            const notificationsDataObj = {};
-            [...page.querySelectorAll('header .notification-item')]
-                .map((n) => RemotePontoon._createNotificationsData(n))
-                .forEach((nObj) => notificationsDataObj[nObj.id] = nObj);
-            browser.storage.local.set({notificationsData: notificationsDataObj});
+            const dataKey = 'notificationsData';
+            Promise.all([
+                browser.storage.local.get(dataKey),
+                [...page.querySelectorAll('header .notification-item')].map((n) => n.dataset.id),
+            ]).then(([
+                storageItem,
+                notificationsIdsFromPage,
+            ]) => {
+                const notificationsInStorage = storageItem[dataKey];
+                if (!notificationsIdsFromPage.every(id => id in notificationsInStorage)) {
+                    this.updateNotificationsData();
+                }
+            });
         } else if (page.title === 'Translate.Next') {
             // Translate.Next does not contain notifications in DOM
         } else {
@@ -390,7 +375,7 @@ class RemotePontoon {
         browser.runtime.onMessage.addListener((request, sender) => {
             switch (request.type) {
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.PAGE_LOADED:
-                    this._updateNotificationsDataFromPageContent(request.value);
+                    this._updateNotificationsIfThereAreNew(request.value);
                     break;
                 case BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
                     this._markAllNotificationsAsRead();
