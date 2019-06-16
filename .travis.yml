@@ -4,17 +4,18 @@ node_js:
   - "lts/*"
 
 cache:
+  yarn: true
   directories:
     - "node_modules"
 
 after_success:
-  - npm run build
+  - yarn run build
 
 before_deploy:
   - mkdir -p ./web-ext-artifacts/_deploy
   - mv web-ext-artifacts/mozilla/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-mozilla.zip
   - mv web-ext-artifacts/chrome/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-chrome.zip
-  - npm run doc
+  - yarn run doc
   - tar -cvf ./web-ext-artifacts/_deploy/docs.tar.gz docs
 
 deploy:
@@ -34,4 +35,4 @@ deploy:
       tags: true
 
 after_deploy:
-  - npm run clean
+  - yarn run clean
