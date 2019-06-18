@@ -1,0 +1,12 @@
+{
+  "name": "toolbar-button",
+  "homepage": ".",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "moment-duration-format": "^2.3.2",
+    "webextension-polyfill": "^0.4.0"
+  },
+  "scripts": {
+    "test": "echo 'No tests!'"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "options",
+  "homepage": ".",
+  "dependencies": {
+    "webextension-polyfill": "^0.4.0"
+  },
+  "scripts": {
+    "test": "echo 'No tests!'"
+  }
+}

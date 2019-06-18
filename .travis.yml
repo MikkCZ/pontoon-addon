@@ -8,31 +8,35 @@ cache:
   directories:
     - "node_modules"
 
-after_success:
-  - yarn run build
+install:
+  - yarn install
+  - yarn bootstrap
+
+script:
+  - yarn build
 
 before_deploy:
-  - mkdir -p ./web-ext-artifacts/_deploy
-  - mv web-ext-artifacts/mozilla/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-mozilla.zip
-  - mv web-ext-artifacts/chrome/pontoon_tools-*.zip ./web-ext-artifacts/_deploy/pontoon_tools-chrome.zip
   - yarn run doc
-  - tar -cvf ./web-ext-artifacts/_deploy/docs.tar.gz docs
+  - mkdir -p ./build/_deploy
+  - mv ./build/web-ext/mozilla/pontoon_tools-*.zip ./build/_deploy/pontoon_tools-mozilla.zip
+  - mv ./build/web-ext/chrome/pontoon_tools-*.zip ./build/_deploy/pontoon_tools-chrome.zip
+  - tar -cvf ./build/_deploy/docs.tar.gz ./build/docs
 
 deploy:
   - provider: pages
     skip-cleanup: true
-    local-dir: docs
+    local-dir: build/docs
     github-token: $GITHUB_TOKEN
     on:
       branch: master
   - provider: releases
     skip_cleanup: true
     file_glob: true
-    file: web-ext-artifacts/_deploy/*
+    file: build/_deploy/*
     api_key: $GITHUB_TOKEN
     on:
       branch: master
       tags: true
 
 after_deploy:
-  - yarn run clean
+  - yarn clean

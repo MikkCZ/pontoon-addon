@@ -33,7 +33,7 @@
     "<all_urls>"
   ],
   "options_ui": {
-    "page": "options/index.html",
+    "page": "packages/options/index.html",
     "open_in_tab": true
   },
   "browser_action": {
@@ -46,7 +46,7 @@
       "19": "commons/img/pontoon-logo-gray-alpha.svg",
       "38": "commons/img/pontoon-logo-gray-alpha.svg"
     },
-    "default_popup": "address-bar/index.html"
+    "default_popup": "packages/address-bar/index.html"
   },
   "background": {
     "scripts": [

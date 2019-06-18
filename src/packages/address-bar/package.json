@@ -1,0 +1,7 @@
+{
+  "name": "address-bar",
+  "homepage": ".",
+  "scripts": {
+    "test": "echo 'No tests!'"
+  }
+}

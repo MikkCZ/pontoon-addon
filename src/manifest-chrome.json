@@ -21,7 +21,7 @@
     "<all_urls>"
   ],
   "options_ui": {
-    "page": "options/index.html",
+    "page": "packages/options/index.html",
     "open_in_tab": true
   },
   "browser_action": {
