@@ -1,5 +1,6 @@
 ---
-title: 'Bug report'
+name: 'Bug report'
+about: GitHub template to report a bug found in Pontoon Tools.
 labels: bug
 ---
 <!--

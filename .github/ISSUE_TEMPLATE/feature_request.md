@@ -1,5 +1,6 @@
 ---
-title: 'Feature request'
+name: 'Feature request'
+about: GitHub template to request new feature in Pontoon Tools.
 labels: feature
 ---
 <!--
