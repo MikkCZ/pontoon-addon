@@ -1,21 +1,20 @@
 ---
 name: 'Bug report'
-about: GitHub template to report a bug found in Pontoon Tools.
+about: I am using Pontoon Tools and something is not working there.
 labels: bug
 ---
-<!--
-This should ease you reporting a bug in Pontoon Tools.
-If you do not want to follow the template, or if there is a field you do not want to fill, simply delete it.
--->
-
 ### Steps to reproduce
-<!-- How to get into the situation where something does not work. What have you done before you noticed the bug. -->
+<!--
+How did you get into the situation where something does not work?
+What have you done before you noticed the bug?
+Please try to stay brief, but precise.
+-->
 1.
 2.
 3.
 
 ### Actual behavior
-<!-- What has happened you did not expected. -->
+<!-- What unexpected happened? Feel free to attach a screenshot. -->
 
 ### Expected behavior
-<!-- What do you think should happen instead. -->
+<!-- What do you think should happen instead? -->
