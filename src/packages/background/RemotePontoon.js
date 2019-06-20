@@ -352,7 +352,7 @@ class RemotePontoon {
     async updateProjectsList() {
         return await Promise.all([
             this._dataFetcher.fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()),
-            fetch(browser.runtime.getURL('background/projects-list.json')).then((response) => response.json())
+            fetch(browser.runtime.getURL('packages/background/projects-list.json')).then((response) => response.json())
         ]).then(([
             pontoonData,
             projectsListJson

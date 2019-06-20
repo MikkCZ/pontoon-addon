@@ -39,7 +39,7 @@ function withOptions(options) {
                 options.set('show_notifications', true);
                 browser.notifications.create({
                     type: 'basic',
-                    iconUrl: browser.runtime.getURL('commons/img/pontoon-logo.svg'),
+                    iconUrl: browser.runtime.getURL('packages/commons/img/pontoon-logo.svg'),
                     title: 'Pontoon notification',
                     message: 'Similar notification will appear if there is something new in Pontoon. If you click it, related ' +
                             'project or your Pontoon team page will open.',

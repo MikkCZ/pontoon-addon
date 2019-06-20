@@ -1,0 +1,7 @@
+{
+  "name": "content-scripts",
+  "homepage": ".",
+  "scripts": {
+    "test": "echo 'No tests!'"
+  }
+}

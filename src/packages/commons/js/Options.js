@@ -28,8 +28,8 @@ class Options {
             browserFamily = 'chromium';
         }
         await Promise.all([
-            fetch(browser.runtime.getURL('commons/js/default-options.json')).then((response) => response.json()),
-            fetch(browser.runtime.getURL(`commons/js/default-options-${browserFamily}.json`)).then((response) => response.json()),
+            fetch(browser.runtime.getURL('packages/commons/js/default-options.json')).then((response) => response.json()),
+            fetch(browser.runtime.getURL(`packages/commons/js/default-options-${browserFamily}.json`)).then((response) => response.json()),
             Promise.resolve({locale_team: browser.i18n.getUILanguage()}),
         ]).then(([
             defaultOptionsFromJSON,

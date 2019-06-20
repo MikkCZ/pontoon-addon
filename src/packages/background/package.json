@@ -1,0 +1,7 @@
+{
+  "name": "background",
+  "homepage": ".",
+  "scripts": {
+    "test": "echo 'No tests!'"
+  }
+}

@@ -70,8 +70,8 @@ class PageAction {
     _activatePageAction(tabId) {
         browser.pageAction.setIcon({
             path: {
-                16: 'commons/img/pontoon-logo.svg',
-                32: 'commons/img/pontoon-logo.svg'
+                16: 'packages/commons/img/pontoon-logo.svg',
+                32: 'packages/commons/img/pontoon-logo.svg'
             },
             tabId: tabId,
         });

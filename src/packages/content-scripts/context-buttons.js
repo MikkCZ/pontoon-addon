@@ -35,8 +35,8 @@ function clickListener(messageType, buttonsToRemove) {
     };
 }
 
-const pontoonSearchButton = createButton('commons/img/pontoon-logo.svg');
-const bugzillaReportButton = createButton('commons/img/bugzilla-icon.png');
+const pontoonSearchButton = createButton('packages/commons/img/pontoon-logo.svg');
+const bugzillaReportButton = createButton('packages/commons/img/bugzilla-icon.png');
 const allContextButtons = [pontoonSearchButton, bugzillaReportButton];
 
 pontoonSearchButton.addEventListener('click', clickListener('pontoon-search-context-button-clicked', allContextButtons));

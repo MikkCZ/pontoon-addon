@@ -1,0 +1,7 @@
+{
+  "name": "commons",
+  "homepage": ".",
+  "scripts": {
+    "test": "echo 'No tests!'"
+  }
+}
