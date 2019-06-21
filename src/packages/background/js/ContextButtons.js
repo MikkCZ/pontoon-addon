@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Runs in the background and takes care of context button initialization on supported sites.
- * @requires commons/js/Options.js, RemotePontoon.js, RemoteLinks.js
  */
-class ContextButtons {
+export class ContextButtons {
     /**
      * Initialize instance and watch tabs navigation.
      */
@@ -101,6 +104,6 @@ class ContextButtons {
      * @private
      */
     _injectContextButtonsScript(tab) {
-        browser.tabs.executeScript(tab.id, {file: '/packages/content-scripts/context-buttons.js'});
+        browser.tabs.executeScript(tab.id, {file: '/packages/content-scripts/dist/context-buttons.js'});
     }
 }

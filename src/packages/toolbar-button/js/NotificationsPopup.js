@@ -1,9 +1,14 @@
+import { moment } from 'moment';
+import { momentDurationFormatSetup } from 'moment-duration-format';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+momentDurationFormatSetup(moment);
+
 /**
  * Displays notifications in the browser-action popup.
- * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
- * @requires moment
  */
-class NotificationsPopup {
+export class NotificationsPopup {
     /**
      * Initialize instance, load notifications from storage and watch future data updates.
      * @param options

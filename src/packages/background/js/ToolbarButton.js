@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Takes care of displaying the toolbar button badge and if the popup should be open on click or not.
- * @requires commons/js/Options.js, RemotePontoon.js
  */
-class ToolbarButton {
+export class ToolbarButton {
     /**
      * Initialize instance, add button click action, watch for future data and options changes.
      * @param options

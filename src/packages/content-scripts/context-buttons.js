@@ -1,7 +1,10 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This is the main script to display context icons when a user highlights text on any supported Mozilla website.
  */
-'use strict';
 
 function getSelectedText() {
     if (window.getSelection) {

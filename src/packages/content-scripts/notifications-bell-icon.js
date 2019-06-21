@@ -1,9 +1,12 @@
+import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This content script syncs the status of the notifications bell icon in Pontoon with the extension.
  * - https://developer.mozilla.org/Add-ons/WebExtensions/Content_scripts
- * @requires commons/js/BackgroundPontoonClient.js
  */
-'use strict';
 
 // Notifications bell icon, if there are any unread notifications.
 const unreadNotificationsIcon = document.querySelector('#notifications.unread .button .icon') || document.querySelector('header .user-notifications-menu.unread');

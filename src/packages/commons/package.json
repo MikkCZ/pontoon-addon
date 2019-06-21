@@ -1,7 +1,21 @@
 {
-  "name": "commons",
-  "homepage": ".",
+  "name": "@pontoon-tools/commons",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "webextension-polyfill": "^0.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.2.2"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "sourceType": "module"
+    }
+  },
   "scripts": {
-    "test": "echo 'No tests!'"
+    "lint": "eslint ./js --ignore-pattern /dist/",
+    "test": "echo 'No tests!'",
+    "build": "echo 'Nothing to do!'"
   }
 }

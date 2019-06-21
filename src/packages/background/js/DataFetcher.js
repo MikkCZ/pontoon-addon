@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Manually adds cookies from the selected container to HTTP requests to Pontoon.
- * @requires commons/js/Options.js, RemotePontoon.js
  */
-class DataFetcher {
+export class DataFetcher {
     /**
      * Initialize instance, and watch for requests to Pontoon.
      * @param options

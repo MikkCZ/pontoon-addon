@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Handles native system notifications for new unread notifications in Pontoon.
- * @requires commons/js/Options.js, RemotePontoon.js
  */
-class SystemNotifications {
+export class SystemNotifications {
     /**
      * Initialize instance and watch for storage updates.
      * @param options

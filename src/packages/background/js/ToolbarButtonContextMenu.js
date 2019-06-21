@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Takes care of the toolbar button context menu.
- * @requires commons/js/Options.js, RemotePontoon.js, commons/js/RemoteLinks.js, DataRefresher.js, ToolbarButton.js
  */
-class ToolbarButtonContextMenu {
+export class ToolbarButtonContextMenu {
     /**
      * Initialize instance and add context menu.
      * @param options

@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * PageContextMenu takes care of context menus on Mozilla websites.
- * @requires commons/js/Options.js, RemotePontoon.js, commons/js/RemoteLinks.js
  */
-class PageContextMenu {
+export class PageContextMenu {
     /**
      * Initialize instance and declare context menus for Mozilla websites.
      * @param options

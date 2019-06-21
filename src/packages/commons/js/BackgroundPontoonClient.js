@@ -1,8 +1,12 @@
+import { BackgroundPontoonMessageType } from './BackgroundPontoonMessageType';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Client to communicate with background/RemotePontoon.js. Should be used in all contexts outside of background itself.
- * @requires BackgroundPontoonMessageType.js
  */
-class BackgroundPontoonClient {
+export class BackgroundPontoonClient {
     constructor() {
         this._notificationsChangeCallbacks = new Set();
         this._notificationsChangeListener = (message, sender) => this._backgroundMessage(message);
@@ -17,7 +21,7 @@ class BackgroundPontoonClient {
      */
     async getNotificationsUrl() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL});
     }
 
     /**
@@ -29,7 +33,7 @@ class BackgroundPontoonClient {
      */
     async getSettingsUrl(utm_source) {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL});
     }
 
     /**
@@ -40,7 +44,7 @@ class BackgroundPontoonClient {
      */
     async getTeamPageUrl() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL});
     }
 
     /**
@@ -53,7 +57,7 @@ class BackgroundPontoonClient {
     async getTeamProjectUrl(projectUrl) {
         return await browser.runtime
             .sendMessage({
-                type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
+                type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
                 args: [projectUrl],
             });
     }
@@ -68,7 +72,7 @@ class BackgroundPontoonClient {
     async getStringsWithStatusSearchUrl(status) {
         return await browser.runtime
             .sendMessage({
-                type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL,
+                type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL,
                 args: [status],
             });
     }
@@ -81,7 +85,7 @@ class BackgroundPontoonClient {
      */
     async getSignInURL() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL});
     }
 
     /**
@@ -92,7 +96,7 @@ class BackgroundPontoonClient {
      */
     async updateTeamsList() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST});
     }
 
     /**
@@ -103,7 +107,7 @@ class BackgroundPontoonClient {
      */
     async getTeamFromPontoon() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON});
     }
 
     /**
@@ -114,7 +118,7 @@ class BackgroundPontoonClient {
      */
     async getPontoonProjectForTheCurrentTab() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoon.MessageType.GET_CURRENT_TAB_PROJECT});
+            .sendMessage({type: BackgroundPontoonMessageType.GET_CURRENT_TAB_PROJECT});
     }
 
     /**
@@ -125,7 +129,7 @@ class BackgroundPontoonClient {
      */
     pageLoaded(pageUrl, documentHTML) {
         browser.runtime.sendMessage({
-            type: BackgroundPontoon.MessageType.TO_BACKGROUND.PAGE_LOADED,
+            type: BackgroundPontoonMessageType.TO_BACKGROUND.PAGE_LOADED,
             url: pageUrl,
             value: documentHTML,
         });
@@ -137,7 +141,7 @@ class BackgroundPontoonClient {
      */
     markAllNotificationsAsRead() {
         browser.runtime.sendMessage({
-            type: BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ,
+            type: BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ,
         });
     }
 
@@ -170,7 +174,7 @@ class BackgroundPontoonClient {
      * @private
      */
     _backgroundMessage(message) {
-        if (message.type === BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED) {
+        if (message.type === BackgroundPontoonMessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED) {
             this._notificationsChangeCallbacks.forEach((callback) => callback(message.data));
         }
     }

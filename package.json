@@ -1,6 +1,6 @@
 {
   "name": "pontoon-tools",
-  "version": "3.4.7",
+  "version": "0.0.0",
   "private": true,
   "description": "Tools for Pontoon and its integration into the browser.",
   "author": "Michal Stanke <mstanke@mozilla.cz>",
@@ -26,19 +26,20 @@
     "jsdoc": "^3.6.3",
     "lerna": "^3.16.4",
     "npm-run-all": "^4.1.5",
-    "web-ext": "^3.1.1"
+    "web-ext": "^3.1.1",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.4"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap --use-workspaces",
-    "eslint": "eslint ./src",
+    "bootstrap": "lerna bootstrap --force-local",
     "web-ext-lint": "web-ext lint -s ./src",
-    "lint": "npm-run-all eslint web-ext-lint",
+    "lint": "lerna exec --parallel -- yarn lint",
     "pretest": "yarn lint",
     "test": "lerna exec --parallel -- CI=true yarn test",
     "prebuild": "yarn test",
     "build-chrome": "mkdir -p ./build/chrome-src && cp -Lr ./src/* ./build/chrome-src && mv ./build/chrome-src/manifest-chrome.json ./build/chrome-src/manifest.json && web-ext build -s ./build/chrome-src -a ./build/web-ext/chrome",
     "build-firefox": "web-ext build -s ./src -a ./build/web-ext/mozilla",
-    "build": "npm-run-all build-firefox build-chrome",
+    "build": "lerna exec --scope @pontoon-tools/commons -- yarn build && lerna exec --parallel --ignore @pontoon-tools/commons -- yarn build && npm-run-all build-firefox build-chrome",
     "doc": "jsdoc ./src ./README.md -r -d ./build/docs",
     "clean": "rm -rf ./build"
   }
