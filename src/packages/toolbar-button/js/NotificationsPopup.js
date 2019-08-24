@@ -83,11 +83,11 @@ class NotificationsPopup {
             timeago.classList.add('timeago');
             listItem.appendChild(timeago);
         }
-        if (notification.message) {
-            const message = document.createElement('div');
-            message.innerHTML = notification.message;
-            message.classList.add('message');
-            listItem.appendChild(message);
+        if (notification.description) {
+            const description = document.createElement('div');
+            description.innerHTML = notification.description;
+            description.classList.add('description');
+            listItem.appendChild(description);
         }
         if (listItem.querySelectorAll('a').length === 1) {
             const listItemClick = (e) => {
