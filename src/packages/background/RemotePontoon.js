@@ -165,14 +165,10 @@ class RemotePontoon {
                 notificationsIdsFromPage,
             ]) => {
                 const notificationsInStorage = storageItem[dataKey];
-                if (!notificationsIdsFromPage.every(id => id in notificationsInStorage)) {
+                if (!notificationsInStorage || !notificationsIdsFromPage.every(id => id in notificationsInStorage)) {
                     this.updateNotificationsData();
                 }
             });
-        } else if (page.title === 'Translate.Next') {
-            // Translate.Next does not contain notifications in DOM
-        } else {
-            browser.storage.local.set({notificationsData: undefined});
         }
     }
 

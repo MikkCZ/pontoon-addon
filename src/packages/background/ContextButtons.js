@@ -26,10 +26,12 @@ class ContextButtons {
      * @private
      */
     _initMozillaWebsitesList(projects) {
-        this._mozillaWebsites = [];
-        Object.values(projects).forEach((project) =>
-            project.domains.forEach((domain) => this._mozillaWebsites.push(`https://${domain}`))
-        );
+        if (projects) {
+            this._mozillaWebsites = [];
+            Object.values(projects).forEach((project) =>
+                project.domains.forEach((domain) => this._mozillaWebsites.push(`https://${domain}`))
+            );
+        }
     }
 
     /**
