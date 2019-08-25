@@ -1,5 +1,5 @@
-import { moment } from 'moment';
-import { momentDurationFormatSetup } from 'moment-duration-format';
+var moment = require('moment'); // eslint-disable-line no-var
+var momentDurationFormatSetup = require('moment-duration-format'); // eslint-disable-line no-var
 if (!browser) {
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
