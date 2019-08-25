@@ -13,9 +13,11 @@ export class PageAction {
     constructor(remotePontoon) {
         this._remotePontoon = remotePontoon;
 
-        this._watchStorageChanges();
-        this._watchTabsUpdates();
-        this._refreshAllTabsPageActions();
+        if (browser.pageAction) {
+            this._watchStorageChanges();
+            this._watchTabsUpdates();
+            this._refreshAllTabsPageActions();
+        }
     }
 
     /**

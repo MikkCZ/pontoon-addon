@@ -42,9 +42,7 @@ function withOptions(options) {
     options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) => {
         const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], optionsItems[localeTeamOptionKey], options);
         const toolbarButton = new ToolbarButton(options, remotePontoon);
-        if (typeof PageAction === 'function') {
-            const pageAction = new PageAction(remotePontoon);
-        }
+        const pageAction = new PageAction(remotePontoon);
         const systemNotifications = new SystemNotifications(options, remotePontoon);
         const remoteLinks = new RemoteLinks();
         const pageContextMenu = new PageContextMenu(options, remotePontoon, remoteLinks);
