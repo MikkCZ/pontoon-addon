@@ -1,6 +1,6 @@
 {
   "name": "pontoon-tools",
-  "version": "3.4.6",
+  "version": "3.4.7",
   "private": true,
   "description": "Tools for Pontoon and its integration into the browser.",
   "author": "Michal Stanke <mstanke@mozilla.cz>",
