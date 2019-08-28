@@ -16,7 +16,6 @@ script:
   - yarn build
 
 before_deploy:
-  - yarn run doc
   - mkdir -p ./build/_deploy
   - mv ./build/web-ext/mozilla/pontoon_tools-*.zip ./build/_deploy/pontoon_tools-mozilla.zip
   - mv ./build/web-ext/chrome/pontoon_tools-*.zip ./build/_deploy/pontoon_tools-chrome.zip

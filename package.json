@@ -34,8 +34,8 @@
     "chrome:source": "mkdir -p ./build/chrome-src && cp -Lr ./src/* ./build/chrome-src && mv ./build/chrome-src/manifest-chrome.json ./build/chrome-src/manifest.json",
     "chrome:build": "yarn chrome:source && web-ext build -s ./build/chrome-src -a ./build/web-ext/chrome",
     "mozilla:build": "web-ext build -s ./src -a ./build/web-ext/mozilla",
-    "build": "lerna exec --parallel -- yarn build && web-ext lint -s ./src && npm-run-all mozilla:build chrome:build",
     "doc": "jsdoc ./src ./README.md -r -d ./build/docs",
+    "build": "lerna exec --parallel -- yarn build && web-ext lint -s ./src && npm-run-all mozilla:build chrome:build doc",
     "clean": "rm -rf ./build"
   }
 }
