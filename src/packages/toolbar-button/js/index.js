@@ -1,9 +1,15 @@
+import { Options } from 'Commons/js/Options';
+import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
+import { NotificationsPopup } from './NotificationsPopup';
+import { TeamInfoPopup } from './TeamInfoPopup';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This is the main script for the content of the toolbar button popup. Registers handlers for actions and initiates
  * objects taking care of the content.
- * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js, NotificationsPopup.js, TeamInfoPopup.js
  */
-'use strict';
 
 function withOptions(options) {
     const backgroundPontoonClient = new BackgroundPontoonClient();

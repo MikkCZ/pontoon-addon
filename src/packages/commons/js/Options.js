@@ -1,7 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Encapsulates storing and retrieving user preferences and notifying about their updates.
  */
-class Options {
+export class Options {
     static async create() {
         const prefix = 'options.';
         const defaults = await Options._loadDefaults(prefix);
@@ -28,8 +32,8 @@ class Options {
             browserFamily = 'chromium';
         }
         await Promise.all([
-            fetch(browser.runtime.getURL('packages/commons/js/default-options.json')).then((response) => response.json()),
-            fetch(browser.runtime.getURL(`packages/commons/js/default-options-${browserFamily}.json`)).then((response) => response.json()),
+            fetch(browser.runtime.getURL('packages/commons/data/default-options.json')).then((response) => response.json()),
+            fetch(browser.runtime.getURL(`packages/commons/data/default-options-${browserFamily}.json`)).then((response) => response.json()),
             Promise.resolve({locale_team: browser.i18n.getUILanguage()}),
         ]).then(([
             defaultOptionsFromJSON,

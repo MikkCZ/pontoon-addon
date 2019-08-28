@@ -1,8 +1,13 @@
+import { BackgroundPontoonMessageType } from 'Commons/js/BackgroundPontoonMessageType';
+import { DataFetcher } from './DataFetcher';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Handles all communication with Pontoon web app and contains all information about it.
- * @requires BackgroundPontoonMessageType.js, DataFetcher.js
  */
-class RemotePontoon {
+export class RemotePontoon {
     /**
      * Initialize instance, listen to messages from tabs content and watch for options updates.
      * @param baseUrl Pontoon instance base URL
@@ -348,7 +353,7 @@ class RemotePontoon {
     async updateProjectsList() {
         return await Promise.all([
             this._dataFetcher.fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()),
-            fetch(browser.runtime.getURL('packages/background/projects-list.json')).then((response) => response.json())
+            fetch(browser.runtime.getURL('packages/background/data/projects-list.json')).then((response) => response.json())
         ]).then(([
             pontoonData,
             projectsListJson
@@ -370,29 +375,29 @@ class RemotePontoon {
     _listenToMessagesFromClients() {
         browser.runtime.onMessage.addListener((request, sender) => {
             switch (request.type) {
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.PAGE_LOADED:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.PAGE_LOADED:
                     this._updateNotificationsIfThereAreNew(request.value);
                     break;
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
                     this._markAllNotificationsAsRead();
                     break;
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
                     return Promise.resolve(this._getNotificationsUrl());
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SETTINGS_URL:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL:
                     return Promise.resolve(this._getSettingsUrl('pontoon-tools'));
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
                     return Promise.resolve(this._getSignInURL());
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
                     return Promise.resolve(this.getTeamPageUrl());
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL:
                     return Promise.resolve(this.getTeamProjectUrl(request.args[0]));
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_STRINGS_WITH_STATUS_SEARCH_URL:
                     return Promise.resolve(this._getStringsWithStatusSearchUrl(request.args[0]));
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
                     return this.updateTeamsList();
-                case BackgroundPontoon.MessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
+                case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
                     return this._getTeamFromPontoon();
-                case BackgroundPontoon.MessageType.GET_CURRENT_TAB_PROJECT:
+                case BackgroundPontoonMessageType.GET_CURRENT_TAB_PROJECT:
                     return browser.tabs.query({currentWindow: true, active: true}).then((tab) =>
                         this.getPontoonProjectForPageUrl(tab[0].url)
                     );
@@ -400,7 +405,7 @@ class RemotePontoon {
         });
         this.subscribeToNotificationsChange((change) => {
             const message = {
-                type: BackgroundPontoon.MessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED,
+                type: BackgroundPontoonMessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED,
                 data: change,
             };
             browser.runtime.sendMessage(message);

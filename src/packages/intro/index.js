@@ -1,8 +1,12 @@
+import { Options } from 'Commons/js/Options';
+import { RemoteLinks } from 'Commons/js/RemoteLinks';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This script contains all the logic of the introduction tour.
- * @requires commons/js/Options.js
  */
-'use strict';
 
 function withOptions(options) {
     // Add close button click even handler

@@ -1,7 +1,11 @@
+import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This is the main script for the content of the page action popup.
  */
-'use strict';
 
 // Get the project data from background/RemotePontoon.js.
 const backgroundPontoonClient = new BackgroundPontoonClient();

@@ -1,9 +1,21 @@
+import { Options } from 'Commons/js/Options';
+import { RemoteLinks } from 'Commons/js/RemoteLinks';
+import { RemotePontoon } from './RemotePontoon';
+import { ToolbarButton } from './ToolbarButton';
+import { PageAction } from './PageAction';
+import { SystemNotifications } from './SystemNotifications';
+import { PageContextMenu } from './PageContextMenu';
+import { ToolbarButtonContextMenu } from './ToolbarButtonContextMenu';
+import { DataRefresher } from './DataRefresher';
+import { ContextButtons } from './ContextButtons';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This is the main script for the background "page". Initiates all backend stuff running permanently in background like
  * toolbar button, page actions or notifications.
- * @requires commons/js/Options.js, commons/js/RemoteLinks.js, RemotePontoon.js, ToolbarButton.js, PageAction.js, SystemNotifications.js, PageContextMenu.js
  */
-'use strict';
 
 // Register capturing event listener in case onInstalled fires before all the async stuff below are ready.
 let newInstallationDetails;
@@ -30,9 +42,7 @@ function withOptions(options) {
     options.get([pontoonBaseUrlOptionKey, localeTeamOptionKey]).then((optionsItems) => {
         const remotePontoon = new RemotePontoon(optionsItems[pontoonBaseUrlOptionKey], optionsItems[localeTeamOptionKey], options);
         const toolbarButton = new ToolbarButton(options, remotePontoon);
-        if (typeof PageAction === 'function') {
-            const pageAction = new PageAction(remotePontoon);
-        }
+        const pageAction = new PageAction(remotePontoon);
         const systemNotifications = new SystemNotifications(options, remotePontoon);
         const remoteLinks = new RemoteLinks();
         const pageContextMenu = new PageContextMenu(options, remotePontoon, remoteLinks);

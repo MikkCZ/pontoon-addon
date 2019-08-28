@@ -1,9 +1,14 @@
+var moment = require('moment'); // eslint-disable-line no-var
+var momentDurationFormatSetup = require('moment-duration-format'); // eslint-disable-line no-var
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+momentDurationFormatSetup(moment);
+
 /**
  * Display team information in the browser-action popup.
- * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
- * @requires moment
  */
-class TeamInfoPopup {
+export class TeamInfoPopup {
     /**
      * Initialize instance, load team info from storage and watch future info updates.
      * @param options

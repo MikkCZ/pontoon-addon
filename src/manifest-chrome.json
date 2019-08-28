@@ -30,29 +30,14 @@
   },
   "background": {
     "scripts": [
-      "vendor/mozilla/browser-polyfill.min.js",
-      "packages/commons/js/Options.js",
-      "packages/commons/js/BackgroundPontoonMessageType.js",
-      "packages/background/RemotePontoon.js",
-      "packages/commons/js/RemoteLinks.js",
-      "packages/background/PageContextMenu.js",
-      "packages/background/ContextButtons.js",
-      "packages/background/DataRefresher.js",
-      "packages/background/ToolbarButton.js",
-      "packages/background/ToolbarButtonContextMenu.js",
-      "packages/background/SystemNotifications.js",
-      "packages/background/DataFetcher.js",
-      "packages/background/background.js"
+      "packages/background/dist/main.js"
     ]
   },
   "content_scripts": [
     {
       "matches": ["https://pontoon.mozilla.org/*"],
       "js": [
-        "vendor/mozilla/browser-polyfill.min.js",
-        "packages/commons/js/BackgroundPontoonMessageType.js",
-        "packages/commons/js/BackgroundPontoonClient.js",
-        "packages/content-scripts/notifications-bell-icon.js"
+        "packages/content-scripts/dist/notifications-bell-icon.js"
       ],
       "run_at": "document_end"
     }

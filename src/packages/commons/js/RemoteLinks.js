@@ -1,7 +1,7 @@
 /**
  * Provides all links to remote sources or websites outside of Pontoon.
  */
-class RemoteLinks {
+export class RemoteLinks {
     /**
      * Get the Transvision URL for the team.
      * @param team locale

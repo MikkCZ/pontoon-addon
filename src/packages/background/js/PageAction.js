@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Runs in the background and takes care of proper page actions displaying and project data.
- * @requires RemotePontoon.js
  */
-class PageAction {
+export class PageAction {
     /**
      * Initialize instance, watch tabs navigation and options changes.
      * @param remotePontoon
@@ -10,9 +13,11 @@ class PageAction {
     constructor(remotePontoon) {
         this._remotePontoon = remotePontoon;
 
-        this._watchStorageChanges();
-        this._watchTabsUpdates();
-        this._refreshAllTabsPageActions();
+        if (browser.pageAction) {
+            this._watchStorageChanges();
+            this._watchTabsUpdates();
+            this._refreshAllTabsPageActions();
+        }
     }
 
     /**

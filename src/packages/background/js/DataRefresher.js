@@ -1,8 +1,11 @@
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * Takes care of regular refreshing notifications and other data from Pontoon.
- * @requires commons/js/Options.js, RemotePontoon.js
  */
-class DataRefresher {
+export class DataRefresher {
     /**
      * Initialize instance, load data from Pontoon and schedule regular data updates.
      * @param options
@@ -103,7 +106,7 @@ class DataRefresher {
         if (changeInfo.status === 'complete' && tab.url.startsWith(`${this._remotePontoon.getBaseUrl()}/`)) {
             this._options.get('contextual_identity').then((item) => {
                 if (item['contextual_identity'] === tab.cookieStoreId || !this._supportsContainers()) {
-                    browser.tabs.executeScript(tabId, {file: '/packages/content-scripts/live-data-provider.js'});
+                    browser.tabs.executeScript(tabId, {file: '/packages/content-scripts/dist/live-data-provider.js'});
                 }
             });
         }

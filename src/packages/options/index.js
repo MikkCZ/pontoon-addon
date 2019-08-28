@@ -1,8 +1,13 @@
+import { Options } from 'Commons/js/Options';
+import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
+import { RemoteLinks } from 'Commons/js/RemoteLinks';
+if (!browser) {
+    var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
+}
+
 /**
  * This is the main script for the options custom page and updating the options.
- * @requires commons/js/Options.js, commons/js/BackgroundPontoonClient.js
  */
-'use strict';
 
 function withOptions(options) {
     const backgroundPontoonClient = new BackgroundPontoonClient();
