@@ -20,7 +20,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint ./js --ignore-pattern /dist/",
+    "lint": "eslint ./js",
     "test": "echo 'No tests!'",
     "build": "webpack ./js/index.js --config ../../../webpack.config.js"
   }

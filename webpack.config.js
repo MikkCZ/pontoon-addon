@@ -6,6 +6,6 @@ module.exports = {
   resolve: {
     alias: {
       Commons: path.resolve(__dirname, 'src/packages/commons/'),
-    }
+    },
   },
 };

@@ -16,11 +16,6 @@
   "workspaces": [
     "src/packages/*"
   ],
-  "dependencies": {
-    "moment": "^2.24.0",
-    "moment-duration-format": "^2.3.2",
-    "webextension-polyfill": "^0.4.0"
-  },
   "devDependencies": {
     "eslint": "^6.2.2",
     "jsdoc": "^3.6.3",
@@ -32,14 +27,14 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local",
-    "web-ext-lint": "web-ext lint -s ./src",
     "lint": "lerna exec --parallel -- yarn lint",
     "pretest": "yarn lint",
     "test": "lerna exec --parallel -- CI=true yarn test",
-    "prebuild": "yarn test",
-    "build-chrome": "mkdir -p ./build/chrome-src && cp -Lr ./src/* ./build/chrome-src && mv ./build/chrome-src/manifest-chrome.json ./build/chrome-src/manifest.json && web-ext build -s ./build/chrome-src -a ./build/web-ext/chrome",
-    "build-firefox": "web-ext build -s ./src -a ./build/web-ext/mozilla",
-    "build": "lerna exec --scope @pontoon-tools/commons -- yarn build && lerna exec --parallel --ignore @pontoon-tools/commons -- yarn build && npm-run-all build-firefox build-chrome",
+    "prebuild": "yarn test && yarn clean",
+    "chrome:source": "mkdir -p ./build/chrome-src && cp -Lr ./src/* ./build/chrome-src && mv ./build/chrome-src/manifest-chrome.json ./build/chrome-src/manifest.json",
+    "chrome:build": "yarn chrome:source && web-ext build -s ./build/chrome-src -a ./build/web-ext/chrome",
+    "mozilla:build": "web-ext build -s ./src -a ./build/web-ext/mozilla",
+    "build": "lerna exec --parallel -- yarn build && web-ext lint -s ./src && npm-run-all mozilla:build chrome:build",
     "doc": "jsdoc ./src ./README.md -r -d ./build/docs",
     "clean": "rm -rf ./build"
   }

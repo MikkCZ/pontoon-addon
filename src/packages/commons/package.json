@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint ./js --ignore-pattern /dist/",
+    "lint": "eslint ./js",
     "test": "echo 'No tests!'",
     "build": "echo 'Nothing to do!'"
   }
