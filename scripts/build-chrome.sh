@@ -14,4 +14,4 @@ cat ./src/manifest.json | \
   jq 'del(.permissions[] | select( .=="contextualIdentities" or .=="cookies" or .=="webRequest" or .=="webRequestBlocking" ))' | `# no support for contextual identities` \
   tee ./build/chrome-src/manifest.json &>/dev/null
 
-web-ext build -s ./build/chrome-src -a ./build/web-ext/chrome
+web-ext build -s ./build/chrome-src -i '**/js/' '**/package.json' '**/node_modules/' -a ./build/web-ext/chrome

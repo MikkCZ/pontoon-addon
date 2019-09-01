@@ -20,6 +20,6 @@
   "scripts": {
     "lint": "eslint . --ignore-pattern /dist/",
     "test": "echo 'No tests!'",
-    "build": "webpack ./index.js --config ../../../webpack.config.js"
+    "build": "webpack ./js/index.js --config ../../../webpack.config.js"
   }
 }

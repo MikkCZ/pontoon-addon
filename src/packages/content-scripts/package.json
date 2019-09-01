@@ -20,9 +20,9 @@
   "scripts": {
     "lint": "eslint . --ignore-pattern /dist/",
     "test": "echo 'No tests!'",
-    "build-context-buttons": "webpack ./context-buttons.js -o ./dist/context-buttons.js --config ../../../webpack.config.js",
-    "build-live-data-provider": "webpack ./live-data-provider.js -o ./dist/live-data-provider.js --config ../../../webpack.config.js",
-    "build-notifications-bell-icon": "webpack ./notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ../../../webpack.config.js",
+    "build-context-buttons": "webpack ./js/context-buttons.js -o ./dist/context-buttons.js --config ../../../webpack.config.js",
+    "build-live-data-provider": "webpack ./js/live-data-provider.js -o ./dist/live-data-provider.js --config ../../../webpack.config.js",
+    "build-notifications-bell-icon": "webpack ./js/notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ../../../webpack.config.js",
     "build": "npm-run-all build-context-buttons build-live-data-provider build-notifications-bell-icon"
   }
 }
