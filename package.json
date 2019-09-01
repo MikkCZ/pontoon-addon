@@ -27,15 +27,21 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local",
-    "lint": "lerna exec --parallel -- yarn lint",
-    "pretest": "yarn lint",
-    "test": "lerna exec --parallel -- CI=true yarn test",
-    "prebuild": "yarn test && yarn clean",
-    "chrome:source": "mkdir -p ./build/chrome-src && cp -Lr ./src/* ./build/chrome-src && mv ./build/chrome-src/manifest-chrome.json ./build/chrome-src/manifest.json",
-    "chrome:build": "yarn chrome:source && web-ext build -s ./build/chrome-src -a ./build/web-ext/chrome",
+
+    "packages:lint": "lerna exec --parallel -- yarn lint",
+    "packages:test": "lerna exec --parallel -- CI=true yarn test",
+    "packages:build": "lerna exec --parallel -- yarn build",
+
+    "pretest": "yarn packages:lint",
+    "test": "yarn packages:test",
+
+    "prebuild": "npm-run-all test clean",
+    "build:lint": "web-ext lint -s ./src",
     "mozilla:build": "web-ext build -s ./src -a ./build/web-ext/mozilla",
+    "chrome:build": "bash ./scripts/build-chrome.sh",
     "doc": "jsdoc ./src ./README.md -r -d ./build/docs",
-    "build": "lerna exec --parallel -- yarn build && web-ext lint -s ./src && npm-run-all mozilla:build chrome:build doc",
+
+    "build": "npm-run-all packages:build build:lint mozilla:build chrome:build doc",
     "clean": "rm -rf ./build"
   }
 }

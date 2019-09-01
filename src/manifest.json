@@ -55,7 +55,9 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://pontoon.mozilla.org/*"],
+      "matches": [
+        "https://pontoon.mozilla.org/*"
+      ],
       "js": [
         "packages/content-scripts/dist/notifications-bell-icon.js"
       ],
