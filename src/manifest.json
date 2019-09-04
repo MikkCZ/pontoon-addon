@@ -63,5 +63,9 @@
       ],
       "run_at": "document_end"
     }
+  ],
+  "web_accessible_resources": [
+    "packages/commons/img/pontoon-logo.svg",
+    "packages/commons/img/bugzilla-icon.png"
   ]
 }
