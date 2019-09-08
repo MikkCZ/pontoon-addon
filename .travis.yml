@@ -22,8 +22,8 @@ script:
 
 before_deploy:
   - mkdir -p ./build/_deploy
-  - mv ./build/web-ext/mozilla/pontoon_tools-*.zip ./build/_deploy/pontoon_tools-mozilla.zip
-  - mv ./build/web-ext/chrome/pontoon_tools-*.zip ./build/_deploy/pontoon_tools-chrome.zip
+  - mv ./build/web-ext/mozilla/pontoon_tools-*.zip "./build/_deploy/pontoon_tools-${TRAVIS_TAG}-mozilla.zip"
+  - mv ./build/web-ext/chrome/pontoon_tools-*.zip "./build/_deploy/pontoon_tools-${TRAVIS_TAG}-chrome.zip"
   - tar -cvf ./build/_deploy/docs.tar.gz ./build/docs
 
 deploy:
