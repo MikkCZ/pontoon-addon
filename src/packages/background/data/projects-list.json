@@ -22,6 +22,12 @@
     ]
   },
   {
+    "slug": "engagement",
+    "domains": [
+      "foundation.mozilla.org"
+    ]
+  },
+  {
     "slug": "firefox-accounts",
     "domains": [
       "accounts.firefox.com",
@@ -63,6 +69,12 @@
     ]
   },
   {
+    "slug": "mozilla-donate-website",
+    "domains": [
+      "donate-wagtail.mofostaging.net"
+    ]
+  },
+  {
     "slug": "mozillaorg",
     "domains": [
       "www.mozilla.org",
@@ -86,7 +98,8 @@
     "slug": "test-pilot-firefox-send",
     "domains": [
       "send.firefox.com",
-      "send.dev.mozaws.net"
+      "send.dev.mozaws.net",
+      "dev.send.nonprod.cloudops.mozgcp.net"
     ]
   },
   {
