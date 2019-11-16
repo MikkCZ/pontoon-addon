@@ -8,7 +8,7 @@ import { PageContextMenu } from './PageContextMenu';
 import { ToolbarButtonContextMenu } from './ToolbarButtonContextMenu';
 import { DataRefresher } from './DataRefresher';
 import { ContextButtons } from './ContextButtons';
-if (!browser) {
+if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
 
