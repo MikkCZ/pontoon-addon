@@ -20,7 +20,9 @@ rules:
   no-console: ["error", { "allow": ["error"] }]
 
 parserOptions:
-  ecmaVersion: 2017
+  ecmaVersion: 9
+  ecmaFeatures:
+    jsx: true
 
 env:
   browser: true

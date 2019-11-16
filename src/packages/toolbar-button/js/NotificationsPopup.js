@@ -1,6 +1,6 @@
 var moment = require('moment'); // eslint-disable-line no-var
 var momentDurationFormatSetup = require('moment-duration-format'); // eslint-disable-line no-var
-if (!browser) {
+if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
 momentDurationFormatSetup(moment);

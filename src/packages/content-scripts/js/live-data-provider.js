@@ -1,5 +1,5 @@
 import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
-if (!browser) {
+if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
 

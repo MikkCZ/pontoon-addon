@@ -1,7 +1,7 @@
 import { Options } from 'Commons/js/Options';
 import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
 import { RemoteLinks } from 'Commons/js/RemoteLinks';
-if (!browser) {
+if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
 
