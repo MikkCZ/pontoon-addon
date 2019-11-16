@@ -14,7 +14,8 @@
     "@rescripts/cli": "^0.0.13",
     "@rescripts/rescript-env": "^0.0.11",
     "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1"
+    "enzyme-adapter-react-16": "^1.15.1",
+    "@testing-library/jest-dom": "^4.2.4"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -26,7 +27,7 @@
     "lint": "eslint ./src/",
     "start": "rescripts start",
     "build": "rescripts build",
-    "test": "rescripts test --passWithNoTests",
+    "test": "rescripts test",
     "eject": "rescripts eject"
   },
   "rescripts": [
