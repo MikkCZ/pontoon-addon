@@ -18,12 +18,10 @@ describe('<PanelSection>', () => {
     const wrapper = mount(
       <PanelSection items={[
         {
-          id: 'one',
           text: 'Text 1',
           onClick: () => {},
         },
         {
-          id: 'two',
           text: 'Text 2',
           onClick: () => {},
         }

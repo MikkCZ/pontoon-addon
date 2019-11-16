@@ -1,0 +1,70 @@
+nav {
+  display: inline-block;
+  width: 190px;
+  vertical-align: top;
+  margin-right: 30px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  font-size: 1.1em;
+  padding: 16px;
+}
+
+nav li:hover,
+nav li.active {
+  cursor: pointer;
+  color: #0a84ff;
+}
+
+main {
+  display: inline-block;
+  width: 715px;
+}
+
+main h2 {
+  font-weight: normal;
+  font-size: 2em;
+  padding-top: 16px;
+  margin: 0;
+}
+
+main .image.right {
+  float: right;
+  height: 280px;
+}
+
+main .image.bottom {
+  height: 150px;
+  text-align: center;
+}
+
+main .image img {
+  max-height: 100%;
+}
+
+.below {
+  position: absolute;
+  bottom: 2em;
+  right: 2em;
+}
+
+.below button {
+  float: right;
+  background-color: #0060df;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 10px 20px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
+.below button:hover {
+  background-color: #003eaa;
+}

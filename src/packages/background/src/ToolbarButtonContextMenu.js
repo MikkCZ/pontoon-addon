@@ -135,7 +135,7 @@ export class ToolbarButtonContextMenu {
         browser.contextMenus.create({
             title: 'Open Pontoon Tools tour',
             contexts: ['browser_action'],
-            onclick: () => browser.tabs.create({url: browser.runtime.getURL('packages/intro/index.html')}),
+            onclick: () => browser.tabs.create({url: browser.runtime.getURL('packages/intro/build/index.html')}),
         });
     }
 }
