@@ -13,12 +13,12 @@ backgroundPontoonClient.getPontoonProjectForTheCurrentTab().then((response) => {
       {
         id: 'open-project-page',
         text: `Open ${response.name} project page`,
-        onClick: () => browser.tabs.create({url: response.pageUrl})
+        onClick: () => browser.tabs.create({url: response.pageUrl}),
       },
       {
         id: 'open-translation-view',
         text: `Open ${response.name} translation view`,
-        onClick: () => browser.tabs.create({url: response.translationUrl})
+        onClick: () => browser.tabs.create({url: response.translationUrl}),
       }
     ]} />,
     document.getElementById('root')

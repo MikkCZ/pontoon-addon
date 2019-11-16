@@ -36,7 +36,7 @@
 
     "prebuild": "npm-run-all test clean",
     "build:lint": "web-ext lint -s ./src -i 'packages/*/src/'",
-    "mozilla:build": "web-ext build -s ./src -i 'packages/*/js/' '**/package.json' '**/node_modules/' -a ./build/web-ext/mozilla",
+    "mozilla:build": "web-ext build -s ./src -i 'packages/*/js/' '**/*.test.js' '**/package.json' '**/node_modules/' -a ./build/web-ext/mozilla",
     "chrome:build": "bash ./scripts/build-chrome.sh",
     "doc": "jsdoc -c ./jsdoc-conf.json",
 
