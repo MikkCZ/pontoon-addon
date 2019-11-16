@@ -104,6 +104,6 @@ export class ContextButtons {
      * @private
      */
     _injectContextButtonsScript(tab) {
-        browser.tabs.executeScript(tab.id, {file: '/packages/content-scripts/dist/context-buttons.js'});
+        browser.tabs.executeScript(tab.id, {file: '/packages/content-scripts/build/context-buttons.js'});
     }
 }

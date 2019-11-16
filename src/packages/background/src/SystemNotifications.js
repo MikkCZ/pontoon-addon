@@ -123,7 +123,7 @@ export class SystemNotifications {
                 `${lastNotificationId}`,
                 {
                     type: 'basic',
-                    iconUrl: browser.runtime.getURL('packages/commons/img/pontoon-logo.svg'),
+                    iconUrl: browser.runtime.getURL('packages/commons/static/img/pontoon-logo.svg'),
                     title: notificationItems[0].title,
                     message: notificationItems[0].message,
                 }
@@ -131,7 +131,7 @@ export class SystemNotifications {
         } else {
             browser.notifications.create({
                 type: 'list',
-                iconUrl: browser.runtime.getURL('packages/commons/img/pontoon-logo.svg'),
+                iconUrl: browser.runtime.getURL('packages/commons/static/img/pontoon-logo.svg'),
                 title: 'You have new unread notifications',
                 message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
                 items: notificationItems,

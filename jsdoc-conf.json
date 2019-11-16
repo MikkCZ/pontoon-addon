@@ -12,7 +12,8 @@
       "./README.md"
     ],
     "exclude": [
-      "node_modules"
+      "node_modules",
+      "build"
     ],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\|)_"

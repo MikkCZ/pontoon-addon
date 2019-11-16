@@ -11,10 +11,10 @@
   "version": "3.4.10",
   "author": "Michal Stanke",
   "icons": {
-    "16": "packages/commons/img/pontoon-logo.svg",
-    "48": "packages/commons/img/pontoon-logo.svg",
-    "96": "packages/commons/img/pontoon-logo.svg",
-    "128": "packages/commons/img/pontoon-logo.svg"
+    "16": "packages/commons/static/img/pontoon-logo.svg",
+    "48": "packages/commons/static/img/pontoon-logo.svg",
+    "96": "packages/commons/static/img/pontoon-logo.svg",
+    "128": "packages/commons/static/img/pontoon-logo.svg"
   },
   "permissions": [
     "https://pontoon.mozilla.org/*",
@@ -38,19 +38,19 @@
   },
   "browser_action": {
     "default_title": "Pontoon notifications",
-    "default_icon": "packages/commons/img/pontoon-logo.svg"
+    "default_icon": "packages/commons/static/img/pontoon-logo.svg"
   },
   "page_action": {
     "browser_style": true,
     "default_icon": {
-      "19": "packages/commons/img/pontoon-logo-gray-alpha.svg",
-      "38": "packages/commons/img/pontoon-logo-gray-alpha.svg"
+      "19": "packages/commons/static/img/pontoon-logo-gray-alpha.svg",
+      "38": "packages/commons/static/img/pontoon-logo-gray-alpha.svg"
     },
     "default_popup": "packages/address-bar/build/index.html"
   },
   "background": {
     "scripts": [
-      "packages/background/dist/main.js"
+      "packages/background/build/main.js"
     ]
   },
   "content_scripts": [
@@ -59,13 +59,13 @@
         "https://pontoon.mozilla.org/*"
       ],
       "js": [
-        "packages/content-scripts/dist/notifications-bell-icon.js"
+        "packages/content-scripts/build/notifications-bell-icon.js"
       ],
       "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
-    "packages/commons/img/pontoon-logo.svg",
-    "packages/commons/img/bugzilla-icon.png"
+    "packages/commons/static/img/pontoon-logo.svg",
+    "packages/commons/static/img/bugzilla-icon.png"
   ]
 }

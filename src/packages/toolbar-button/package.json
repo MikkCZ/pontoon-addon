@@ -20,8 +20,8 @@
     }
   },
   "scripts": {
-    "lint": "eslint . --ignore-pattern /dist/",
+    "lint": "eslint . --ignore-pattern /build/",
     "test": "echo 'No tests!'",
-    "build": "webpack ./js/index.js --config ../../../webpack.config.js"
+    "build": "webpack ./src/index.js --output-path ./build --config ../../../webpack.config.js"
   }
 }

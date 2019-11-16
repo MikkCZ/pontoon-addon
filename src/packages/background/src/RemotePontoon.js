@@ -1,4 +1,4 @@
-import { BackgroundPontoonMessageType } from 'Commons/js/BackgroundPontoonMessageType';
+import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
 import { DataFetcher } from './DataFetcher';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
@@ -353,7 +353,7 @@ export class RemotePontoon {
     async updateProjectsList() {
         return await Promise.all([
             this._dataFetcher.fetch(this._getQueryURL('{projects{slug,name}}')).then((response) => response.json()),
-            fetch(browser.runtime.getURL('packages/background/data/projects-list.json')).then((response) => response.json())
+            fetch(browser.runtime.getURL('packages/background/static/data/projects-list.json')).then((response) => response.json())
         ]).then(([
             pontoonData,
             projectsListJson
@@ -369,7 +369,7 @@ export class RemotePontoon {
     }
 
     /**
-     * Listen to messages from commons/js/BackgroundPontoonClient.js.
+     * Listen to messages from commons/src/BackgroundPontoonClient.js.
      * @private
      */
     _listenToMessagesFromClients() {

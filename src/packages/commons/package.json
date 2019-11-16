@@ -14,10 +14,10 @@
     }
   },
   "scripts": {
-    "lint": "eslint . --ignore-pattern /dist/",
+    "lint": "eslint . --ignore-pattern /build/",
     "test": "echo 'No tests!'",
     "prebuild": "yarn clean",
-    "build": "mkdir -p ./dist && cp ./js/* ./dist/",
-    "clean": "rm -rf ./dist"
+    "build": "mkdir -p ./build && cp ./src/* ./build/",
+    "clean": "rm -rf ./build"
   }
 }

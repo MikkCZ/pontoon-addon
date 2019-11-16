@@ -38,8 +38,8 @@ function clickListener(messageType, buttonsToRemove) {
     };
 }
 
-const pontoonSearchButton = createButton('packages/commons/img/pontoon-logo.svg');
-const bugzillaReportButton = createButton('packages/commons/img/bugzilla-icon.png');
+const pontoonSearchButton = createButton('packages/commons/static/img/pontoon-logo.svg');
+const bugzillaReportButton = createButton('packages/commons/static/img/bugzilla-icon.png');
 const allContextButtons = [pontoonSearchButton, bugzillaReportButton];
 
 pontoonSearchButton.addEventListener('click', clickListener('pontoon-search-context-button-clicked', allContextButtons));

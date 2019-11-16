@@ -1,5 +1,5 @@
-import { Options } from 'Commons/js/Options';
-import { RemoteLinks } from 'Commons/js/RemoteLinks';
+import { Options } from 'Commons/src/Options';
+import { RemoteLinks } from 'Commons/src/RemoteLinks';
 import { RemotePontoon } from './RemotePontoon';
 import { ToolbarButton } from './ToolbarButton';
 import { PageAction } from './PageAction';

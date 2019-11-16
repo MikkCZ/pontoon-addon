@@ -1,5 +1,5 @@
-import { Options } from 'Commons/js/Options';
-import { RemoteLinks } from 'Commons/js/RemoteLinks';
+import { Options } from 'Commons/src/Options';
+import { RemoteLinks } from 'Commons/src/RemoteLinks';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
@@ -27,7 +27,7 @@ function withOptions(options) {
             text: `After installation is complete, a Pontoon icon will appear in your browser toolbar. When there are new notifications for
                     you, a red badge will appear in its corner. Simply click the icon to see the list of notifications.
                     Below the list there is also an overview of your localization team progress.`,
-            image: 'img/toolbar-button.png',
+            image: 'static/img/toolbar-button.png',
             imageClass: 'right',
             buttonText: 'Open toolbar button popup',
             buttonOnClick: () => browser.browserAction.openPopup(),
@@ -43,7 +43,7 @@ function withOptions(options) {
                 options.set('show_notifications', true);
                 browser.notifications.create({
                     type: 'basic',
-                    iconUrl: browser.runtime.getURL('packages/commons/img/pontoon-logo.svg'),
+                    iconUrl: browser.runtime.getURL('packages/commons/static/img/pontoon-logo.svg'),
                     title: 'Pontoon notification',
                     message: 'Similar notification will appear if there is something new in Pontoon. If you click it, related ' +
                             'project or your Pontoon team page will open.',
@@ -55,7 +55,7 @@ function withOptions(options) {
             text: `Page action is a small icon that will appear in your browser address bar on websites that are available
                     for translation on Pontoon. Clicking it will display a list of options to open the project overview
                     in Pontoon or jump to translation view directly.`,
-            image: 'img/page-action.png',
+            image: 'static/img/page-action.png',
             imageClass: 'bottom',
         },
         contextButtons: {
@@ -63,14 +63,14 @@ function withOptions(options) {
             text: `Context buttons are a quick way to resolve localization issues as you spot them. Highlight the text
                     on a page with you mouse and two icons will appear. You can choose between searching the text in Pontoon
                     or reporting it to your team into Bugzilla.`,
-            image: 'img/context-buttons.png',
+            image: 'static/img/context-buttons.png',
             imageClass: 'bottom',
         },
         addonSettings: {
             title: 'Add-on settings',
             text: `No default settings can fit everyone. Please take a moment to <strong>select your localization team</strong>,
                     interval to check for new notifications and more.`,
-            image: 'img/settings.png',
+            image: 'static/img/settings.png',
             imageClass: 'bottom',
             buttonText: 'Open Pontoon Tools settings',
             buttonOnClick: () => browser.runtime.openOptionsPage(),
@@ -80,7 +80,7 @@ function withOptions(options) {
             text: `This add-on won't exist and improve without you - Mozilla localizers. I would like to ask you for feedback
                     on how Pontoon Tools helps you, or how can it help you even more. Please <strong>check the wiki</strong>
                     for more information about Pontoon Tools features and how to share your feedback and request new features.`,
-            image: 'img/2-Lions.png',
+            image: 'static/img/2-Lions.png',
             imageClass: 'bottom',
             buttonText: 'Check Pontoon Tools wiki',
             buttonOnClick: () => browser.tabs.create({url: remoteLinks.getPontoonToolsWikiUrl()}),

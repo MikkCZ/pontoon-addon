@@ -1,5 +1,5 @@
-import { Options } from 'Commons/js/Options';
-import { BackgroundPontoonClient } from 'Commons/js/BackgroundPontoonClient';
+import { Options } from 'Commons/src/Options';
+import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
 import { NotificationsPopup } from './NotificationsPopup';
 import { TeamInfoPopup } from './TeamInfoPopup';
 if (!browser) { // eslint-disable-line no-use-before-define
