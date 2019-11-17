@@ -11,12 +11,10 @@ backgroundPontoonClient.getPontoonProjectForTheCurrentTab().then((response) => {
   ReactDOM.render(
     <PanelSection items={[
       {
-        id: 'open-project-page',
         text: `Open ${response.name} project page`,
         onClick: () => browser.tabs.create({url: response.pageUrl}),
       },
       {
-        id: 'open-translation-view',
         text: `Open ${response.name} translation view`,
         onClick: () => browser.tabs.create({url: response.translationUrl}),
       }

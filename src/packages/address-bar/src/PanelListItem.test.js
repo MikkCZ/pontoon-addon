@@ -14,7 +14,7 @@ describe('<PanelListItem>', () => {
 
   it('renders', () => {
     const wrapper = shallow(
-      <PanelListItem id="one" text="Text" />
+      <PanelListItem text="Text" />
     );
 
     expect(wrapper.find('li').text()).toBe('Text');

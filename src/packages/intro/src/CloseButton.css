@@ -1,0 +1,12 @@
+#close {
+  display: inline-block;
+  border: none;
+  width: 16px;
+  height: 16px;
+  padding: 0.1em;
+  cursor: pointer;
+}
+
+#close:hover {
+  background-color: #eaeaea;
+}

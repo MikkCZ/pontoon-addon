@@ -10,8 +10,8 @@ export class PanelSection extends React.Component {
     return (
       <ul className="panel-section panel-section-list">
         {
-          this.props.items.map((item, i) =>
-            <PanelListItem id={item.id} text={item.text} onClick={item.onClick} />
+          this.props.items.map((item, index) =>
+            <PanelListItem key={index} text={item.text} onClick={item.onClick} />
           )
         }
       </ul>
