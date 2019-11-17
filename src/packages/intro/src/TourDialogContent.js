@@ -31,7 +31,7 @@ export class TourDialogContent extends React.Component {
           <ul>
             {
               this.props.sections.map((section) =>
-                <li key={'nav-'+section.id}
+                <li key={`nav-${section.id}`}
                   className={section.id + (this.isActive(section) ? ' active' : '')}
                   onClick={() => this.activate(section)}
                 >
@@ -46,7 +46,7 @@ export class TourDialogContent extends React.Component {
             this.props.sections
               .filter((section) => this.isActive(section))
               .map((section) =>
-                <section key={'section-'+section.id} className={section.id}>
+                <section key={`section-${section.id}`} className={section.id}>
                   { section.image && section.imageClass === 'right' &&
                     <div className={`image ${section.imageClass}`}>
                       <img src={section.image} alt='' />
@@ -69,7 +69,7 @@ export class TourDialogContent extends React.Component {
               .filter((section) => this.isActive(section))
               .filter((section) => section.buttonText !== undefined)
               .map((section) =>
-                <button key={'button-'+section.id} className={section.id} onClick={section.buttonOnClick}>
+                <button key={`button-${section.id}`} className={section.id} onClick={section.buttonOnClick}>
                   {section.buttonText}
                 </button>
               )
