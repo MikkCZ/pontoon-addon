@@ -27,7 +27,7 @@ section > div {
 }
 
 section aside {
-  color: #888;
-  font-style: italic;
   margin: 0.3em 0 0 0.3em;
+  font-style: italic;
+  color: #888;
 }

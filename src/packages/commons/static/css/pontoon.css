@@ -1,8 +1,8 @@
 /** Global **/
 body {
+  margin: 0;
   background: #272a2f;
   color: #ebebeb;
-  margin: 0;
 }
 
 a {
@@ -26,8 +26,8 @@ h2 {
 
 h3 {
   font-size: 1.5em;
-  font-weight: normal;
   font-style: italic;
+  font-weight: normal;
   color: #7bc876;
 }
 
@@ -36,10 +36,10 @@ h3 {
 header {
   max-width: 960px;
   margin: 0 auto;
+  padding: 0.5em;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5em;
   font-size: 1.2em;
 }
 
@@ -61,9 +61,9 @@ header a:hover {
 }
 
 #heading {
-  text-align: center;
-  background-color: #333941;
   padding: 2em;
+  background-color: #333941;
+  text-align: center;
 }
 
 /** Forms, inputs and buttons **/
@@ -83,18 +83,18 @@ button {
   appearance: none;
   box-sizing: border-box;
   height: 2em;
+  padding: 0 0.5em;
   background-color: #333941;
-  color: inherit;
   border: 1px solid #4d5967;
   border-radius: 0.2em;
-  padding: 0 0.5em;
+  color: inherit;
 }
 
 button {
-  background-color: #7bc876;
-  color: #272a2f;
-  border-color: #7bc876;
   padding: 0 1em;
+  background-color: #7bc876;
+  border-color: #7bc876;
+  color: #272a2f;
 }
 
 label {
@@ -109,10 +109,10 @@ input[type="checkbox"] {
   appearance: none;
   height: 1em;
   width: 1em;
+  vertical-align: sub;
+  margin-top: 0;
   border: 2px solid #4d5967;
   border-radius: 1em;
-  margin-top: 0;
-  vertical-align: sub;
   transition: 0.15s all linear;
 }
 

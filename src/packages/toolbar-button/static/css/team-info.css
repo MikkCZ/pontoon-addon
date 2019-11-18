@@ -12,13 +12,13 @@
 }
 
 #team-info h1 .code {
-  color: #7bc876;
   font-weight: normal;
+  color: #7bc876;
 }
 
 #team-info-list {
-  padding: 0.5em 1em 0.5em 0.5em;
   list-style-type: none;
+  padding: 0.5em 1em 0.5em 0.5em;
   color: #aaa;
 }
 
@@ -36,10 +36,10 @@
 #team-info-list li a::before {
   display: inline-block;
   content: '';
-  border-radius: 0.1em;
   width: 0.9em;
   height: 0.9em;
   margin-right: 0.5em;
+  border-radius: 0.1em;
 }
 
 #team-info-list .translated a::before {
@@ -63,13 +63,13 @@
 }
 
 #team-info-list .unreviewed a::before {
-  background: center / contain no-repeat url('../img/lightbulb-blue.svg');
   height: 1em;
+  background: center / contain no-repeat url('../img/lightbulb-blue.svg');
 }
 
 #team-info-list .title {
-  text-transform: uppercase;
   margin-right: 1em;
+  text-transform: uppercase;
 }
 
 #team-info-list .count,

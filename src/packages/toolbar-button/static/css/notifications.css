@@ -45,8 +45,8 @@
 /*** Error or not signed in ***/
 
 #error {
-  text-align: center;
   margin: 1em;
+  text-align: center;
 }
 
 #error a,
@@ -55,9 +55,9 @@
 }
 
 #error p {
-  text-align: center;
   margin: 0;
   padding: 0;
+  text-align: center;
 }
 
 #error .description {

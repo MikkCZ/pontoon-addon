@@ -1,13 +1,13 @@
 #tour-dialog {
+  position: relative;
   width: 950px;
   height: 400px;
+  margin: 10% auto 0 auto;
+  padding: 2em;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 3px;
-  margin: 10% auto 0 auto;
   box-shadow: 0 3px rgba(0, 0, 0, 0.05);
-  padding: 2em;
-  position: relative;
 }
 
 .above {
@@ -16,6 +16,6 @@
 
 h1 {
   display: inline;
-  font-weight: normal;
   font-size: 1.5em;
+  font-weight: normal;
 }

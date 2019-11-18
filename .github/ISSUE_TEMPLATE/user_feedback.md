@@ -4,6 +4,9 @@ about: I am using Pontoon Tools and I want to provide feedback how I am satisfie
 labels: user-feedback
 ---
 ### User
-<!-- What kind of user you are? Are you a Pontoon user (translator, team manager), developer, or someone else? -->
+
+<!--
+What kind of user you are? Are you a Pontoon user (translator, team manager), developer, or someone else?
+-->
 
 ### Feedback

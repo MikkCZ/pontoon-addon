@@ -18,8 +18,8 @@ nav li {
 
 nav li:hover,
 nav li.active {
-  cursor: pointer;
   color: #0a84ff;
+  cursor: pointer;
 }
 
 main {
@@ -28,10 +28,10 @@ main {
 }
 
 main h2 {
-  font-weight: normal;
-  font-size: 2em;
-  padding-top: 16px;
   margin: 0;
+  padding-top: 16px;
+  font-size: 2em;
+  font-weight: normal;
 }
 
 main .image.right {
@@ -56,10 +56,10 @@ main .image img {
 
 .below button {
   float: right;
+  padding: 10px 20px;
   background-color: #0060df;
   border: 1px solid transparent;
   border-radius: 2px;
-  padding: 10px 20px;
   font-weight: bold;
   color: #fff;
   cursor: pointer;

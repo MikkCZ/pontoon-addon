@@ -1,4 +1,7 @@
 #close {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
   display: inline-block;
   border: none;
   width: 16px;
