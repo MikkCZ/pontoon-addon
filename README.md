@@ -1,6 +1,9 @@
 # Pontoon Tools
 
 [![Build Status](https://travis-ci.com/MikkCZ/pontoon-tools.svg?branch=master)](https://travis-ci.com/MikkCZ/pontoon-tools)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3c60a4a377aae5af4e1b/maintainability)](https://codeclimate.com/github/MikkCZ/pontoon-tools/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3c60a4a377aae5af4e1b/test_coverage)](https://codeclimate.com/github/MikkCZ/pontoon-tools/test_coverage)
+
 [![Mozilla Add-on](https://img.shields.io/amo/v/pontoon-tools.svg?label=Firefox)](https://addons.mozilla.org/firefox/addon/pontoon-tools/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=Chrome)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
