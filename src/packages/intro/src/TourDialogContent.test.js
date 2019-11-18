@@ -56,6 +56,40 @@ describe('<TourDialogContent>', () => {
     expect(wrapper.find('button')).toHaveLength(0);
   });
 
+  it('navigation switches sections on click', () => {
+    const wrapper = shallow(
+      <TourDialogContent
+        localeTeam='cs'
+        sections={[
+          {
+            id: 'id1',
+            title: 'TITLE 1',
+            text: 'Lorem Ipsum 1',
+          },
+          {
+            id: 'id2',
+            title: 'TITLE 2',
+            text: 'Lorem Ipsum 2',
+          }
+        ]}
+      />
+    );
+
+    expect(wrapper.find('li.active').hasClass('id1')).toBe(true);
+    expect(wrapper.find('li.active').text()).toBe('TITLE 1');
+    expect(wrapper.find('section').hasClass('id1')).toBe(true);
+    expect(wrapper.find('section h2').text()).toBe('TITLE 1');
+    expect(wrapper.find('section p').text()).toBe('Lorem Ipsum 1');
+
+    wrapper.find('li.id2').simulate('click');
+
+    expect(wrapper.find('li.active').hasClass('id2')).toBe(true);
+    expect(wrapper.find('li.active').text()).toBe('TITLE 2');
+    expect(wrapper.find('section').hasClass('id2')).toBe(true);
+    expect(wrapper.find('section h2').text()).toBe('TITLE 2');
+    expect(wrapper.find('section p').text()).toBe('Lorem Ipsum 2');
+  });
+
   it('for English users activates the settings section', () => {
     const wrapper = shallow(
       <TourDialogContent

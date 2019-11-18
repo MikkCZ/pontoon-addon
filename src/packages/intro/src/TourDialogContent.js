@@ -12,16 +12,19 @@ export class TourDialogContent extends React.Component {
     this.state = { active: sectionId };
   }
 
-  activate(section) {
-    this.setState({ active: section.id });
-  }
-
-  isActive(section) {
-    return this.state.active === section.id;
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return nextState.active !== this.state.active;
+  }
+
+  _activate(section) {
+    this.setState({
+      ...this.state,
+      active: section.id,
+    });
+  }
+
+  _isActive(section) {
+    return this.state.active === section.id;
   }
 
   render() {
@@ -32,8 +35,8 @@ export class TourDialogContent extends React.Component {
             {
               this.props.sections.map((section) =>
                 <li key={`nav-${section.id}`}
-                  className={section.id + (this.isActive(section) ? ' active' : '')}
-                  onClick={() => this.activate(section)}
+                  className={section.id + (this._isActive(section) ? ' active' : '')}
+                  onClick={() => this._activate(section)}
                 >
                   {section.title}
                 </li>
@@ -44,21 +47,13 @@ export class TourDialogContent extends React.Component {
         <main>
           {
             this.props.sections
-              .filter((section) => this.isActive(section))
+              .filter((section) => this._isActive(section))
               .map((section) =>
                 <section key={`section-${section.id}`} className={section.id}>
-                  { section.image && section.imageClass === 'right' &&
-                    <div className={`image ${section.imageClass}`}>
-                      <img src={section.image} alt='' />
-                    </div>
-                  }
+                  { TourDialogContent._imageWithClassIfPresent(section, 'right') }
                   <h2>{section.title}</h2>
                   <p>{section.text}</p>
-                  { section.image && section.imageClass === 'bottom' &&
-                    <div className={`image ${section.imageClass}`}>
-                      <img src={section.image} alt='' />
-                    </div>
-                  }
+                  { TourDialogContent._imageWithClassIfPresent(section, 'bottom') }
                 </section>
               )
           }
@@ -66,7 +61,7 @@ export class TourDialogContent extends React.Component {
         <aside className="below">
           {
             this.props.sections
-              .filter((section) => this.isActive(section))
+              .filter((section) => this._isActive(section))
               .filter((section) => section.buttonText !== undefined)
               .map((section) =>
                 <button key={`button-${section.id}`} className={section.id} onClick={section.buttonOnClick}>
@@ -75,6 +70,18 @@ export class TourDialogContent extends React.Component {
               )
           }
         </aside>
+      </React.Fragment>
+    );
+  }
+
+  static _imageWithClassIfPresent(section, imageClass) {
+    return (
+      <React.Fragment>
+        { section.image && section.imageClass === imageClass &&
+          <div className={`image ${imageClass}`}>
+            <img src={section.image} alt='' />
+          </div>
+        }
       </React.Fragment>
     );
   }

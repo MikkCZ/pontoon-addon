@@ -36,15 +36,13 @@ export class PageContextMenu {
         );
 
         // Recreate the selection context menus (report l10n bug & search in project)
-        browser.contextMenus.remove('page-context-menu-parent');
-        const mozillaPageContextMenuParent = browser.contextMenus.create({
+        const mozillaPageContextMenuParent = PageContextMenu._recreateContextMenu({
             id: 'page-context-menu-parent',
             title: 'Pontoon Tools',
             documentUrlPatterns: mozillaWebsitesUrlPatterns,
             contexts: ['selection'],
         });
-        browser.contextMenus.remove('page-context-menu-report-l10n-bug');
-        browser.contextMenus.create({
+        PageContextMenu._recreateContextMenu({
             id: 'page-context-menu-report-l10n-bug',
             title: 'Report l10n bug for "%s"',
             documentUrlPatterns: mozillaWebsitesUrlPatterns,
@@ -55,30 +53,30 @@ export class PageContextMenu {
             },
         });
         Object.values(projects).forEach((project) => {
-            project.domains.forEach((domain) => {
-                const projectSearchMenuId = `page-context-menu-search-${project.slug}-${domain}`;
-                browser.contextMenus.remove(projectSearchMenuId);
-                browser.contextMenus.create({
-                    id: projectSearchMenuId,
+            project.domains.flatMap((domain) => [
+                {
+                    id: `page-context-menu-search-${project.slug}-${domain}`,
                     title: `Search for "%s" in Pontoon (${project.name})`,
                     documentUrlPatterns: [`https://${domain}/*`],
                     contexts: ['selection'],
                     parentId: mozillaPageContextMenuParent,
                     onclick: (info, tab) => browser.tabs.create({url: this._remotePontoon.getSearchInProjectUrl(project.slug, info.selectionText)}),
-                });
-
-                const allProjectsSearchMenuId = `page-context-menu-search-all-${domain}`;
-                browser.contextMenus.remove(allProjectsSearchMenuId);
-                browser.contextMenus.create({
-                    id: allProjectsSearchMenuId,
+                },
+                {
+                    id: `page-context-menu-search-all-${domain}`,
                     title: 'Search for "%s" in Pontoon (all projects)',
                     documentUrlPatterns: [`https://${domain}/*`],
                     contexts: ['selection'],
                     parentId: mozillaPageContextMenuParent,
                     onclick: (info, tab) => browser.tabs.create({url: this._remotePontoon.getSearchInAllProjectsUrl(info.selectionText)}),
-                });
-            });
+                },
+            ]).forEach(PageContextMenu._recreateContextMenu);
         });
+    }
+
+    static _recreateContextMenu(contextMenuItem) {
+        browser.contextMenus.remove(contextMenuItem.id);
+        return browser.contextMenus.create(contextMenuItem);
     }
 
     /**

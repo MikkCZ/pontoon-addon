@@ -1,12 +1,12 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { PanelSection } from './PanelSection';
 import { PanelListItem } from './PanelListItem';
 
 describe('<PanelSection>', () => {
 
-  it('has Firefox style', () => {
-    const wrapper = mount(
+  it('has class to style in Firefox', () => {
+    const wrapper = shallow(
       <PanelSection />
     );
 
