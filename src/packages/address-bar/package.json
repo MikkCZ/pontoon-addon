@@ -26,7 +26,7 @@
     "lint": "eslint ./src/",
     "start": "rescripts start",
     "build": "rescripts build",
-    "test": "rescripts test",
+    "test": "rescripts test --coverage",
     "eject": "rescripts eject"
   },
   "rescripts": [

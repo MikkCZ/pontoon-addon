@@ -1,12 +1,13 @@
 language: node_js
+node_js:
+  - "lts/*"
+
 dist: bionic
 addons:
   apt:
     packages:
       - jq
-
-node_js:
-  - "lts/*"
+  chrome: stable
 
 cache:
   yarn: true
@@ -19,6 +20,9 @@ install:
 
 script:
   - yarn build
+
+after_success:
+  - bash ./scripts/upload-coverage-to-codeclimate.sh
 
 before_deploy:
   - mkdir -p ./build/_deploy

@@ -1,3 +1,7 @@
 build/*
+**/build/*
+coverage/*
+**/coverage/*
 node_modules/*
+**/node_modules/*
 **/*.log
