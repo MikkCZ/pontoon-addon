@@ -34,9 +34,9 @@
     "pretest": "yarn packages:lint",
     "test": "yarn packages:test",
 
-    "prebuild": "npm-run-all test clean",
+    "prebuild": "npm-run-all clean test",
     "build:lint": "web-ext lint -s ./src -i 'packages/*/src/'",
-    "mozilla:build": "web-ext build -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' -a ./build/web-ext/mozilla",
+    "mozilla:build": "web-ext build -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./build/web-ext/mozilla",
     "chrome:build": "bash ./scripts/build-chrome.sh",
     "doc": "jsdoc -c ./jsdoc-conf.json",
 
