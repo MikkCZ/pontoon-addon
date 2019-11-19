@@ -19,7 +19,7 @@ if [ "$TRAVIS_TEST_RESULT" != 0 ]; then
     exit 0
 fi
 
-if [ -z ${CC_TEST_REPORTER_ID} ]; then
+if [ -z "${CC_TEST_REPORTER_ID}" ]; then
     >&2 echo '"CC_TEST_REPORTER_ID" is not set, coverage report cannot be uploaded.'
     exit 1
 fi
@@ -35,18 +35,23 @@ fi
 "$CC_REPORTER" before-build
 
 # Format coverage files
-coverage_files_count=0
-for file in $(find . -type f -wholename "$COVERAGE_FILES_PATTERN")
-do
-    src_package_name="$(echo "$file" | cut -d'/' -f 4)"
-    "$CC_REPORTER" format-coverage -t lcov -o "${CC_COVERAGE_DIR}/codeclimate.${src_package_name}.json" "$file"
-    coverage_files_count=$((coverage_files_count + 1))
-    echo "Formatted ${CC_COVERAGE_DIR}/codeclimate.${src_package_name}.json from ${file}."
-done
-echo "Formatted ${coverage_files_count} files."
+find . -type f -wholename "$COVERAGE_FILES_PATTERN" -print0 |
+    while IFS= read -r -d '' file; do
+        src_package_name="$(echo "$file" | cut -d'/' -f 4)"
+        "$CC_REPORTER" format-coverage -t lcov -o "${CC_COVERAGE_DIR}/codeclimate.${src_package_name}.json" "$file"
+        coverage_files_count=$((coverage_files_count + 1))
+        echo "Formatted ${CC_COVERAGE_DIR}/codeclimate.${src_package_name}.json from ${file}."
+    done
 
-# Sum all coverage parts
-"$CC_REPORTER" sum-coverage "${CC_COVERAGE_DIR}"/codeclimate.*.json -p "$coverage_files_count"
+# Merge all coverage parts
+coverage_files_count="$(find . -type f -wholename "$COVERAGE_FILES_PATTERN" | wc -l)"
+if [ "$coverage_files_count" != 0 ]; then
+    echo "Merging $coverage_files_count coverage files"
+    "$CC_REPORTER" sum-coverage "${CC_COVERAGE_DIR}"/codeclimate.*.json -p "$coverage_files_count"
+else
+    >&2 echo 'No coverage files found to merge.'
+    exit 2
+fi
 
 # Upload report
 "$CC_REPORTER" upload-coverage
