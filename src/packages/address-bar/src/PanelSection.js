@@ -1,6 +1,9 @@
 import React from 'react';
 import { PanelListItem } from './PanelListItem';
 
+/**
+ * React component of a list, using Firefox style for panel menu.
+ */
 export class PanelSection extends React.Component {
   static defaultProps = {
     items: [],

@@ -3,6 +3,9 @@ import { CloseButton } from './CloseButton';
 import { TourDialogContent } from './TourDialogContent';
 import './TourDialog.css';
 
+/**
+ * React component of the introduction tour in-page dialog.
+ */
 export class TourDialog extends React.Component {
 
   render() {

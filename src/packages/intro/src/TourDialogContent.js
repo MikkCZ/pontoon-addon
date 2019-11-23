@@ -1,6 +1,9 @@
 import React from 'react';
 import './TourDialogContent.css';
 
+/**
+ * React component of the introduction tour content shown inside the in-page dialog.
+ */
 export class TourDialogContent extends React.Component {
 
   constructor(props) {
