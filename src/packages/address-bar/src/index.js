@@ -7,8 +7,8 @@ if (!browser) { // eslint-disable-line no-use-before-define
 }
 
 const backgroundPontoonClient = new BackgroundPontoonClient();
-backgroundPontoonClient.getPontoonProjectForTheCurrentTab().then((response) => {
-  ReactDOM.render(
+export default backgroundPontoonClient.getPontoonProjectForTheCurrentTab().then((response) => {
+  return ReactDOM.render(
     <PanelSection items={[
       {
         text: `Open ${response.name} project page`,
@@ -19,6 +19,6 @@ backgroundPontoonClient.getPontoonProjectForTheCurrentTab().then((response) => {
         onClick: () => browser.tabs.create({url: response.translationUrl}),
       }
     ]} />,
-    document.getElementById('root')
+    document.getElementById('root') || document.createElement('div')
   );
 });

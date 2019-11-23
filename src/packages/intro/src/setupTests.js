@@ -7,6 +7,6 @@ configure({ adapter: new Adapter() });
 
 global.browser = browser;
 
-global.flushPromises = () => {
-  return new Promise((resolve) => setImmediate(resolve));
+global.flushPromises = async () => {
+  return setImmediate(() => {});
 }

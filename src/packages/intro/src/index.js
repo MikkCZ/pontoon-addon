@@ -16,7 +16,7 @@ if (!browser) { // eslint-disable-line no-use-before-define
 const title = 'Welcome to Pontoon Tools';
 document.title = title;
 
-Options.create().then(async (options) => {
+export default Options.create().then(async (options) => {
   const remoteLinks = new RemoteLinks();
 
   const localeTeamOption = 'locale_team';
@@ -103,13 +103,13 @@ Options.create().then(async (options) => {
     buttonOnClick: () => browser.tabs.create({url: remoteLinks.getPontoonToolsWikiUrl()}),
   });
 
-  ReactDOM.render(
+  return ReactDOM.render(
     <TourDialog
       title={title}
       localeTeam={localeTeam}
       sections={sections}
     />,
-    document.getElementById('root')
+    document.getElementById('root') || document.createElement('div')
   );
 
 });

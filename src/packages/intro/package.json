@@ -24,6 +24,11 @@
       "sourceType": "module"
     }
   },
+  "jest": {
+    "moduleNameMapper": {
+      "Commons/src/(.*)": "<rootDir>/../commons/src/$1.js"
+    }
+  },
   "scripts": {
     "lint": "eslint ./src/",
     "start": "rescripts start",
