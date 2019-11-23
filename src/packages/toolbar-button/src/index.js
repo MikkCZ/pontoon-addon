@@ -11,7 +11,7 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * objects taking care of the content.
  */
 
-function withOptions(options) {
+Options.create().then((options) => {
     const backgroundPontoonClient = new BackgroundPontoonClient();
 
     // See all notifications
@@ -48,6 +48,4 @@ function withOptions(options) {
 
     const notifications = new NotificationsPopup(options, backgroundPontoonClient);
     const teamInfo = new TeamInfoPopup(options, backgroundPontoonClient);
-}
-
-Options.create().then(withOptions);
+});

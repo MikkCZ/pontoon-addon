@@ -32,7 +32,7 @@ browser.runtime.onInstalled.addListener((details) => {
     }
 });
 
-function withOptions(options) {
+Options.create().then((options) => {
     const pontoonBaseUrlOptionKey = 'pontoon_base_url';
     const localeTeamOptionKey = 'locale_team';
 
@@ -58,6 +58,4 @@ function withOptions(options) {
 
         setTimeout(() => dataRefresher.refreshData(), 1000);
     });
-}
-
-Options.create().then(withOptions);
+});

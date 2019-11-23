@@ -9,7 +9,7 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * This is the main script for the options custom page and updating the options.
  */
 
-function withOptions(options) {
+Options.create().then((options) => {
     const backgroundPontoonClient = new BackgroundPontoonClient();
     const teamsListDataKey = 'teamsList';
     const dataUpdateSelect = document.querySelector('select[data-option-id=data_update_interval]');
@@ -130,6 +130,4 @@ function withOptions(options) {
             );
         }
     });
-}
-
-Options.create().then(withOptions);
+});

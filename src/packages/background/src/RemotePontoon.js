@@ -37,15 +37,6 @@ export class RemotePontoon {
     }
 
     /**
-     * Get notifications page URL.
-     * @returns {string}
-     * @private
-     */
-    _getNotificationsUrl() {
-        return `${this._baseUrl}/notifications/?utm_source=pontoon-tools`;
-    }
-
-    /**
      * Get settings page URL.
      * @param utm_source to include into the URL
      * @returns {string}
@@ -145,15 +136,6 @@ export class RemotePontoon {
     }
 
     /**
-     * Get URL to sign in.
-     * @returns {string}
-     * @private
-     */
-    _getSignInURL() {
-        return `${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`;
-    }
-
-    /**
      * Update notifications data if the Pontoon page contains a new one.
      * @param pageContent to check for new notifications
      * @private
@@ -178,17 +160,26 @@ export class RemotePontoon {
     }
 
     /**
+     * Subscribe to data change.
+     * @param dataKey data key to subscribe for change to
+     * @param callback function to call with the new value
+     * @private
+     */
+    _subscribeToDataChange(dataKey, callback) {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+            if (changes[dataKey] !== undefined) {
+                callback(changes[dataKey]);
+            }
+        });
+    }
+
+    /**
      * Subscribe to notifications data change.
      * @param callback function to call with the new value
      * @public
      */
     subscribeToNotificationsChange(callback) {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'notificationsData';
-            if (changes[dataKey] !== undefined) {
-                callback(changes[dataKey]);
-            }
-        });
+        this._subscribeToDataChange('notificationsData', callback);
     }
 
     /**
@@ -292,12 +283,7 @@ export class RemotePontoon {
      * @public
      */
     subscribeToProjectsListChange(callback) {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'projectsList';
-            if (changes[dataKey] !== undefined) {
-                callback(changes[dataKey]);
-            }
-        });
+        this._subscribeToDataChange('projectsList', callback);
     }
 
     /**
@@ -336,12 +322,7 @@ export class RemotePontoon {
      * @public
      */
     subscribeToTeamsListChange(callback) {
-        browser.storage.onChanged.addListener((changes, areaName) => {
-            const dataKey = 'teamsList';
-            if (changes[dataKey] !== undefined) {
-                callback(changes[dataKey]);
-            }
-        });
+        this._subscribeToDataChange('teamsList', callback);
     }
 
     /**
@@ -382,11 +363,11 @@ export class RemotePontoon {
                     this._markAllNotificationsAsRead();
                     break;
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
-                    return Promise.resolve(this._getNotificationsUrl());
+                    return Promise.resolve(`${this._baseUrl}/notifications/?utm_source=pontoon-tools`);
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL:
                     return Promise.resolve(this._getSettingsUrl('pontoon-tools'));
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
-                    return Promise.resolve(this._getSignInURL());
+                    return Promise.resolve(`${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`);
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
                     return Promise.resolve(this.getTeamPageUrl());
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL:
