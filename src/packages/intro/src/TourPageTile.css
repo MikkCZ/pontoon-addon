@@ -1,0 +1,59 @@
+.TourPageTile {
+  width: 32%;
+  height: 22em;
+  margin-bottom: 2em;
+  background: #272a2f;
+  border: 1px solid #5e6475;
+  text-align: center;
+  display: grid;
+  grid-template-rows: 15% 30% 40% 15%;
+}
+
+@media screen and (max-width: 1024px) and (min-width: 640px) {
+  .TourPageTile {
+    width: 48%;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .TourPageTile {
+    width: 100%;
+  }
+}
+
+[class|="TourPageTile-row"] {
+  margin: 0;
+  padding: 0;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.TourPageTile-row-1 {
+  grid-row-start: 1;
+  grid-row-end: 1;
+}
+
+.TourPageTile-row-2 {
+  grid-row-start: 2;
+  grid-row-end: 2;
+}
+
+.TourPageTile-row-3 {
+  grid-row-start: 3;
+  grid-row-end: 3;
+}
+
+.TourPageTile-row-4 {
+  grid-row-start: 4;
+  grid-row-end: 4;
+}
+
+.TourPageTile img {
+  margin: 1em;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.TourPageTile p {
+  padding: 2em;
+}

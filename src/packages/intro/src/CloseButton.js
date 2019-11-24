@@ -18,8 +18,10 @@ export class CloseButton extends React.Component {
 
   render() {
     return (
-      <button id="close" title="Close the tour"
-        style={{ ...this.props.style, background:`url(${closeImg}) no-repeat center` }}
+      <button
+        className="CloseButton"
+        title={this.props.title}
+        style={{ background:`url(${closeImg}) no-repeat center` }}
         onClick={() => this.closeCurrentTab()}
       ></button>
     );

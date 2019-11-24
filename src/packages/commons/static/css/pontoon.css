@@ -97,6 +97,10 @@ button {
   color: #272a2f;
 }
 
+button:hover {
+  color: #ebebeb;
+}
+
 label {
   display: flex;
   align-items: center;

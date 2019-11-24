@@ -1,0 +1,35 @@
+.TourPage {
+  position: relative;
+}
+
+.CloseButton {
+  position: absolute;
+  right: 2em;
+}
+
+@media screen and (max-width: 640px) {
+  .CloseButton {
+    display: none;
+  }
+}
+
+.TourPage h2 {
+  text-align: center;
+}
+
+.TourPageTiles {
+  width: 90vw;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 1024px) {
+  .TourPageTiles {
+    width: 100%;
+    margin: 0;
+  }
+}
