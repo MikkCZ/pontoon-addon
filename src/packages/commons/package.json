@@ -1,5 +1,5 @@
 {
-  "name": "@pontoon-tools/commons",
+  "name": "@pontoon-addon/commons",
   "version": "0.0.0",
   "private": true,
   "dependencies": {

@@ -138,13 +138,13 @@ export class ToolbarButtonContextMenu {
         ].forEach((it) => browser.contextMenus.create(it));
 
         browser.contextMenus.create({
-            title: 'Pontoon Tools wiki',
+            title: 'Pontoon Add-on wiki',
             contexts: ['browser_action'],
-            onclick: () => browser.tabs.create({url: this._remoteLinks.getPontoonToolsWikiUrl()}),
+            onclick: () => browser.tabs.create({url: this._remoteLinks.getPontoonAddonWikiUrl()}),
         });
 
         browser.contextMenus.create({
-            title: 'Open Pontoon Tools tour',
+            title: 'Open Pontoon Add-on tour',
             contexts: ['browser_action'],
             onclick: () => browser.tabs.create({url: browser.runtime.getURL('packages/intro/build/index.html')}),
         });

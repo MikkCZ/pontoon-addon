@@ -63,7 +63,7 @@ export class DataFetcher {
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
         if (browser.webRequest && browser.webRequest.onBeforeSendHeaders.hasListener(this._pontoonRequestsListener)) {
-            headers.append('pontoon-tools-token', this._issueNewToken());
+            headers.append('pontoon-addon-token', this._issueNewToken());
             return fetch(url, {credentials: 'omit', headers: headers});
         } else {
             return fetch(url, {credentials: 'include', headers: headers});
@@ -106,9 +106,9 @@ export class DataFetcher {
      */
     _updatePontoonRequest(details) {
         const tokenHeaders = details.requestHeaders
-            .filter((header) => header.name === 'pontoon-tools-token');
+            .filter((header) => header.name === 'pontoon-addon-token');
         details.requestHeaders = details.requestHeaders
-            .filter((header) => header.name !== 'pontoon-tools-token');
+            .filter((header) => header.name !== 'pontoon-addon-token');
         const isMarked = tokenHeaders.length > 0 && tokenHeaders.every((header) => this._verifyToken(header.value));
         if (isMarked) {
             return this._options.get('contextual_identity').then((item) =>
@@ -119,7 +119,7 @@ export class DataFetcher {
                 })
             ).then((cookie) => {
                 const finalHeaders = details.requestHeaders
-                    .filter((header) => header.name !== 'pontoon-tools-token')
+                    .filter((header) => header.name !== 'pontoon-addon-token')
                     .filter((header) => header.name.toLowerCase() !== 'cookie')
                     .concat({
                         name: 'Cookie',

@@ -1,10 +1,10 @@
 {
-  "name": "@pontoon-tools/options",
+  "name": "@pontoon-addon/options",
   "version": "0.0.0",
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@pontoon-tools/commons": "*",
+    "@pontoon-addon/commons": "*",
     "webextension-polyfill": "^0.4.0"
   },
   "devDependencies": {

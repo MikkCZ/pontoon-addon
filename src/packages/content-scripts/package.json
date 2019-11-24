@@ -1,9 +1,9 @@
 {
-  "name": "@pontoon-tools/content-scripts",
+  "name": "@pontoon-addon/content-scripts",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@pontoon-tools/commons": "*",
+    "@pontoon-addon/commons": "*",
     "webextension-polyfill": "^0.4.0"
   },
   "devDependencies": {

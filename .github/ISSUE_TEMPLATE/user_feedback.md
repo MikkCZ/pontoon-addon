@@ -1,6 +1,6 @@
 ---
 name: 'User feedback'
-about: I am using Pontoon Tools and I want to provide feedback how I am satisfied with the existing functionality.
+about: I am using Pontoon Add-on and I want to provide feedback how I am satisfied with the existing functionality.
 labels: user-feedback
 ---
 ### User

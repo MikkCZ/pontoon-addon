@@ -55,7 +55,7 @@ export class RemotePontoon {
      * @public
      */
     getTeamPageUrl() {
-        return `${this._baseUrl}/${this._team}/?utm_source=pontoon-tools`;
+        return `${this._baseUrl}/${this._team}/?utm_source=pontoon-addon`;
     }
 
     /**
@@ -75,7 +75,7 @@ export class RemotePontoon {
      * @public
      */
     getTeamProjectUrl(projectUrl) {
-        return this._baseUrl + projectUrl.replace('/projects/', `/${this._team}/`) + '?utm_source=pontoon-tools';
+        return this._baseUrl + projectUrl.replace('/projects/', `/${this._team}/`) + '?utm_source=pontoon-addon';
     }
 
     /**
@@ -87,9 +87,9 @@ export class RemotePontoon {
      */
     getSearchInProjectUrl(projectSlug, textToSearch) {
         if (textToSearch !== undefined) {
-            return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search="${textToSearch.trim().replace(/ /g, '+')}"&utm_source=pontoon-tools`;
+            return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?search="${textToSearch.trim().replace(/ /g, '+')}"&utm_source=pontoon-addon`;
         }
-        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?utm_source=pontoon-tools`;
+        return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?utm_source=pontoon-addon`;
     }
 
     /**
@@ -109,7 +109,7 @@ export class RemotePontoon {
      * @private
      */
     _getStringsWithStatusSearchUrl(status) {
-        return `${this._baseUrl}/${this._team}/all-projects/all-resources/?status=${status}&utm_source=pontoon-tools`;
+        return `${this._baseUrl}/${this._team}/all-projects/all-resources/?status=${status}&utm_source=pontoon-addon`;
     }
 
     /**
@@ -196,7 +196,7 @@ export class RemotePontoon {
      * @public
      */
     updateNotificationsData() {
-        this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/user-data/?utm_source=pontoon-tools-automation`).then(
+        this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/user-data/?utm_source=pontoon-addon-automation`).then(
             (response) => response.json()
         ).then((userData) => {
             const notificationsDataObj = {};
@@ -216,7 +216,7 @@ export class RemotePontoon {
      * @public
      */
     updateLatestTeamActivity() {
-        this._dataFetcher.fetch(this.getTeamsListUrl('pontoon-tools-automation')).then(
+        this._dataFetcher.fetch(this.getTeamsListUrl('pontoon-addon-automation')).then(
             (response) => response.text()
         ).then((allTeamsPageContent) => {
             const latestActivityObj = {};
@@ -363,9 +363,9 @@ export class RemotePontoon {
                     this._markAllNotificationsAsRead();
                     break;
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
-                    return Promise.resolve(`${this._baseUrl}/notifications/?utm_source=pontoon-tools`);
+                    return Promise.resolve(`${this._baseUrl}/notifications/?utm_source=pontoon-addon`);
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL:
-                    return Promise.resolve(this._getSettingsUrl('pontoon-tools'));
+                    return Promise.resolve(this._getSettingsUrl('pontoon-addon'));
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
                     return Promise.resolve(`${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`);
                 case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
@@ -419,7 +419,7 @@ export class RemotePontoon {
     _markAllNotificationsAsRead() {
         const dataKey = 'notificationsData';
         Promise.all([
-            this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-tools-automation`),
+            this._dataFetcher.fetchFromPontoonSession(`${this._baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-addon-automation`),
             browser.storage.local.get(dataKey)
         ]).then(([
             response,
@@ -439,7 +439,7 @@ export class RemotePontoon {
      * @async
      */
     async _getTeamFromPontoon() {
-        const response = await this._dataFetcher.fetchFromPontoonSession(this._getSettingsUrl('pontoon-tools-automation'));
+        const response = await this._dataFetcher.fetchFromPontoonSession(this._getSettingsUrl('pontoon-addon-automation'));
         const text = await response.text();
         const language = this._domParser.parseFromString(text, 'text/html').querySelector('#homepage .language');
         return language !== null ? language.dataset['code'] : undefined;
