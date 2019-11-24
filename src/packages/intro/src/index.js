@@ -4,6 +4,7 @@ import { Options } from 'Commons/src/Options';
 import { RemoteLinks } from 'Commons/src/RemoteLinks';
 import { TourPage } from './TourPage';
 import toolbarButtonImage from './static/img/toolbar-button.png';
+import notificationsImage from './static/img/desktop-notification.svg';
 import pageActionImage from './static/img/page-action.png';
 import contextButtonsImage from './static/img/context-buttons.png';
 import settingsImage from './static/img/settings.png';
@@ -36,6 +37,7 @@ export default Options.create().then(async (options) => {
   });
   tiles.push({
     title: 'System notifications',
+    image: notificationsImage,
     text: 'Pontoon Add-on can bring notifications directly into your system. Try it!',
     button: {
       text: 'Preview system notifications',

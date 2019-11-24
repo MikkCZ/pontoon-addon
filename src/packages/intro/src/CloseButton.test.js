@@ -22,7 +22,7 @@ describe('<CloseButton>', () => {
       <CloseButton title="" />
     );
 
-    expect(wrapper.find('button').getDOMNode()).toHaveStyle('background: url(close-16.svg) no-repeat center');
+    expect(wrapper.find('button').getDOMNode()).toHaveStyle('background: url(glyph-dismiss-16.svg) no-repeat center');
   });
 
   it('closes intro page', async () => {
