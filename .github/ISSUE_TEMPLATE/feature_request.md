@@ -1,6 +1,6 @@
 ---
 name: 'Feature request'
-about: I want to ask for a new functionality in Pontoon Tools.
+about: I want to ask for a new functionality in Pontoon Add-on.
 labels: feature
 ---
 ### User

@@ -38,7 +38,7 @@ export class PageContextMenu {
         // Recreate the selection context menus (report l10n bug & search in project)
         const mozillaPageContextMenuParent = PageContextMenu._recreateContextMenu({
             id: 'page-context-menu-parent',
-            title: 'Pontoon Tools',
+            title: 'Pontoon Add-on',
             documentUrlPatterns: mozillaWebsitesUrlPatterns,
             contexts: ['selection'],
         });

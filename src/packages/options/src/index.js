@@ -54,7 +54,7 @@ Options.create().then((options) => {
 
     // Handle reset button
     document.getElementById('reset_defaults').addEventListener('click', () => {
-        if (window.confirm('Do you really want to reset all Pontoon Tools settings to default?')) {
+        if (window.confirm('Do you really want to reset all Pontoon Add-on settings to default?')) {
             options.resetDefaults().then(() => options.loadAllFromLocalStorage());
         }
     });
@@ -100,7 +100,7 @@ Options.create().then((options) => {
         tourLink.addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('packages/intro/build/index.html')}))
     );
     document.querySelectorAll('a.open_wiki').forEach((wikiLink) =>
-        wikiLink.addEventListener('click', () => browser.tabs.create({url: remoteLinks.getPontoonToolsWikiUrl()}))
+        wikiLink.addEventListener('click', () => browser.tabs.create({url: remoteLinks.getPontoonAddonWikiUrl()}))
     );
     backgroundPontoonClient.getSettingsUrl().then((settingsUrl) =>
         document.querySelector('a.pontoon_settings').setAttribute('href', settingsUrl)

@@ -103,7 +103,7 @@ export default Options.create().then(async (options) => {
     ),
     button: {
       text: 'Check the wiki',
-      onClick: () => browser.tabs.create({url: remoteLinks.getPontoonToolsWikiUrl()}),
+      onClick: () => browser.tabs.create({url: remoteLinks.getPontoonAddonWikiUrl()}),
     },
   });
 

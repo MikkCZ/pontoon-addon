@@ -1,6 +1,6 @@
 ---
 name: 'Bug report'
-about: I am using Pontoon Tools and something is not working there.
+about: I am using Pontoon Add-on and something is not working there.
 labels: bug
 ---
 ### Steps to reproduce

@@ -9,7 +9,7 @@ export class RemoteLinks {
      * @public
      */
     getTransvisionUrl(team) {
-        return `https://transvision.mozfr.org/?locale=${team}&utm_source=pontoon-tools`;
+        return `https://transvision.mozfr.org/?locale=${team}&utm_source=pontoon-addon`;
     }
 
     /**
@@ -19,7 +19,7 @@ export class RemoteLinks {
      * @public
      */
     getMozillaStyleGuidesUrl(team) {
-        return `https://mozilla-l10n.github.io/styleguides/${team}/?utm_source=pontoon-tools`;
+        return `https://mozilla-l10n.github.io/styleguides/${team}/?utm_source=pontoon-addon`;
     }
 
     /**
@@ -29,7 +29,7 @@ export class RemoteLinks {
      * @public
      */
     getElmoDashboardUrl(team) {
-        return `https://l10n.mozilla.org/teams/${team}?utm_source=pontoon-tools`;
+        return `https://l10n.mozilla.org/teams/${team}?utm_source=pontoon-addon`;
     }
 
     /**
@@ -39,7 +39,7 @@ export class RemoteLinks {
      * @public
      */
     getWebDashboardUrl(team) {
-        return `https://l10n.mozilla-community.org/webdashboard/?locale=${team}&utm_source=pontoon-tools`;
+        return `https://l10n.mozilla-community.org/webdashboard/?locale=${team}&utm_source=pontoon-addon`;
     }
 
     /**
@@ -80,15 +80,15 @@ export class RemoteLinks {
      * @public
      */
     getBugzillaReportUrlForSelectedTextOnPage(selectedText, pageUrl, team, teamComponent) {
-        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&component=${teamComponent}&status_whiteboard=[pontoon-tools-feedback]&bug_file_loc=${pageUrl}&short_desc=[${team}] Translation update proposed for "${selectedText.trim()}" on ${pageUrl}&comment=The translation:%0A${selectedText.trim()}%0A%0AShould be:%0A`;
+        return `https://bugzilla.mozilla.org/enter_bug.cgi?product=Mozilla Localizations&component=${teamComponent}&status_whiteboard=[pontoon-addon-feedback]&bug_file_loc=${pageUrl}&short_desc=[${team}] Translation update proposed for "${selectedText.trim()}" on ${pageUrl}&comment=The translation:%0A${selectedText.trim()}%0A%0AShould be:%0A`;
     }
 
     /**
-     * Get Pontoon Tools wiki URL.
+     * Get Pontoon Add-on wiki URL.
      * @returns {string}
      * @public
      */
-    getPontoonToolsWikiUrl() {
+    getPontoonAddonWikiUrl() {
         return 'https://github.com/MikkCZ/pontoon-tools/wiki';
     }
 }
