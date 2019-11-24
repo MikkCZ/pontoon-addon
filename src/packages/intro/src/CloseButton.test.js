@@ -9,25 +9,25 @@ describe('<CloseButton>', () => {
     browser.flush();
   });
 
-  it('has close icon', () => {
+  it('takes title', () => {
     const wrapper = mount(
-      <CloseButton />
+      <CloseButton title="TITLE" />
     );
 
-    expect(wrapper.find('button').getDOMNode()).toHaveStyle('background: url(close-16.svg) no-repeat center');
+    expect(wrapper.find('button').getDOMNode().title).toBe('TITLE');
   });
 
-  it('uses style from props', () => {
+  it('has close icon', () => {
     const wrapper = mount(
-      <CloseButton style={{ border: '1px solid black' }} />
+      <CloseButton title="" />
     );
 
-    expect(wrapper.find('button').getDOMNode()).toHaveStyle('border: 1px solid black');
+    expect(wrapper.find('button').getDOMNode()).toHaveStyle('background: url(glyph-dismiss-16.svg) no-repeat center');
   });
 
   it('closes intro page', async () => {
     const wrapper = mount(
-      <CloseButton />
+      <CloseButton title="" />
     );
 
     const fakeTab = {id: 'fake-tab_id'};
