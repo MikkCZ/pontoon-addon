@@ -41,6 +41,6 @@
     "doc": "jsdoc -c ./jsdoc-conf.json",
 
     "build": "npm-run-all packages:build build:lint mozilla:build chrome:build doc",
-    "clean": "rm -r ./**/build ./**/coverage"
+    "clean": "rm -rf ./**/build ./**/coverage"
   }
 }
