@@ -1,0 +1,18 @@
+.TeamInfo h1,
+.TeamInfo-list {
+  margin: 0 0.5em;
+}
+
+.TeamInfo h1 {
+  padding: 0;
+}
+
+.TeamInfo-name {
+  font-weight: bold;
+  color: #ebebeb;
+}
+
+.TeamInfo-code {
+  font-weight: normal;
+  color: #7bc876;
+}
