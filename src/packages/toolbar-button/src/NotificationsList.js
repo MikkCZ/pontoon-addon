@@ -1,4 +1,5 @@
 import React from 'react';
+import { NotificationsListItem } from './NotificationsListItem';
 import { BottomLink } from './BottomLink';
 import { NotificationsListError } from './NotificationsListError';
 import './NotificationsList.css';
@@ -34,11 +35,20 @@ export class NotificationsList extends React.Component {
       return (
         <section className="NotificationsList">
           <ul className="NotificationsList-list">
-            {/*
-              Object.values(this.state.notificationsData).map((notification) =>
-                <Notification {...notification} />
-              )
-            */}
+            {
+              Object.keys(this.state.notificationsData)
+                .map((nKey) => Number.parseInt(nKey, 10))
+                .sort((a, b) => a - b).reverse()
+                .map((nKey) => this.state.notificationsData[nKey])
+                .filter((notification) => notification.unread || !this.props.hideReadNotifications)
+                .map((notificationData) =>
+                  <NotificationsListItem
+                    key={notificationData.id}
+                    backgroundPontoonClient={this.props.backgroundPontoonClient}
+                    {...notificationData}
+                  />
+                )
+            }
           </ul>
           {
             containsUnreadNotifications &&
@@ -68,7 +78,6 @@ export class NotificationsList extends React.Component {
         <NotificationsListError backgroundPontoonClient={this.props.backgroundPontoonClient} />
       );
     }
-
   }
 
 }

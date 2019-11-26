@@ -21,26 +21,26 @@ export default Options.create().then(async (options) => {
   JavascriptTimeAgo.locale(en);
   const backgroundPontoonClient = new BackgroundPontoonClient();
 
+  const hideReadNotificationsKey = 'toolbar_button_popup_always_hide_read_notifications';
   const localeTeamOptionKey = 'locale_team';
+  const notificationsDataKey = 'notificationsData';
   const teamsListKey = 'teamsList';
   const latestTeamsActivityKey = 'latestTeamsActivity';
-  const [teamData, latestTeamActivity] = await Promise.all([
-    options.get(localeTeamOptionKey).then((item) => item[localeTeamOptionKey]),
-    browser.storage.local.get(teamsListKey).then((item) => item[teamsListKey]),
-    browser.storage.local.get(latestTeamsActivityKey).then((item) => item[latestTeamsActivityKey]),
-  ]).then(([
-    localeTeam,
-    teamsList,
-    latestTeamsActivity,
-  ]) => [
-    teamsList[localeTeam],
-    latestTeamsActivity[localeTeam],
+  const [notificationsData, hideReadNotifications, teamData, latestTeamActivity] = await Promise.all([
+    options.get([hideReadNotificationsKey, localeTeamOptionKey]),
+    browser.storage.local.get([notificationsDataKey, teamsListKey, latestTeamsActivityKey]),
+  ]).then(([optionsItems, storageItems]) => [
+    storageItems[notificationsDataKey],
+    optionsItems[hideReadNotificationsKey],
+    storageItems[teamsListKey][optionsItems[localeTeamOptionKey]],
+    storageItems[latestTeamsActivityKey][optionsItems[localeTeamOptionKey]],
   ]);
 
   return ReactDOM.render(
     <React.Fragment>
       <NotificationsList
-        notificationsData={[]}
+        notificationsData={notificationsData}
+        hideReadNotifications={hideReadNotifications}
         backgroundPontoonClient={backgroundPontoonClient}
       />
       <TeamInfo
