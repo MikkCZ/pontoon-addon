@@ -4,7 +4,7 @@ import { Options } from 'Commons/src/Options';
 import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
 import { NotificationsList } from './NotificationsList';
 import { TeamInfo } from './TeamInfo';
-import { Error } from './Error';
+import { NotificationsListError } from './NotificationsListError';
 import 'Commons/static/css/pontoon.css';
 import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
@@ -21,7 +21,7 @@ export default Options.create().then(async (options) => {
 
     return ReactDOM.render(
       <React.Fragment>
-        <Error
+        <NotificationsListError
           backgroundPontoonClient={backgroundPontoonClient}
         />
         <NotificationsList
