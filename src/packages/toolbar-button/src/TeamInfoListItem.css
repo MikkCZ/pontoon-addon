@@ -1,0 +1,17 @@
+.TeamInfoListItem-label {
+  margin-right: 1em;
+  text-transform: uppercase;
+}
+
+.TeamInfoListItem-label-before {
+  display: inline-block;
+  content: '';
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.5em;
+  border-radius: 0.1em;
+}
+
+.TeamInfoListItem-value {
+  float: right;
+}

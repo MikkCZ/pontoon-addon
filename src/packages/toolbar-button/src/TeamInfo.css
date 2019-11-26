@@ -16,3 +16,19 @@
   font-weight: normal;
   color: #7bc876;
 }
+
+.TeamInfo-list {
+  list-style-type: none;
+  padding: 0.5em 1em 0.5em 0.5em;
+  color: #aaa;
+}
+
+.TeamInfo-list .link {
+  display: inline-block;
+  width: 100%;
+  color: #ebebeb;
+}
+
+.TeamInfo-list .link:hover {
+  color: #7bc876;
+}
