@@ -26,14 +26,15 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "Commons/src/(.*)": "<rootDir>/../commons/src/$1.js"
+      "Commons/src/(.*)": "<rootDir>/../commons/src/$1.js",
+      "Commons/static/(.*)/(.*)": "<rootDir>/../commons/static/$1/$2"
     }
   },
   "scripts": {
     "lint": "eslint ./src/",
     "start": "rescripts start",
     "build": "rescripts build",
-    "test": "rescripts test --coverage --passWithNoTests",
+    "test": "rescripts test --coverage",
     "eject": "rescripts eject"
   },
   "rescripts": [
