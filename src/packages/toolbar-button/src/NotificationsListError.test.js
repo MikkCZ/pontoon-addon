@@ -11,7 +11,7 @@ describe('<NotificationsListError>', () => {
   });
 
   it('opens sign-in page on click', async () => {
-    const signInUrl = 'http://127.0.0.1/';
+    const signInUrl = 'https://127.0.0.1/';
     browser.runtime.sendMessage.resolves(signInUrl);
     browser.tabs.create.resolves(undefined);
 

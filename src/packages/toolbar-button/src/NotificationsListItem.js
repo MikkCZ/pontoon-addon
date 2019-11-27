@@ -16,25 +16,24 @@ export class NotificationsListItem extends React.Component {
   }
 
   render() {
-    const linksCount = [this.props.actor, this.props.target].filter((it) => it !== null).length;
-    const firstLink = [this.props.actor, this.props.target].find((it) => it !== null);
+    const links = [this.props.actor, this.props.target]
+      .filter((it) => typeof(it) !== 'undefined' && it !== null)
+      .filter((it) => it.hasOwnProperty('url'));
     const onClickAll = (e) => {
-      if (linksCount === 1) {
-        e.preventDefault();
-        e.stopPropagation();
-        this._openTeamProject(firstLink.url);
+      if (links.length === 1) {
+        _stopEvent(e);
+        this._openTeamProject(links[0].url);
       }
     };
     return (
-      <li className={`NotificationsListItem ${this.props.unread ? 'unread' : 'read'} ${linksCount === 1 ? 'pointer' : ''}`}
+      <li className={`NotificationsListItem ${this.props.unread ? 'unread' : 'read'} ${links.length === 1 ? 'pointer' : ''}`}
         onClick={onClickAll}
       >
         {
           this.props.actor &&
             <button className="link"
               onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                _stopEvent(e);
                 this._openTeamProject(this.props.actor.url);
               }}
             >{this.props.actor.anchor}</button>
@@ -47,8 +46,7 @@ export class NotificationsListItem extends React.Component {
           this.props.target &&
             <button className="link"
               onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                _stopEvent(e);
                 this._openTeamProject(this.props.target.url);
               }}
             > {this.props.target.anchor}</button>
@@ -69,4 +67,9 @@ export class NotificationsListItem extends React.Component {
     );
   }
 
+}
+
+function _stopEvent(e) {
+  e.preventDefault();
+  e.stopPropagation();
 }
