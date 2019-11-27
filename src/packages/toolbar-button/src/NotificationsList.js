@@ -17,7 +17,7 @@ export class NotificationsList extends React.Component {
     this.state = {
       notificationsData: props.notificationsData,
     };
-    this.props.backgroundPontoonClient.subscribeToNotificationsChange(this._notificationsChanged);
+    this.props.backgroundPontoonClient.subscribeToNotificationsChange((change) => this._notificationsChanged(change));
   }
 
   _notificationsChanged(change) {
