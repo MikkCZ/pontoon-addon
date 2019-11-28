@@ -23,7 +23,7 @@ describe('index.js', () => {
         cs: { name: 'Czech', code: 'cs', strings: {} },
       },
       latestTeamsActivity: {},
-    })
+    });
 
     const reactDomRender = await require('./index.js');
     const rootFragment = await reactDomRender.default;
