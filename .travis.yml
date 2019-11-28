@@ -26,8 +26,8 @@ after_success:
 
 before_deploy:
   - mkdir -p ./build/_deploy
-  - mv ./build/web-ext/mozilla/pontoon_addon-*.zip "./build/_deploy/pontoon_addon-${TRAVIS_TAG}-mozilla.zip"
-  - mv ./build/web-ext/chrome/pontoon_addon-*.zip "./build/_deploy/pontoon_addon-${TRAVIS_TAG}-chrome.zip"
+  - mv ./build/web-ext/mozilla/pontoon_add-on-*.zip "./build/_deploy/pontoon_add-on-${TRAVIS_TAG}-mozilla.zip"
+  - mv ./build/web-ext/chrome/pontoon_add-on-*.zip "./build/_deploy/pontoon_add-on-${TRAVIS_TAG}-chrome.zip"
   - tar -cvf ./build/_deploy/docs.tar.gz ./build/docs
 
 deploy:
