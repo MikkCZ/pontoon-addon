@@ -31,8 +31,8 @@ This is the options page, which can be opened in the add-ons manager.
       <h3>General</h3>
       <div>
         <label for="locale_team">Select your locale team</label>
-        <select id="locale_team" data-option-id="locale_team"></select>
-        <button id="load_locale_team" title="Sync with your Pontoon homepage preference">Load from Pontoon</button>
+        <select class="pontoon-style" id="locale_team" data-option-id="locale_team"></select>
+        <button class="pontoon-style" id="load_locale_team" title="Sync with your Pontoon homepage preference">Load from Pontoon</button>
       </div>
       <div>
         <label for="data_update_interval" title="How frequently Pontoon Tools check for new notifications and updates your team information">Select how frequently data should be updated from Pontoon</label>
@@ -85,14 +85,14 @@ This is the options page, which can be opened in the add-ons manager.
       <h3>Advanced</h3>
       <div>
         <label for="contextual_identity">Select container to use for data updates</label>
-        <select id="contextual_identity" data-option-id="contextual_identity" disabled="disabled"></select>
-        <button id="edit_contextual_identity">Edit</button>
+        <select class="pontoon-style" id="contextual_identity" data-option-id="contextual_identity" disabled="disabled"></select>
+        <button class="pontoon-style" id="edit_contextual_identity">Edit</button>
         <aside>If you use a specific <a href="https://support.mozilla.org/kb/containers" target="_blank">container</a> for Pontoon, select it here.</aside>
       </div>
       <div>
         <label for="pontoon_base_url">Pontoon URL</label>
         <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled">
-        <button id="edit_pontoon_base_url">Edit</button>
+        <button class="pontoon-style" id="edit_pontoon_base_url">Edit</button>
         <aside>Changing Pontoon URL is for developers or debugging only.</aside>
       </div>
       <div>

@@ -1,0 +1,34 @@
+.pointer {
+  cursor: pointer;
+}
+
+.NotificationsListItem {
+  padding: 0.5em 1em;
+}
+
+.NotificationsListItem .link,
+.NotificationsListItem .link:hover {
+  color: #f36;
+}
+
+.NotificationsListItem.unread {
+  background-color: #333941;
+  border-bottom: 1px solid transparent;
+}
+
+.NotificationsListItem.read:not(:last-child) {
+  border-bottom: 1px solid #333941;
+}
+
+.NotificationsListItem:hover {
+  background-color: #3f4752;
+}
+
+.NotificationsListItem-timeago,
+.NotificationsListItem-description {
+  color: #888;
+}
+
+.NotificationsListItem-timeago {
+  text-align: right;
+}

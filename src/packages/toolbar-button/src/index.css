@@ -1,0 +1,10 @@
+body {
+  width: fit-content;
+  min-width: 350px;
+  font: caption;
+  font-size: 14px;
+}
+
+body * {
+  text-align: left;
+}

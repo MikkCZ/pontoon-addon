@@ -5,14 +5,28 @@ body {
   color: #ebebeb;
 }
 
-a {
+a,
+button.link {
   color: #7bc876;
   text-decoration: none;
   cursor: pointer;
 }
 
-a:hover {
+a:hover,
+button.link:hover {
   color: inherit;
+}
+
+button.link {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
 }
 
 .hidden {
@@ -70,16 +84,16 @@ header a:hover {
 
 select,
 label,
-button {
+button.pontoon-style {
   cursor: pointer;
 }
 
 input[type="text"],
 input[type="url"],
 select,
-button {
-  -moz-appearance: none;
+button.pontoon-style {
   -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   box-sizing: border-box;
   height: 2em;
@@ -90,14 +104,14 @@ button {
   color: inherit;
 }
 
-button {
+button.pontoon-style {
   padding: 0 1em;
   background-color: #7bc876;
   border-color: #7bc876;
   color: #272a2f;
 }
 
-button:hover {
+button.pontoon-style:hover {
   color: #ebebeb;
 }
 
@@ -108,8 +122,8 @@ label {
 
 input[type="radio"],
 input[type="checkbox"] {
-  -moz-appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   height: 1em;
   width: 1em;

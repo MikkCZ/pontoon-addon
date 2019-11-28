@@ -1,7 +1,13 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import JavascriptTimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 import { Options } from 'Commons/src/Options';
 import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
-import { NotificationsPopup } from './NotificationsPopup';
-import { TeamInfoPopup } from './TeamInfoPopup';
+import { NotificationsList } from './NotificationsList';
+import { TeamInfo } from './TeamInfo';
+import 'Commons/static/css/pontoon.css';
+import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
@@ -11,41 +17,40 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * objects taking care of the content.
  */
 
-Options.create().then((options) => {
-    const backgroundPontoonClient = new BackgroundPontoonClient();
+export default Options.create().then(async (options) => {
+  JavascriptTimeAgo.locale(en);
+  const backgroundPontoonClient = new BackgroundPontoonClient();
 
-    // See all notifications
-    document.querySelector('.notification-list .see-all').addEventListener('click', (e) => {
-        e.preventDefault();
-        backgroundPontoonClient.getNotificationsUrl().then((notificationsUrl) => {
-            browser.tabs.create({url: notificationsUrl});
-            window.close();
-        });
-    });
-    // Mark all notifications as read
-    document.querySelector('.notification-list .mark-all-as-read').addEventListener('click', (e) => {
-        e.preventDefault();
-        backgroundPontoonClient.markAllNotificationsAsRead();
-    });
-    // Link to Pontoon when not signed in
-    document.querySelector('#error .sign-in').addEventListener('click', (e) => {
-        e.preventDefault();
-        backgroundPontoonClient.getSignInURL().then((signInUrl) => {
-            browser.tabs.create({url: signInUrl});
-            window.close();
-        });
-    });
-    // Team page links
-    document.querySelectorAll('a.team-page,#team-info h1 a').forEach((hLink) => {
-        hLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            backgroundPontoonClient.getTeamPageUrl().then((teamPageUrl) => {
-                browser.tabs.create({url: teamPageUrl});
-                window.close();
-            });
-        });
-    });
+  const hideReadNotificationsKey = 'toolbar_button_popup_always_hide_read_notifications';
+  const localeTeamOptionKey = 'locale_team';
+  const notificationsDataKey = 'notificationsData';
+  const teamsListKey = 'teamsList';
+  const latestTeamsActivityKey = 'latestTeamsActivity';
+  const [notificationsData, hideReadNotifications, teamData, latestTeamActivity] = await Promise.all([
+    options.get([hideReadNotificationsKey, localeTeamOptionKey]),
+    browser.storage.local.get([notificationsDataKey, teamsListKey, latestTeamsActivityKey]),
+  ]).then(([optionsItems, storageItems]) => [
+    storageItems[notificationsDataKey],
+    optionsItems[hideReadNotificationsKey],
+    storageItems[teamsListKey][optionsItems[localeTeamOptionKey]],
+    storageItems[latestTeamsActivityKey][optionsItems[localeTeamOptionKey]],
+  ]);
 
-    const notifications = new NotificationsPopup(options, backgroundPontoonClient);
-    const teamInfo = new TeamInfoPopup(options, backgroundPontoonClient);
+  return ReactDOM.render(
+    <React.Fragment>
+      <NotificationsList
+        notificationsData={notificationsData}
+        hideReadNotifications={hideReadNotifications}
+        backgroundPontoonClient={backgroundPontoonClient}
+      />
+      <TeamInfo
+        name={teamData.name}
+        code={teamData.code}
+        stringsData={teamData.strings}
+        latestActivity={latestTeamActivity}
+        backgroundPontoonClient={backgroundPontoonClient}
+      />
+    </React.Fragment>,
+    document.getElementById('root') || document.createElement('div')
+  );
 });

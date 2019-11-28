@@ -24,7 +24,7 @@ export class TourPageTile extends React.Component {
         <div className="TourPageTile-row-4">
           {
             this.props.button !== undefined &&
-              <button onClick={this.props.button.onClick}>
+              <button className="pontoon-style" onClick={this.props.button.onClick}>
                 {this.props.button.text}
               </button>
           }
