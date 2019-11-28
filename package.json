@@ -5,13 +5,13 @@
   "description": "Tools for Pontoon and its integration into the browser.",
   "author": "Michal Stanke <mstanke@mozilla.cz>",
   "license": "MPL-2.0",
-  "homepage": "https://github.com/MikkCZ/pontoon-tools#readme",
+  "homepage": "https://github.com/MikkCZ/pontoon-addon#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MikkCZ/pontoon-tools.git"
+    "url": "git+https://github.com/MikkCZ/pontoon-addon.git"
   },
   "bugs": {
-    "url": "https://github.com/MikkCZ/pontoon-tools/issues"
+    "url": "https://github.com/MikkCZ/pontoon-addon/issues"
   },
   "workspaces": [
     "src/packages/*"
