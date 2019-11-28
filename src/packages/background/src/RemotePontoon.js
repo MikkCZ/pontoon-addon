@@ -62,7 +62,7 @@ export class RemotePontoon {
      * Get team bugs list URL.
      * @returns {string}
      * @public
-     * @todo add utm_source, see https://github.com/MikkCZ/pontoon-tools/pull/76#discussion_r195809548
+     * @todo add utm_source, see https://github.com/MikkCZ/pontoon-addon/pull/76#discussion_r195809548
      */
     getTeamBugsUrl() {
         return `${this._baseUrl}/${this._team}/bugs/`;

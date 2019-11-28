@@ -89,6 +89,6 @@ export class RemoteLinks {
      * @public
      */
     getPontoonAddonWikiUrl() {
-        return 'https://github.com/MikkCZ/pontoon-tools/wiki';
+        return 'https://github.com/MikkCZ/pontoon-addon/wiki';
     }
 }
