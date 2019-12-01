@@ -39,9 +39,12 @@ export class TeamInfo extends React.Component {
                 key="activity"
                 label="Activity"
                 value={
-                  <React.Fragment>
-                    {this.props.latestActivity.user} <ReactTimeAgo date={ new Date(this.props.latestActivity.date_iso) } />
-                  </React.Fragment>
+                  !isNaN(Date.parse(this.props.latestActivity.date_iso))
+                  ?
+                    <React.Fragment>
+                      {this.props.latestActivity.user} <ReactTimeAgo date={ new Date(this.props.latestActivity.date_iso) } />
+                    </React.Fragment>
+                  : "―"
                 }
               />
           }

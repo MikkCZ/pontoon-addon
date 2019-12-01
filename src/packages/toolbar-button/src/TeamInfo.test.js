@@ -28,8 +28,8 @@ describe('<TeamInfo>', () => {
       />
     );
 
-    expect(wrapper.find('.TeamInfo-name').text()).toBe('Czech'); // click
-    expect(wrapper.find('.TeamInfo-code').text()).toBe('cs'); // click
+    expect(wrapper.find('.TeamInfo-name').text()).toBe('Czech');
+    expect(wrapper.find('.TeamInfo-code').text()).toBe('cs');
     expect(wrapper.find(TeamInfoListItem).length).toBe(8);
     expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
     expect(wrapper.find(ReactTimeAgo).length).toBe(1);
@@ -40,7 +40,25 @@ describe('<TeamInfo>', () => {
     expect(wrapper.find(TeamInfoListItem).at(5).prop('label')).toBe('missing');
     expect(wrapper.find(TeamInfoListItem).at(6).prop('label')).toBe('unreviewed');
     expect(wrapper.find(TeamInfoListItem).at(7).prop('label')).toBe('all strings');
-    expect(wrapper.find(BottomLink).hasClass('TeamInfo-team-page')).toBe(true); // click
+    expect(wrapper.find(BottomLink).hasClass('TeamInfo-team-page')).toBe(true);
+  });
+
+  it('renders without activity', () => {
+    const wrapper = mount(
+      <TeamInfo
+        name="Czech"
+        code="cs"
+        stringsData={{}}
+        latestActivity={{
+          user: '',
+          date_iso: undefined,
+        }}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
+      />
+    );
+
+    expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
+    expect(wrapper.find(TeamInfoListItem).at(0).prop('value')).toBe('―');
   });
 
   it('all links work', async () => {
