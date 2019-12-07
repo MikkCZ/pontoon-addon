@@ -12,13 +12,13 @@ export class DataFetcher {
      * @param remotePontoon
      */
     constructor(options, remotePontoon) {
-        this._requiredPermissions = ['cookies', 'webRequest', 'webRequestBlocking'];
         this._options = options;
         this._remotePontoon = remotePontoon;
         this._pontoonRequestTokens = new Set();
         this._pontoonRequestsListener = (details) => this._updatePontoonRequest(details);
 
-        browser.permissions.contains({permissions: this._requiredPermissions}).then((hasPermissions) => {
+        const requiredPermissions = ['cookies', 'webRequest', 'webRequestBlocking'];
+        browser.permissions.contains({permissions: requiredPermissions}).then((hasPermissions) => {
             if (hasPermissions) {
                 this._watchOptionsUpdates();
                 this._watchPontoonRequests();

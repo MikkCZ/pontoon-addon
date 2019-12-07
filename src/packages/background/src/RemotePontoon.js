@@ -257,10 +257,10 @@ export class RemotePontoon {
                 .filter((locale) => locale.totalStrings > 0)
                 .sort((locale1, locale2) => locale1.code.localeCompare(locale2.code))
                 .forEach((locale) =>
-                    teamsListObj[locale.code] = {
+                    teamsListObj[locale.code] = Object.freeze({
                         code: locale.code,
                         name: locale.name,
-                        strings: {
+                        strings: Object.freeze({
                             approvedStrings: locale.approvedStrings,
                             fuzzyStrings: locale.fuzzyStrings,
                             stringsWithWarnings: locale.stringsWithWarnings,
@@ -268,12 +268,12 @@ export class RemotePontoon {
                             missingStrings: locale.missingStrings,
                             unreviewedStrings: locale.unreviewedStrings,
                             totalStrings: locale.totalStrings,
-                        },
+                        }),
                         bz_component: bz_components[locale.code],
-                    }
+                    })
                 );
             browser.storage.local.set({teamsList: teamsListObj});
-            return teamsListObj;
+            return Object.freeze(teamsListObj);
         });
     }
 
@@ -306,11 +306,11 @@ export class RemotePontoon {
         });
         const projectData = toProjectMap.get(tmpLink.hostname);
         if (projectData) {
-            return {
+            return Object.freeze({
                 name: projectData.name,
                 pageUrl: this.getTeamProjectUrl(`/projects/${projectData.slug}/`),
                 translationUrl: this.getTeamProjectUrl(`/projects/${projectData.slug}/all-resources/`),
-            };
+            });
         } else {
             return undefined;
         }
@@ -341,11 +341,12 @@ export class RemotePontoon {
         ]) => {
             const projectsListObj = {};
             const projectsMap = new Map();
-            pontoonData.data.projects.forEach((project) => projectsMap.set(project.slug, project));
-            projectsListJson.map((project) => Object.assign(project, projectsMap.get(project.slug)))
-                .forEach((project) => projectsListObj[project.slug] = project);
+            pontoonData.data.projects.forEach((project) => projectsMap.set(project.slug, Object.freeze(project)));
+            projectsListJson
+                .map((project) => Object.assign(project, projectsMap.get(project.slug)))
+                .forEach((project) => projectsListObj[project.slug] = Object.freeze(project));
             browser.storage.local.set({projectsList: projectsListObj});
-            return projectsListObj;
+            return Object.freeze(projectsListObj);
         });
     }
 

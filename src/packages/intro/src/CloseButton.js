@@ -9,6 +9,9 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * React component of a button, which closes the current tab on click.
  */
 export class CloseButton extends React.Component {
+  static defaultProps = {
+    title: "",
+  };
 
   closeCurrentTab() {
     browser.tabs.query({currentWindow: true, active: true}).then((tabs) => {

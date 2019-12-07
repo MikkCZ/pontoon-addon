@@ -5,6 +5,12 @@ import './TeamInfoListItem.css';
  * React component of the team information item (activity or string).
  */
 export class TeamInfoListItem extends React.Component {
+  static defaultProps = {
+    labelBeforeStyle: {},
+    label: "",
+    value: "",
+    onClick: undefined,
+  };
 
   render() {
     const children = (

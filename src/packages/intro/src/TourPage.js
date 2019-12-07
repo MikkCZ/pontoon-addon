@@ -7,6 +7,10 @@ import './TourPage.css';
  * React component of the tour page.
  */
 export class TourPage extends React.Component {
+  static defaultProps = {
+    title: "",
+    tiles: [],
+  };
 
   render() {
     return (

@@ -9,6 +9,9 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * React component of the notifications list.
  */
 export class NotificationsListError extends React.Component {
+  static defaultProps = {
+    backgroundPontoonClient: undefined,
+  };
 
   render() {
     return (

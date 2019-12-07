@@ -34,6 +34,7 @@ export class ContextButtons {
             Object.values(projects).forEach((project) =>
                 project.domains.forEach((domain) => this._mozillaWebsites.push(`https://${domain}`))
             );
+            Object.freeze(this._mozillaWebsites);
         }
     }
 

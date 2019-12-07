@@ -20,7 +20,6 @@ describe('<NotificationsList>', () => {
         notificationsData={{
           1: {id: 1, unread: false},
         }}
-        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -38,7 +37,6 @@ describe('<NotificationsList>', () => {
           42: {id: 42, unread: false},
           1: {id: 1, unread: false},
         }}
-        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -68,7 +66,6 @@ describe('<NotificationsList>', () => {
   it('renders error when loading notification data fails', () => {
     const wrapper = shallow(
       <NotificationsList
-        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -85,7 +82,6 @@ describe('<NotificationsList>', () => {
           1: {id: 1, unread: false},
           2: {id: 2, unread: true},
         }}
-        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -108,7 +104,6 @@ describe('<NotificationsList>', () => {
           1: {id: 1, unread: false},
           2: {id: 2, unread: false},
         }}
-        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );

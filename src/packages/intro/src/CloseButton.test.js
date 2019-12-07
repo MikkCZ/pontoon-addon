@@ -19,7 +19,7 @@ describe('<CloseButton>', () => {
 
   it('has close icon', () => {
     const wrapper = mount(
-      <CloseButton title="" />
+      <CloseButton />
     );
 
     expect(wrapper.find('button').getDOMNode()).toHaveStyle('background: url(glyph-dismiss-16.svg) no-repeat center');
@@ -27,7 +27,7 @@ describe('<CloseButton>', () => {
 
   it('closes intro page', async () => {
     const wrapper = mount(
-      <CloseButton title="" />
+      <CloseButton />
     );
 
     const fakeTab = {id: 'fake-tab_id'};

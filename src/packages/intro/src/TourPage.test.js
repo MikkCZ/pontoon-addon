@@ -8,7 +8,7 @@ describe('<TourPage>', () => {
 
   it('incudes close button', () => {
     const wrapper = shallow(
-      <TourPage tiles={[]} />
+      <TourPage />
     );
 
     expect(wrapper.find(CloseButton)).toHaveLength(1);
@@ -16,7 +16,7 @@ describe('<TourPage>', () => {
 
   it('renders title', () => {
     const wrapper = shallow(
-      <TourPage title='TITLE' tiles={[]} />
+      <TourPage title='TITLE' />
     );
 
     expect(wrapper.find('h2').text()).toBe('TITLE');

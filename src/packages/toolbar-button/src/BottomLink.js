@@ -5,6 +5,10 @@ import './BottomLink.css';
  * React component of a section bottom link.
  */
 export class BottomLink extends React.Component {
+  static defaultProps = {
+    text: "",
+    onClick: () => {},
+  };
 
   render() {
     return (

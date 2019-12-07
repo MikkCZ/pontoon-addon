@@ -9,6 +9,15 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * React component of one notification shown in the list.
  */
 export class NotificationsListItem extends React.Component {
+  static defaultProps = {
+    unread: false,
+    actor: undefined,
+    target: undefined,
+    verb: "",
+    description: "",
+    date_iso: undefined,
+    backgroundPontoonClient: undefined,
+  };
 
   async _openTeamProject(projectUrl) {
     const teamProjectUrl = await this.props.backgroundPontoonClient.getTeamProjectUrl(projectUrl);

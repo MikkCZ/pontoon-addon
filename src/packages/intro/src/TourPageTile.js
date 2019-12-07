@@ -5,6 +5,12 @@ import './TourPageTile.css';
  * React component of one tile on the introduction tour page.
  */
 export class TourPageTile extends React.Component {
+  static defaultProps = {
+    title: "",
+    image: undefined,
+    text: "",
+    button: undefined,
+  };
 
   render() {
     return (

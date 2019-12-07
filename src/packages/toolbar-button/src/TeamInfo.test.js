@@ -19,7 +19,6 @@ describe('<TeamInfo>', () => {
       <TeamInfo
         name="Czech"
         code="cs"
-        stringsData={{}}
         latestActivity={{
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
@@ -48,7 +47,6 @@ describe('<TeamInfo>', () => {
       <TeamInfo
         name="Czech"
         code="cs"
-        stringsData={{}}
         latestActivity={{
           user: '',
           date_iso: undefined,

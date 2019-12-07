@@ -13,6 +13,13 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * React component of the localization team information.
  */
 export class TeamInfo extends React.Component {
+  static defaultProps = {
+    name: "",
+    code: "",
+    latestActivity: undefined,
+    stringsData: {},
+    backgroundPontoonClient: undefined,
+  };
 
   async _openTeamPage() {
     const teamPageUrl = await this.props.backgroundPontoonClient.getTeamPageUrl();

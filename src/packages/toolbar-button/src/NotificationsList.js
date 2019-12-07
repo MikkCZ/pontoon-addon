@@ -11,6 +11,11 @@ if (!browser) { // eslint-disable-line no-use-before-define
  * React component of the notifications list.
  */
 export class NotificationsList extends React.Component {
+  static defaultProps = {
+    notificationsData: undefined,
+    hideReadNotifications: false,
+    backgroundPontoonClient: undefined,
+  };
 
   constructor(props) {
     super(props);

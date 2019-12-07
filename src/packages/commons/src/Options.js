@@ -9,7 +9,7 @@ export class Options {
     static async create() {
         const prefix = 'options.';
         const defaults = await Options._loadDefaults(prefix);
-        return new Options(prefix, defaults);
+        return Object.freeze(new Options(prefix, defaults));
     }
 
     constructor(prefix, defaults) {
@@ -44,7 +44,7 @@ export class Options {
             Object.entries(loadedDefaults)
                 .forEach(([key, value]) => defaults[`${prefix}${key}`] = value);
         });
-        return defaults;
+        return Object.freeze(defaults);
     }
 
     /**
@@ -206,7 +206,7 @@ export class Options {
                         optionsWithDefaultValues[optionId] = this._defaults[realOptionId];
                     }
                 });
-                return optionsWithDefaultValues;
+                return Object.freeze(optionsWithDefaultValues);
             }
         );
     }
