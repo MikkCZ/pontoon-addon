@@ -36,16 +36,14 @@ export class NotificationsList extends React.Component {
         <section className="NotificationsList">
           <ul className="NotificationsList-list">
             {
-              Object.keys(this.state.notificationsData)
-                .map((nKey) => Number.parseInt(nKey, 10))
-                .sort((a, b) => a - b).reverse()
-                .map((nKey) => this.state.notificationsData[nKey])
+              Object.values(this.state.notificationsData)
+                .sort((a, b) => a.id - b.id).reverse()
                 .filter((notification) => notification.unread || !this.props.hideReadNotifications)
-                .map((notificationData) =>
+                .map((notification) =>
                   <NotificationsListItem
-                    key={notificationData.id}
+                    key={notification.id}
                     backgroundPontoonClient={this.props.backgroundPontoonClient}
-                    {...notificationData}
+                    {...notification}
                   />
                 )
             }

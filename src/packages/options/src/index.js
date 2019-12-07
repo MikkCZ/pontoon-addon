@@ -68,11 +68,11 @@ Options.create().then((options) => {
         while (localeTeamSelect.lastChild) {
             localeTeamSelect.removeChild(localeTeamSelect.lastChild);
         }
-        Object.keys(teamsInPontoon)
-            .map((locale) => {
+        Object.entries(teamsInPontoon)
+            .map(([locale, teamData]) => {
                 const option = document.createElement('option');
                 option.value = locale;
-                option.text = `${teamsInPontoon[locale].name} (${locale})`;
+                option.text = `${teamData.name} (${locale})`;
                 return option;
             })
             .forEach((option) => localeTeamSelect.appendChild(option));

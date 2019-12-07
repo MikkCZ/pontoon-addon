@@ -41,8 +41,8 @@ export class Options {
             defaultOptionsFromRuntime,
         ]) => {
             const loadedDefaults = Object.assign({}, defaultOptionsFromJSON, defaultOptionsForBrowser, defaultOptionsFromRuntime);
-            Object.keys(loadedDefaults)
-                .forEach((key) => defaults[`${prefix}${key}`] = loadedDefaults[key]);
+            Object.entries(loadedDefaults)
+                .forEach(([key, value]) => defaults[`${prefix}${key}`] = value);
         });
         return defaults;
     }
@@ -161,12 +161,11 @@ export class Options {
      * @private
      */
     _loadAllFromObject(object) {
-        Object.keys(object)
-            .filter((key) => key.startsWith(this._prefix))
-            .forEach((key) => {
+        Object.entries(object)
+            .filter(([key, value]) => key.startsWith(this._prefix))
+            .forEach(([key, value]) => {
                 const inputs = document.querySelectorAll(`[data-option-id=${this._getInputId(key)}]`);
-                const value = object[key];
-                if (inputs) {
+                if (inputs.length > 0) {
                     Options._setValueToInputs(inputs, value);
                 }
             });

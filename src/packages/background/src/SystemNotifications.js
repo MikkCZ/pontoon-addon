@@ -78,9 +78,9 @@ export class SystemNotifications {
     async _getNewUnreadNotifications(notificationsData) {
         let unreadNotificationIds = [0];
         if (notificationsData !== undefined) {
-            unreadNotificationIds = Object.keys(notificationsData)
-                .map((key) => parseInt(key))
-                .filter((id) => notificationsData[id].unread);
+            unreadNotificationIds = Object.values(notificationsData)
+                .filter((notification) => notification.unread)
+                .map((notification) => notification.id);
         }
         const dataKey = 'lastUnreadNotificationId';
         const lastKnownUnreadNotificationId = await browser.storage.local.get(dataKey).then((item) => {
