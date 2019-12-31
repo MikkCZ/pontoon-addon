@@ -18,9 +18,9 @@
   ],
   "devDependencies": {
     "jsdoc": "^3.6.3",
-    "lerna": "^3.19.0",
+    "lerna": "^3.20.1",
     "npm-run-all": "^4.1.5",
-    "web-ext": "^3.2.1",
+    "web-ext": "^4.0.0",
     "@rescripts/cli": "^0.0.13",
     "@rescripts/rescript-env": "^0.0.11"
   },
