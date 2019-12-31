@@ -1,6 +1,6 @@
 /* global browser, flushPromises */
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { NotificationsListItem } from './NotificationsListItem';
 import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
 import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
@@ -13,14 +13,14 @@ describe('<NotificationsListItem>', () => {
   });
 
   it('renders', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <NotificationsListItem
         unread={true}
         actor={{anchor: 'ACTOR'}}
         verb="VERB"
         target={{anchor: 'TARGET'}}
         date_iso="1970-01-01T00:00:00Z"
-        description="DESCRIPTION"
+        description="<em>DESCRIPTION</em>"
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );

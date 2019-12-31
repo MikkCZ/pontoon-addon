@@ -68,8 +68,10 @@ export class NotificationsListItem extends React.Component {
         }
         {
           this.props.description &&
-            <div className="NotificationsListItem-description" onClick={onClickAll}>
-              {this.props.description}
+            <div className="NotificationsListItem-description"
+              onClick={onClickAll}
+              dangerouslySetInnerHTML={{ __html: this.props.description }}
+            >
             </div>
         }
       </li>
