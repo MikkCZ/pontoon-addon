@@ -1,6 +1,6 @@
 /* global browser, flushPromises */
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { render, mount, shallow } from 'enzyme';
 import { NotificationsListItem } from './NotificationsListItem';
 import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
 import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
@@ -20,7 +20,7 @@ describe('<NotificationsListItem>', () => {
         verb="VERB"
         target={{anchor: 'TARGET'}}
         date_iso="1970-01-01T00:00:00Z"
-        description="<em>DESCRIPTION</em>"
+        description='DESCRIPTION'
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -33,6 +33,38 @@ describe('<NotificationsListItem>', () => {
     expect(wrapper.find('span').text()).toBe(' VERB');
     expect(wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo).length).toBe(1);
     expect(wrapper.find('.NotificationsListItem-description').text()).toBe('DESCRIPTION');
+  });
+
+  it('renders links and formatting tags in description', () => {
+    const wrapper = render(
+      <NotificationsListItem
+        unread={true}
+        actor={{anchor: 'ACTOR'}}
+        verb="VERB"
+        target={{anchor: 'TARGET'}}
+        date_iso="1970-01-01T00:00:00Z"
+        description='DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>'
+        backgroundPontoonClient={new BackgroundPontoonClient()}
+      />
+    );
+
+    expect(wrapper.find('.NotificationsListItem-description').html()).toBe('DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>');
+  });
+
+  it('prevents XSS in description', () => {
+    const wrapper = render(
+      <NotificationsListItem
+        unread={true}
+        actor={{anchor: 'ACTOR'}}
+        verb="VERB"
+        target={{anchor: 'TARGET'}}
+        date_iso="1970-01-01T00:00:00Z"
+        description='DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>'
+        backgroundPontoonClient={new BackgroundPontoonClient()}
+      />
+    );
+
+    expect(wrapper.find('.NotificationsListItem-description').html()).toBe('DESCRIPTION WITH(OUT) <a>XSS ATTEMPTS</a> ');
   });
 
   it('renders read notification', () => {

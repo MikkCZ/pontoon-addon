@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
+import DOMPurify from 'dompurify';
 import './NotificationsListItem.css';
 if (!browser) { // eslint-disable-line no-use-before-define
   var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
@@ -70,7 +71,7 @@ export class NotificationsListItem extends React.Component {
           this.props.description &&
             <div className="NotificationsListItem-description"
               onClick={onClickAll}
-              dangerouslySetInnerHTML={{ __html: this.props.description }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(this.props.description) }}
             >
             </div>
         }
