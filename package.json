@@ -36,8 +36,8 @@
 
     "prebuild": "npm-run-all clean test",
     "build:lint": "web-ext lint -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/'",
-    "mozilla:build": "web-ext build -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./build/web-ext/mozilla",
-    "chrome:build": "bash ./scripts/build-chrome.sh",
+    "mozilla:build": "echo 'Packaging for Mozilla based browsers.' && web-ext build -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./build/web-ext/mozilla",
+    "chrome:build": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
     "doc": "jsdoc -c ./jsdoc-conf.json",
 
     "build": "npm-run-all packages:build build:lint mozilla:build chrome:build doc",

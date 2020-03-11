@@ -3,6 +3,8 @@
 set -e
 set -o pipefail
 
+command -v 'jq' >/dev/null 2>&1 || { echo >&2 "ERROR: Packaging for Chromium requires 'jq'. Install 'jq' first and re-run the build. Aborting."; exit 1; }
+
 mkdir -p ./build/chrome-src
 cp -Lr ./src/* ./build/chrome-src
 
