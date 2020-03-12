@@ -4,12 +4,12 @@
   "private": true,
   "dependencies": {
     "@pontoon-addon/commons": "*",
-    "webextension-polyfill": "^0.6.0"
+    "webextension-polyfill": "0.6.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
   },
   "eslintConfig": {
     "parserOptions": {

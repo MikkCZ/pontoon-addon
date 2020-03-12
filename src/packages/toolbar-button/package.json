@@ -5,12 +5,12 @@
   "homepage": ".",
   "dependencies": {
     "@pontoon-addon/commons": "*",
-    "react-time-ago": "^5.0.7",
-    "dompurify": "^2.0.8",
-    "webextension-polyfill": "^0.6.0",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "3.3.0"
+    "react-time-ago": "5.0.7",
+    "dompurify": "2.0.8",
+    "webextension-polyfill": "0.6.0",
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "react-scripts": "3.4.0"
   },
   "devDependencies": {
     "@rescripts/cli": "^0.0.13",
