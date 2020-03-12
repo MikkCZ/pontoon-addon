@@ -12546,6 +12546,11 @@ react-responsive-ui@^0.14.177:
     react-modal "^3.8.1"
     scroll-into-view-if-needed "^2.2.16"
 
+react-scripts-plugin-no-hashes@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-scripts-plugin-no-hashes/-/react-scripts-plugin-no-hashes-0.4.0.tgz#11e086abd309ee93051613c9f3fcd3d01f8c9d71"
+  integrity sha512-qRD3JHyDe0F8hiXdx1ITNczJLwkghGYP2xdl6G83NnjA9KKeLpstDoP8gnu9ZovD33TKa/dT3JCLvQ3T7ldY+g==
+
 react-scripts@3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-3.4.0.tgz#f413680f0b5b937c8879ba1ffdae9b8c5b364bf5"
