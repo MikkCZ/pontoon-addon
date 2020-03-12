@@ -8,7 +8,7 @@
   "manifest_version": 2,
   "name": "Pontoon Add-on",
   "description": "Tools for Pontoon and its integration into the browser.",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "author": "Michal Stanke",
   "icons": {
     "16": "packages/commons/static/img/pontoon-logo.svg",
