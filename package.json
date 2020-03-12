@@ -43,6 +43,6 @@
     "build": "npm-run-all packages:build build:lint mozilla:build chrome:build doc",
     "clean": "rm -rf ./build ./coverage ./src/packages/*/build ./src/packages/*/coverage",
     "clean-all": "shopt -s globstar && rm -rf ./**/build ./**/coverage ./**/node_modules",
-    "clean-build": "yarn clean-all && yarn install && npm-run-all bootstrap build"
+    "clean-build": "yarn clean-all && yarn install --frozen-lockfile && npm-run-all bootstrap build"
   }
 }
