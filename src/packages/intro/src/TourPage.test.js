@@ -6,7 +6,7 @@ import { TourPageTile } from './TourPageTile';
 
 describe('<TourPage>', () => {
 
-  it('incudes close button', () => {
+  it('includes close button', () => {
     const wrapper = shallow(
       <TourPage />
     );
@@ -22,12 +22,20 @@ describe('<TourPage>', () => {
     expect(wrapper.find('h2').text()).toBe('TITLE');
   });
 
-  it('incudes content', () => {
+  it('includes content', () => {
     const wrapper = shallow(
       <TourPage tiles={[{}]} />
     );
 
     expect(wrapper.find(TourPageTile)).toHaveLength(1);
+  });
+
+  it('includes privacy policy', () => {
+    const wrapper = shallow(
+      <TourPage tiles={[{}]} />
+    );
+
+    expect(wrapper.find('.privacy-policy')).toHaveLength(1);
   });
 
 });

@@ -27,6 +27,10 @@
   align-items: center;
 }
 
+.privacy-policy {
+  text-align: center;
+}
+
 @media screen and (max-width: 1024px) {
   .TourPageTiles {
     width: 100%;

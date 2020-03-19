@@ -27,6 +27,7 @@ export class TourPage extends React.Component {
             )
           }
         </div>
+        <div className="privacy-policy"><a href="https://addons.mozilla.org/firefox/addon/pontoon-tools/privacy/">Privacy policy for Pontoon Add-on</a></div>
       </div>
     );
   }
