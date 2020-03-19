@@ -20,7 +20,7 @@ describe('<NotificationsListItem>', () => {
         verb="VERB"
         target={{anchor: 'TARGET'}}
         date_iso="1970-01-01T00:00:00Z"
-        description='DESCRIPTION'
+        description={{safe: true, content: 'DESCRIPTION'}}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -43,7 +43,7 @@ describe('<NotificationsListItem>', () => {
         verb="VERB"
         target={{anchor: 'TARGET'}}
         date_iso="1970-01-01T00:00:00Z"
-        description='DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>'
+        description={{safe: true, content: 'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>'}}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -59,7 +59,7 @@ describe('<NotificationsListItem>', () => {
         verb="VERB"
         target={{anchor: 'TARGET'}}
         date_iso="1970-01-01T00:00:00Z"
-        description='DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>'
+        description={{safe: true, content: 'DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>'}}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );

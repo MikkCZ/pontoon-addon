@@ -15,7 +15,7 @@ export class NotificationsListItem extends React.Component {
     actor: undefined,
     target: undefined,
     verb: "",
-    description: "",
+    description: { safe: true, content: null },
     date_iso: undefined,
     backgroundPontoonClient: undefined,
   };
@@ -68,10 +68,10 @@ export class NotificationsListItem extends React.Component {
             </div>
         }
         {
-          this.props.description &&
+          this.props.description && this.props.description.content &&
             <div className="NotificationsListItem-description"
               onClick={onClickAll}
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(this.props.description) }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(this.props.description.content) }}
             >
             </div>
         }
