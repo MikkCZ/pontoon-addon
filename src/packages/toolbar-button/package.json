@@ -8,6 +8,7 @@
     "dompurify": "^2.0.8",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-linkify": "^0.2.2",
     "react-scripts": "^3.4.0",
     "react-time-ago": "^5.0.7",
     "webextension-polyfill": "^0.6.0"

@@ -51,6 +51,22 @@ describe('<NotificationsListItem>', () => {
     expect(wrapper.find('.NotificationsListItem-description').html()).toBe('DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>');
   });
 
+  it('linkifies URL in unsafe description', () => {
+    const wrapper = render(
+      <NotificationsListItem
+        unread={true}
+        actor={{anchor: 'ACTOR'}}
+        verb="VERB"
+        target={{anchor: 'TARGET'}}
+        date_iso="1970-01-01T00:00:00Z"
+        description={{safe: false, content: 'DESCRIPTION WITH A LINK TO https://example.com/'}}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
+      />
+    );
+
+    expect(wrapper.find('.NotificationsListItem-description').html()).toBe('<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https://example.com/" class="link" target="_blank" rel="noopener noreferrer">https://example.com/</a></span>');
+  });
+
   it('prevents XSS in description', () => {
     const wrapper = render(
       <NotificationsListItem
