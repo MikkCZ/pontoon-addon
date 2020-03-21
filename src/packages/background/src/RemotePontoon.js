@@ -75,7 +75,12 @@ export class RemotePontoon {
      * @public
      */
     getTeamProjectUrl(projectUrl) {
-        return this._baseUrl + projectUrl.replace('/projects/', `/${this._team}/`) + '?utm_source=pontoon-addon';
+        const teamProjectUrl = `${this._baseUrl}${projectUrl.replace('/projects/', `/${this._team}/`)}`;
+        if (teamProjectUrl.includes('?')) {
+            return `${teamProjectUrl}&utm_source=pontoon-addon`;
+        } else {
+            return `${teamProjectUrl}?utm_source=pontoon-addon`;
+        }
     }
 
     /**
