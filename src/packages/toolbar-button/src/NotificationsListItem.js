@@ -50,7 +50,7 @@ export class NotificationsListItem extends React.Component {
         }
         {
           this.props.verb &&
-            <span onClick={onClickAll}> {this.props.verb}</span>
+            <span onClick={onClickAll}>{" "}{this.props.verb}{" "}</span>
         }
         {
           this.props.target &&
@@ -59,7 +59,7 @@ export class NotificationsListItem extends React.Component {
                 _stopEvent(e);
                 this._openTeamProject(this.props.target.url);
               }}
-            > {this.props.target.anchor}</button>
+            >{this.props.target.anchor}</button>
         }
         {
           this.props.date_iso &&

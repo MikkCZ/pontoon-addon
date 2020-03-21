@@ -29,8 +29,8 @@ describe('<NotificationsListItem>', () => {
     expect(wrapper.find('.NotificationsListItem').hasClass('read')).toBe(false);
     expect(wrapper.find('.link').length).toBe(2);
     expect(wrapper.find('.link').first().text()).toBe('ACTOR');
-    expect(wrapper.find('.link').last().text()).toBe(' TARGET');
-    expect(wrapper.find('span').text()).toBe(' VERB');
+    expect(wrapper.find('.link').last().text()).toBe('TARGET');
+    expect(wrapper.find('span').text()).toBe(' VERB ');
     expect(wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo).length).toBe(1);
     expect(wrapper.find('.NotificationsListItem-description').text()).toBe('DESCRIPTION');
   });
