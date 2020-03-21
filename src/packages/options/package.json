@@ -5,7 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "@pontoon-addon/commons": "*",
-    "webextension-polyfill": "0.6.0"
+    "webextension-polyfill": "^0.6.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
