@@ -15,3 +15,5 @@ plugins:
     enabled: true
   stylelint:
     enabled: true
+exclude_patterns:
+  - "src/packages/*/src/*.test.js"
