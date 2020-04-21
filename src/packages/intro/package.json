@@ -5,15 +5,15 @@
   "homepage": ".",
   "dependencies": {
     "@pontoon-addon/commons": "*",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-scripts": "^3.4.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1",
     "webextension-polyfill": "^0.6.0"
   },
   "devDependencies": {
     "@rescripts/cli": "^0.0.14",
     "@rescripts/rescript-env": "^0.0.12",
-    "@testing-library/jest-dom": "^5.1.1",
+    "@testing-library/jest-dom": "^5.5.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "react-scripts-plugin-no-hashes": "^0.4.0",
