@@ -8,9 +8,9 @@
     "webextension-polyfill": "^0.6.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "eslint": "^7.5.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "eslintConfig": {
     "parserOptions": {
