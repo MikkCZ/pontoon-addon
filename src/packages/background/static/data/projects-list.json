@@ -10,21 +10,9 @@
   {
     "slug": "common-voice",
     "domains": [
-      "voice.mozilla.org",
-      "voice.allizom.org"
-    ]
-  },
-  {
-    "slug": "copyright-campaign",
-    "domains": [
-      "www.changecopyright.org",
-      "changecopyright-org-staging.herokuapp.com"
-    ]
-  },
-  {
-    "slug": "engagement",
-    "domains": [
-      "foundation.mozilla.org"
+      "commonvoice.mozilla.org",
+      "commonvoice.allizom.org",
+      "dev.commonvoice.allizom.org"
     ]
   },
   {
@@ -39,20 +27,6 @@
     "domains": [
       "monitor.firefox.com",
       "fx-breach-alerts.herokuapp.com"
-    ]
-  },
-  {
-    "slug": "firefox-screenshots",
-    "domains": [
-      "screenshots.firefox.com",
-      "screenshots.dev.mozaws.net"
-    ]
-  },
-  {
-    "slug": "fundraising",
-    "domains": [
-      "donate.mozilla.org",
-      "donate.mofostaging.net"
     ]
   },
   {
@@ -71,7 +45,24 @@
   {
     "slug": "mozilla-donate-website",
     "domains": [
-      "donate-wagtail.mofostaging.net"
+      "donate.mozilla.org",
+      "give.thunderbird.net",
+      "donate-wagtail.mofostaging.net",
+      "thunderbird-donate.mofostaging.net"
+    ]
+  },
+  {
+    "slug": "mozilla-festival",
+    "domains": [
+      "www.mozillafestival.org",
+      "mozillafestival.mofostaging.net"
+    ]
+  },
+  {
+    "slug": "mozilla-foundation-website",
+    "domains": [
+      "foundation.mozilla.org",
+      "foundation.mofostaging.net"
     ]
   },
   {
@@ -79,13 +70,6 @@
     "domains": [
       "www.mozilla.org",
       "www-dev.allizom.org"
-    ]
-  },
-  {
-    "slug": "mozillians",
-    "domains": [
-      "mozillians.org",
-      "mozillians-dev.allizom.org"
     ]
   },
   {
@@ -98,22 +82,7 @@
     "slug": "test-pilot-firefox-send",
     "domains": [
       "send.firefox.com",
-      "send.dev.mozaws.net",
       "dev.send.nonprod.cloudops.mozgcp.net"
-    ]
-  },
-  {
-    "slug": "test-pilot-website",
-    "domains": [
-      "testpilot.firefox.com",
-      "testpilot-l10n.dev.mozaws.net"
-    ]
-  },
-  {
-    "slug": "thimble",
-    "domains": [
-      "thimble.mozilla.org",
-      "bramble.mofostaging.net"
     ]
   },
   {
