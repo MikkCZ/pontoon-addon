@@ -255,7 +255,7 @@ export class RemotePontoon {
     async updateTeamsList() {
         return await Promise.all([
             this._dataFetcher.fetch(this._getQueryURL('{locales{code,name,approvedStrings,fuzzyStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}')).then((response) => response.json()),
-            this._dataFetcher.fetch('https://l10n.mozilla-community.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
+            this._dataFetcher.fetch('https://flod.org/mozilla-l10n-query/?bugzilla=product').then((response) => response.json())
         ]).then(([pontoonData, bz_components]) => {
             const teamsListObj = {};
             pontoonData.data.locales

@@ -129,12 +129,6 @@ export class ToolbarButtonContextMenu {
                 parentId: localizationResourcesMenuId,
                 onclick: () => browser.tabs.create({url: this._remoteLinks.getElmoDashboardUrl(localeTeam)}),
             },
-            {
-                title: `Mozilla Web L10n Dashboard - ${localeTeam}`,
-                contexts: ['browser_action'],
-                parentId: localizationResourcesMenuId,
-                onclick: () => browser.tabs.create({url: this._remoteLinks.getWebDashboardUrl(localeTeam)}),
-            },
         ].forEach((it) => browser.contextMenus.create(it));
 
         browser.contextMenus.create({

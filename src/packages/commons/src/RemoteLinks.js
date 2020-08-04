@@ -33,16 +33,6 @@ export class RemoteLinks {
     }
 
     /**
-     * Get Web Dashboard URL for the team.
-     * @param team locale
-     * @returns {string}
-     * @public
-     */
-    getWebDashboardUrl(team) {
-        return `https://l10n.mozilla-community.org/webdashboard/?locale=${team}&utm_source=pontoon-addon`;
-    }
-
-    /**
      * Get Mozilla Wiki L10n:Teams page URL.
      * @param team locale
      * @returns {string}
