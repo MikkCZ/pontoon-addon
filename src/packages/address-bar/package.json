@@ -14,7 +14,7 @@
     "@rescripts/cli": "^0.0.14",
     "@rescripts/rescript-env": "^0.0.12",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.4",
+    "enzyme-adapter-react-16": "^1.15.5",
     "react-scripts-plugin-no-hashes": "^0.4.0",
     "sinon-chrome": "^3.0.1"
   },
