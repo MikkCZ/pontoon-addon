@@ -1,12 +1,7 @@
-language: node_js
-node_js:
-  - "lts/*"
-
-dist: bionic
-addons:
-  apt:
-    packages:
-      - jq
+dist: focal
+language: minimal
+services:
+  - docker
 
 cache:
   yarn: true
@@ -14,11 +9,11 @@ cache:
     - "node_modules"
 
 install:
-  - yarn install --frozen-lockfile
-  - yarn bootstrap
+  - bash ./scripts/run-in-docker.sh yarn install --frozen-lockfile
+  - bash ./scripts/run-in-docker.sh yarn bootstrap
 
 script:
-  - yarn build
+  - bash ./scripts/run-in-docker.sh "apt-get update && apt-get install -y jq && yarn build"
 
 after_success:
   - bash ./scripts/upload-coverage-to-codeclimate.sh
@@ -44,6 +39,3 @@ deploy:
     on:
       branch: master
       tags: true
-
-after_deploy:
-  - yarn clean
