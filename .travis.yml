@@ -7,7 +7,6 @@ addons:
   apt:
     packages:
       - jq
-  chrome: stable
 
 cache:
   yarn: true
