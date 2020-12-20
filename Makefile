@@ -1,3 +1,5 @@
+export PATH := $(shell pwd)/scripts:$(PATH)
+
 .PHONY: prepare
 prepare:
 	yarn install --frozen-lockfile
@@ -8,9 +10,9 @@ build:
 	yarn build
 
 .PHONY: download_jq_and_build
-download_jq_and_build: # DO NOT USE LOCALLY, MODIFIES LOCAL SYSTEM
-	curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/sbin/jq
-	chmod +x /usr/local/sbin/jq
+download_jq_and_build:
+	curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o scripts/jq
+	chmod u+x scripts/jq
 	make build
 
 .PHONY: prepare_in_docker
