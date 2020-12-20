@@ -1,0 +1,58 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch: # allows to be run manually
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Cache installed dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: make prepare_in_docker
+      - name: Build add-on
+        run: make build_in_docker
+      - name: Upload code coverage to Code Climate
+        run: bash ./scripts/upload-coverage-to-codeclimate.sh
+      - name: Save built add-on
+        uses: actions/upload-artifact@v2
+        with:
+          name: build_web-ext
+          path: build/web-ext
+          retention-days: 30
+      - name: Save code documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: build_docs
+          path: build/docs
+          retention-days: 30
+  deploy-docs:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/master'
+    needs: build
+    steps:
+      - name: Download documentation for deploy
+        uses: actions/download-artifact@v2
+        with:
+          name: build_docs
+          path: build/docs
+      - name: Avoid further processing by Jekyll in Github Pages
+        run: touch build/docs/.nojekyll
+      - name: Deploy to GitHub Page
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build/docs
+          CLEAN: true
+          SINGLE_COMMIT: true
