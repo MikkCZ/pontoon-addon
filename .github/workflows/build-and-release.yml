@@ -34,7 +34,6 @@ jobs:
           retention-days: 30
   release:
     runs-on: ubuntu-20.04
-    if: github.ref == 'refs/heads/master'
     needs: build
     steps:
       - name: Get git information
