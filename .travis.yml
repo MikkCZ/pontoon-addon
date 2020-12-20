@@ -13,7 +13,7 @@ install:
   - bash ./scripts/run-in-docker.sh yarn bootstrap
 
 script:
-  - bash ./scripts/run-in-docker.sh "apt-get update && apt-get install -y jq && yarn build"
+  - bash ./scripts/run-in-docker.sh 'curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/sbin/jq && chmod +x /usr/local/sbin/jq && yarn build'
 
 after_success:
   - bash ./scripts/upload-coverage-to-codeclimate.sh
