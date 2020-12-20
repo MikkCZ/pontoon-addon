@@ -9,16 +9,6 @@ CC_REPORTER="${CC_COVERAGE_DIR}/cc-test-reporter"
 
 ### Check whether the upload should be run or not. ###
 
-if [ "$TRAVIS_BRANCH" != 'master' ]; then
-    echo 'The build is not running on branch "master". Coverage report will not be uploaded.'
-    exit 0
-fi
-
-if [ "$TRAVIS_TEST_RESULT" != 0 ]; then
-    echo 'Tests failed. Coverage report will not be uploaded.'
-    exit 0
-fi
-
 if [ -z "${CC_TEST_REPORTER_ID}" ]; then
     >&2 echo '"CC_TEST_REPORTER_ID" is not set, coverage report cannot be uploaded.'
     exit 1
