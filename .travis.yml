@@ -9,11 +9,10 @@ cache:
     - "node_modules"
 
 install:
-  - bash ./scripts/run-in-docker.sh yarn install --frozen-lockfile
-  - bash ./scripts/run-in-docker.sh yarn bootstrap
+  - make prepare_in_docker
 
 script:
-  - bash ./scripts/run-in-docker.sh 'curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/sbin/jq && chmod +x /usr/local/sbin/jq && yarn build'
+  - make build_in_docker
 
 after_success:
   - bash ./scripts/upload-coverage-to-codeclimate.sh
