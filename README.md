@@ -1,6 +1,6 @@
 # Pontoon Add-on
 
-[![Build Status](https://travis-ci.com/MikkCZ/pontoon-addon.svg?branch=master)](https://travis-ci.com/MikkCZ/pontoon-addon)
+[![Build Status](https://github.com/MikkCZ/pontoon-addon/workflows/.github/workflows/build.yml/badge.svg?branch=master)](https://github.com/MikkCZ/pontoon-addon/actions?query=workflow%3A.github%2Fworkflows%2Fbuild.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/657aebed4449cae8ce25/maintainability)](https://codeclimate.com/github/MikkCZ/pontoon-addon/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/657aebed4449cae8ce25/test_coverage)](https://codeclimate.com/github/MikkCZ/pontoon-addon/test_coverage)
 
