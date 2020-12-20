@@ -5,17 +5,18 @@
   "homepage": ".",
   "dependencies": {
     "@pontoon-addon/commons": "*",
-    "dompurify": "^2.1.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "dompurify": "^2.2.6",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-linkify": "^0.2.2",
-    "react-scripts": "^3.4.3",
-    "react-time-ago": "^6.0.1",
-    "webextension-polyfill": "^0.6.0"
+    "react-scripts": "^3.4.4",
+    "react-time-ago": "^6.2.2",
+    "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {
-    "@rescripts/cli": "^0.0.14",
+    "@rescripts/cli": "^0.0.15",
     "@rescripts/rescript-env": "^0.0.12",
+    "@testing-library/jest-dom": "^5.11.6",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "react-scripts-plugin-no-hashes": "^0.4.0",
