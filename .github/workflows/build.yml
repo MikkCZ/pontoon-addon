@@ -23,6 +23,8 @@ jobs:
       - name: Build add-on
         run: make build_in_docker
       - name: Upload code coverage to Code Climate
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: bash ./scripts/upload-coverage-to-codeclimate.sh
       - name: Save built add-on
         uses: actions/upload-artifact@v2
