@@ -1,7 +1,7 @@
 import React from 'react';
-import { CloseButton } from './CloseButton';
-import { TourPageTile } from './TourPageTile';
-import './TourPage.css';
+import { CloseButton } from '../CloseButton';
+import { TourPageTile } from '../TourPageTile';
+import './index.css';
 
 /**
  * React component of the tour page.

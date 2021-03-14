@@ -28,7 +28,7 @@ browser.runtime.onInstalled.addListener((details) => {
     // For new installations or major updates, open the introduction tour.
     if (details.reason === 'install' || parseInt(details.previousVersion.split('.')[0]) < parseInt(browser.runtime.getManifest().version.split('.')[0])
     ) {
-        browser.tabs.create({url: browser.runtime.getURL('packages/intro/build/index.html')});
+        browser.tabs.create({url: browser.runtime.getURL('packages/intro/dist/index.html')});
     }
 });
 

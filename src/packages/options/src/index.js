@@ -97,7 +97,7 @@ Options.create().then((options) => {
     // Links
     const remoteLinks = new RemoteLinks();
     document.querySelectorAll('a.open_tour').forEach((tourLink) =>
-        tourLink.addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('packages/intro/build/index.html')}))
+        tourLink.addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('packages/intro/dist/index.html')}))
     );
     document.querySelectorAll('a.open_wiki').forEach((wikiLink) =>
         wikiLink.addEventListener('click', () => browser.tabs.create({url: remoteLinks.getPontoonAddonWikiUrl()}))

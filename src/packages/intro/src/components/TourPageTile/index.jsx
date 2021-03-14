@@ -1,5 +1,5 @@
 import React from 'react';
-import './TourPageTile.css';
+import './index.css';
 
 /**
  * React component of one tile on the introduction tour page.

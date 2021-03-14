@@ -1,6 +1,6 @@
 import React from 'react';
-import closeIcon from './static/img/glyph-dismiss-16.svg'
-import './CloseButton.css';
+import closeIcon from '@assets/img/glyph-dismiss-16.svg'
+import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
   var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { TourPage } from './TourPage';
-import { CloseButton } from './CloseButton';
-import { TourPageTile } from './TourPageTile';
+import { TourPage } from '.';
+import { CloseButton } from '../CloseButton';
+import { TourPageTile } from '../TourPageTile';
 
 describe('<TourPage>', () => {
 

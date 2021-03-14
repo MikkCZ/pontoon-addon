@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Options } from 'Commons/src/Options';
-import { RemoteLinks } from 'Commons/src/RemoteLinks';
-import { TourPage } from './TourPage';
-import toolbarButtonImage from './static/img/toolbar-button.png';
-import notificationsImage from './static/img/desktop-notification.svg';
-import pageActionImage from './static/img/page-action.png';
-import contextButtonsImage from './static/img/context-buttons.png';
-import settingsImage from './static/img/settings.png';
-import feedbackImage from './static/img/2-Lions.png';
-import 'Commons/static/css/pontoon.css';
+import { Options } from '@pontoon-addon/commons/src/Options';
+import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { TourPage } from './components/TourPage';
+import toolbarButtonImage from '@assets/img/toolbar-button.png';
+import notificationsImage from '@assets/img/desktop-notification.svg';
+import pageActionImage from '@assets/img/page-action.png';
+import contextButtonsImage from '@assets/img/context-buttons.png';
+import settingsImage from '@assets/img/settings.png';
+import feedbackImage from '@assets/img/2-Lions.png';
+import '@pontoon-addon/commons/static/css/pontoon.css';
 import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
   var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations

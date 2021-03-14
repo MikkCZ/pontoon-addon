@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { TourPageTile } from './TourPageTile';
+import { TourPageTile } from '.';
 
 describe('<TourPageTile>', () => {
 
