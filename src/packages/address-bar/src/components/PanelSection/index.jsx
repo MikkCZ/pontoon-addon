@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelListItem } from './PanelListItem';
+import { PanelListItem } from '../PanelListItem';
 
 /**
  * React component of a list, using Firefox style for panel menu.

@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { PanelSection } from './PanelSection';
-import { PanelListItem } from './PanelListItem';
+import { PanelSection } from '.';
+import { PanelListItem } from '../PanelListItem';
 
 describe('<PanelSection>', () => {
 

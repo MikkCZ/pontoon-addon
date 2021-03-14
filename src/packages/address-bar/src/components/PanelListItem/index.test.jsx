@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { PanelListItem } from './PanelListItem';
+import { PanelListItem } from '.';
 
 describe('<PanelListItem>', () => {
 

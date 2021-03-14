@@ -46,7 +46,7 @@
       "19": "packages/commons/static/img/pontoon-logo-gray-alpha.svg",
       "38": "packages/commons/static/img/pontoon-logo-gray-alpha.svg"
     },
-    "default_popup": "packages/address-bar/build/index.html"
+    "default_popup": "packages/address-bar/dist/index.html"
   },
   "background": {
     "scripts": [
