@@ -1,6 +1,6 @@
 import React from 'react';
-import 'Commons/static/css/pontoon.css';
-import './NotificationsListError.css';
+import '@pontoon-addon/commons/static/css/pontoon.css';
+import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
   var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }

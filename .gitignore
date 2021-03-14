@@ -1,5 +1,7 @@
 build/*
 **/build/*
+dist/*
+**/dist/*
 coverage/*
 **/coverage/*
 node_modules/*

@@ -7,7 +7,7 @@
     "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {
-    "eslint": "^7.16.0",
+    "eslint": "^6.8.0",
     "npm-run-all": "^4.1.5",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
@@ -23,6 +23,6 @@
     "build-context-buttons": "webpack ./src/context-buttons.js -o ./build/context-buttons.js --config ../../../webpack.config.js",
     "build-live-data-provider": "webpack ./src/live-data-provider.js -o ./build/live-data-provider.js --config ../../../webpack.config.js",
     "build-notifications-bell-icon": "webpack ./src/notifications-bell-icon.js -o ./build/notifications-bell-icon.js --config ../../../webpack.config.js",
-    "build": "npm-run-all build-context-buttons build-live-data-provider build-notifications-bell-icon"
+    "build": "run-p build-context-buttons build-live-data-provider build-notifications-bell-icon"
   }
 }

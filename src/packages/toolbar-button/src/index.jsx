@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import JavascriptTimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { Options } from 'Commons/src/Options';
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
-import { NotificationsList } from './NotificationsList';
-import { TeamInfo } from './TeamInfo';
-import 'Commons/static/css/pontoon.css';
+import { Options } from '@pontoon-addon/commons/src/Options';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { NotificationsList } from './components/NotificationsList';
+import { TeamInfo } from './components/TeamInfo';
+import '@pontoon-addon/commons/static/css/pontoon.css';
 import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations

@@ -1,12 +1,12 @@
 /* global browser, flushPromises */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { NotificationsList } from './NotificationsList';
-import { NotificationsListItem } from './NotificationsListItem';
-import { NotificationsListError } from './NotificationsListError';
-import { BottomLink } from './BottomLink';
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
-import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
+import { NotificationsList } from '.';
+import { NotificationsListItem } from '../NotificationsListItem';
+import { NotificationsListError } from '../NotificationsListError';
+import { BottomLink } from '../BottomLink';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 
 describe('<NotificationsList>', () => {
 

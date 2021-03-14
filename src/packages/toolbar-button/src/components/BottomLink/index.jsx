@@ -1,5 +1,5 @@
 import React from 'react';
-import './BottomLink.css';
+import './index.css';
 
 /**
  * React component of a section bottom link.

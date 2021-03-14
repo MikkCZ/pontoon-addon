@@ -1,8 +1,8 @@
 /* global browser, flushPromises */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { NotificationsListError } from './NotificationsListError';
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
+import { NotificationsListError } from '.';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 describe('<NotificationsListError>', () => {
 

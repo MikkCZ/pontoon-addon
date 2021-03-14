@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import DOMPurify from 'dompurify';
 import Linkify from 'react-linkify';
-import './NotificationsListItem.css';
+import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
   var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }

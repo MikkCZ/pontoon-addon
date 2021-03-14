@@ -1,5 +1,5 @@
 import React from 'react';
-import './TeamInfoListItem.css';
+import './index.css';
 
 /**
  * React component of the team information item (activity or string).

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { BottomLink } from './BottomLink';
+import { BottomLink } from '.';
 
 describe('<BottomLink>', () => {
 

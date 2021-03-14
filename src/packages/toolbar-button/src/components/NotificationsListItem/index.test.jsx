@@ -1,9 +1,9 @@
 /* global browser, flushPromises */
 import React from 'react';
 import { render, mount, shallow } from 'enzyme';
-import { NotificationsListItem } from './NotificationsListItem';
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
-import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
+import { NotificationsListItem } from '.';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 import ReactTimeAgo from 'react-time-ago';
 
 describe('<NotificationsListItem>', () => {

@@ -2,11 +2,11 @@
 import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import { mount } from 'enzyme';
-import { TeamInfo } from './TeamInfo';
-import { TeamInfoListItem } from './TeamInfoListItem';
-import { BottomLink } from './BottomLink';
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
-import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
+import { TeamInfo } from '.';
+import { TeamInfoListItem } from '../TeamInfoListItem';
+import { BottomLink } from '../BottomLink';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 
 describe('<TeamInfo>', () => {
 

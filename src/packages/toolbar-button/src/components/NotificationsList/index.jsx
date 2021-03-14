@@ -1,8 +1,8 @@
 import React from 'react';
-import { NotificationsListItem } from './NotificationsListItem';
-import { BottomLink } from './BottomLink';
-import { NotificationsListError } from './NotificationsListError';
-import './NotificationsList.css';
+import { NotificationsListItem } from '../NotificationsListItem';
+import { BottomLink } from '../BottomLink';
+import { NotificationsListError } from '../NotificationsListError';
+import './index.css';
 if (!browser) { // eslint-disable-line no-use-before-define
   var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
