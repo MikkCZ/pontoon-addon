@@ -17,8 +17,8 @@
     }
   },
   "scripts": {
-    "lint": "eslint . --ignore-pattern /build/",
+    "lint": "eslint . --ignore-pattern /dist/",
     "test": "echo 'No tests!'",
-    "build": "webpack ./src/index.js --output-path ./build --config ../../../webpack.config.js"
+    "build": "webpack ./src/index.js --output-path ./dist --config ../../../webpack.config.js"
   }
 }

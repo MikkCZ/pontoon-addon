@@ -106,7 +106,7 @@ export class DataRefresher {
         if (changeInfo.status === 'complete' && tab.url.startsWith(`${this._remotePontoon.getBaseUrl()}/`)) {
             this._options.get('contextual_identity').then((item) => {
                 if (item['contextual_identity'] === tab.cookieStoreId || !this._supportsContainers()) {
-                    browser.tabs.executeScript(tabId, {file: '/packages/content-scripts/build/live-data-provider.js'});
+                    browser.tabs.executeScript(tabId, {file: '/packages/content-scripts/dist/live-data-provider.js'});
                 }
             });
         }

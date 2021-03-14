@@ -50,7 +50,7 @@
   },
   "background": {
     "scripts": [
-      "packages/background/build/main.js"
+      "packages/background/dist/main.js"
     ]
   },
   "content_scripts": [
@@ -59,7 +59,7 @@
         "https://pontoon.mozilla.org/*"
       ],
       "js": [
-        "packages/content-scripts/build/notifications-bell-icon.js"
+        "packages/content-scripts/dist/notifications-bell-icon.js"
       ],
       "run_at": "document_end"
     }

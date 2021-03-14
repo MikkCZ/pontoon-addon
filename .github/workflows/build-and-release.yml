@@ -23,14 +23,14 @@ jobs:
       - name: Save built add-on
         uses: actions/upload-artifact@v2
         with:
-          name: build_web-ext
-          path: build/web-ext
+          name: dist_web-ext
+          path: dist/web-ext
           retention-days: 30
       - name: Save code documentation
         uses: actions/upload-artifact@v2
         with:
-          name: build_docs
-          path: build/docs
+          name: dist_docs
+          path: dist/docs
           retention-days: 30
   release:
     runs-on: ubuntu-20.04
@@ -51,18 +51,18 @@ jobs:
       - name: Download built add-on for release
         uses: actions/download-artifact@v2
         with:
-          name: build_web-ext
-          path: build/web-ext
+          name: dist_web-ext
+          path: dist/web-ext
       - name: Download documentation for release
         uses: actions/download-artifact@v2
         with:
-          name: build_docs
-          path: build/docs
+          name: dist_docs
+          path: dist/docs
       - name: Prepare release packages
         run: |
-          cp ./build/web-ext/mozilla/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-mozilla.zip"
-          cp ./build/web-ext/chrome/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip"
-          tar -cvf ./docs.tar.gz ./build/docs
+          cp ./dist/web-ext/mozilla/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-mozilla.zip"
+          cp ./dist/web-ext/chrome/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip"
+          tar -cvf ./docs.tar.gz ./dist/docs
       - name: Upload Firefox version to GitHub
         uses: actions/upload-release-asset@v1
         env:

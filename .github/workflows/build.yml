@@ -29,14 +29,14 @@ jobs:
       - name: Save built add-on
         uses: actions/upload-artifact@v2
         with:
-          name: build_web-ext
-          path: build/web-ext
+          name: dist_web-ext
+          path: dist/web-ext
           retention-days: 30
       - name: Save code documentation
         uses: actions/upload-artifact@v2
         with:
-          name: build_docs
-          path: build/docs
+          name: dist_docs
+          path: dist/docs
           retention-days: 30
   deploy-docs:
     runs-on: ubuntu-20.04
@@ -46,15 +46,15 @@ jobs:
       - name: Download documentation for deploy
         uses: actions/download-artifact@v2
         with:
-          name: build_docs
-          path: build/docs
+          name: dist_docs
+          path: dist/docs
       - name: Avoid further processing by Jekyll in Github Pages
-        run: touch build/docs/.nojekyll
+        run: touch dist/docs/.nojekyll
       - name: Deploy to GitHub Page
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build/docs
+          FOLDER: dist/docs
           CLEAN: true
           SINGLE_COMMIT: true

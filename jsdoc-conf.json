@@ -2,7 +2,7 @@
   "opts": {
     "encoding": "utf8",
     "recurse": true,
-    "destination": "./build/docs"
+    "destination": "./dist/docs"
   },
   "plugins": [],
   "recurseDepth": 10,
@@ -14,6 +14,7 @@
     "exclude": [
       "node_modules",
       "build",
+      "dist",
       "coverage"
     ],
     "includePattern": ".+\\.js(doc|x)?$",

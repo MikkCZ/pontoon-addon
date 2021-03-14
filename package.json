@@ -37,12 +37,12 @@
 
     "prebuild": "run-s clean test",
     "build:lint": "web-ext lint -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/'",
-    "mozilla:build": "echo 'Packaging for Mozilla based browsers.' && web-ext build -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./build/web-ext/mozilla",
+    "mozilla:build": "echo 'Packaging for Mozilla based browsers.' && web-ext build -s ./src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/mozilla",
     "chrome:build": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
     "doc": "jsdoc -c ./jsdoc-conf.json",
 
     "build": "run-s packages:build build:lint mozilla:build chrome:build doc",
-    "clean": "rm -rf ./build ./coverage ./src/packages/*/build ./src/packages/*/dist ./src/packages/*/coverage",
+    "clean": "rm -rf ./dist ./tmp ./coverage ./src/packages/*/build ./src/packages/*/dist ./src/packages/*/coverage",
     "clean-all": "shopt -s globstar && rm -rf ./**/build ./**/dist ./**/coverage ./**/node_modules",
     "clean-build": "yarn clean-all && yarn install --frozen-lockfile && run-s bootstrap build"
   }

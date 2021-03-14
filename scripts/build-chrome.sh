@@ -5,8 +5,8 @@ set -o pipefail
 
 command -v 'jq' >/dev/null 2>&1 || { echo >&2 "ERROR: Packaging for Chromium requires 'jq'. Install 'jq' first and re-run the build. Aborting."; exit 1; }
 
-mkdir -p ./build/chrome-src
-cp -Lr ./src/* ./build/chrome-src
+mkdir -p ./tmp/chrome-src
+cp -Lr ./src/* ./tmp/chrome-src
 
 cat ./src/manifest.json | \
   jq 'del(.applications)' | `# remove mozilla-specific applications` \
@@ -14,6 +14,6 @@ cat ./src/manifest.json | \
   jq '.browser_action.default_icon="packages/commons/static/img/pontoon-logo-32.png"' | `# no support for SVG icons` \
   jq 'del(.page_action)' | `# no support for both browser and page actions at the same time` \
   jq 'del(.permissions[] | select( .=="contextualIdentities" or .=="cookies" or .=="webRequest" or .=="webRequestBlocking" ))' | `# no support for contextual identities` \
-  tee ./build/chrome-src/manifest.json &>/dev/null
+  tee ./tmp/chrome-src/manifest.json &>/dev/null
 
-web-ext build -s ./build/chrome-src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./build/web-ext/chrome
+web-ext build -s ./tmp/chrome-src -i 'packages/*/src/' 'packages/*/public/' '**/package.json' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/chrome
