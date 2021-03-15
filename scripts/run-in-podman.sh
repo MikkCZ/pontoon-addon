@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-CONTAINER_IMAGE='docker.io/library/node:lts-buster'
+CONTAINER_IMAGE='docker.io/library/node:14-buster' # LTSs
 COMMAND=${@}
 
 podman pull "${CONTAINER_IMAGE}"

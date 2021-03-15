@@ -54,6 +54,10 @@
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
+  "engines": {
+    "node": "^14.0.0",
+    "yarn": "^1.22.0"
+  },
   "browserslist": [
     ">0.2%",
     "not dead",
