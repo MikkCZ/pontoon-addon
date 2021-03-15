@@ -22,10 +22,6 @@ jobs:
         run: make prepare_in_docker
       - name: Build add-on
         run: make build_in_docker
-      - name: Upload code coverage to Code Climate
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: bash ./scripts/upload-coverage-to-codeclimate.sh
       - name: Save built add-on
         uses: actions/upload-artifact@v2
         with:
@@ -38,6 +34,10 @@ jobs:
           name: dist_docs
           path: dist/docs
           retention-days: 30
+      - name: Upload code coverage to Code Climate
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: bash ./scripts/upload-coverage-to-codeclimate.sh
   deploy-docs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
