@@ -34,10 +34,10 @@ jobs:
           name: dist_docs
           path: dist/docs
           retention-days: 30
-      - name: Upload code coverage to Code Climate
+      - name: Upload code coverage to Codecov
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: bash ./scripts/upload-coverage-to-codeclimate.sh
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: npx codecov
   deploy-docs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'

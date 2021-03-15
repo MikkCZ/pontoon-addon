@@ -1,8 +1,7 @@
 # Pontoon Add-on
 
 [![Build Status](https://github.com/MikkCZ/pontoon-addon/workflows/.github/workflows/build.yml/badge.svg?branch=master)](https://github.com/MikkCZ/pontoon-addon/actions?query=workflow%3A.github%2Fworkflows%2Fbuild.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/657aebed4449cae8ce25/maintainability)](https://codeclimate.com/github/MikkCZ/pontoon-addon/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/657aebed4449cae8ce25/test_coverage)](https://codeclimate.com/github/MikkCZ/pontoon-addon/test_coverage)
+[![Test Coverage](https://codecov.io/gh/MikkCZ/pontoon-addon/branch/master/graph/badge.svg?token=wV84O1ujms)](https://codecov.io/gh/MikkCZ/pontoon-addon)
 
 [![Mozilla Add-on](https://img.shields.io/amo/v/pontoon-tools.svg?label=Firefox)](https://addons.mozilla.org/firefox/addon/pontoon-tools/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
