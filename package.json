@@ -17,6 +17,7 @@
     "src/packages/*"
   ],
   "devDependencies": {
+    "codecov": "^3.8.1",
     "jsdoc": "^3.6.6",
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
@@ -25,19 +26,16 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local",
-
-    "packages:build": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn build",
-    "packages:test": "lerna exec --parallel -- yarn test",
-    "packages:clean": "lerna exec --parallel -- yarn clean",
-
-    "build:lint": "web-ext lint -s ./src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/'",
-    "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build -s ./src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/mozilla",
-    "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
-    "build:doc": "jsdoc -c ./jsdoc-conf.json",
-
     "build": "run-s packages:clean clean packages:build build:mozilla build:chrome build:lint build:doc",
     "test": "run-s packages:test",
     "clean": "rimraf dist coverage tmp",
-    "clean-build": "shopt -s globstar && rm -rf ./**/node_modules && yarn install --frozen-lockfile && run-s bootstrap build"
+    "clean-build": "shopt -s globstar && rm -rf ./**/node_modules && yarn install --frozen-lockfile && run-s bootstrap build",
+    "packages:build": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn build",
+    "packages:test": "lerna exec --parallel -- yarn test",
+    "packages:clean": "lerna exec --parallel -- yarn clean",
+    "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build -s ./src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/mozilla",
+    "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
+    "build:lint": "web-ext lint -s ./src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/'",
+    "build:doc": "jsdoc -c ./jsdoc-conf.json"
   }
 }
