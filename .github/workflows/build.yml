@@ -37,7 +37,7 @@ jobs:
       - name: Upload code coverage to Codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: make codecov_in_docker
+        run: bash <(curl -s https://codecov.io/bash)
   deploy-docs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'

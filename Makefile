@@ -15,10 +15,6 @@ download_jq_and_build:
 	chmod u+x scripts/jq
 	make build
 
-.PHONY: codecov
-codecov:
-	yarn codecov
-
 .PHONY: prepare_in_docker
 prepare_in_docker:
 	bash ./scripts/run-in-docker.sh make prepare
@@ -34,11 +30,3 @@ build_in_docker:
 .PHONY: build_in_podman
 build_in_podman:
 	bash ./scripts/run-in-podman.sh make download_jq_and_build
-
-.PHONY: codecov_in_docker
-codecov_in_docker:
-	bash ./scripts/run-in-docker.sh make codecov
-
-.PHONY: codecov_in_podman
-codecov_in_podman:
-	bash ./scripts/run-in-podman.sh make codecov
