@@ -26,9 +26,9 @@
     "packages:build": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn build",
     "packages:test": "lerna exec --parallel -- yarn test",
     "packages:clean": "lerna exec --parallel -- yarn clean",
-    "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build -s ./src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/.eslintrc.yml' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/mozilla",
+    "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build --config ./web-ext.config.js -s ./src -a ./dist/web-ext/mozilla",
     "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
-    "build:lint": "web-ext lint -s ./src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/.eslintrc.yml' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/'",
+    "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src",
     "build:doc": "jsdoc -c ./jsdoc-conf.json"
   },
   "devDependencies": {

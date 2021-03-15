@@ -2,8 +2,7 @@ export PATH := $(shell pwd)/scripts:$(PATH)
 
 .PHONY: prepare
 prepare:
-	yarn install --frozen-lockfile
-	yarn bootstrap
+	yarn clean-install
 
 .PHONY: build
 build:

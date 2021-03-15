@@ -10,6 +10,7 @@ podman pull "${CONTAINER_IMAGE}"
 podman run \
   --workdir "${PWD}" \
   -v "${PWD}:${PWD}:Z" \
+  -v "${PWD}/scripts/.yarnrc:${PWD}/.yarnrc:Z" \
   --rm=true \
   --entrypoint=/bin/bash \
   "${CONTAINER_IMAGE}" -c "${COMMAND}"
