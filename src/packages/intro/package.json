@@ -4,10 +4,9 @@
   "private": true,
   "homepage": ".",
   "scripts": {
-    "lint": "run-s eslint:run",
     "build": "run-s clean webpack:run eslint:run",
     "test": "jest --config ./jest.config.js --coverage",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist coverage",
     "webpack:run": "webpack --config ./webpack.config.js",
     "eslint:run": "eslint --config ./.eslintrc.js ./src/",
     "eslint:fix": "eslint --config ./.eslintrc.js --fix ./src/"

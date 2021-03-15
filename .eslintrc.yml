@@ -23,6 +23,7 @@ parserOptions:
   ecmaVersion: 9
   ecmaFeatures:
     jsx: true
+  sourceType: 'module'
 
 env:
   browser: true

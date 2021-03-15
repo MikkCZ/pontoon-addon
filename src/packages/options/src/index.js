@@ -1,6 +1,6 @@
-import { Options } from 'Commons/src/Options';
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
-import { RemoteLinks } from 'Commons/src/RemoteLinks';
+import { Options } from '@pontoon-addon/commons/src/Options';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }

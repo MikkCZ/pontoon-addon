@@ -5,7 +5,7 @@ module.exports = {
   devtool: 'cheap-source-map',
   resolve: {
     alias: {
-      Commons: path.resolve(__dirname, 'src/packages/commons/'),
+      '@pontoon-addon/commons': path.resolve(__dirname, '../commons/'),
     },
   },
 };

@@ -2,6 +2,16 @@
   "name": "@pontoon-addon/content-scripts",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "build": "run-s clean webpack:run:context-buttons webpack:run:live-data-provider webpack:run:notifications-bell-icon eslint:run",
+    "test": "echo 'No tests!'",
+    "clean": "rimraf dist",
+    "webpack:run:context-buttons": "webpack ./src/context-buttons.js -o ./dist/context-buttons.js --config ./webpack.config.js",
+    "webpack:run:live-data-provider": "webpack ./src/live-data-provider.js -o ./dist/live-data-provider.js --config ./webpack.config.js",
+    "webpack:run:notifications-bell-icon": "webpack ./src/notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ./webpack.config.js",
+    "eslint:run": "eslint --ignore-pattern /dist/ ./src/",
+    "eslint:fix": "eslint --ignore-pattern /dist/ --fix ./src/"
+  },
   "dependencies": {
     "@pontoon-addon/commons": "*",
     "webextension-polyfill": "^0.7.0"
@@ -9,20 +19,8 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
-  },
-  "eslintConfig": {
-    "parserOptions": {
-      "sourceType": "module"
-    }
-  },
-  "scripts": {
-    "lint": "eslint . --ignore-pattern /dist/",
-    "test": "echo 'No tests!'",
-    "build-context-buttons": "webpack ./src/context-buttons.js -o ./dist/context-buttons.js --config ../../../webpack.config.js",
-    "build-live-data-provider": "webpack ./src/live-data-provider.js -o ./dist/live-data-provider.js --config ../../../webpack.config.js",
-    "build-notifications-bell-icon": "webpack ./src/notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ../../../webpack.config.js",
-    "build": "run-p build-context-buttons build-live-data-provider build-notifications-bell-icon"
   }
 }

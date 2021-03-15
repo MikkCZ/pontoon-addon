@@ -1,4 +1,4 @@
-import { BackgroundPontoonClient } from 'Commons/src/BackgroundPontoonClient';
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }

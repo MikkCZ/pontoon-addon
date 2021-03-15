@@ -8,6 +8,7 @@ prepare:
 .PHONY: build
 build:
 	yarn build
+	yarn test
 
 .PHONY: download_jq_and_build
 download_jq_and_build:

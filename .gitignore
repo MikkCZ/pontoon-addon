@@ -1,7 +1,5 @@
 tmp/*
 **/tmp/*
-build/*
-**/build/*
 dist/*
 **/dist/*
 coverage/*

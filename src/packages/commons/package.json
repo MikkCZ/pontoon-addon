@@ -2,24 +2,18 @@
   "name": "@pontoon-addon/commons",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "build": "yarn clean && mkdir -p ./dist && cp ./src/* ./dist/ && yarn eslint:run",
+    "test": "echo 'No tests!'",
+    "clean": "rimraf dist",
+    "eslint:run": "eslint --ignore-pattern /dist/ ./src/",
+    "eslint:fix": "eslint --ignore-pattern /dist/ --fix ./src/"
+  },
   "dependencies": {
-    "@rescripts/cli": "^0.0.15",
-    "@rescripts/rescript-env": "^0.0.12",
     "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0"
-  },
-  "eslintConfig": {
-    "parserOptions": {
-      "sourceType": "module"
-    }
-  },
-  "scripts": {
-    "lint": "eslint . --ignore-pattern /dist/",
-    "test": "echo 'No tests!'",
-    "prebuild": "yarn clean",
-    "build": "mkdir -p ./dist && cp ./src/* ./dist/",
-    "clean": "rm -rf ./dist"
+    "eslint": "^6.8.0",
+    "rimraf": "^3.0.2"
   }
 }

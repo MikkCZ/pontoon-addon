@@ -1,4 +1,4 @@
-import { BackgroundPontoonMessageType } from 'Commons/src/BackgroundPontoonMessageType';
+import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 import { DataFetcher } from './DataFetcher';
 if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations

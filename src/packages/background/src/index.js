@@ -1,5 +1,5 @@
-import { Options } from 'Commons/src/Options';
-import { RemoteLinks } from 'Commons/src/RemoteLinks';
+import { Options } from '@pontoon-addon/commons/src/Options';
+import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 import { RemotePontoon } from './RemotePontoon';
 import { ToolbarButton } from './ToolbarButton';
 import { PageAction } from './PageAction';
