@@ -14,4 +14,4 @@ Before you start making any changes, make sure you can build the add-on on your 
 
 #### Submitting a patch
 
-When creating and pushing your commits, please write a meaningful commit message, what has been changed. Please also run `yarn build && yarn test` again to ensure your code is well formatted and without obvious errors. When nothing is red, create a [pull request](https://help.github.com/articles/about-pull-requests/).
+When creating and pushing your commits, please write a meaningful commit message, what has been changed. Please also run `make build` again to ensure your code is well formatted and without obvious errors. When nothing is red, create a [pull request](https://help.github.com/articles/about-pull-requests/).
