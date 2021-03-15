@@ -6,7 +6,7 @@ set -o pipefail
 command -v 'jq' >/dev/null 2>&1 || { echo >&2 "ERROR: Packaging for Chromium requires 'jq'. Install 'jq' first and re-run the build. Aborting."; exit 1; }
 
 mkdir -p ./tmp/chrome-src
-cp -Lr ./src/* ./tmp/chrome-src
+cp -LR ./src/* ./tmp/chrome-src
 
 cat ./src/manifest.json | \
   jq 'del(.applications)' | `# remove mozilla-specific applications` \
