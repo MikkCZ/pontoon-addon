@@ -5,6 +5,10 @@ plugins:
   eslint:
     enabled: true
     channel: "eslint-6"
+    config:
+      extensions:
+      - .js
+      - .jsx
   fixme:
     enabled: true
   markdownlint:
@@ -17,3 +21,4 @@ plugins:
     enabled: true
 exclude_patterns:
   - "src/packages/*/src/*.test.js"
+  - "src/packages/*/src/*.test.jsx"
