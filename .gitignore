@@ -9,4 +9,5 @@ node_modules/*
 **/*.log
 
 scripts/jq
+.nvmrc
 .yarnrc
