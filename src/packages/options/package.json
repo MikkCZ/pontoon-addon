@@ -8,8 +8,8 @@
     "test": "echo 'No tests!'",
     "clean": "rimraf dist",
     "webpack:run": "webpack ./src/index.js --output-path ./dist --config ./webpack.config.js",
-    "eslint:run": "eslint --ignore-pattern /dist/ ./src/",
-    "eslint:fix": "eslint --ignore-pattern /dist/ --fix ./src/"
+    "eslint:run": "eslint --config ./.eslintrc.yml ./src/",
+    "eslint:fix": "eslint --config ./.eslintrc.yml --fix ./src/"
   },
   "dependencies": {
     "@pontoon-addon/commons": "*",

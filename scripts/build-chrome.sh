@@ -16,4 +16,4 @@ cat ./src/manifest.json | \
   jq 'del(.permissions[] | select( .=="contextualIdentities" or .=="cookies" or .=="webRequest" or .=="webRequestBlocking" ))' | `# no support for contextual identities` \
   tee ./tmp/chrome-src/manifest.json &>/dev/null
 
-web-ext build -s ./tmp/chrome-src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/chrome
+web-ext build -s ./tmp/chrome-src -i 'packages/*/assets/' 'packages/*/public/' 'packages/*/src/' '**/.eslintrc.js' '**/.eslintrc.yml' '**/babel.config.js' '**/jest.config.js' '**/jest.setup.js' '**/package.json' '**/webpack.config.js' '**/node_modules/' 'packages/*/coverage/' -a ./dist/web-ext/chrome

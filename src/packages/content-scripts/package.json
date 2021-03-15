@@ -9,8 +9,8 @@
     "webpack:run:context-buttons": "webpack ./src/context-buttons.js -o ./dist/context-buttons.js --config ./webpack.config.js",
     "webpack:run:live-data-provider": "webpack ./src/live-data-provider.js -o ./dist/live-data-provider.js --config ./webpack.config.js",
     "webpack:run:notifications-bell-icon": "webpack ./src/notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ./webpack.config.js",
-    "eslint:run": "eslint --ignore-pattern /dist/ ./src/",
-    "eslint:fix": "eslint --ignore-pattern /dist/ --fix ./src/"
+    "eslint:run": "eslint --config ./.eslintrc.yml ./src/",
+    "eslint:fix": "eslint --config ./.eslintrc.yml --fix ./src/"
   },
   "dependencies": {
     "@pontoon-addon/commons": "*",

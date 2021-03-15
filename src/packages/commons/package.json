@@ -6,8 +6,8 @@
     "build": "yarn clean && mkdir -p ./dist && cp ./src/* ./dist/ && yarn eslint:run",
     "test": "echo 'No tests!'",
     "clean": "rimraf dist",
-    "eslint:run": "eslint --ignore-pattern /dist/ ./src/",
-    "eslint:fix": "eslint --ignore-pattern /dist/ --fix ./src/"
+    "eslint:run": "eslint --config ./.eslintrc.yml ./src/",
+    "eslint:fix": "eslint --config ./.eslintrc.yml --fix ./src/"
   },
   "dependencies": {
     "webextension-polyfill": "^0.7.0"
