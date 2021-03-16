@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "yarn clean && mkdir -p ./dist && cp ./src/* ./dist/ && yarn eslint:run",
+    "watch": "yarn clean && mkdir -p ./dist && cp ./src/* ./dist/",
     "test": "jest --ci --coverage --passWithNoTests # TODO: remove when tests are in place",
     "clean": "rimraf dist",
     "eslint:run": "eslint --config ./.eslintrc.yml ./src/",

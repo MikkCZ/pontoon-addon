@@ -9,6 +9,10 @@ build:
 	yarn build
 	yarn test
 
+.PHONY: watch
+watch:
+	yarn watch
+
 .PHONY: download_jq_and_build
 download_jq_and_build:
 	curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o scripts/jq
@@ -30,3 +34,11 @@ build_in_docker:
 .PHONY: build_in_podman
 build_in_podman:
 	bash ./scripts/run-in-podman.sh make download_jq_and_build
+
+.PHONY: watch_in_docker
+watch_in_docker:
+	bash ./scripts/run-in-docker.sh make watch
+
+.PHONY: watch_in_podman
+watch_in_podman:
+	bash ./scripts/run-in-podman.sh make watch

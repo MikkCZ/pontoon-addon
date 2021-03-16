@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "build": "run-s clean webpack:run:context-buttons webpack:run:live-data-provider webpack:run:notifications-bell-icon eslint:run",
+    "watch": "run-s clean && run-p webpack:watch:context-buttons webpack:watch:live-data-provider webpack:watch:notifications-bell-icon",
     "test": "jest --ci --config ./jest.config.js --coverage --passWithNoTests # TODO: remove when tests are in place",
     "clean": "rimraf dist",
     "webpack:run:context-buttons": "webpack ./src/context-buttons.js -o ./dist/context-buttons.js --config ./webpack.config.js",
     "webpack:run:live-data-provider": "webpack ./src/live-data-provider.js -o ./dist/live-data-provider.js --config ./webpack.config.js",
     "webpack:run:notifications-bell-icon": "webpack ./src/notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ./webpack.config.js",
+    "webpack:watch:context-buttons": "webpack ./src/context-buttons.js -o ./dist/context-buttons.js --config ./webpack.config.js --watch",
+    "webpack:watch:live-data-provider": "webpack ./src/live-data-provider.js -o ./dist/live-data-provider.js --config ./webpack.config.js --watch",
+    "webpack:watch:notifications-bell-icon": "webpack ./src/notifications-bell-icon.js -o ./dist/notifications-bell-icon.js --config ./webpack.config.js --watch",
     "eslint:run": "eslint --config ./.eslintrc.yml ./src/",
     "eslint:fix": "eslint --config ./.eslintrc.yml --fix ./src/"
   },

@@ -5,9 +5,11 @@
   "homepage": ".",
   "scripts": {
     "build": "run-s clean webpack:run eslint:run",
+    "watch": "run-s webpack:watch",
     "test": "jest --ci --config ./jest.config.js --coverage --passWithNoTests # TODO: remove when tests are in place",
     "clean": "rimraf dist",
     "webpack:run": "webpack ./src/index.js --output-path ./dist --config ./webpack.config.js",
+    "webpack:watch": "webpack ./src/index.js --output-path ./dist --config ./webpack.config.js --watch",
     "eslint:run": "eslint --config ./.eslintrc.yml ./src/",
     "eslint:fix": "eslint --config ./.eslintrc.yml --fix ./src/"
   },
