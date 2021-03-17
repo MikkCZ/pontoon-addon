@@ -1,0 +1,15 @@
+.SnakeGameBoard {
+  position: relative;
+  margin: 0 auto;
+  border: 3px solid #7bc876;
+  display: inline-block;
+}
+
+.SnakeGameBoard > * {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
