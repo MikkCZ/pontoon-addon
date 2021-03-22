@@ -31,4 +31,15 @@ describe('<CloseButton>', () => {
     expect(browser.tabs.remove.withArgs(fakeTab.id).calledOnce).toBe(true);
   });
 
+  it('calls custom onClick handler', () => {
+    const onClick = jest.fn();
+    const wrapper = mount(
+      <CloseButton onClick={onClick} />
+    );
+
+    wrapper.find('button').simulate('click');
+
+    expect(onClick).toHaveBeenCalled();
+  });
+
 });

@@ -17,6 +17,13 @@
   text-align: center;
 }
 
+.easter-egg-hint {
+  text-align: center;
+  font-size: 0.8em;
+  position: relative;
+  top: -16px;
+}
+
 .TourPageTiles {
   width: 90vw;
   max-width: 1200px;

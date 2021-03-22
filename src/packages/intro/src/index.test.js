@@ -1,5 +1,9 @@
+import ReactDOM from "react-dom";
 import sinon from "sinon";
+
 import * as optionsModule from "@pontoon-addon/commons/src/Options";
+
+const reactDomRender = jest.spyOn(ReactDOM, "render");
 
 describe("index.js", () => {
   it("renders", async () => {
@@ -8,9 +12,13 @@ describe("index.js", () => {
       .stub(optionsModule.Options, "create")
       .callsFake(async () => optionsStub);
 
-    const reactDomRender = await require(".");
-    const panelSection = await reactDomRender.default;
+    const rootDiv = document.createElement("div");
+    rootDiv.id = "root";
+    document.body.appendChild(rootDiv);
 
-    expect(panelSection.constructor.name).toBe("TourPage");
+    await require(".");
+
+    expect(reactDomRender).toHaveBeenCalledTimes(1);
+    expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
   });
 });
