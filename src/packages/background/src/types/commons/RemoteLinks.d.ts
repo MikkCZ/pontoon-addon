@@ -3,9 +3,7 @@ declare module '@pontoon-addon/commons/src/RemoteLinks' {
     constructor();
     getTransvisionUrl(team: string): string;
     getMozillaStyleGuidesUrl(team: string): string;
-    getElmoDashboardUrl(team: string): string;
     getMozillaWikiL10nTeamUrl(team: string): string;
-    getCambridgeDictionaryUrl(): string;
     getMicrosoftTerminologySearchUrl(): string;
     getBugzillaReportUrlForSelectedTextOnPage(
       selectedText: string,

@@ -50,11 +50,20 @@ export class ToolbarButtonContextMenu {
     });
     [
       {
-        title: 'Team page',
+        title: 'Team dashboard',
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
           browser.tabs.create({ url: this._remotePontoon.getTeamPageUrl() }),
+      } as Menus.CreateCreatePropertiesType,
+      {
+        title: 'Team insights',
+        contexts: ['browser_action'],
+        parentId: pontoonPagesMenuId,
+        onclick: () =>
+          browser.tabs.create({
+            url: this._remotePontoon.getTeamInsightsUrl(),
+          }),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Team bugs',
@@ -64,7 +73,7 @@ export class ToolbarButtonContextMenu {
           browser.tabs.create({ url: this._remotePontoon.getTeamBugsUrl() }),
       } as Menus.CreateCreatePropertiesType,
       {
-        title: 'Search all projects',
+        title: 'Search in Pontoon',
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
@@ -131,34 +140,6 @@ export class ToolbarButtonContextMenu {
             url: this._remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
-      {
-        type: 'separator',
-        contexts: ['browser_action'],
-        parentId: localizationResourcesMenuId,
-      } as Menus.CreateCreatePropertiesType,
-      {
-        title: 'Cambridge Dictionary',
-        contexts: ['browser_action'],
-        parentId: localizationResourcesMenuId,
-        onclick: () =>
-          browser.tabs.create({
-            url: this._remoteLinks.getCambridgeDictionaryUrl(),
-          }),
-      } as Menus.CreateCreatePropertiesType,
-      {
-        type: 'separator',
-        contexts: ['browser_action'],
-        parentId: localizationResourcesMenuId,
-      } as Menus.CreateCreatePropertiesType,
-      {
-        title: `Mozilla L10n Team Dashboard - ${localeTeam}`,
-        contexts: ['browser_action'],
-        parentId: localizationResourcesMenuId,
-        onclick: () =>
-          browser.tabs.create({
-            url: this._remoteLinks.getElmoDashboardUrl(localeTeam),
-          }),
-      } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
 
     browser.contextMenus.create({
@@ -171,7 +152,7 @@ export class ToolbarButtonContextMenu {
     });
 
     browser.contextMenus.create({
-      title: 'Open Pontoon Add-on tour',
+      title: 'Pontoon Add-on tour',
       contexts: ['browser_action'],
       onclick: () =>
         browser.tabs.create({

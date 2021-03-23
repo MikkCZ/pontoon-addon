@@ -23,16 +23,6 @@ export class RemoteLinks {
     }
 
     /**
-     * Get l10n.mozilla.org dashboard URL for the team.
-     * @param team locale
-     * @returns {string}
-     * @public
-     */
-    getElmoDashboardUrl(team) {
-        return `https://l10n.mozilla.org/teams/${team}?utm_source=pontoon-addon`;
-    }
-
-    /**
      * Get Mozilla Wiki L10n:Teams page URL.
      * @param team locale
      * @returns {string}
@@ -40,15 +30,6 @@ export class RemoteLinks {
      */
     getMozillaWikiL10nTeamUrl(team) {
         return `https://wiki.mozilla.org/L10n:Teams:${team}`;
-    }
-
-    /**
-     * Get Cambridge dictionary URL (not team specific).
-     * @returns {string}
-     * @public
-     */
-    getCambridgeDictionaryUrl() {
-        return 'https://dictionary.cambridge.org/translate/';
     }
 
     /**

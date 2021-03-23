@@ -42,6 +42,10 @@ export class RemotePontoon {
     return `${this._baseUrl}/${this._team}/?utm_source=pontoon-addon`;
   }
 
+  public getTeamInsightsUrl(): string {
+    return `${this._baseUrl}/${this._team}/insights/?utm_source=pontoon-addon`;
+  }
+
   // TODO: add 'utm_source'
   // see https://github.com/MikkCZ/pontoon-addon/pull/76#discussion_r195809548
   public getTeamBugsUrl(): string {
