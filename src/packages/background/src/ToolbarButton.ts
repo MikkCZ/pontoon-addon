@@ -29,11 +29,9 @@ export class ToolbarButton {
   private _watchStorageChanges(): void {
     this._remotePontoon.subscribeToNotificationsChange((change) => {
       const notificationsData = change.newValue;
-      if (notificationsData !== undefined) {
+      if (notificationsData) {
         this._updateBadge(
-          `${
-            Object.values(notificationsData).filter((n: any) => n.unread).length
-          }`
+          `${Object.values(notificationsData).filter((n) => n.unread).length}`
         );
       } else {
         this._updateBadge('!');
@@ -80,9 +78,9 @@ export class ToolbarButton {
 
   private _addOnClickAction(): void {
     const buttonActionOption = 'toolbar_button_action';
-    this._options
-      .get(buttonActionOption)
-      .then((item: any) => this._setButtonAction(item[buttonActionOption]));
+    this._options.get(buttonActionOption).then((item: any) => {
+      this._setButtonAction(item[buttonActionOption]);
+    });
   }
 
   private _updateBadge(text: string): void {

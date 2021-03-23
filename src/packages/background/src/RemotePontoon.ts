@@ -99,7 +99,7 @@ export class RemotePontoon {
       const dataKey = 'notificationsData';
       Promise.all([
         browser.storage.local.get(dataKey),
-        [...page.querySelectorAll('header .notification-item')].map(
+        Array.from(page.querySelectorAll('header .notification-item')).map(
           (n: any) => n.dataset.id
         ),
       ]).then(([storageItem, notificationsIdsFromPage]) => {
@@ -114,21 +114,24 @@ export class RemotePontoon {
     }
   }
 
-  private _subscribeToDataChange(
+  private _subscribeToDataChange<T>(
     dataKey: string,
-    callback: (s: Storage.StorageChange) => void
+    callback: (update: { newValue: T }) => void
   ): void {
     browser.storage.onChanged.addListener((changes, _areaName) => {
       if (changes[dataKey] !== undefined) {
-        callback(changes[dataKey]);
+        callback(changes[dataKey] as { newValue: T });
       }
     });
   }
 
   public subscribeToNotificationsChange(
-    callback: (s: Storage.StorageChange) => void
+    callback: (update: { newValue: NotificationsData }) => void
   ): void {
-    this._subscribeToDataChange('notificationsData', callback);
+    this._subscribeToDataChange<NotificationsData>(
+      'notificationsData',
+      callback
+    );
   }
 
   public subscribeToBaseUrlChange(callback: () => void): void {
@@ -141,20 +144,24 @@ export class RemotePontoon {
         `${this._baseUrl}/user-data/?utm_source=pontoon-addon-automation`
       )
       .then((response) => {
-        return response.json();
+        return response.json() as Promise<UserDataApiResponse>;
       })
       .then((userData) => {
-        const notificationsDataObj: { [key: string]: any } = {};
+        const notificationsDataObj: NotificationsData = {};
         userData.notifications.notifications.forEach(
-          (n: any) => (notificationsDataObj[n.id] = n)
+          (n) => (notificationsDataObj[n.id] = n)
         );
         return notificationsDataObj;
       })
       .then((nData) => {
-        return browser.storage.local.set({ notificationsData: nData });
+        return browser.storage.local.set({
+          notificationsData: nData,
+        } as NotificationsDataInStorage);
       })
       .catch((_error) => {
-        browser.storage.local.set({ notificationsData: undefined });
+        browser.storage.local.set({
+          notificationsData: undefined,
+        } as NotificationsDataInStorage);
       });
   }
 
@@ -170,7 +177,7 @@ export class RemotePontoon {
           allTeamsPageContent,
           'text/html'
         );
-        [...allTeamsPage.querySelectorAll('.team-list tbody tr')]
+        Array.from(allTeamsPage.querySelectorAll('.team-list tbody tr'))
           .map((row) => {
             const latestActivityTime = row.querySelector(
               '.latest-activity time'
@@ -193,7 +200,7 @@ export class RemotePontoon {
       });
   }
 
-  public async updateTeamsList(): Promise<any> {
+  public async updateTeamsList(): Promise<TeamsList> {
     return await Promise.all([
       this._dataFetcher
         .fetch(
@@ -201,105 +208,128 @@ export class RemotePontoon {
             '{locales{code,name,approvedStrings,fuzzyStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}'
           )
         )
-        .then((response) => response.json()),
+        .then(
+          (response) =>
+            response.json() as Promise<{ data: TeamsListGqlResponse }>
+        ),
       this._dataFetcher
         .fetch('https://flod.org/mozilla-l10n-query/?bugzilla=product')
-        .then((response) => response.json()),
+        .then(
+          (response) => response.json() as Promise<{ [code: string]: string }>
+        ),
     ]).then(([pontoonData, bz_components]) => {
-      const teamsListObj: { [key: string]: any } = {};
+      const teamsListObj: TeamsList = {};
       pontoonData.data.locales
-        .filter((locale: any) => locale.totalStrings > 0)
-        .sort((locale1: any, locale2: any) =>
-          locale1.code.localeCompare(locale2.code)
-        )
-        .forEach(
-          (locale: any) =>
-            (teamsListObj[locale.code] = Object.freeze({
-              code: locale.code,
-              name: locale.name,
-              strings: Object.freeze({
-                approvedStrings: locale.approvedStrings,
-                fuzzyStrings: locale.fuzzyStrings,
-                stringsWithWarnings: locale.stringsWithWarnings,
-                stringsWithErrors: locale.stringsWithErrors,
-                missingStrings: locale.missingStrings,
-                unreviewedStrings: locale.unreviewedStrings,
-                totalStrings: locale.totalStrings,
-              }),
-              bz_component: bz_components[locale.code],
-            }))
-        );
-      browser.storage.local.set({ teamsList: teamsListObj });
-      return Object.freeze(teamsListObj);
+        .filter((team) => team.totalStrings > 0)
+        .sort((team1, team2) => team1.code.localeCompare(team2.code))
+        .forEach((team) => {
+          teamsListObj[team.code] = {
+            code: team.code,
+            name: team.name,
+            strings: {
+              approvedStrings: team.approvedStrings,
+              fuzzyStrings: team.fuzzyStrings,
+              stringsWithWarnings: team.stringsWithWarnings,
+              stringsWithErrors: team.stringsWithErrors,
+              missingStrings: team.missingStrings,
+              unreviewedStrings: team.unreviewedStrings,
+              totalStrings: team.totalStrings,
+            },
+            bz_component: bz_components[team.code],
+          };
+        });
+      browser.storage.local.set({
+        teamsList: teamsListObj,
+      } as TeamsListInStorage);
+      return teamsListObj;
     });
   }
 
   public subscribeToProjectsListChange(
-    callback: (s: Storage.StorageChange) => void
+    callback: (change: { newValue: ProjectsList }) => void
   ): void {
-    this._subscribeToDataChange('projectsList', callback);
+    this._subscribeToDataChange<ProjectsList>('projectsList', callback);
   }
 
-  public async getPontoonProjectForPageUrl(pageUrl: string): Promise<any> {
+  public async getPontoonProjectForPageUrl(
+    pageUrl: string
+  ): Promise<
+    | {
+        name: string;
+        pageUrl: string;
+        translationUrl: string;
+      }
+    | undefined
+  > {
     const tmpLink = document.createElement('a');
     tmpLink.href = pageUrl;
-    const toProjectMap = new Map();
+    const toProjectMap = new Map<string, Project>();
     const dataKey = 'projectsList';
-    await browser.storage.local.get(dataKey).then((item) => {
-      if (item[dataKey]) {
-        Object.values(item[dataKey]).forEach((project: any) =>
-          project.domains.forEach((domain: any) =>
-            toProjectMap.set(domain, project)
-          )
-        );
-      }
-    });
+    await browser.storage.local
+      .get(dataKey)
+      .then((storageResponse: unknown) => {
+        const projectsList = (storageResponse as
+          | ProjectsListInStorage
+          | undefined)?.projectsList;
+        if (projectsList) {
+          Object.values(projectsList).forEach((project) =>
+            project.domains.forEach((domain) =>
+              toProjectMap.set(domain, project)
+            )
+          );
+        }
+      });
     const projectData = toProjectMap.get(tmpLink.hostname);
     if (projectData) {
-      return Object.freeze({
+      return {
         name: projectData.name,
         pageUrl: this.getTeamProjectUrl(`/projects/${projectData.slug}/`),
         translationUrl: this.getTeamProjectUrl(
           `/projects/${projectData.slug}/all-resources/`
         ),
-      });
+      };
     } else {
       return undefined;
     }
   }
 
   public subscribeToTeamsListChange(
-    callback: (s: Storage.StorageChange) => void
+    callback: (update: { newValue: TeamsList }) => void
   ): void {
-    this._subscribeToDataChange('teamsList', callback);
+    this._subscribeToDataChange<TeamsList>('teamsList', callback);
   }
 
   public async updateProjectsList(): Promise<{ [key: string]: any }> {
     return await Promise.all([
       this._dataFetcher
         .fetch(this._getQueryURL('{projects{slug,name}}'))
-        .then((response) => response.json()),
+        .then(
+          (response) =>
+            response.json() as Promise<{ data: ProjectsListGqlResponse }>
+        ),
       fetch(
         browser.runtime.getURL(
           'packages/background/dist/data/projects-list.json'
         )
-      ).then((response) => response.json()),
+      ).then((response) => response.json() as Promise<ProjectsListJson>),
     ]).then(([pontoonData, projectsListJson]) => {
-      const projectsListObj: { [key: string]: any } = {};
-      const projectsMap = new Map();
-      pontoonData.data.projects.forEach((project: any) =>
-        projectsMap.set(project.slug, Object.freeze(project))
+      const partialProjectsMap = new Map<string, ProjectGqlReponse>();
+      pontoonData.data.projects.forEach((project) =>
+        partialProjectsMap.set(project.slug, project)
       );
+      const projectsListObj: ProjectsList = {};
       projectsListJson
-        .map((project: any) =>
-          Object.assign(project, projectsMap.get(project.slug))
-        )
-        .forEach(
-          (project: any) =>
-            (projectsListObj[project.slug] = Object.freeze(project))
-        );
-      browser.storage.local.set({ projectsList: projectsListObj });
-      return Object.freeze(projectsListObj);
+        .map((project) => ({
+          ...project,
+          ...partialProjectsMap.get(project.slug)!,
+        }))
+        .forEach((project) => {
+          projectsListObj[project.slug] = project;
+        });
+      browser.storage.local.set({
+        projectsList: projectsListObj,
+      } as ProjectsListInStorage);
+      return projectsListObj;
     });
   }
 
@@ -380,13 +410,15 @@ export class RemotePontoon {
       this._dataFetcher.fetchFromPontoonSession(
         `${this._baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-addon-automation`
       ),
-      browser.storage.local.get(dataKey),
+      browser.storage.local.get(dataKey) as Promise<NotificationsDataInStorage>,
     ]).then(([response, storageItem]) => {
       if (response.ok) {
-        Object.values(storageItem[dataKey]).forEach(
-          (n: any) => (n.unread = false)
+        Object.values(storageItem.notificationsData!).forEach(
+          (n) => (n.unread = false)
         );
-        browser.storage.local.set({ notificationsData: storageItem[dataKey] });
+        browser.storage.local.set({
+          notificationsData: storageItem[dataKey],
+        } as NotificationsDataInStorage);
       }
     });
   }
@@ -402,3 +434,103 @@ export class RemotePontoon {
     return language?.dataset['code'] || undefined;
   }
 }
+
+interface NotificationApiResponse {
+  id: number;
+  unread: boolean;
+  date_iso: string;
+  actor: {
+    anchor: string;
+    url: string;
+  } | null;
+  verb: string;
+  target: {
+    anchor: string;
+    url: string;
+  } | null;
+  message: string | undefined;
+  description: {
+    content: string | null;
+    is_comment: boolean;
+  };
+}
+
+interface UserDataApiResponse {
+  notifications: {
+    has_unread: boolean;
+    notifications: NotificationApiResponse[];
+  };
+}
+
+export type NotificationsData = { [id: number]: NotificationApiResponse };
+
+interface NotificationsDataInStorage {
+  notificationsData: NotificationsData | undefined;
+}
+
+interface TeamGqlResponse {
+  code: string;
+  name: string;
+  approvedStrings: number;
+  fuzzyStrings: number;
+  stringsWithWarnings: number;
+  stringsWithErrors: number;
+  missingStrings: number;
+  unreviewedStrings: number;
+  totalStrings: number;
+}
+
+interface TeamsListGqlResponse {
+  locales: TeamGqlResponse[];
+}
+
+export interface Team {
+  code: string;
+  name: string;
+  strings: {
+    approvedStrings: number;
+    fuzzyStrings: number;
+    stringsWithWarnings: number;
+    stringsWithErrors: number;
+    missingStrings: number;
+    unreviewedStrings: number;
+    totalStrings: number;
+  };
+  bz_component: string;
+}
+
+export interface TeamsList {
+  [slug: string]: Team;
+}
+
+export interface TeamsListInStorage {
+  teamsList: TeamsList;
+}
+
+interface Project {
+  slug: string;
+  name: string;
+  domains: string[];
+}
+
+export interface ProjectsList {
+  [slug: string]: Project;
+}
+
+export interface ProjectsListInStorage {
+  projectsList: ProjectsList;
+}
+
+interface ProjectGqlReponse {
+  slug: string;
+  name: string;
+}
+
+interface ProjectsListGqlResponse {
+  projects: ProjectGqlReponse[];
+}
+
+type ProjectsListJson = Array<{
+  slug: string;
+  domains: string[];
+}>;

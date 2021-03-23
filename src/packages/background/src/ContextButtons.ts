@@ -3,7 +3,12 @@ import { Tabs } from 'webextension-polyfill-ts';
 import type { Options } from '@pontoon-addon/commons/src/Options';
 import type { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 
-import type { RemotePontoon } from './RemotePontoon';
+import type {
+  ProjectsList,
+  ProjectsListInStorage,
+  RemotePontoon,
+  TeamsListInStorage,
+} from './RemotePontoon';
 import { browser } from './util/webExtensionsApi';
 
 export class ContextButtons {
@@ -23,8 +28,10 @@ export class ContextButtons {
     const projectsListDataKey = 'projectsList';
     browser.storage.local
       .get(projectsListDataKey)
-      .then((storageItem) =>
-        this._initMozillaWebsitesList(storageItem[projectsListDataKey])
+      .then((storageItem: unknown) =>
+        this._initMozillaWebsitesList(
+          (storageItem as ProjectsListInStorage).projectsList
+        )
       )
       .then(() => {
         this._listenToMessagesFromContentScript();
@@ -36,11 +43,11 @@ export class ContextButtons {
       });
   }
 
-  private _initMozillaWebsitesList(projects: any): void {
+  private _initMozillaWebsitesList(projects: ProjectsList): void {
     if (projects) {
       this._mozillaWebsites = [];
-      Object.values(projects).forEach((project: any) =>
-        project.domains.forEach((domain: string) =>
+      Object.values(projects).forEach((project) =>
+        project.domains.forEach((domain) =>
           this._mozillaWebsites.push(`https://${domain}`)
         )
       );
@@ -78,11 +85,13 @@ export class ContextButtons {
           const localeTeamOptionKey = 'locale_team';
           const teamsListDataKey = 'teamsList';
           Promise.all([
-            this._options.get(localeTeamOptionKey) as Promise<any>,
-            browser.storage.local.get(teamsListDataKey),
-          ]).then(([optionsItems, storageItems]) => {
-            const teamCode = optionsItems[localeTeamOptionKey];
-            const team = storageItems[teamsListDataKey][teamCode];
+            this._options.get(localeTeamOptionKey),
+            browser.storage.local.get(
+              teamsListDataKey
+            ) as Promise<TeamsListInStorage>,
+          ]).then(([optionsItems, projectListInStorage]) => {
+            const teamCode = optionsItems[localeTeamOptionKey] as string;
+            const team = projectListInStorage.teamsList[teamCode];
             browser.tabs.create({
               url: this._remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
                 request.text,

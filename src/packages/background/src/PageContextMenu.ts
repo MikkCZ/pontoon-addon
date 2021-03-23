@@ -3,7 +3,13 @@ import { Menus, Tabs } from 'webextension-polyfill-ts';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 
-import { RemotePontoon } from './RemotePontoon';
+import {
+  ProjectsListInStorage,
+  ProjectsList,
+  RemotePontoon,
+  TeamsListInStorage,
+  Team,
+} from './RemotePontoon';
 import { browser } from './util/webExtensionsApi';
 
 export class PageContextMenu {
@@ -24,11 +30,11 @@ export class PageContextMenu {
     this._loadDataFromStorage();
   }
 
-  private _createContextMenus(projects: any[], team: any): void {
+  private _createContextMenus(projects: ProjectsList, team: Team): void {
     // Create website patterns for all projects in Pontoon.
     const mozillaWebsitesUrlPatterns: string[] = [];
     Object.values(projects).forEach((project) =>
-      project.domains.forEach((domain: string) =>
+      project.domains.forEach((domain) =>
         mozillaWebsitesUrlPatterns.push(`https://${domain}/*`)
       )
     );
@@ -57,9 +63,9 @@ export class PageContextMenu {
         });
       },
     });
-    Object.values(projects).forEach((project: any) => {
+    Object.values(projects).forEach((project) => {
       project.domains
-        .flatMap((domain: string) => [
+        .flatMap((domain) => [
           {
             id: `page-context-menu-search-${project.slug}-${domain}`,
             title: `Search for "%s" in Pontoon (${project.name})`,
@@ -73,7 +79,7 @@ export class PageContextMenu {
                   info.selectionText
                 ),
               }),
-          },
+          } as Menus.CreateCreatePropertiesType,
           {
             id: `page-context-menu-search-all-${domain}`,
             title: 'Search for "%s" in Pontoon (all projects)',
@@ -86,7 +92,7 @@ export class PageContextMenu {
                   info.selectionText
                 ),
               }),
-          },
+          } as Menus.CreateCreatePropertiesType,
         ])
         .forEach(PageContextMenu._recreateContextMenu);
     });
@@ -119,12 +125,11 @@ export class PageContextMenu {
       this._options.get(localeTeamOptionKey) as Promise<any>,
       browser.storage.local.get([teamsListDataKey, projectsListDataKey]),
     ]).then(([optionsItems, storageItems]) => {
-      const team = optionsItems[localeTeamOptionKey];
-      if (storageItems[projectsListDataKey] && storageItems[teamsListDataKey]) {
-        this._createContextMenus(
-          storageItems[projectsListDataKey],
-          storageItems[teamsListDataKey][team]
-        );
+      const team = optionsItems[localeTeamOptionKey] as string;
+      const projectsList = (storageItems as ProjectsListInStorage).projectsList;
+      const teamsList = (storageItems as TeamsListInStorage).teamsList;
+      if (projectsList && teamsList) {
+        this._createContextMenus(projectsList, teamsList[team]);
       }
     });
   }

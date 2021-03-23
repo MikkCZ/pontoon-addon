@@ -1,6 +1,6 @@
 import { Options } from '@pontoon-addon/commons/src/Options';
 
-import { RemotePontoon } from './RemotePontoon';
+import { NotificationsData, RemotePontoon } from './RemotePontoon';
 import { browser } from './util/webExtensionsApi';
 
 export class SystemNotifications {
@@ -41,9 +41,9 @@ export class SystemNotifications {
       const notificationsData = change.newValue;
       Promise.all([
         this._getNewUnreadNotifications(notificationsData),
-        this._options
-          .get('show_notifications')
-          .then((option: any) => option['show_notifications']),
+        this._options.get('show_notifications').then((option: any) => {
+          return option['show_notifications'];
+        }),
       ]).then(([newUnreadNotificationIds, showNotifications]) => {
         if (showNotifications && newUnreadNotificationIds.length > 0) {
           this._notifyAboutUnreadNotifications(
@@ -56,20 +56,18 @@ export class SystemNotifications {
   }
 
   private async _getNewUnreadNotifications(
-    notificationsData: any
+    notificationsData: NotificationsData | undefined
   ): Promise<number[]> {
-    let unreadNotificationIds = [0];
-    if (notificationsData !== undefined) {
+    let unreadNotificationIds: number[] = [0];
+    if (notificationsData) {
       unreadNotificationIds = Object.values(notificationsData)
-        .filter((notification: any) => notification.unread)
-        .map((notification: any) => notification.id);
+        .filter((notification) => notification.unread)
+        .map((notification) => notification.id);
     }
     const dataKey = 'lastUnreadNotificationId';
     const lastKnownUnreadNotificationId = await browser.storage.local
       .get(dataKey)
-      .then((item) => {
-        return item[dataKey] || 0;
-      });
+      .then((item) => item[dataKey] || 0);
     return unreadNotificationIds.filter(
       (id) => id > lastKnownUnreadNotificationId
     );
@@ -77,7 +75,7 @@ export class SystemNotifications {
 
   private _notifyAboutUnreadNotifications(
     unreadNotificationIds: number[],
-    notificationsData: any
+    notificationsData: NotificationsData
   ) {
     const notificationItems = unreadNotificationIds
       .sort()
