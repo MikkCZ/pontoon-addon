@@ -2,6 +2,8 @@ if (!browser) { // eslint-disable-line no-use-before-define
     var browser = require('webextension-polyfill'); // eslint-disable-line no-var, no-inner-declarations
 }
 
+const contextButtonWidth = 24;
+
 /**
  * This is the main script to display context icons when a user highlights text on any supported Mozilla website.
  */
@@ -20,9 +22,10 @@ function createButton(imageSrc) {
     const button = document.createElement('img');
     button.src = browser.runtime.getURL(imageSrc);
     button.style.all = 'unset';
-    button.style.width = '16px';
+    button.style.width = `${contextButtonWidth}px`;
     button.style.position = 'absolute';
     button.style.zIndex = 9999;
+    button.style.backgroundColor = 'white';
     return button;
 }
 
@@ -39,7 +42,7 @@ function clickListener(messageType, buttonsToRemove) {
 }
 
 const pontoonSearchButton = createButton('packages/commons/static/img/pontoon-logo.svg');
-const bugzillaReportButton = createButton('packages/commons/static/img/bugzilla-icon.png');
+const bugzillaReportButton = createButton('packages/commons/static/img/bug.svg');
 const allContextButtons = [pontoonSearchButton, bugzillaReportButton];
 
 pontoonSearchButton.addEventListener('click', clickListener('pontoon-search-context-button-clicked', allContextButtons));
@@ -56,7 +59,7 @@ document.addEventListener('mouseup', (e) => {
         allContextButtons.forEach((button) => {
             button.style.top = yCoord + 'px';
             button.style.left = xCoord + 'px';
-            xCoord += 20;
+            xCoord += (contextButtonWidth + 6);
         });
         allContextButtons.forEach((button) => document.body.appendChild(button));
     } else {

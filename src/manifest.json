@@ -66,6 +66,6 @@
   ],
   "web_accessible_resources": [
     "packages/commons/static/img/pontoon-logo.svg",
-    "packages/commons/static/img/bugzilla-icon.png"
+    "packages/commons/static/img/bug.svg"
   ]
 }
