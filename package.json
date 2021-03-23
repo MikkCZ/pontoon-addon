@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local",
-    "build": "run-s packages:clean clean packages:build build:mozilla build:chrome build:lint build:doc",
+    "build": "run-s packages:clean clean packages:build build:mozilla build:chrome build:lint",
     "watch": "run-s packages:clean packages:watch",
     "test": "run-s packages:test",
     "clean": "rimraf dist coverage tmp",
@@ -30,11 +30,9 @@
     "packages:clean": "lerna exec --parallel -- yarn clean",
     "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build --config ./web-ext.config.js -s ./src -a ./dist/web-ext/mozilla",
     "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
-    "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src",
-    "build:doc": "jsdoc -c ./jsdoc-conf.json"
+    "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src"
   },
   "devDependencies": {
-    "jsdoc": "^3.6.6",
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",

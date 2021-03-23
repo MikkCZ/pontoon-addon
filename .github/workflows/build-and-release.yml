@@ -26,12 +26,6 @@ jobs:
           name: dist_web-ext
           path: dist/web-ext
           retention-days: 30
-      - name: Save code documentation
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist_docs
-          path: dist/docs
-          retention-days: 30
   release:
     runs-on: ubuntu-20.04
     needs: build
@@ -53,16 +47,10 @@ jobs:
         with:
           name: dist_web-ext
           path: dist/web-ext
-      - name: Download documentation for release
-        uses: actions/download-artifact@v2
-        with:
-          name: dist_docs
-          path: dist/docs
       - name: Prepare release packages
         run: |
           cp ./dist/web-ext/mozilla/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-mozilla.zip"
           cp ./dist/web-ext/chrome/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip"
-          tar -cvf ./docs.tar.gz ./dist/docs
       - name: Upload Firefox version to GitHub
         uses: actions/upload-release-asset@v1
         env:
@@ -81,12 +69,3 @@ jobs:
           asset_path: ./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip
           asset_name: pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip
           asset_content_type: application/zip
-      - name: Upload documentation to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./docs.tar.gz
-          asset_name: docs.tar.gz
-          asset_content_type: application/gzip
