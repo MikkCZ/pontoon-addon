@@ -5,7 +5,7 @@
     "target": "ES2019",
     "lib": [
       "DOM",
-      "ES2019",
+      "ES2019"
     ],
     "sourceMap": true
   },
