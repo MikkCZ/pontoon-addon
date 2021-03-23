@@ -118,7 +118,7 @@ export class BackgroundPontoonClient {
      */
     async getPontoonProjectForTheCurrentTab() {
         return await browser.runtime
-            .sendMessage({type: BackgroundPontoonMessageType.GET_CURRENT_TAB_PROJECT});
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_CURRENT_TAB_PROJECT});
     }
 
     /**
