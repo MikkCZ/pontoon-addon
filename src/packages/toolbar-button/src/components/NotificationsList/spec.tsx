@@ -2,12 +2,17 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import flushPromises from 'flush-promises';
-import { NotificationsList } from '.';
+import { act } from 'react-dom/test-utils';
+
+import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
+
+import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';
+
 import { NotificationsListItem } from '../NotificationsListItem';
 import { NotificationsListError } from '../NotificationsListError';
 import { BottomLink } from '../BottomLink';
-import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
-import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
+import { NotificationsList } from '.';
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
@@ -15,18 +20,22 @@ afterEach(() => {
   windowCloseSpy.mockReset();
 });
 
-describe('<NotificationsList>', () => {
+beforeEach(() => {
+  mockBrowserNode.enable();
+});
 
-  afterEach(() => {
-    browser.flush();
-  });
+afterEach(() => {
+  mockBrowserNode.disable();
+});
 
-  it('renders', () => {
+describe('NotificationsList', () => {
+  it('renders list of items', () => {
     const wrapper = shallow(
       <NotificationsList
         notificationsData={{
-          1: {id: 1, unread: false},
+          1: { id: 1, unread: false },
         }}
+        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -40,10 +49,11 @@ describe('<NotificationsList>', () => {
     const wrapper = shallow(
       <NotificationsList
         notificationsData={{
-          13: {id: 13, unread: false},
-          42: {id: 42, unread: false},
-          1: {id: 1, unread: false},
+          13: { id: 13, unread: false },
+          42: { id: 42, unread: false },
+          1: { id: 1, unread: false },
         }}
+        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -58,8 +68,8 @@ describe('<NotificationsList>', () => {
     const wrapper = shallow(
       <NotificationsList
         notificationsData={{
-          1: {id: 1, unread: false},
-          2: {id: 2, unread: true},
+          1: { id: 1, unread: false },
+          2: { id: 2, unread: true },
         }}
         hideReadNotifications={true}
         backgroundPontoonClient={new BackgroundPontoonClient()}
@@ -73,6 +83,8 @@ describe('<NotificationsList>', () => {
   it('renders error when loading notification data fails', () => {
     const wrapper = shallow(
       <NotificationsList
+        notificationsData={undefined}
+        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
@@ -86,39 +98,58 @@ describe('<NotificationsList>', () => {
     const wrapper = shallow(
       <NotificationsList
         notificationsData={{
-          1: {id: 1, unread: false},
-          2: {id: 2, unread: true},
+          1: { id: 1, unread: false },
+          2: { id: 2, unread: true },
         }}
+        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
 
-    expect(wrapper.find(BottomLink).hasClass('NotificationsList-mark-all-as-read')).toBe(true);
-    wrapper.find(BottomLink).simulate('click');
     expect(
-      browser.runtime.sendMessage.withArgs({type: BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ}).calledOnce
+      wrapper.find(BottomLink).hasClass('NotificationsList-mark-all-as-read')
     ).toBe(true);
+
+    mockBrowser.runtime.sendMessage
+      .expect({
+        type: BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ,
+      })
+      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+
+    act(() => {
+      wrapper.find(BottomLink).simulate('click');
+    });
+
+    mockBrowserNode.verify();
   });
 
   it('bottom link shows all when all notifications are read', async () => {
-    browser.runtime.sendMessage.withArgs({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL})
-      .resolves('https://127.0.0.1/');
-    browser.tabs.create.resolves(undefined);
-
     const wrapper = shallow(
       <NotificationsList
         notificationsData={{
-          1: {id: 1, unread: false},
-          2: {id: 2, unread: false},
+          1: { id: 1, unread: false },
+          2: { id: 2, unread: false },
         }}
+        hideReadNotifications={false}
         backgroundPontoonClient={new BackgroundPontoonClient()}
       />
     );
 
-    expect(wrapper.find(BottomLink).hasClass('NotificationsList-see-all')).toBe(true);
-    wrapper.find(BottomLink).simulate('click');
-    await flushPromises();
-    expect(browser.tabs.create.withArgs({url: 'https://127.0.0.1/'}).calledOnce).toBe(true);
-  });
+    expect(wrapper.find(BottomLink).hasClass('NotificationsList-see-all')).toBe(
+      true
+    );
 
+    mockBrowser.runtime.sendMessage
+      .expect({
+        type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL,
+      })
+      .andResolve('https://127.0.0.1/' as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    mockBrowser.tabs.create.expect(expect.anything()).andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+
+    act(() => {
+      wrapper.find(BottomLink).simulate('click');
+    });
+
+    mockBrowserNode.verify();
+  });
 });
