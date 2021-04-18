@@ -1,4 +1,3 @@
-// TODO: ensure it gets injected only to the Pontoon instance specified in options
 import { browser } from '../util/webExtensionsApi';
 
 import { postMessage } from './commons';

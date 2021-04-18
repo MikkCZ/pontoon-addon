@@ -59,8 +59,7 @@
         "https://pontoon.mozilla.org/*"
       ],
       "js": [
-        "packages/content-scripts/dist/notifications-bell-icon.js",
-        "packages/content-scripts/dist/pontoon-addon-promotion-content-script.js"
+        "packages/content-scripts/dist/notifications-bell-icon.js"
       ],
       "run_at": "document_end"
     }
