@@ -59,12 +59,14 @@
         "https://pontoon.mozilla.org/*"
       ],
       "js": [
-        "packages/content-scripts/dist/notifications-bell-icon.js"
+        "packages/content-scripts/dist/notifications-bell-icon.js",
+        "packages/content-scripts/dist/pontoon-addon-promotion-content-script.js"
       ],
       "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
+    "packages/content-scripts/dist/pontoon-addon-promotion-in-page.js",
     "packages/commons/static/img/pontoon-logo.svg",
     "packages/commons/static/img/bug.svg"
   ]
