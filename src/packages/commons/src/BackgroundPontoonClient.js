@@ -12,6 +12,11 @@ export class BackgroundPontoonClient {
         this._notificationsChangeListener = (message, sender) => this._backgroundMessage(message);
     }
 
+    async getBaseUrl() {
+        return await browser.runtime
+            .sendMessage({type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_BASE_URL});
+    }
+
     /**
      * Get notifications page URL.
      * @param utm_source to include into the URL

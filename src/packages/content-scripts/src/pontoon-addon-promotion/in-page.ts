@@ -1,3 +1,7 @@
-import { modifyWindow } from './commons';
+import { Window, pontoonAddonInfo } from './commons';
+
+function modifyWindow(window: Window): void {
+  window.PontoonAddon = pontoonAddonInfo;
+}
 
 modifyWindow(window as any); // eslint-disable-line @typescript-eslint/no-explicit-any
