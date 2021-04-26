@@ -3,6 +3,7 @@ declare module '@pontoon-addon/commons/src/BackgroundPontoonMessageType' {
     static TO_BACKGROUND: {
       PAGE_LOADED: 'pontoon-page-loaded';
       NOTIFICATIONS_READ: 'notifications-read';
+      GET_BASE_URL: 'get-base-url';
       GET_NOTIFICATIONS_URL: 'get-notifications-url';
       GET_SETTINGS_URL: 'get-settings-url';
       GET_SIGN_IN_URL: 'get-sign-in-url';

@@ -12,6 +12,8 @@ const entry = {
   'context-buttons': path.resolve('./src/context-buttons.ts'),
   'live-data-provider': path.resolve('./src/live-data-provider.ts'),
   'notifications-bell-icon': path.resolve('./src/notifications-bell-icon.ts'),
+  'pontoon-addon-promotion-content-script': path.resolve('./src/pontoon-addon-promotion/content-script.ts'),
+  'pontoon-addon-promotion-in-page': path.resolve('./src/pontoon-addon-promotion/in-page.ts'),
 };
 
 const config: Configuration = {

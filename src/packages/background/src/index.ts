@@ -3,6 +3,7 @@ import type { Runtime } from 'webextension-polyfill-ts';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 
+import { browser } from './util/webExtensionsApi';
 import { RemotePontoon } from './RemotePontoon';
 import { ToolbarButton } from './ToolbarButton';
 import { PageAction } from './PageAction';
@@ -11,7 +12,7 @@ import { PageContextMenu } from './PageContextMenu';
 import { ToolbarButtonContextMenu } from './ToolbarButtonContextMenu';
 import { DataRefresher } from './DataRefresher';
 import { ContextButtons } from './ContextButtons';
-import { browser } from './util/webExtensionsApi';
+import { PontoonAddonPromotion } from './PontoonAddonPromotion';
 
 // Register capturing event listener in case onInstalled fires before all the async stuff below are ready.
 let newInstallationDetails: Runtime.OnInstalledDetailsType;
@@ -59,6 +60,7 @@ Options.create().then((options) => {
         remotePontoon,
         remoteLinks
       );
+      const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
       const _contextButtons = new ContextButtons(
         options,
         remotePontoon,

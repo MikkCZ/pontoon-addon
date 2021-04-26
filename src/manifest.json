@@ -65,6 +65,7 @@
     }
   ],
   "web_accessible_resources": [
+    "packages/content-scripts/dist/pontoon-addon-promotion-in-page.js",
     "packages/commons/static/img/pontoon-logo.svg",
     "packages/commons/static/img/bug.svg"
   ]

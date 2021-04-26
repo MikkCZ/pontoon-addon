@@ -1,6 +1,7 @@
 declare module '@pontoon-addon/commons/src/BackgroundPontoonClient' {
   export class BackgroundPontoonClient {
     constructor();
+    getBaseUrl(): Promse<string>;
     pageLoaded(pageUrl: string, documentHTML: string): void;
     markAllNotificationsAsRead(): void;
     subscribeToNotificationsChange(

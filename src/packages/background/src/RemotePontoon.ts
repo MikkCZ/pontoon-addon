@@ -346,6 +346,8 @@ export class RemotePontoon {
         case BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
           this._markAllNotificationsAsRead();
           break;
+        case BackgroundPontoonMessageType.TO_BACKGROUND.GET_BASE_URL:
+          return Promise.resolve(this._baseUrl);
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
           return Promise.resolve(
             `${this._baseUrl}/notifications/?utm_source=pontoon-addon`
