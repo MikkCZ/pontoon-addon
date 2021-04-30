@@ -5,7 +5,7 @@ import { pontoonAddonInfo } from './commons';
 function injectScript(src: string) {
   const script = document.createElement('script');
   script.src = browser.runtime.getURL(src);
-  document.documentElement.appendChild(script);
+  document.head.prepend(script);
 }
 
 async function postMessage(): Promise<void> {
