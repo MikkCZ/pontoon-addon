@@ -1,3 +1,4 @@
+import URI from 'urijs';
 import type { ContentScripts } from 'webextension-polyfill-ts';
 
 import type { RemotePontoon } from './RemotePontoon';
@@ -23,7 +24,7 @@ export class PontoonAddonPromotion {
     await this.contentScript?.unregister();
     this.contentScript = await browser.contentScripts.register({
       js: [contentScriptInfo],
-      matches: [`${this.remotePontoon.getBaseUrl()}/*`],
+      matches: [`${URI(this.remotePontoon.getBaseUrl()).port('').valueOf()}*`],
       runAt: 'document_end', // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
     });
     (await browser.tabs.query({}))
@@ -33,7 +34,10 @@ export class PontoonAddonPromotion {
 
   private isPontoonServer(url: string | undefined): boolean {
     if (url) {
-      return url.startsWith(`${this.remotePontoon.getBaseUrl()}/`);
+      return URI(url)
+        .port('')
+        .valueOf()
+        .startsWith(URI(this.remotePontoon.getBaseUrl()).port('').valueOf());
     } else {
       return false;
     }
