@@ -398,7 +398,7 @@ export class RemotePontoon {
     this._options.subscribeToOptionChange(
       'pontoon_base_url',
       (change: Storage.StorageChange) => {
-        this._baseUrl = change.newValue;
+        this._baseUrl = change.newValue.replace(/\/$/, '');
         this._baseUrlChangeListeners.forEach((callback) => callback());
       }
     );
