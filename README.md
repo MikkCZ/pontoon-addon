@@ -8,7 +8,7 @@
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=Chrome)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?text=users)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
 
-[![Privacy policy](https://img.shields.io/badge/-privacy%20policy-blueviolet)](https://github.com/MikkCZ/pontoon-addon/wiki/Privacy-Policy)
+[![Privacy policy](https://img.shields.io/badge/-privacy%20policy-blueviolet)](privacy.md)
 
 Pontoon Add-on is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) into your browser. The aim is to ease localization work and provide tools beyond what a web app can do.
 
@@ -24,4 +24,4 @@ Those, who prefer coding, please see the [contributing guidelines](CONTRIBUTING.
 
 ## Privacy policy
 
-The privacy policy is available on the [wiki](https://github.com/MikkCZ/pontoon-addon/wiki/Privacy-Policy) and apply to both Firefox and Chrome versions of Pontoon Add-on.
+The privacy policy is available [here](privacy.md) and apply to both Firefox and Chrome versions of Pontoon Add-on.
