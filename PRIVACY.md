@@ -1,3 +1,5 @@
+# Privacy Policy
+
 **Pontoon Add-on**:
 
 - **Does not** collect any personally identifiable data.
