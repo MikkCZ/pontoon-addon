@@ -102,6 +102,9 @@ Options.create().then((options) => {
     document.querySelectorAll('a.open_wiki').forEach((wikiLink) =>
         wikiLink.addEventListener('click', () => browser.tabs.create({url: remoteLinks.getPontoonAddonWikiUrl()}))
     );
+    document.querySelectorAll('a.open_privacy_policy').forEach((tourLink) =>
+        tourLink.addEventListener('click', () => browser.tabs.create({url: browser.runtime.getURL('packages/privacy-policy/dist/index.html')}))
+    );
     backgroundPontoonClient.getSettingsUrl().then((settingsUrl) =>
         document.querySelector('a.pontoon_settings').setAttribute('href', settingsUrl)
     );

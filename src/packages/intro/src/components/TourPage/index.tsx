@@ -70,9 +70,13 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
       </div>
       <div className="privacy-policy">
         <a
-          href={browser.runtime.getURL(
-            'packages/privacy-policy/dist/index.html'
-          )}
+          onClick={() =>
+            browser.tabs.create({
+              url: browser.runtime.getURL(
+                'packages/privacy-policy/dist/index.html'
+              ),
+            })
+          }
         >
           Privacy policy
         </a>
