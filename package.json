@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local",
-    "build": "run-s packages:clean clean packages:build build:mozilla build:chrome build:lint",
+    "build": "run-s packages:clean clean packages:build build:mozilla build:chrome build:lint build:privacy-policy-html",
     "watch": "run-s packages:clean packages:watch",
     "test": "run-s packages:test",
     "clean": "rimraf dist coverage tmp",
@@ -30,10 +30,12 @@
     "packages:clean": "lerna exec --parallel -- yarn clean",
     "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build --config ./web-ext.config.js -s ./src -a ./dist/web-ext/mozilla",
     "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
-    "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src"
+    "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src",
+    "build:privacy-policy-html": "mkdir -p ./dist && marked -i PRIVACY.md -o ./dist/privacy-policy.html"
   },
   "devDependencies": {
     "lerna": "^3.22.1",
+    "marked": "^2.0.3",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "web-ext": "^5.4.1"
