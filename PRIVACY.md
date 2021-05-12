@@ -1,11 +1,14 @@
 # Privacy Policy
 
-**Pontoon Add-on**:
+**Pontoon Add-on** does not:
 
-- **Does not** collect any personally identifiable data.
-- **Does not** communicate with its author.
-- **Does** download data from external servers, which are necessary to provide its functionality as described below.
-- **Does** store the download data locally as described below.
+- Collect any personally identifiable data.
+- Communicate with its authors.
+
+**Pontoon Add-on** does:
+
+- Download data from external servers, which are necessary to provide its functionality as described below.
+- Store the downloaded data locally as described below.
 
 ## Communication with external servers
 

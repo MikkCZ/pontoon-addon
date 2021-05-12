@@ -69,8 +69,16 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
         ))}
       </div>
       <div className="privacy-policy">
-        <a href="https://github.com/MikkCZ/pontoon-addon/blob/master/PRIVACY.md">
-          Privacy policy for Pontoon Add-on
+        <a
+          onClick={() =>
+            browser.tabs.create({
+              url: browser.runtime.getURL(
+                'packages/privacy-policy/dist/index.html'
+              ),
+            })
+          }
+        >
+          Privacy policy
         </a>
       </div>
     </div>
