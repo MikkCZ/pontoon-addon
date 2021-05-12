@@ -5,6 +5,9 @@ import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
 beforeEach(() => {
   mockBrowserNode.enable();
   mockBrowser.pageAction.openPopup.spy(jest.fn()).times(0);
+  mockBrowser.runtime.getURL
+    .expect(expect.anything())
+    .andReturn('moz-extension://foo-bar');
 });
 
 afterEach(() => {

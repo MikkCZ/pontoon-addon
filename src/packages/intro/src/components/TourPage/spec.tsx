@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { mockBrowserNode } from '../../test/mockWebExtensionsApi';
+import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';
 import { CloseButton } from '../CloseButton';
 import { TourPageTile } from '../TourPageTile';
 
@@ -9,6 +9,9 @@ import { TourPage } from '.';
 
 beforeEach(() => {
   mockBrowserNode.enable();
+  mockBrowser.runtime.getURL
+    .expect('packages/privacy-policy/dist/index.html')
+    .andReturn('moz-extension://foo-bar');
 });
 
 afterEach(() => {
