@@ -6,10 +6,11 @@ body {
 
 nav li {
   display: inline-block;
+  margin: 0 1em;
 }
 
-nav li:not(:last-child) {
-  margin: 0 1em;
+nav li:last-child {
+  margin-right: 0;
 }
 
 main {
