@@ -23,8 +23,8 @@ jobs:
       - name: Save built add-on
         uses: actions/upload-artifact@v2
         with:
-          name: dist_web-ext
-          path: dist/web-ext
+          name: dist
+          path: dist
           retention-days: 30
   release:
     runs-on: ubuntu-20.04
@@ -45,12 +45,13 @@ jobs:
       - name: Download built add-on for release
         uses: actions/download-artifact@v2
         with:
-          name: dist_web-ext
-          path: dist/web-ext
+          name: dist
+          path: dist
       - name: Prepare release packages
         run: |
           cp ./dist/web-ext/mozilla/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-mozilla.zip"
           cp ./dist/web-ext/chrome/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip"
+          cp ./dist/privacy-policy.html "./privacy-policy-${{ steps.git_info.outputs.SOURCE_TAG }}.html"
       - name: Upload Firefox version to GitHub
         uses: actions/upload-release-asset@v1
         env:
@@ -69,3 +70,12 @@ jobs:
           asset_path: ./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip
           asset_name: pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chrome.zip
           asset_content_type: application/zip
+      - name: Upload privacy policy HTML to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./privacy-policy-${{ steps.git_info.outputs.SOURCE_TAG }}.html
+          asset_name: privacy-policy-${{ steps.git_info.outputs.SOURCE_TAG }}.html
+          asset_content_type: text/html

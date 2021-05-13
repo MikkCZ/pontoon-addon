@@ -25,8 +25,8 @@ jobs:
       - name: Save built add-on
         uses: actions/upload-artifact@v2
         with:
-          name: dist_web-ext
-          path: dist/web-ext
+          name: dist
+          path: dist
           retention-days: 30
       - name: Upload code coverage to Codecov
         env:
