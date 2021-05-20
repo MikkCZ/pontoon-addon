@@ -10,10 +10,10 @@ function injectScript(src: string) {
 
 async function postMessage(): Promise<void> {
   window.postMessage(
-    JSON.stringify({
+    {
       _type: 'PontoonAddonInfo',
       value: pontoonAddonInfo,
-    }),
+    },
     '*' // required to work for localhost:<port> (<port> may not be part of the baseUrl)
   );
 }
