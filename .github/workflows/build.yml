@@ -28,7 +28,13 @@ jobs:
           name: dist
           path: dist
           retention-days: 30
+      - name: Run the tests
+        run: yarn run test
       - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          name: pontoon-addon-codecov
+          verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash) -Z
