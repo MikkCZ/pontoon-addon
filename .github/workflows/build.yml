@@ -31,10 +31,7 @@ jobs:
       - name: Run the tests
         run: yarn run test
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          name: pontoon-addon-codecov
-          verbose: true
+        uses: yarn run codecov:upload
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash) -Z

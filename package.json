@@ -32,7 +32,7 @@
     "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
     "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src",
     "build:privacy-policy-html": "mkdir -p ./dist && marked -i PRIVACY.md -o ./dist/privacy-policy.html",
-    "codecov:upload": "./node_modules/.bin/codecov"
+    "codecov:upload": "codecov"
   },
   "devDependencies": {
     "codecov": "^3.8.3",
