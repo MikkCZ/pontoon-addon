@@ -41,8 +41,7 @@ export const TourRoot: React.FC<Props> = ({
   tiles.push({
     title: 'System notifications',
     image: notificationsImage,
-    text:
-      'Pontoon Add-on can bring notifications directly into your system. Try it!',
+    text: 'Pontoon Add-on can bring notifications directly into your system. Try it!',
     button: {
       text: 'Preview system notifications',
       onClick: () => {

@@ -17,7 +17,8 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:jest/recommended',
     'plugin:jest/style',
-    'plugin:testing-library/recommended',
+    'plugin:testing-library/dom',
+    'plugin:testing-library/react',
     'plugin:prettier/recommended', // must be the last one
   ],
   env: {

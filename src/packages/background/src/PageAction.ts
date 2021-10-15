@@ -1,4 +1,4 @@
-import { Tabs } from 'webextension-polyfill-ts';
+import { Tabs } from 'webextension-polyfill';
 
 import { RemotePontoon } from './RemotePontoon';
 import { browser } from './util/webExtensionsApi';

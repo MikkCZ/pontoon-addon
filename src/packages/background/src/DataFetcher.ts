@@ -1,6 +1,5 @@
-import type { WebRequest } from 'webextension-polyfill-ts';
+import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
-
 import type { Options } from '@pontoon-addon/commons/src/Options';
 
 import { browser } from './util/webExtensionsApi';

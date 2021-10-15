@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Project } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { browser } from '../../util/webExtensionsApi';

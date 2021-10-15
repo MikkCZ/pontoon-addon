@@ -14,7 +14,7 @@ watch:
 	yarn watch
 
 .PHONY: codecov
-watch:
+codecov:
 	yarn codecov:upload
 
 .PHONY: download_jq_and_build
@@ -53,4 +53,4 @@ codecov_in_docker:
 
 .PHONY: codecov_in_podman
 codecov_in_podman:
-	bash ./scripts/run-in-podman.sh make watch
+	bash ./scripts/run-in-podman.sh make codecov

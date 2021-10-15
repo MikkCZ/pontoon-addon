@@ -1,4 +1,4 @@
-import type { Browser } from 'webextension-polyfill-ts';
+import type { Browser } from 'webextension-polyfill';
 import { deepMock } from 'mockzilla';
 
 const [browser, mockBrowser, mockBrowserNode] = deepMock<Browser>(
@@ -6,7 +6,7 @@ const [browser, mockBrowser, mockBrowserNode] = deepMock<Browser>(
   false
 );
 
-jest.mock('webextension-polyfill-ts', () => ({ browser }));
+jest.mock('webextension-polyfill', () => ({ browser }));
 jest.mock('webextension-polyfill', () => browser);
 
 export { mockBrowser, mockBrowserNode };

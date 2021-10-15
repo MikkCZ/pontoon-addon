@@ -1,5 +1,4 @@
 import React from 'react';
-
 import privacyMd from '@assets/PRIVACY.md';
 
 import { MarkdownContent } from '../../components/MarkdownContent';

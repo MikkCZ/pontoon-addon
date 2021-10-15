@@ -1,5 +1,4 @@
-import type { Storage } from 'webextension-polyfill-ts';
-
+import type { Storage } from 'webextension-polyfill';
 import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 import type { Options } from '@pontoon-addon/commons/src/Options';
 
@@ -255,9 +254,7 @@ export class RemotePontoon {
     this._subscribeToDataChange<ProjectsList>('projectsList', callback);
   }
 
-  public async getPontoonProjectForPageUrl(
-    pageUrl: string
-  ): Promise<
+  public async getPontoonProjectForPageUrl(pageUrl: string): Promise<
     | {
         name: string;
         pageUrl: string;
@@ -272,9 +269,9 @@ export class RemotePontoon {
     await browser.storage.local
       .get(dataKey)
       .then((storageResponse: unknown) => {
-        const projectsList = (storageResponse as
-          | ProjectsListInStorage
-          | undefined)?.projectsList;
+        const projectsList = (
+          storageResponse as ProjectsListInStorage | undefined
+        )?.projectsList;
         if (projectsList) {
           Object.values(projectsList).forEach((project) =>
             project.domains.forEach((domain) =>
@@ -379,8 +376,8 @@ export class RemotePontoon {
     });
     this.subscribeToNotificationsChange((change) => {
       const message = {
-        type:
-          BackgroundPontoonMessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED,
+        type: BackgroundPontoonMessageType.FROM_BACKGROUND
+          .NOTIFICATIONS_UPDATED,
         data: change,
       };
       browser.runtime.sendMessage(message);

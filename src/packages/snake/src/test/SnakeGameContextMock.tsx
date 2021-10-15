@@ -25,9 +25,9 @@ function mockPropsToContext({
 }: MockProps) {
   return {
     stateRef: { current: { gameState, score } },
-    gameFunctions: ({
+    gameFunctions: {
       controlFunctions: { startGame, pauseGame, resumeGame, restartGame },
-    } as unknown) as GameFunctions,
+    } as unknown as GameFunctions,
   };
 }
 

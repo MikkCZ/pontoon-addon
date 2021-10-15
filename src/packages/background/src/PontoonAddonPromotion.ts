@@ -1,5 +1,5 @@
 import URI from 'urijs';
-import type { ContentScripts } from 'webextension-polyfill-ts';
+import type { ContentScripts } from 'webextension-polyfill';
 
 import type { RemotePontoon } from './RemotePontoon';
 import { browser } from './util/webExtensionsApi';
@@ -18,8 +18,7 @@ export class PontoonAddonPromotion {
 
   private async registerContentScript(): Promise<void> {
     const contentScriptInfo = {
-      file:
-        'packages/content-scripts/dist/pontoon-addon-promotion-content-script.js',
+      file: 'packages/content-scripts/dist/pontoon-addon-promotion-content-script.js',
     };
     await this.contentScript?.unregister();
     this.contentScript = await browser.contentScripts.register({

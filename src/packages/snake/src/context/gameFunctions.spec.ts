@@ -34,7 +34,7 @@ describe('gameFunctions', () => {
   describe('eventListeners', () => {
     it('onLoopStart sets gameModel', () => {
       expect(patchStateRef).not.toHaveBeenCalled();
-      const gameModel = ({ updateGame } as unknown) as Context;
+      const gameModel = { updateGame } as unknown as Context;
 
       gameFunctions.eventListeners.onLoopStart(gameModel);
 
@@ -47,9 +47,9 @@ describe('gameFunctions', () => {
       expect(updateGame).not.toHaveBeenCalled();
       stateRef.current = { ...defaultState, gameState: GameState.NOT_STARTED };
 
-      gameFunctions.eventListeners.onLoopStart(({
+      gameFunctions.eventListeners.onLoopStart({
         updateGame,
-      } as unknown) as Context);
+      } as unknown as Context);
 
       expect(updateGame).toHaveBeenCalledTimes(1);
       expect(updateGame.mock.calls[0]).toHaveLength(1);
@@ -60,16 +60,16 @@ describe('gameFunctions', () => {
       expect(updateGame).not.toHaveBeenCalled();
       stateRef.current = { ...defaultState, gameState: GameState.RUNNING };
 
-      gameFunctions.eventListeners.onLoopStart(({
+      gameFunctions.eventListeners.onLoopStart({
         updateGame,
-      } as unknown) as Context);
+      } as unknown as Context);
 
       expect(updateGame).not.toHaveBeenCalled();
     });
 
     it('onLoopFinish updates score for running game', () => {
       expect(patchStateRef).not.toHaveBeenCalled();
-      const gameModel = ({ game: { points: 42 } } as unknown) as Context;
+      const gameModel = { game: { points: 42 } } as unknown as Context;
       stateRef.current = { gameState: GameState.RUNNING, score: 13 };
 
       gameFunctions.eventListeners.onLoopFinish(gameModel);
@@ -81,7 +81,7 @@ describe('gameFunctions', () => {
 
     it('onLoopFinish preserves score from the game after it lost', () => {
       expect(patchStateRef).not.toHaveBeenCalled();
-      const gameModel = ({ game: { points: 42 } } as unknown) as Context;
+      const gameModel = { game: { points: 42 } } as unknown as Context;
       stateRef.current = { gameState: GameState.LOST, score: 13 };
 
       gameFunctions.eventListeners.onLoopFinish(gameModel);
@@ -144,7 +144,7 @@ describe('gameFunctions', () => {
     it('startGame starts the game and updates gameState', () => {
       expect(updateGame).not.toHaveBeenCalled();
       expect(patchStateRef).not.toHaveBeenCalled();
-      const gameModel = ({ updateGame } as unknown) as Context;
+      const gameModel = { updateGame } as unknown as Context;
       stateRef.current = { ...defaultState, gameModel };
 
       gameFunctions.controlFunctions.startGame();
@@ -160,7 +160,7 @@ describe('gameFunctions', () => {
     it('pauseGame pauses the game and updates gameState', () => {
       expect(updateGame).not.toHaveBeenCalled();
       expect(patchStateRef).not.toHaveBeenCalled();
-      const gameModel = ({ updateGame } as unknown) as Context;
+      const gameModel = { updateGame } as unknown as Context;
       stateRef.current = { ...defaultState, gameModel };
 
       gameFunctions.controlFunctions.pauseGame();
@@ -176,7 +176,7 @@ describe('gameFunctions', () => {
     it('resumeGame starts the game and updates gameState', () => {
       expect(updateGame).not.toHaveBeenCalled();
       expect(patchStateRef).not.toHaveBeenCalled();
-      const gameModel = ({ updateGame } as unknown) as Context;
+      const gameModel = { updateGame } as unknown as Context;
       stateRef.current = { ...defaultState, gameModel };
 
       gameFunctions.controlFunctions.resumeGame();

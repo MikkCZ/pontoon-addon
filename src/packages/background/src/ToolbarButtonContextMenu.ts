@@ -1,5 +1,4 @@
-import type { Menus } from 'webextension-polyfill-ts';
-
+import type { Menus } from 'webextension-polyfill';
 import type { Options } from '@pontoon-addon/commons/src/Options';
 import type { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 

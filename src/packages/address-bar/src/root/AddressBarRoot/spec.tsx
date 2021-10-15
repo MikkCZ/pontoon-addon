@@ -1,7 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
-
 import type { Project } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';

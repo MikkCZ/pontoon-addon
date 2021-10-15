@@ -1,5 +1,4 @@
-import { Tabs } from 'webextension-polyfill-ts';
-
+import { Tabs } from 'webextension-polyfill';
 import type { Options } from '@pontoon-addon/commons/src/Options';
 import type { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 

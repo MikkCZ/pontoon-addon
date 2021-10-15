@@ -1,5 +1,4 @@
-import type { Runtime } from 'webextension-polyfill-ts';
-
+import type { Runtime } from 'webextension-polyfill';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 

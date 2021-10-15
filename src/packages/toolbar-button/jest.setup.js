@@ -9,8 +9,4 @@ configure({ adapter: new Adapter() });
 
 global.browser = browser;
 
-global.flushPromises = () => {
-  return new Promise((resolve) => setImmediate(resolve));
-};
-
 JavascriptTimeAgo.locale(en);

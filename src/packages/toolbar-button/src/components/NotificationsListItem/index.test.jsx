@@ -1,10 +1,17 @@
-/* global browser, flushPromises */
+/* global browser */
 import React from 'react';
 import { render, mount, shallow } from 'enzyme';
+import flushPromises from 'flush-promises';
 import { NotificationsListItem } from '.';
 import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 import ReactTimeAgo from 'react-time-ago';
+
+const windowCloseSpy = jest.spyOn(window, 'close');
+
+afterEach(() => {
+  windowCloseSpy.mockReset();
+});
 
 describe('<NotificationsListItem>', () => {
 

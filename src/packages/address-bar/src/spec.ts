@@ -1,5 +1,4 @@
 import ReactDOM from 'react-dom';
-
 import { Project } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
@@ -8,11 +7,11 @@ const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
 
 beforeEach(() => {
   mockBrowserNode.enable();
-  mockBrowser.runtime.sendMessage.expect(expect.anything()).andResolve(({
+  mockBrowser.runtime.sendMessage.expect(expect.anything()).andResolve({
     name: 'Some project',
     pageUrl: 'https://127.0.0.1/',
     translationUrl: 'https://127.0.0.1/',
-  } as Project) as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+  } as Project as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 });
 
 afterEach(() => {

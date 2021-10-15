@@ -1,5 +1,4 @@
-import { Menus, Tabs } from 'webextension-polyfill-ts';
-
+import { Menus, Tabs } from 'webextension-polyfill';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
 

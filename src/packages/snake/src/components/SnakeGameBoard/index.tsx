@@ -31,9 +31,10 @@ const finalBoardHeight =
 
 function useBoardWith(eventListeners: EventListeners): JSX.Element {
   // (!) hack: the game does not survive re-renders, ensure it gets never re-rendered
-  return useMemo(() => <SnakeGame {...gameOptions} {...eventListeners} />, [
-    eventListeners,
-  ]);
+  return useMemo(
+    () => <SnakeGame {...gameOptions} {...eventListeners} />,
+    [eventListeners]
+  );
 }
 
 export const SnakeGameBoard: React.FC = () => {
