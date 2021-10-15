@@ -2239,9 +2239,9 @@
     "@testing-library/dom" "^8.0.0"
 
 "@testing-library/user-event@^13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.3.0.tgz#2ce50953b885c452a2b2df880a1998637599dcf5"
-  integrity sha512-f8AJ8ybUna88Lmx3l5fuPMhzyyrcopQk/vgVDHVKOnOf2kkjfVSb0Px77iduHmh6uFUcXsD/z6qp4G13rObVrw==
+  version "13.4.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.4.1.tgz#8d9e73bcc7be09560b4c0ffbb6842ac43bc80ed2"
+  integrity sha512-WcnVwi96MmFsHLMNvBz03aPMVDU3UOgucXcn85fNXKKdtd7CHi2NAgE3hASt157yTB9krym0ikFVKbqYghKRCg==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
@@ -2329,7 +2329,7 @@
     tapable "^2.0.0"
     webpack "^5.1.0"
 
-"@types/dompurify@^2.2.1", "@types/dompurify@^2.2.2":
+"@types/dompurify@^2.2.2", "@types/dompurify@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.3.1.tgz#2934adcd31c4e6b02676f9c22f9756e5091c04dd"
   integrity sha512-YJth9qa0V/E6/XPH1Jq4BC8uCMmO8V1fKWn8PCvuZcAhMn7q0ez9LW6naQT04UZzjFfAPhyRMZmI2a2rbMlEFA==
@@ -2343,7 +2343,7 @@
   dependencies:
     "@types/enzyme" "*"
 
-"@types/enzyme@*", "@types/enzyme@^3.10.8":
+"@types/enzyme@*", "@types/enzyme@^3.10.8", "@types/enzyme@^3.10.9":
   version "3.10.9"
   resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-3.10.9.tgz#b2d7c7429a37d994c156b6f361e83f271a60c8aa"
   integrity sha512-dx5UvcWe2Vtye6S9Hw2rFB7Ul9uMXOAje2FAbXvVYieQDNle9qPAo7DfvFMSztZ9NFiD3dVZ4JsRYGTrSLynJg==
@@ -2403,7 +2403,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/javascript-time-ago@^2.0.2":
+"@types/javascript-time-ago@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/javascript-time-ago/-/javascript-time-ago-2.0.3.tgz#0cb6afd91f0a8fd876b4d7ffae1d080f2d8e8193"
   integrity sha512-G6SdYh6gHxgCTU0s4cMIRHwRO4p3f7jQSZbDPfUOZpUAG1od3rTjT0e8rxGThUiTTWQHwpBRws8eHO8D2QqfkA==
@@ -6476,7 +6476,7 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-javascript-time-ago@^2.3.4:
+javascript-time-ago@^2.3.9:
   version "2.3.9"
   resolved "https://registry.yarnpkg.com/javascript-time-ago/-/javascript-time-ago-2.3.9.tgz#4f6d143590396f4efbba9399f8013a7b86ef3e66"
   integrity sha512-AhVoLXsN+CRNjVaTM837zIN/8uRzGy2G/8MTNw24bjBFpWyqMeGQCAoI5HOED7UKCqK2fuXDuAugBbmbODpzkA==
