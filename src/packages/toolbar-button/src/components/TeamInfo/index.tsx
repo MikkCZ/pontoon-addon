@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
+import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import lightbulbIcon from '@assets/img/lightbulb-blue.svg';
-import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { browser } from '../../util/webExtensionsApi';
 import { TeamInfoListItem } from '../TeamInfoListItem';
@@ -63,6 +63,7 @@ export const TeamInfo: React.FC<Props> = ({
             key="activity"
             label="Activity"
             value={
+              latestActivity.date_iso &&
               !isNaN(Date.parse(latestActivity.date_iso)) ? (
                 <>
                   {latestActivity.user}{' '}
@@ -120,7 +121,7 @@ export const TeamInfo: React.FC<Props> = ({
             key={category.status}
             labelBeforeStyle={category.labelBeforeStyle}
             label={category.text}
-            value={stringsData[category.dataProperty]}
+            value={stringsData ? stringsData[category.dataProperty] : ''}
             onClick={() =>
               openTeamStringsWithStatus(
                 backgroundPontoonClient,

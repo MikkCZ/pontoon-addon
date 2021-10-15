@@ -31,7 +31,7 @@ export const TeamInfoListItem: React.FC<Props> = ({
           {children}
         </button>
       ) : (
-        { children }
+        children
       )}
     </li>
   );

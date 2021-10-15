@@ -1,9 +1,10 @@
 import React, { MouseEvent } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import DOMPurify from 'dompurify';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import Linkify from 'react-linkify';
 import parse from 'html-react-parser';
-
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { browser } from '../../util/webExtensionsApi';

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { browser } from '../../util/webExtensionsApi';
@@ -60,7 +59,8 @@ export const NotificationsList: React.FC<Props> = ({
             className="NotificationsList-see-all"
             text="See all Notifications"
             onClick={async () => {
-              const teamPageUrl = await backgroundPontoonClient.getTeamPageUrl();
+              const teamPageUrl =
+                await backgroundPontoonClient.getTeamPageUrl();
               await browser.tabs.create({ url: teamPageUrl });
               window.close();
             }}

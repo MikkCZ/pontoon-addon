@@ -1,17 +1,14 @@
-/* global browser */
 import React from 'react';
 import { shallow } from 'enzyme';
 import flushPromises from 'flush-promises';
 import { act } from 'react-dom/test-utils';
-
-import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
-import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
+import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';
-
 import { NotificationsListItem } from '../NotificationsListItem';
 import { NotificationsListError } from '../NotificationsListError';
 import { BottomLink } from '../BottomLink';
+
 import { NotificationsList } from '.';
 
 const windowCloseSpy = jest.spyOn(window, 'close');
@@ -20,12 +17,21 @@ afterEach(() => {
   windowCloseSpy.mockReset();
 });
 
+const backgroundPontoonClientMock = {
+  getTeamPageUrl: async () => 'https://127.0.0.1/team-page',
+  markAllNotificationsAsRead: jest.fn(),
+  subscribeToNotificationsChange: jest.fn(),
+} as unknown as BackgroundPontoonClient;
+
 beforeEach(() => {
   mockBrowserNode.enable();
 });
 
 afterEach(() => {
   mockBrowserNode.disable();
+  (
+    backgroundPontoonClientMock.markAllNotificationsAsRead as jest.Mock
+  ).mockReset();
 });
 
 describe('NotificationsList', () => {
@@ -36,13 +42,13 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
-    expect(wrapper.find(NotificationsListItem).length).toBe(1);
-    expect(wrapper.find(BottomLink).length).toBe(1);
-    expect(wrapper.find(NotificationsListError).length).toBe(0);
+    expect(wrapper.find(NotificationsListItem)).toHaveLength(1);
+    expect(wrapper.find(BottomLink)).toHaveLength(1);
+    expect(wrapper.find(NotificationsListError)).toHaveLength(0);
   });
 
   it('sorts notifications by id', () => {
@@ -54,11 +60,11 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
-    expect(wrapper.find(NotificationsListItem).length).toBe(3);
+    expect(wrapper.find(NotificationsListItem)).toHaveLength(3);
     expect(wrapper.find(NotificationsListItem).at(0).key()).toBe('42');
     expect(wrapper.find(NotificationsListItem).at(1).key()).toBe('13');
     expect(wrapper.find(NotificationsListItem).at(2).key()).toBe('1');
@@ -72,11 +78,11 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={true}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
-    expect(wrapper.find(NotificationsListItem).length).toBe(1);
+    expect(wrapper.find(NotificationsListItem)).toHaveLength(1);
     expect(wrapper.find(NotificationsListItem).first().key()).toBe('2');
   });
 
@@ -85,13 +91,13 @@ describe('NotificationsList', () => {
       <NotificationsList
         notificationsData={undefined}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
-    expect(wrapper.find(NotificationsListItem).length).toBe(0);
-    expect(wrapper.find(BottomLink).length).toBe(0);
-    expect(wrapper.find(NotificationsListError).length).toBe(1);
+    expect(wrapper.find(NotificationsListItem)).toHaveLength(0);
+    expect(wrapper.find(BottomLink)).toHaveLength(0);
+    expect(wrapper.find(NotificationsListError)).toHaveLength(1);
   });
 
   it('bottom link marks all as read when unread notifications are present', () => {
@@ -102,7 +108,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -110,17 +116,13 @@ describe('NotificationsList', () => {
       wrapper.find(BottomLink).hasClass('NotificationsList-mark-all-as-read')
     ).toBe(true);
 
-    mockBrowser.runtime.sendMessage
-      .expect({
-        type: BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ,
-      })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
     act(() => {
       wrapper.find(BottomLink).simulate('click');
     });
 
-    mockBrowserNode.verify();
+    expect(
+      backgroundPontoonClientMock.markAllNotificationsAsRead
+    ).toHaveBeenCalled();
   });
 
   it('bottom link shows all when all notifications are read', async () => {
@@ -131,7 +133,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -139,16 +141,14 @@ describe('NotificationsList', () => {
       true
     );
 
-    mockBrowser.runtime.sendMessage
-      .expect({
-        type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL,
-      })
-      .andResolve('https://127.0.0.1/' as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-    mockBrowser.tabs.create.expect(expect.anything()).andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    mockBrowser.tabs.create
+      .expect({ url: 'https://127.0.0.1/team-page' })
+      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     act(() => {
       wrapper.find(BottomLink).simulate('click');
     });
+    await flushPromises();
 
     mockBrowserNode.verify();
   });

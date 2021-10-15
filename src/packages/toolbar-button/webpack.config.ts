@@ -35,6 +35,11 @@ const config: Configuration = {
         use: 'ts-loader',
       },
       {
+        test: /\.json$/,
+        exclude: /(node_modules)/,
+        loader: 'ts-loader',
+      },
+      {
         test: /\.(png|svg)$/,
         loader: 'file-loader',
       },
@@ -42,7 +47,7 @@ const config: Configuration = {
   },
   resolve: {
     modules: [ 'node_modules' ],
-    extensions: [ '.js', '.ts', '.json', '.jsx', '.tsx', '.css', '.png', '.svg' ],
+    extensions: [ '.js', '.ts', '.json', '.jsx', '.tsx', '.json', '.css', '.png', '.svg' ],
     alias: {
       '@assets': path.resolve('./assets/'),
       '@pontoon-addon/commons': path.resolve('../commons/'),

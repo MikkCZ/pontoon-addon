@@ -35,7 +35,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:jsx-a11y/recommended',
     'plugin:jest/recommended',
     'plugin:jest/style',
     'plugin:testing-library/dom',

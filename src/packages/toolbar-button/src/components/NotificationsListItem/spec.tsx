@@ -1,14 +1,16 @@
 import React from 'react';
-import { render, mount, shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import ReactTimeAgo from 'react-time-ago';
-
-import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
-import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
+import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 
 import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';
 
 import { NotificationsListItem } from '.';
+
+const backgroundPontoonClientMock = {
+  getTeamProjectUrl: async (projectUrl: string) => projectUrl,
+} as unknown as BackgroundPontoonClient;
 
 beforeEach(() => {
   mockBrowserNode.enable();
@@ -28,7 +30,7 @@ describe('NotificationsListItem', () => {
         target={{ anchor: 'TARGET', url: '' }}
         date_iso="1970-01-01T00:00:00Z"
         description={{ safe: true, content: 'DESCRIPTION' }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -36,20 +38,20 @@ describe('NotificationsListItem', () => {
       true
     );
     expect(wrapper.find('.NotificationsListItem').hasClass('read')).toBe(false);
-    expect(wrapper.find('.link').length).toBe(2);
+    expect(wrapper.find('.link')).toHaveLength(2);
     expect(wrapper.find('.link').first().text()).toBe('ACTOR');
     expect(wrapper.find('.link').last().text()).toBe('TARGET');
     expect(wrapper.find('span').text()).toBe(' VERB ');
     expect(
-      wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo).length
-    ).toBe(1);
+      wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo)
+    ).toHaveLength(1);
     expect(wrapper.find('.NotificationsListItem-description').text()).toBe(
       'DESCRIPTION'
     );
   });
 
   it('renders links and formatting tags in description', () => {
-    const wrapper = render(
+    const wrapper = mount(
       <NotificationsListItem
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
@@ -61,7 +63,7 @@ describe('NotificationsListItem', () => {
           content:
             'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -71,7 +73,7 @@ describe('NotificationsListItem', () => {
   });
 
   it('linkifies URL in unsafe description', () => {
-    const wrapper = render(
+    const wrapper = mount(
       <NotificationsListItem
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
@@ -82,7 +84,7 @@ describe('NotificationsListItem', () => {
           safe: false,
           content: 'DESCRIPTION WITH A LINK TO https://example.com/',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -92,7 +94,7 @@ describe('NotificationsListItem', () => {
   });
 
   it('prevents XSS in description', () => {
-    const wrapper = render(
+    const wrapper = mount(
       <NotificationsListItem
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
@@ -104,7 +106,7 @@ describe('NotificationsListItem', () => {
           content:
             'DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -117,7 +119,7 @@ describe('NotificationsListItem', () => {
     const wrapper = shallow(
       <NotificationsListItem
         unread={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
@@ -130,18 +132,6 @@ describe('NotificationsListItem', () => {
   it('actor and target links work', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
     const targetUrl = 'https://127.0.0.1/target/';
-    mockBrowser.runtime.sendMessage
-      .expect({
-        type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
-        args: [actorUrl],
-      })
-      .andResolve(actorUrl as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-    mockBrowser.runtime.sendMessage
-      .expect({
-        type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
-        args: [targetUrl],
-      })
-      .andResolve(targetUrl as any); // eslint-disable-line @typescript-eslint/no-explicit-any
     mockBrowser.tabs.create.expect(expect.anything()).andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const wrapper = shallow(
@@ -149,14 +139,14 @@ describe('NotificationsListItem', () => {
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
         target={{ url: targetUrl, anchor: 'TARGET' }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 
     expect(wrapper.find('.NotificationsListItem').hasClass('pointer')).toBe(
       false
     );
-    expect(wrapper.find('.link').length).toBe(2);
+    expect(wrapper.find('.link')).toHaveLength(2);
 
     act(() => {
       wrapper.find('.link').first().simulate('click', {
@@ -176,19 +166,13 @@ describe('NotificationsListItem', () => {
 
   it('whole item is clickable when only one link is present', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
-    mockBrowser.runtime.sendMessage
-      .expect({
-        type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
-        args: [actorUrl],
-      })
-      .andResolve(actorUrl as any); // eslint-disable-line @typescript-eslint/no-explicit-any
     mockBrowser.tabs.create.expect(expect.anything()).andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const wrapper = shallow(
       <NotificationsListItem
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
+        backgroundPontoonClient={backgroundPontoonClientMock}
       />
     );
 

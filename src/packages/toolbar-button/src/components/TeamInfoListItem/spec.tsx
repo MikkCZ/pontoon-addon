@@ -34,6 +34,6 @@ describe('TeamInfoListItem', () => {
   it('does not render any link if no onClick action is provided', () => {
     const wrapper = shallow(<TeamInfoListItem label="LABEL" value="VALUE" />);
 
-    expect(wrapper.find('.link').length).toBe(0);
+    expect(wrapper.find('.link')).toHaveLength(0);
   });
 });
