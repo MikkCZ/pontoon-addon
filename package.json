@@ -31,9 +31,11 @@
     "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build --config ./web-ext.config.js -s ./src -a ./dist/web-ext/mozilla",
     "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
     "build:lint": "web-ext lint --config ./web-ext.config.js -s ./src",
-    "build:privacy-policy-html": "mkdir -p ./dist && marked -i PRIVACY.md -o ./dist/privacy-policy.html"
+    "build:privacy-policy-html": "mkdir -p ./dist && marked -i PRIVACY.md -o ./dist/privacy-policy.html",
+    "codecov:upload": "codecov"
   },
   "devDependencies": {
+    "codecov": "^3.8.3",
     "lerna": "^3.22.1",
     "marked": "^2.0.3",
     "npm-run-all": "^4.1.5",

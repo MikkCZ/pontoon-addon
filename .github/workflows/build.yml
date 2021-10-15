@@ -28,7 +28,9 @@ jobs:
           name: dist
           path: dist
           retention-days: 30
+      - name: Run the tests
+        run: yarn run test
       - name: Upload code coverage to Codecov
+        run: yarn run codecov:upload
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash) -Z

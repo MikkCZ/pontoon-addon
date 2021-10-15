@@ -13,4 +13,5 @@ docker run --user "$(id -u):$(id -g)" \
   -v "${PWD}/scripts/.yarnrc:${PWD}/.yarnrc" \
   --rm=true \
   --entrypoint=/bin/bash \
-  "${CONTAINER_IMAGE}" -c "${COMMAND}"
+  "${CONTAINER_IMAGE}" -c "${COMMAND}" \
+  -e CODECOV_TOKEN = $CODECOV_TOKEN 

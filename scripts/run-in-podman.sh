@@ -13,4 +13,5 @@ podman run \
   -v "${PWD}/scripts/.yarnrc:${PWD}/.yarnrc:Z" \
   --rm=true \
   --entrypoint=/bin/bash \
-  "${CONTAINER_IMAGE}" -c "${COMMAND}"
+  "${CONTAINER_IMAGE}" -c "${COMMAND}"  \
+  -e CODECOV_TOKEN = $CODECOV_TOKEN 

@@ -13,6 +13,10 @@ build:
 watch:
 	yarn watch
 
+.PHONY: codecov
+watch:
+	yarn codecov:upload
+
 .PHONY: download_jq_and_build
 download_jq_and_build:
 	curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o scripts/jq
@@ -41,4 +45,12 @@ watch_in_docker:
 
 .PHONY: watch_in_podman
 watch_in_podman:
+	bash ./scripts/run-in-podman.sh make watch
+
+.PHONY: codecov_in_docker
+codecov_in_docker:
+	bash ./scripts/run-in-docker.sh make codecov
+
+.PHONY: codecov_in_podman
+codecov_in_podman:
 	bash ./scripts/run-in-podman.sh make watch
