@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import ReactDOM from 'react-dom';
 
 import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
@@ -11,6 +12,7 @@ beforeEach(() => {
     },
     latestTeamsActivity: {},
   });
+  mockBrowser.runtime.onMessage.hasListener.expect(expect.anything()).andReturn(true);
 });
 
 afterEach(() => {
@@ -38,6 +40,8 @@ describe('index', () => {
 
     const renderPromise = await require('.');
     await renderPromise;
+
+    await flushPromises();
 
     expect(reactDomRender).toHaveBeenCalledTimes(1);
     expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);

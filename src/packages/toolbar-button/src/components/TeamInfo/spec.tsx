@@ -9,6 +9,7 @@ import { TeamInfoListItem } from '../TeamInfoListItem';
 import { BottomLink } from '../BottomLink';
 
 import { TeamInfo } from '.';
+import flushPromises from 'flush-promises';
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
@@ -82,12 +83,7 @@ describe('TeamInfo', () => {
     expect(wrapper.find(TeamInfoListItem).at(0).prop('value')).toBe('―');
   });
 
-  it('all links work', async () => {
-    mockBrowser.tabs.create
-      .expect({ url: 'https://127.0.0.1/team-page' })
-      .andResolve({} as any)
-      .times(3); // eslint-disable-line @typescript-eslint/no-explicit-any
-
+  it('team page links work', async () => {
     const wrapper = mount(
       <TeamInfo
         name="Czech"
@@ -109,9 +105,41 @@ describe('TeamInfo', () => {
       />
     );
 
+    mockBrowser.tabs.create
+      .expect({ url: 'https://127.0.0.1/team-page' })
+      .andResolve({} as any)
+      .times(3); // eslint-disable-line @typescript-eslint/no-explicit-any
+
     wrapper.find('.TeamInfo-name').simulate('click');
     wrapper.find('.TeamInfo-code').simulate('click');
     wrapper.find(BottomLink).simulate('click');
+
+    await flushPromises();
+
+    mockBrowserNode.verify();
+  });
+
+  it('string status links work', async () => {
+    const wrapper = mount(
+      <TeamInfo
+        name="Czech"
+        code="cs"
+        stringsData={{
+          approvedStrings: 0,
+          fuzzyStrings: 0,
+          stringsWithWarnings: 0,
+          stringsWithErrors: 0,
+          missingStrings: 0,
+          unreviewedStrings: 0,
+          totalStrings: 0,
+        }}
+        latestActivity={{
+          user: 'USER',
+          date_iso: '1970-01-01T00:00:00Z',
+        }}
+        backgroundPontoonClient={backgroundPontoonClientMock}
+      />
+    );
 
     [
       'translated',
@@ -122,23 +150,14 @@ describe('TeamInfo', () => {
       'unreviewed',
       'all',
     ].forEach(
-      (status) =>
+      async (status, index) => {
         mockBrowser.tabs.create
           .expect({ url: `https://127.0.0.1/${status}/` })
           .andResolve({} as any)
-          .times(1) // eslint-disable-line @typescript-eslint/no-explicit-any
-    );
-
-    act(() => {
-      wrapper.find(TeamInfoListItem).at(1).simulate('click');
-      wrapper.find(TeamInfoListItem).at(2).simulate('click');
-      wrapper.find(TeamInfoListItem).at(3).simulate('click');
-      wrapper.find(TeamInfoListItem).at(4).simulate('click');
-      wrapper.find(TeamInfoListItem).at(5).simulate('click');
-      wrapper.find(TeamInfoListItem).at(6).simulate('click');
-      wrapper.find(TeamInfoListItem).at(7).simulate('click');
-    });
-
-    mockBrowserNode.verify();
+          .times(1); // eslint-disable-line @typescript-eslint/no-explicit-any
+        wrapper.find(TeamInfoListItem).at(index+1).simulate('click');
+        await flushPromises();
+        mockBrowserNode.verify();
+      });
   });
 });
