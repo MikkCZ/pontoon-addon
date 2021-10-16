@@ -22,7 +22,7 @@ afterEach(() => {
   mockBrowserNode.disable();
 });
 
-xdescribe('NotificationsListError', () => {
+describe.skip('NotificationsListError', () => {
   it('opens sign-in page on click', async () => {
     const signInUrl = 'https://127.0.0.1/';
 
