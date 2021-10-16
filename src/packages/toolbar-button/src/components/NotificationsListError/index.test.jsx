@@ -11,7 +11,7 @@ afterEach(() => {
   windowCloseSpy.mockReset();
 });
 
-describe('<NotificationsListError>', () => {
+xdescribe('<NotificationsListError>', () => {
 
   afterEach(() => {
     browser.flush();

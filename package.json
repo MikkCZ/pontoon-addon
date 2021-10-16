@@ -26,7 +26,7 @@
     "clean-build": "run-s clean-install build",
     "packages:build": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn build",
     "packages:watch": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn watch",
-    "packages:test": "lerna exec --parallel -- yarn test",
+    "packages:test": "lerna exec --stream --concurrency 3 -- yarn test",
     "packages:clean": "lerna exec --parallel -- yarn clean",
     "build:mozilla": "echo 'Packaging for Mozilla based browsers.' && web-ext build --config ./web-ext.config.js -s ./src -a ./dist/web-ext/mozilla",
     "build:chrome": "echo 'Packaging for Chromium based browsers.' && bash ./scripts/build-chrome.sh",
