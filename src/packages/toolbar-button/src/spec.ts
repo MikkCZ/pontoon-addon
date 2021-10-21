@@ -12,7 +12,9 @@ beforeEach(() => {
     },
     latestTeamsActivity: {},
   });
-  mockBrowser.runtime.onMessage.hasListener.expect(expect.anything()).andReturn(true);
+  mockBrowser.runtime.onMessage.hasListener
+    .expect(expect.anything())
+    .andReturn(true);
 });
 
 afterEach(() => {

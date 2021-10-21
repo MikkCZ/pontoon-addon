@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import { mount } from 'enzyme';
-import { act } from 'react-dom/test-utils';
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import flushPromises from 'flush-promises';
 
 import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 import { BottomLink } from '../BottomLink';
 
 import { TeamInfo } from '.';
-import flushPromises from 'flush-promises';
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
@@ -149,15 +148,17 @@ describe('TeamInfo', () => {
       'missing',
       'unreviewed',
       'all',
-    ].forEach(
-      async (status, index) => {
-        mockBrowser.tabs.create
-          .expect({ url: `https://127.0.0.1/${status}/` })
-          .andResolve({} as any)
-          .times(1); // eslint-disable-line @typescript-eslint/no-explicit-any
-        wrapper.find(TeamInfoListItem).at(index+1).simulate('click');
-        await flushPromises();
-        mockBrowserNode.verify();
-      });
+    ].forEach(async (status, index) => {
+      mockBrowser.tabs.create
+        .expect({ url: `https://127.0.0.1/${status}/` })
+        .andResolve({} as any)
+        .times(1); // eslint-disable-line @typescript-eslint/no-explicit-any
+      wrapper
+        .find(TeamInfoListItem)
+        .at(index + 1)
+        .simulate('click');
+      await flushPromises();
+      mockBrowserNode.verify();
+    });
   });
 });

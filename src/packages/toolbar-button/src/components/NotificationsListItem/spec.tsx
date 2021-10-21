@@ -138,7 +138,10 @@ describe('NotificationsListItem', () => {
   it('actor and target links work', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
     const targetUrl = 'https://127.0.0.1/target/';
-    mockBrowser.tabs.create.expect(expect.anything()).andResolve({} as any).times(2); // eslint-disable-line @typescript-eslint/no-explicit-any
+    mockBrowser.tabs.create
+      .expect(expect.anything())
+      .andResolve({} as any)
+      .times(2); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const wrapper = shallow(
       <NotificationsListItem
@@ -172,7 +175,10 @@ describe('NotificationsListItem', () => {
 
   it('whole item is clickable when only one link is present', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
-    mockBrowser.tabs.create.expect(expect.anything()).andResolve({} as any).times(0); // eslint-disable-line @typescript-eslint/no-explicit-any
+    mockBrowser.tabs.create
+      .expect(expect.anything())
+      .andResolve({} as any)
+      .times(0); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const wrapper = shallow(
       <NotificationsListItem
