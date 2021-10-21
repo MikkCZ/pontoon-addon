@@ -3,6 +3,7 @@ import { mount, shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import ReactTimeAgo from 'react-time-ago';
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import flushPromises from 'flush-promises';
 
 import { mockBrowser, mockBrowserNode } from '../../test/mockWebExtensionsApi';
 
@@ -73,7 +74,7 @@ describe('NotificationsListItem', () => {
       />
     );
 
-    expect(wrapper.find('.NotificationsListItem-description').html()).toBe(
+    expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
       'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>'
     );
   });
@@ -94,7 +95,7 @@ describe('NotificationsListItem', () => {
       />
     );
 
-    expect(wrapper.find('.NotificationsListItem-description').html()).toBe(
+    expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
       '<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https://example.com/" class="link" target="_blank" rel="noopener noreferrer">https://example.com/</a></span>'
     );
   });
@@ -116,7 +117,7 @@ describe('NotificationsListItem', () => {
       />
     );
 
-    expect(wrapper.find('.NotificationsListItem-description').html()).toBe(
+    expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
       'DESCRIPTION WITH(OUT) <a>XSS ATTEMPTS</a> '
     );
   });
@@ -162,13 +163,13 @@ describe('NotificationsListItem', () => {
         preventDefault: jest.fn(),
         stopPropagation: jest.fn(),
       });
-    });
-    act(() => {
       wrapper.find('.link').last().simulate('click', {
         preventDefault: jest.fn(),
         stopPropagation: jest.fn(),
       });
     });
+
+    await flushPromises();
 
     mockBrowserNode.verify();
   });
@@ -198,6 +199,8 @@ describe('NotificationsListItem', () => {
         stopPropagation: jest.fn(),
       });
     });
+
+    await flushPromises();
 
     mockBrowserNode.verify();
   });
