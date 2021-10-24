@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import marked from 'marked';
+import marked, { RendererThis } from 'marked';
 import DOMPurify from 'dompurify';
 
 async function getTextContent(file: string): Promise<string> {
@@ -9,18 +9,15 @@ async function getTextContent(file: string): Promise<string> {
 function renderMarkdown(markdown: string) {
   const renderer = new marked.Renderer();
   const defaultLinkRenderer = renderer.link;
-  renderer.link = (
+  renderer.link = function (
+    this: RendererThis,
     href: string | null,
     title: string | null,
     text: string
-  ): string => {
-    return (
-      defaultLinkRenderer
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        .call(href, title, text)
-        .replace(/^<a /, '<a target="_blank" rel="noreferrer" ')
-    );
+  ): string {
+    return defaultLinkRenderer
+      .call(this, href, title, text)
+      .replace(/^<a /, '<a target="_blank" rel="noreferrer" ');
   };
   const html = marked(markdown, { renderer });
   return DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
