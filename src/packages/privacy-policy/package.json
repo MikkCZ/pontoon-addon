@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "dompurify": "^2.2.8",
-    "marked": "^3.0.7",
+    "marked": "^4.0.10",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
