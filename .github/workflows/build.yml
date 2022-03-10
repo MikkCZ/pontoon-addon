@@ -28,9 +28,7 @@ jobs:
           name: dist
           path: dist
           retention-days: 30
-      - name: Run the tests
-        run: yarn run test
       - name: Upload code coverage to Codecov
-        run: yarn run codecov:upload
+        run: make codecov_in_docker
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
