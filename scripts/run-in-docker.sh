@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-CONTAINER_IMAGE='docker.io/library/node:14-buster' # LTS
+CONTAINER_IMAGE='docker.io/library/node:16-bullseye' # LTS
 COMMAND=${@}
 
 docker pull "${CONTAINER_IMAGE}"
