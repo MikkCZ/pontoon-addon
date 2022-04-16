@@ -32,3 +32,13 @@ jobs:
         run: make codecov_in_docker
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Build add-on (development version)
+        run: make build_in_docker
+        env:
+          MODE: development
+      - name: Save built add-on (development version)
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-development
+          path: dist
+          retention-days: 30

@@ -8,6 +8,7 @@ COMMAND=${@}
 
 docker pull "${CONTAINER_IMAGE}"
 docker run --user "$(id -u):$(id -g)" \
+  -e MODE="${MODE}" \
   -e CODECOV_TOKEN="${CODECOV_TOKEN}" \
   --workdir "${PWD}" \
   -v "${PWD}:${PWD}" \
