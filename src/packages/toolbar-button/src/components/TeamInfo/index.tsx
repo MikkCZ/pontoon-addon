@@ -12,13 +12,13 @@ import '@pontoon-addon/commons/static/css/pontoon.css';
 import './index.css';
 
 interface Props {
-  name: string;
-  code: string;
-  latestActivity: {
+  name?: string;
+  code?: string;
+  stringsData?: any;
+  latestActivity?: {
     user: string;
     date_iso?: string;
   };
-  stringsData?: any;
   backgroundPontoonClient: BackgroundPontoonClient;
 }
 
@@ -40,10 +40,10 @@ async function openTeamStringsWithStatus(
 }
 
 export const TeamInfo: React.FC<Props> = ({
-  name,
-  code,
-  latestActivity,
+  name = '',
+  code = '',
   stringsData,
+  latestActivity,
   backgroundPontoonClient,
 }) => {
   return (

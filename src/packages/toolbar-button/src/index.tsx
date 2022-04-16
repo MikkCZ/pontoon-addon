@@ -51,9 +51,9 @@ async function render(): Promise<void> {
         backgroundPontoonClient={backgroundPontoonClient}
       />
       <TeamInfo
-        name={teamData.name}
-        code={teamData.code}
-        stringsData={teamData.strings}
+        name={teamData?.name}
+        code={teamData?.code}
+        stringsData={teamData?.strings}
         latestActivity={latestTeamActivity}
         backgroundPontoonClient={backgroundPontoonClient}
       />
