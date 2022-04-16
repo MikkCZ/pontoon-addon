@@ -8,6 +8,7 @@ COMMAND=${@}
 
 podman pull "${CONTAINER_IMAGE}"
 podman run \
+  -e MODE="${MODE}" \
   -e CODECOV_TOKEN="${CODECOV_TOKEN}" \
   --workdir "${PWD}" \
   -v "${PWD}:${PWD}:Z" \
