@@ -52,7 +52,9 @@ describe('TeamInfo', () => {
     expect(wrapper.find(TeamInfoListItem).at(1).prop('label')).toBe(
       'translated'
     );
-    expect(wrapper.find(TeamInfoListItem).at(2).prop('label')).toBe('fuzzy');
+    expect(wrapper.find(TeamInfoListItem).at(2).prop('label')).toBe(
+      'pretranslated'
+    );
     expect(wrapper.find(TeamInfoListItem).at(3).prop('label')).toBe('warnings');
     expect(wrapper.find(TeamInfoListItem).at(4).prop('label')).toBe('errors');
     expect(wrapper.find(TeamInfoListItem).at(5).prop('label')).toBe('missing');
@@ -89,7 +91,7 @@ describe('TeamInfo', () => {
         code="cs"
         stringsData={{
           approvedStrings: 0,
-          fuzzyStrings: 0,
+          pretranslatedStrings: 0,
           stringsWithWarnings: 0,
           stringsWithErrors: 0,
           missingStrings: 0,
@@ -125,7 +127,7 @@ describe('TeamInfo', () => {
         code="cs"
         stringsData={{
           approvedStrings: 0,
-          fuzzyStrings: 0,
+          pretranslatedStrings: 0,
           stringsWithWarnings: 0,
           stringsWithErrors: 0,
           missingStrings: 0,
@@ -142,7 +144,7 @@ describe('TeamInfo', () => {
 
     [
       'translated',
-      'fuzzy',
+      'pretranslated',
       'warnings',
       'errors',
       'missing',

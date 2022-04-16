@@ -83,10 +83,10 @@ export const TeamInfo: React.FC<Props> = ({
             labelBeforeStyle: { backgroundColor: '#7bc876' },
           },
           {
-            status: 'fuzzy',
-            text: 'fuzzy',
-            dataProperty: 'fuzzyStrings',
-            labelBeforeStyle: { backgroundColor: '#fed271' },
+            status: 'pretranslated',
+            text: 'pretranslated',
+            dataProperty: 'pretranslatedStrings',
+            labelBeforeStyle: { backgroundColor: '#c0ff00' },
           },
           {
             status: 'warnings',

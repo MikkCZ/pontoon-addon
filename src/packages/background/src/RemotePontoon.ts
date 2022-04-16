@@ -208,7 +208,7 @@ export class RemotePontoon {
       this._dataFetcher
         .fetch(
           this._getQueryURL(
-            '{locales{code,name,approvedStrings,fuzzyStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}'
+            '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}'
           )
         )
         .then(
@@ -231,7 +231,7 @@ export class RemotePontoon {
             name: team.name,
             strings: {
               approvedStrings: team.approvedStrings,
-              fuzzyStrings: team.fuzzyStrings,
+              pretranslatedStrings: team.pretranslatedStrings,
               stringsWithWarnings: team.stringsWithWarnings,
               stringsWithErrors: team.stringsWithErrors,
               missingStrings: team.missingStrings,
@@ -475,7 +475,7 @@ interface TeamGqlResponse {
   code: string;
   name: string;
   approvedStrings: number;
-  fuzzyStrings: number;
+  pretranslatedStrings: number;
   stringsWithWarnings: number;
   stringsWithErrors: number;
   missingStrings: number;
@@ -492,7 +492,7 @@ export interface Team {
   name: string;
   strings: {
     approvedStrings: number;
-    fuzzyStrings: number;
+    pretranslatedStrings: number;
     stringsWithWarnings: number;
     stringsWithErrors: number;
     missingStrings: number;
