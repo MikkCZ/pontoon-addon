@@ -64,8 +64,7 @@
     "yarn": "^1.22.0"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
+    "defaults",
+    "Firefox >= 91"
   ]
 }
