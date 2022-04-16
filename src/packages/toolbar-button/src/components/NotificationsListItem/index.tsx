@@ -65,8 +65,9 @@ export const NotificationsListItem: React.FC<Props> = ({
       openTeamProject(backgroundPontoonClient, links[0].url);
     }
   };
-  const isSuggestion = description?.content?.startsWith('Unreviewed suggestions')
-    || verb === 'has reviewed suggestions';
+  const isSuggestion =
+    description?.content?.startsWith('Unreviewed suggestions') ||
+    verb === 'has reviewed suggestions';
   return (
     <li
       className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
