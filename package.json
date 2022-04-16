@@ -23,7 +23,7 @@
     "test": "run-s packages:test",
     "clean": "rimraf dist coverage tmp",
     "clean-install": "rm -rf node_modules && find src/packages -maxdepth 2 -name 'node_modules' -type d -exec rm -rf {} \\; && yarn install --frozen-lockfile && run-s bootstrap",
-    "clean-build": "run-s clean-install build",
+    "clean-build": "yarn clean-install && run-s build",
     "packages:build": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn build",
     "packages:watch": "lerna exec --parallel -- INLINE_RUNTIME_CHUNK=false yarn watch",
     "packages:test": "lerna exec --stream --concurrency 3 -- yarn test",
