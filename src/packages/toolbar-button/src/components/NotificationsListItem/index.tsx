@@ -80,17 +80,13 @@ export const NotificationsListItem: React.FC<Props> = ({
           description.content &&
           (description.safe ? (
             <div
-              className="NotificationsListItem-description"
               onClick={onClickAll}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(description.content),
               }}
             ></div>
           ) : (
-            <div
-              className="NotificationsListItem-description"
-              onClick={onClickAll}
-            >
+            <div onClick={onClickAll}>
               <Linkify
                 properties={{
                   className: 'link',
