@@ -24,6 +24,7 @@ interface Props {
   description?: {
     safe: boolean;
     content?: string;
+    is_comment?: boolean;
   };
   date_iso?: string;
   backgroundPontoonClient: BackgroundPontoonClient;
@@ -64,67 +65,109 @@ export const NotificationsListItem: React.FC<Props> = ({
       openTeamProject(backgroundPontoonClient, links[0].url);
     }
   };
-  return (
-    <li
-      className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
-        links.length === 1 ? 'pointer' : ''
-      }`}
-      onClick={onClickAll}
-    >
-      {actor && (
-        <button
-          className="link"
-          onClick={(e) => {
-            stopEvent(e);
-            openTeamProject(backgroundPontoonClient, actor.url);
-          }}
-        >
-          {actor.anchor}
-        </button>
-      )}
-      {verb && <span onClick={onClickAll}> {verb} </span>}
-      {target && (
-        <button
-          className="link"
-          onClick={(e) => {
-            stopEvent(e);
-            openTeamProject(backgroundPontoonClient, target.url);
-          }}
-        >
-          {target.anchor}
-        </button>
-      )}
-      {date_iso && (
-        <div className="NotificationsListItem-timeago" onClick={onClickAll}>
-          <ReactTimeAgo date={new Date(date_iso)} />
-        </div>
-      )}
-      {description &&
-        description.content &&
-        (description.safe ? (
-          <div
-            className="NotificationsListItem-description"
-            onClick={onClickAll}
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(description.content),
-            }}
-          ></div>
-        ) : (
-          <div
-            className="NotificationsListItem-description"
-            onClick={onClickAll}
-          >
-            <Linkify
-              properties={{
-                className: 'link',
-                target: '_blank',
-                rel: 'noopener noreferrer',
+  const isSuggestion =
+    description?.content?.startsWith('Unreviewed suggestions') ||
+    verb === 'has reviewed suggestions';
+  if (isSuggestion) {
+    return (
+      <li
+        className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
+          links.length === 1 ? 'pointer' : ''
+        }`}
+        onClick={onClickAll}
+      >
+        {description &&
+          description.content &&
+          (description.safe ? (
+            <div
+              onClick={onClickAll}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(description.content),
               }}
-            >
-              {parse(description.content)}
-            </Linkify>
+            ></div>
+          ) : (
+            <div onClick={onClickAll}>
+              <Linkify
+                properties={{
+                  className: 'link',
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                }}
+              >
+                {parse(description.content)}
+              </Linkify>
+            </div>
+          ))}
+        {date_iso && (
+          <div className="NotificationsListItem-timeago" onClick={onClickAll}>
+            <ReactTimeAgo date={new Date(date_iso)} />
           </div>
-        ))}
-    </li>
-  );
+        )}
+      </li>
+    );
+  } else {
+    return (
+      <li
+        className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
+          links.length === 1 ? 'pointer' : ''
+        }`}
+        onClick={onClickAll}
+      >
+        {actor && !isSuggestion && (
+          <button
+            className="link"
+            onClick={(e) => {
+              stopEvent(e);
+              openTeamProject(backgroundPontoonClient, actor.url);
+            }}
+          >
+            {actor.anchor}
+          </button>
+        )}
+        {verb && <span onClick={onClickAll}> {verb} </span>}
+        {target && (
+          <button
+            className="link"
+            onClick={(e) => {
+              stopEvent(e);
+              openTeamProject(backgroundPontoonClient, target.url);
+            }}
+          >
+            {target.anchor}
+          </button>
+        )}
+        {date_iso && (
+          <div className="NotificationsListItem-timeago" onClick={onClickAll}>
+            <ReactTimeAgo date={new Date(date_iso)} />
+          </div>
+        )}
+        {description &&
+          description.content &&
+          (description.safe ? (
+            <div
+              className="NotificationsListItem-description"
+              onClick={onClickAll}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(description.content),
+              }}
+            ></div>
+          ) : (
+            <div
+              className="NotificationsListItem-description"
+              onClick={onClickAll}
+            >
+              <Linkify
+                properties={{
+                  className: 'link',
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                }}
+              >
+                {parse(description.content)}
+              </Linkify>
+            </div>
+          ))}
+      </li>
+    );
+  }
 };
