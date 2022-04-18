@@ -59,9 +59,9 @@ export const NotificationsList: React.FC<Props> = ({
             className="NotificationsList-see-all"
             text="See all Notifications"
             onClick={async () => {
-              const teamPageUrl =
-                await backgroundPontoonClient.getTeamPageUrl();
-              await browser.tabs.create({ url: teamPageUrl });
+              const notificationsUrl =
+                await backgroundPontoonClient.getNotificationsUrl();
+              await browser.tabs.create({ url: notificationsUrl });
               window.close();
             }}
           />
