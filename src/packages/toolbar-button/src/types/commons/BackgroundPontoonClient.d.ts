@@ -4,6 +4,7 @@ declare module '@pontoon-addon/commons/src/BackgroundPontoonClient' {
     async getBaseUrl(): Promise<string>;
     async getSignInURL(): Promise<string>;
     async getTeamProjectUrl(projectUrl: string): Promise<string>;
+    async getNotificationsUrl(): Promise<string>;
     async getTeamPageUrl(): Promise<string>;
     async getStringsWithStatusSearchUrl(status: string): Promise<string>;
     markAllNotificationsAsRead(): void;

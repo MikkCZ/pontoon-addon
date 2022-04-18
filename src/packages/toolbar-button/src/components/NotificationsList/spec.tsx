@@ -18,7 +18,7 @@ afterEach(() => {
 });
 
 const backgroundPontoonClientMock = {
-  getTeamPageUrl: async () => 'https://127.0.0.1/team-page',
+  getNotificationsUrl: async () => 'https://127.0.0.1/notifications',
   markAllNotificationsAsRead: jest.fn(),
   subscribeToNotificationsChange: jest.fn(),
 } as unknown as BackgroundPontoonClient;
@@ -142,7 +142,7 @@ describe('NotificationsList', () => {
     );
 
     mockBrowser.tabs.create
-      .expect({ url: 'https://127.0.0.1/team-page' })
+      .expect({ url: 'https://127.0.0.1/notifications' })
       .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     act(() => {
