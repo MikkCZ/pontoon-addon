@@ -33,6 +33,7 @@ jest.mock('@pontoon-addon/commons/src/Options', () => ({
     }),
   },
 }));
+jest.mock('@pontoon-addon/commons/src/BackgroundPontoonClient');
 
 describe('index', () => {
   it('renders', async () => {

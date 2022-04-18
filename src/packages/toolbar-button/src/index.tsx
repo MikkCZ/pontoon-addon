@@ -43,6 +43,11 @@ async function render(): Promise<void> {
     ],
   ]);
 
+  const pontoonBaseUrl = await backgroundPontoonClient.getBaseUrl();
+  const baseTag = document.createElement('base');
+  baseTag.href = pontoonBaseUrl;
+  document.getElementsByTagName('head')[0].appendChild(baseTag);
+
   ReactDOM.render(
     <React.Fragment>
       <NotificationsList
