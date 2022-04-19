@@ -22,19 +22,6 @@ jobs:
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: make prepare_in_docker
-      - name: Build add-on
-        run: make build_in_docker
-      - name: Save built add-on
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: dist
-          retention-days: 30
-      - name: Upload code coverage to Codecov
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: make codecov_in_docker
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Build add-on (development version)
         run: make build_in_docker
         env:
@@ -45,6 +32,21 @@ jobs:
           name: dist-development
           path: dist
           retention-days: 30
+      - name: Build add-on
+        run: make build_in_docker
+      - name: Save built add-on
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist
+          retention-days: 30
+      - name: Run tests
+        run: make test_in_docker
+      - name: Upload code coverage to Codecov
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: make codecov_in_docker
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   release:
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-20.04
