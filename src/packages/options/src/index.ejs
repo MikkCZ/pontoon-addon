@@ -7,14 +7,11 @@ This is the options page, which can be opened in the add-ons manager.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pontoon Add-on - Settings</title>
-  <link rel="icon" href="../commons/static/img/pontoon-logo.svg">
-  <link rel="stylesheet" href="../commons/static/css/pontoon.css">
-  <link rel="stylesheet" href="static/css/style.css">
+  <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
 <body>
   <header>
-    <img class="logo" src="../commons/static/img/pontoon-logo.svg">
+    <img class="logo" src="../../commons/static/img/pontoon-logo.svg">
     <nav>
       <ul>
         <li><a class="open_tour">Tour</a></li>
@@ -101,6 +98,5 @@ This is the options page, which can be opened in the add-ons manager.
       </div>
     </section>
   </main>
-  <script src="dist/main.js"></script>
 </body>
 </html>
