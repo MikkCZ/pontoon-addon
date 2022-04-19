@@ -20,7 +20,9 @@ This add-on is a WebExtension and works both in Firefox and Chrome. Please read 
 
 Pontoon Add-on started as [Michal's](https://people.mozilla.org/p/mstanke/) personal project, but is dedicated to all Mozilla localizers. You are welcome to [report bugs, request new features](https://github.com/MikkCZ/pontoon-addon/issues) or send your feedback to [Mozilla Discourse](https://discourse.mozilla.org/c/pontoon).
 
-Those, who prefer coding, please see the [contributing guidelines](CONTRIBUTING.md).
+During any involvement with this project, please mind the [Mozilla Community Participation Guidelines](.github/CODE_OF_CONDUCT.md).
+
+Those, who prefer coding, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Privacy policy
 
