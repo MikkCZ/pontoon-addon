@@ -1,6 +1,7 @@
 import path from 'path';
 import type { Configuration } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 enum WebpackModes {
   PROD = 'production',
@@ -25,15 +26,33 @@ const config: Configuration = {
   module: {
     rules: [
       {
+        test: /\.css$/i,
+        use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
+      },
+      {
         test: /\.tsx?$/,
         exclude: /(node_modules)/,
         use: 'ts-loader',
+      },
+      {
+        test: /\.json$/,
+        exclude: /(node_modules)/,
+        loader: 'ts-loader',
+      },
+      {
+        test: /\.(png|svg)$/,
+        loader: 'file-loader',
+      },
+      {
+        test: /\.md$/,
+        exclude: /(node_modules)/,
+        loader: 'file-loader',
       },
     ],
   },
   resolve: {
     modules: [ 'node_modules' ],
-    extensions: [ '.js', '.ts', '.json', '.jsx', '.tsx', '.css' ],
+    extensions: [ '.js', '.ts', '.jsx', '.tsx', '.json', '.css', '.png', '.svg', '.md' ],
     alias: {
       '@assets': path.resolve('./assets/'),
       '@pontoon-addon/commons': path.resolve('../commons/'),
