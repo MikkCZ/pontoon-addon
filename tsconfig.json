@@ -1,0 +1,27 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "target": "ES2019",
+    "lib": [
+      "DOM",
+      "ES2019"
+    ],
+    "sourceMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "@background/*": ["src/background/*"],
+      "@commons/*": ["src/commons/*"],
+      "@frontend/*": ["src/frontend/*"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.tsx?"
+  ],
+  "resolveJsonModule": true
+}

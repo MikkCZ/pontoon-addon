@@ -1,0 +1,102 @@
+<!--
+This is the options page, which can be opened in the add-ons manager.
+- https://developer.mozilla.org/Add-ons/WebExtensions/user_interface/Options_pages
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+  <header>
+    <img class="logo" src="../assets/img/pontoon-logo.svg">
+    <nav>
+      <ul>
+        <li><a class="open_tour">Tour</a></li>
+        <li><a class="open_wiki">Wiki</a></li>
+        <li><a class="open_privacy_policy">Privacy</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section id="heading">
+    <h2>Pontoon Add-on</h2>
+    <h2>Settings</h2>
+  </section>
+  <main>
+    <section>
+      <h3>General</h3>
+      <div>
+        <label for="locale_team">Select your locale team</label>
+        <select class="pontoon-style" id="locale_team" data-option-id="locale_team"></select>
+        <button class="pontoon-style" id="load_locale_team" title="Sync with your Pontoon homepage preference">Load from Pontoon</button>
+      </div>
+      <div>
+        <label for="data_update_interval" title="How frequently Pontoon Add-on checks for new notifications and updates your team information">Select how frequently data should be updated from Pontoon</label>
+        <select id="data_update_interval" data-option-id="data_update_interval"></select>
+      </div>
+    </section>
+    <section>
+      <h3>Toolbar button</h3>
+      <div>
+        <label>
+          <input data-option-id="display_toolbar_button_badge" type="checkbox">
+          Show the number of unread notifications in the toolbar button
+        </label>
+      </div>
+      <div>
+        <label>When you click the toolbar button</label>
+        <label>
+          <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="popup">
+          Open popup with notifications and team information
+        </label>
+        <label>
+          <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="team-page">
+          Open your locale team page
+        </label>
+        <label>
+          <input name="toolbar_button_action" data-option-id="toolbar_button_action" type="radio" value="home-page">
+          Open your Pontoon homepage
+        </label>
+        <aside>You can set your Pontoon homepage in <a class="pontoon_settings" target="_blank">Pontoon Settings</a>.</aside>
+      </div>
+      <div>
+        <label>
+          <input data-option-id="toolbar_button_popup_always_hide_read_notifications" type="checkbox">
+          In the popup, display unread notifications only
+        </label>
+        <aside>By default the popup always show some recent (even read) notifications.</aside>
+      </div>
+    </section>
+    <section>
+      <h3>System notifications</h3>
+      <div>
+        <label>
+          <input data-option-id="show_notifications" type="checkbox">
+          Use system notifications to show what's new in Pontoon
+        </label>
+        <aside>See the <a class="open_tour">Tour</a> for a preview.</aside>
+      </div>
+    </section>
+    <section>
+      <h3>Advanced</h3>
+      <div>
+        <label for="contextual_identity">Select container to use for data updates</label>
+        <select class="pontoon-style" id="contextual_identity" data-option-id="contextual_identity" disabled="disabled"></select>
+        <button class="pontoon-style" id="edit_contextual_identity">Edit</button>
+        <aside>If you use a specific <a href="https://support.mozilla.org/kb/containers" target="_blank">container</a> for Pontoon, select it here.</aside>
+      </div>
+      <div>
+        <label for="pontoon_base_url">Pontoon URL</label>
+        <input id="pontoon_base_url" data-option-id="pontoon_base_url" type="url" disabled="disabled">
+        <button class="pontoon-style" id="edit_pontoon_base_url">Edit</button>
+        <aside>Changing Pontoon URL is for developers or debugging only.</aside>
+      </div>
+      <div>
+        <a id="reset_defaults">Reset all settings to default</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

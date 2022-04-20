@@ -2,7 +2,7 @@ export PATH := $(shell pwd)/scripts:$(PATH)
 
 .DEFAULT_GOAL := all
 .PHONY: all
-all: prepare test build
+all: prepare build test
 
 .PHONY: prepare
 prepare:
@@ -28,7 +28,7 @@ watch:
 
 .PHONY: codecov
 codecov:
-	yarn codecov:upload
+	yarn codecov
 
 .PHONY: all_in_docker
 all_in_docker:

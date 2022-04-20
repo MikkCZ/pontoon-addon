@@ -1,0 +1,14 @@
+body {
+  background: #333941;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.PrivacyPolicyRoot {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.PrivacyPolicyRoot h1 {
+  text-align: center;
+}
