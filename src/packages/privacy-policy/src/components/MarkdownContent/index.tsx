@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import marked, { RendererThis } from 'marked';
+import { marked, Renderer } from 'marked';
 import DOMPurify from 'dompurify';
 
 async function getTextContent(file: string): Promise<string> {
@@ -10,7 +10,7 @@ function renderMarkdown(markdown: string) {
   const renderer = new marked.Renderer();
   const defaultLinkRenderer = renderer.link;
   renderer.link = function (
-    this: RendererThis,
+    this: Renderer<never>,
     href: string | null,
     title: string | null,
     text: string
