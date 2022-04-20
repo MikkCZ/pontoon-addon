@@ -29,9 +29,17 @@ module.exports = {
         singleQuote: true,
       },
     ],
+    'react/prop-types': 'off',
   },
   extends: [
     'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
+    'plugin:jest/recommended',
+    'plugin:jest/style',
+    'plugin:testing-library/dom',
+    'plugin:testing-library/react',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
@@ -47,8 +55,14 @@ module.exports = {
   },
   parserOptions: {
     sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
   settings: {
+    react: {
+      version: 'detect',
+    },
     'import/parsers': {
       '@typescript-eslint/parser': [ '.ts', '.tsx' ],
     },

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-static-element-interactions */
 import React, { MouseEvent } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import DOMPurify from 'dompurify';
@@ -55,14 +56,14 @@ export const NotificationsListItem: React.FC<Props> = ({
   date_iso,
   backgroundPontoonClient,
 }) => {
-  const links = [actor, target]
+  const linkUrls = [actor, target]
     .filter((it) => it)
-    .map((it) => it!)
-    .filter((it) => it.url);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    .map((it) => it!.url);
   const onClickAll = (e: MouseEvent): void => {
-    if (links.length === 1) {
+    if (linkUrls.length === 1) {
       stopEvent(e);
-      openTeamProject(backgroundPontoonClient, links[0].url);
+      openTeamProject(backgroundPontoonClient, linkUrls[0]);
     }
   };
   const isSuggestion =
@@ -72,7 +73,7 @@ export const NotificationsListItem: React.FC<Props> = ({
     return (
       <li
         className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
-          links.length === 1 ? 'pointer' : ''
+          linkUrls.length === 1 ? 'pointer' : ''
         }`}
         onClick={onClickAll}
       >
@@ -109,7 +110,7 @@ export const NotificationsListItem: React.FC<Props> = ({
     return (
       <li
         className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
-          links.length === 1 ? 'pointer' : ''
+          linkUrls.length === 1 ? 'pointer' : ''
         }`}
         onClick={onClickAll}
       >
