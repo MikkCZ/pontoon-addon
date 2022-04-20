@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@pontoon-addon/commons": "*",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "webextension-polyfill": "^0.8.0"

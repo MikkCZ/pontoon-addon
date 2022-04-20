@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@pontoon-addon/commons": "*",
     "dompurify": "^2.2.7",
     "html-react-parser": "^1.2.4",
     "javascript-time-ago": "^2.3.9",

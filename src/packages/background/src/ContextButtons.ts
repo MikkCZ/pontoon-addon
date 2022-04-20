@@ -1,6 +1,7 @@
 import { Tabs } from 'webextension-polyfill';
 import type { Options } from '@pontoon-addon/commons/src/Options';
 import type { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import type {
   ProjectsList,
@@ -8,83 +9,82 @@ import type {
   RemotePontoon,
   TeamsListInStorage,
 } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class ContextButtons {
-  private readonly _options: Options;
-  private readonly _remotePontoon: RemotePontoon;
-  private readonly _remoteLinks: RemoteLinks;
-  private _mozillaWebsites: string[] = [];
+  private readonly options: Options;
+  private readonly remotePontoon: RemotePontoon;
+  private readonly remoteLinks: RemoteLinks;
+  private mozillaWebsites: string[] = [];
 
   constructor(
     options: Options,
     remotePontoon: RemotePontoon,
     remoteLinks: RemoteLinks
   ) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
-    this._remoteLinks = remoteLinks;
+    this.options = options;
+    this.remotePontoon = remotePontoon;
+    this.remoteLinks = remoteLinks;
     const projectsListDataKey = 'projectsList';
     browser.storage.local
       .get(projectsListDataKey)
       .then((storageItem: unknown) =>
-        this._initMozillaWebsitesList(
+        this.initMozillaWebsitesList(
           (storageItem as ProjectsListInStorage).projectsList
         )
       )
       .then(() => {
-        this._listenToMessagesFromContentScript();
-        this._watchTabsUpdates();
-        this._refreshContextButtonsInAllTabs();
+        this.listenToMessagesFromContentScript();
+        this.watchTabsUpdates();
+        this.refreshContextButtonsInAllTabs();
         remotePontoon.subscribeToProjectsListChange((change) =>
-          this._initMozillaWebsitesList(change.newValue)
+          this.initMozillaWebsitesList(change.newValue)
         );
       });
   }
 
-  private _initMozillaWebsitesList(projects: ProjectsList): void {
+  private initMozillaWebsitesList(projects: ProjectsList): void {
     if (projects) {
-      this._mozillaWebsites = [];
+      this.mozillaWebsites = [];
       Object.values(projects).forEach((project) =>
         project.domains.forEach((domain) =>
-          this._mozillaWebsites.push(`https://${domain}`)
+          this.mozillaWebsites.push(`https://${domain}`)
         )
       );
-      Object.freeze(this._mozillaWebsites);
+      Object.freeze(this.mozillaWebsites);
     }
   }
 
-  private _watchTabsUpdates(): void {
+  private watchTabsUpdates(): void {
     browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-      if (changeInfo.status === 'complete' && this._isSupportedPage(tab.url)) {
-        this._injectContextButtonsScript(tab);
+      if (changeInfo.status === 'complete' && this.isSupportedPage(tab.url)) {
+        this.injectContextButtonsScript(tab);
       }
     });
   }
 
-  private _refreshContextButtonsInAllTabs(): void {
+  private refreshContextButtonsInAllTabs(): void {
     browser.tabs.query({}).then((tabs) =>
       tabs.forEach((tab) => {
-        if (this._isSupportedPage(tab.url)) {
-          this._injectContextButtonsScript(tab);
+        if (this.isSupportedPage(tab.url)) {
+          this.injectContextButtonsScript(tab);
         }
       })
     );
   }
 
-  private _listenToMessagesFromContentScript(): void {
+  private listenToMessagesFromContentScript(): void {
     browser.runtime.onMessage.addListener((request, sender) => {
       switch (request.type) {
         case 'pontoon-search-context-button-clicked':
           browser.tabs.create({
-            url: this._remotePontoon.getSearchInAllProjectsUrl(request.text),
+            url: this.remotePontoon.getSearchInAllProjectsUrl(request.text),
           });
           break;
         case 'bugzilla-report-context-button-clicked': {
           const localeTeamOptionKey = 'locale_team';
           const teamsListDataKey = 'teamsList';
           Promise.all([
-            this._options.get(localeTeamOptionKey),
+            this.options.get(localeTeamOptionKey),
             browser.storage.local.get(
               teamsListDataKey
             ) as Promise<TeamsListInStorage>,
@@ -92,7 +92,7 @@ export class ContextButtons {
             const teamCode = optionsItems[localeTeamOptionKey] as string;
             const team = projectListInStorage.teamsList[teamCode];
             browser.tabs.create({
-              url: this._remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
+              url: this.remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
                 request.text,
                 sender.url!,
                 team.code,
@@ -106,15 +106,15 @@ export class ContextButtons {
     });
   }
 
-  private _isSupportedPage(url: string | undefined): boolean {
+  private isSupportedPage(url: string | undefined): boolean {
     if (url) {
-      return this._mozillaWebsites.some((it) => url.startsWith(it));
+      return this.mozillaWebsites.some((it) => url.startsWith(it));
     } else {
       return false;
     }
   }
 
-  private _injectContextButtonsScript(tab: Tabs.Tab): void {
+  private injectContextButtonsScript(tab: Tabs.Tab): void {
     browser.tabs.executeScript(tab.id, {
       file: '/packages/content-scripts/dist/context-buttons.js',
     });

@@ -4,8 +4,8 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from './util/webExtensionsApi';
 import { NotificationsList } from './components/NotificationsList';
 import { TeamInfo } from './components/TeamInfo';
 import '@pontoon-addon/commons/static/css/pontoon.css';

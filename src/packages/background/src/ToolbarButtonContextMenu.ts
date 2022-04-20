@@ -1,18 +1,18 @@
 import type { Menus } from 'webextension-polyfill';
 import type { Options } from '@pontoon-addon/commons/src/Options';
 import type { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import type { DataRefresher } from './DataRefresher';
 import type { RemotePontoon } from './RemotePontoon';
 import type { ToolbarButton } from './ToolbarButton';
-import { browser } from './util/webExtensionsApi';
 
 export class ToolbarButtonContextMenu {
-  private readonly _options: Options;
-  private readonly _remotePontoon: RemotePontoon;
-  private readonly _remoteLinks: RemoteLinks;
-  private readonly _dataRefresher: DataRefresher;
-  private readonly _toolbarButton: ToolbarButton;
+  private readonly options: Options;
+  private readonly remotePontoon: RemotePontoon;
+  private readonly remoteLinks: RemoteLinks;
+  private readonly dataRefresher: DataRefresher;
+  private readonly toolbarButton: ToolbarButton;
 
   constructor(
     options: Options,
@@ -21,25 +21,25 @@ export class ToolbarButtonContextMenu {
     dataRefresher: DataRefresher,
     toolbarButton: ToolbarButton
   ) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
-    this._remoteLinks = remoteLinks;
-    this._dataRefresher = dataRefresher;
-    this._toolbarButton = toolbarButton;
+    this.options = options;
+    this.remotePontoon = remotePontoon;
+    this.remoteLinks = remoteLinks;
+    this.dataRefresher = dataRefresher;
+    this.toolbarButton = toolbarButton;
 
-    this._addContextMenu();
+    this.addContextMenu();
   }
 
-  private async _addContextMenu(): Promise<void> {
-    const localeTeam = await this._options
+  private async addContextMenu(): Promise<void> {
+    const localeTeam = await this.options
       .get('locale_team')
       .then((item: any) => item['locale_team']);
     browser.contextMenus.create({
       title: 'Reload notifications',
       contexts: ['browser_action'],
       onclick: () => {
-        this._toolbarButton.hideBadge();
-        this._dataRefresher.refreshData();
+        this.toolbarButton.hideBadge();
+        this.dataRefresher.refreshData();
       },
     });
 
@@ -53,7 +53,7 @@ export class ToolbarButtonContextMenu {
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({ url: this._remotePontoon.getTeamPageUrl() }),
+          browser.tabs.create({ url: this.remotePontoon.getTeamPageUrl() }),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Team insights',
@@ -61,7 +61,7 @@ export class ToolbarButtonContextMenu {
         parentId: pontoonPagesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remotePontoon.getTeamInsightsUrl(),
+            url: this.remotePontoon.getTeamInsightsUrl(),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -69,7 +69,7 @@ export class ToolbarButtonContextMenu {
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({ url: this._remotePontoon.getTeamBugsUrl() }),
+          browser.tabs.create({ url: this.remotePontoon.getTeamBugsUrl() }),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Search in Pontoon',
@@ -77,7 +77,7 @@ export class ToolbarButtonContextMenu {
         parentId: pontoonPagesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remotePontoon.getSearchInAllProjectsUrl(),
+            url: this.remotePontoon.getSearchInAllProjectsUrl(),
           }),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
@@ -93,7 +93,7 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remotePontoon.getSearchInAllProjectsUrl(),
+            url: this.remotePontoon.getSearchInAllProjectsUrl(),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -102,7 +102,7 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remoteLinks.getTransvisionUrl(localeTeam),
+            url: this.remoteLinks.getTransvisionUrl(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -111,7 +111,7 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remoteLinks.getMicrosoftTerminologySearchUrl(),
+            url: this.remoteLinks.getMicrosoftTerminologySearchUrl(),
           }),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
@@ -127,7 +127,7 @@ export class ToolbarButtonContextMenu {
         parentId: localizationResourcesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remoteLinks.getMozillaStyleGuidesUrl(localeTeam),
+            url: this.remoteLinks.getMozillaStyleGuidesUrl(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -136,7 +136,7 @@ export class ToolbarButtonContextMenu {
         parentId: localizationResourcesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this._remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam),
+            url: this.remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
@@ -146,7 +146,7 @@ export class ToolbarButtonContextMenu {
       contexts: ['browser_action'],
       onclick: () =>
         browser.tabs.create({
-          url: this._remoteLinks.getPontoonAddonWikiUrl(),
+          url: this.remoteLinks.getPontoonAddonWikiUrl(),
         }),
     });
 

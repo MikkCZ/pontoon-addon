@@ -1,53 +1,53 @@
 import type { Tabs } from 'webextension-polyfill';
 import type { Options } from '@pontoon-addon/commons/src/Options';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import type { RemotePontoon } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class DataRefresher {
-  private readonly _options: Options;
-  private readonly _remotePontoon: RemotePontoon;
-  private readonly _alarmName: string;
+  private readonly options: Options;
+  private readonly remotePontoon: RemotePontoon;
+  private readonly alarmName: string;
 
   constructor(options: Options, remotePontoon: RemotePontoon) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
-    this._alarmName = 'data-refresher-alarm';
+    this.options = options;
+    this.remotePontoon = remotePontoon;
+    this.alarmName = 'data-refresher-alarm';
 
-    this._watchOptionsUpdates();
-    this._watchTabsUpdates();
-    this._listenToMessagesFromNotificationsBellContentScript();
+    this.watchOptionsUpdates();
+    this.watchTabsUpdates();
+    this.listenToMessagesFromNotificationsBellContentScript();
 
-    this._listenToAlarm();
-    this._setupAlarm();
+    this.listenToAlarm();
+    this.setupAlarm();
   }
 
   public refreshDataOnInstallOrUpdate(): void {
-    this._remotePontoon.updateProjectsList();
+    this.remotePontoon.updateProjectsList();
   }
 
   public refreshData(): void {
-    this._remotePontoon.updateNotificationsData();
-    this._remotePontoon.updateLatestTeamActivity();
-    this._remotePontoon.updateTeamsList();
+    this.remotePontoon.updateNotificationsData();
+    this.remotePontoon.updateLatestTeamActivity();
+    this.remotePontoon.updateTeamsList();
   }
 
-  private _listenToAlarm(): void {
+  private listenToAlarm(): void {
     browser.alarms.onAlarm.addListener((alarm) => {
-      if (alarm.name === this._alarmName) {
+      if (alarm.name === this.alarmName) {
         this.refreshData();
       }
     });
   }
 
-  private _watchOptionsUpdates(): void {
-    this._options.subscribeToOptionChange('data_update_interval', (change) => {
+  private watchOptionsUpdates(): void {
+    this.options.subscribeToOptionChange('data_update_interval', (change) => {
       const intervalMinutes = parseInt(change.newValue, 10);
-      this._setupAlarmWithInterval(intervalMinutes);
+      this.setupAlarmWithInterval(intervalMinutes);
     });
-    this._options.subscribeToOptionChange('contextual_identity', (change) => {
+    this.options.subscribeToOptionChange('contextual_identity', (change) => {
       browser.tabs
-        .query({ url: this._remotePontoon.getBaseUrl() + '/*' })
+        .query({ url: `${this.remotePontoon.getBaseUrl()}/*` })
         .then((pontoonTabs) => {
           pontoonTabs
             .filter((tab) => change.newValue !== tab.cookieStoreId)
@@ -61,19 +61,19 @@ export class DataRefresher {
     });
   }
 
-  private _watchTabsUpdates(): void {
+  private watchTabsUpdates(): void {
     browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) =>
-      this._addLiveDataProvider(tabId, changeInfo, tab)
+      this.addLiveDataProvider(tabId, changeInfo, tab)
     );
   }
 
-  private _listenToMessagesFromNotificationsBellContentScript(): void {
+  private listenToMessagesFromNotificationsBellContentScript(): void {
     browser.runtime.onMessage.addListener((message, sender) => {
       if (message.type === 'notifications-bell-script-loaded') {
-        return this._options.get('contextual_identity').then((item: any) => {
+        return this.options.get('contextual_identity').then((item: any) => {
           if (
             item['contextual_identity'] === sender.tab?.cookieStoreId ||
-            !this._supportsContainers()
+            !this.supportsContainers()
           ) {
             return { type: 'enable-notifications-bell-script' };
           }
@@ -82,19 +82,19 @@ export class DataRefresher {
     });
   }
 
-  private _addLiveDataProvider(
+  private addLiveDataProvider(
     tabId: number,
     changeInfo: Tabs.OnUpdatedChangeInfoType,
     tab: Tabs.Tab
   ): void {
     if (
       changeInfo.status === 'complete' &&
-      tab.url?.startsWith(`${this._remotePontoon.getBaseUrl()}/`)
+      tab.url?.startsWith(`${this.remotePontoon.getBaseUrl()}/`)
     ) {
-      this._options.get('contextual_identity').then((item: any) => {
+      this.options.get('contextual_identity').then((item: any) => {
         if (
           item['contextual_identity'] === tab.cookieStoreId ||
-          !this._supportsContainers()
+          !this.supportsContainers()
         ) {
           browser.tabs.executeScript(tabId, {
             file: '/packages/content-scripts/dist/live-data-provider.js',
@@ -104,21 +104,21 @@ export class DataRefresher {
     }
   }
 
-  private _setupAlarm(): void {
+  private setupAlarm(): void {
     const optionKey = 'data_update_interval';
-    this._options.get(optionKey).then((item: any) => {
+    this.options.get(optionKey).then((item: any) => {
       const intervalMinutes = parseInt(item[optionKey], 10);
-      this._setupAlarmWithInterval(intervalMinutes);
+      this.setupAlarmWithInterval(intervalMinutes);
     });
   }
 
-  private _setupAlarmWithInterval(intervalMinutes: number) {
-    browser.alarms.create(this._alarmName, {
+  private setupAlarmWithInterval(intervalMinutes: number) {
+    browser.alarms.create(this.alarmName, {
       periodInMinutes: intervalMinutes,
     });
   }
 
-  private _supportsContainers(): boolean {
+  private supportsContainers(): boolean {
     return browser.contextualIdentities !== undefined;
   }
 }

@@ -25,7 +25,7 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     ...defaults.moduleNameMapper,
     '@assets/.+\\.(png|svg)$': 'jest-transform-stub',
-    '@pontoon-addon/commons/src/(.*)': '<rootDir>/../commons/src/$1.js',
+    '@pontoon-addon/commons/src/(.*)': '<rootDir>/../commons/src/$1.ts',
     '@pontoon-addon/commons/static/(.*)/(.*)': '<rootDir>/../commons/static/$1/$2',
   },
 };

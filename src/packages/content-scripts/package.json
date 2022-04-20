@@ -14,7 +14,6 @@
     "eslint:fix": "eslint --config ./.eslintrc.js --ext .ts --ext .tsx --fix ./src/"
   },
   "dependencies": {
-    "@pontoon-addon/commons": "*",
     "webextension-polyfill": "^0.8.0"
   },
   "devDependencies": {

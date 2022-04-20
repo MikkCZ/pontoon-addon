@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from '../../util/webExtensionsApi';
 import { NotificationsListItem } from '../NotificationsListItem';
 import { BottomLink } from '../BottomLink';
 import { NotificationsListError } from '../NotificationsListError';

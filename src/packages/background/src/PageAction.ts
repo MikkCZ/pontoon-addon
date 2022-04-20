@@ -1,53 +1,53 @@
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 import { Tabs } from 'webextension-polyfill';
 
 import { RemotePontoon } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class PageAction {
-  private readonly _remotePontoon: RemotePontoon;
+  private readonly remotePontoon: RemotePontoon;
 
   constructor(remotePontoon: RemotePontoon) {
-    this._remotePontoon = remotePontoon;
+    this.remotePontoon = remotePontoon;
 
     if (browser.pageAction) {
-      this._watchStorageChanges();
-      this._watchTabsUpdates();
-      this._refreshAllTabsPageActions();
+      this.watchStorageChanges();
+      this.watchTabsUpdates();
+      this.refreshAllTabsPageActions();
     }
   }
 
-  private _watchStorageChanges(): void {
-    this._remotePontoon.subscribeToProjectsListChange((_change) =>
-      this._refreshAllTabsPageActions()
+  private watchStorageChanges(): void {
+    this.remotePontoon.subscribeToProjectsListChange((_change) =>
+      this.refreshAllTabsPageActions()
     );
   }
 
-  private _watchTabsUpdates(): void {
+  private watchTabsUpdates(): void {
     browser.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
       if (changeInfo.status === 'complete') {
-        this._showPageActionForTab(tab);
+        this.showPageActionForTab(tab);
       }
     });
   }
 
-  private _refreshAllTabsPageActions(): void {
+  private refreshAllTabsPageActions(): void {
     browser.tabs
       .query({})
-      .then((tabs) => tabs.forEach((tab) => this._showPageActionForTab(tab)));
+      .then((tabs) => tabs.forEach((tab) => this.showPageActionForTab(tab)));
   }
 
-  private async _showPageActionForTab(tab: Tabs.Tab): Promise<void> {
-    const projectData = await this._remotePontoon.getPontoonProjectForPageUrl(
+  private async showPageActionForTab(tab: Tabs.Tab): Promise<void> {
+    const projectData = await this.remotePontoon.getPontoonProjectForPageUrl(
       tab.url!
     );
     if (projectData) {
-      this._activatePageAction(tab.id);
+      this.activatePageAction(tab.id);
       browser.pageAction.setTitle({
         tabId: tab.id!,
         title: `Open ${projectData.name} in Pontoon`,
       });
     } else {
-      this._deactivatePageAction(tab.id);
+      this.deactivatePageAction(tab.id);
       browser.pageAction.setTitle({
         tabId: tab.id!,
         title: 'No project for this page',
@@ -55,7 +55,7 @@ export class PageAction {
     }
   }
 
-  private _activatePageAction(tabId: number | undefined): void {
+  private activatePageAction(tabId: number | undefined): void {
     if (tabId) {
       browser.pageAction.setIcon({
         path: {
@@ -68,7 +68,7 @@ export class PageAction {
     }
   }
 
-  private _deactivatePageAction(tabId: number | undefined): void {
+  private deactivatePageAction(tabId: number | undefined): void {
     if (tabId) {
       browser.pageAction.setIcon({ tabId });
       browser.pageAction.hide(tabId);

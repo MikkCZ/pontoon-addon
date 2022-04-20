@@ -1,7 +1,7 @@
 import React from 'react';
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from '../../util/webExtensionsApi';
 import '@pontoon-addon/commons/static/css/pontoon.css';
 import './index.css';
 

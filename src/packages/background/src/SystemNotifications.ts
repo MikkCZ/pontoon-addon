@@ -1,52 +1,52 @@
 import { Options } from '@pontoon-addon/commons/src/Options';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import { NotificationsData, RemotePontoon } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class SystemNotifications {
-  private readonly _options: Options;
-  private readonly _remotePontoon: RemotePontoon;
+  private readonly options: Options;
+  private readonly remotePontoon: RemotePontoon;
 
   constructor(options: Options, remotePontoon: RemotePontoon) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
+    this.options = options;
+    this.remotePontoon = remotePontoon;
 
-    this._watchNotificationClicks();
-    this._watchStorageChanges();
+    this.watchNotificationClicks();
+    this.watchStorageChanges();
   }
 
-  private _watchNotificationClicks(): void {
+  private watchNotificationClicks(): void {
     browser.notifications.onClicked.addListener((notificationId) =>
-      this._notificationClick(notificationId)
+      this.notificationClick(notificationId)
     );
   }
 
-  private async _notificationClick(notificationId: string): Promise<void> {
+  private async notificationClick(notificationId: string): Promise<void> {
     const dataKey = 'notificationsData';
     const item = await browser.storage.local.get(dataKey);
     const notificationsData = item[dataKey];
     const notification = notificationsData[notificationId];
     if (notification && !notification.target) {
       browser.tabs.create({
-        url: this._remotePontoon.getTeamProjectUrl(notification.actor.url),
+        url: this.remotePontoon.getTeamProjectUrl(notification.actor.url),
       });
     } else {
-      browser.tabs.create({ url: this._remotePontoon.getTeamPageUrl() });
+      browser.tabs.create({ url: this.remotePontoon.getTeamPageUrl() });
     }
     browser.notifications.clear(notificationId);
   }
 
-  private _watchStorageChanges(): void {
-    this._remotePontoon.subscribeToNotificationsChange((change) => {
+  private watchStorageChanges(): void {
+    this.remotePontoon.subscribeToNotificationsChange((change) => {
       const notificationsData = change.newValue;
       Promise.all([
-        this._getNewUnreadNotifications(notificationsData),
-        this._options.get('show_notifications').then((option: any) => {
+        this.getNewUnreadNotifications(notificationsData),
+        this.options.get('show_notifications').then((option: any) => {
           return option['show_notifications'];
         }),
       ]).then(([newUnreadNotificationIds, showNotifications]) => {
         if (showNotifications && newUnreadNotificationIds.length > 0) {
-          this._notifyAboutUnreadNotifications(
+          this.notifyAboutUnreadNotifications(
             newUnreadNotificationIds,
             notificationsData
           );
@@ -55,7 +55,7 @@ export class SystemNotifications {
     });
   }
 
-  private async _getNewUnreadNotifications(
+  private async getNewUnreadNotifications(
     notificationsData: NotificationsData | undefined
   ): Promise<number[]> {
     let unreadNotificationIds: number[] = [0];
@@ -73,7 +73,7 @@ export class SystemNotifications {
     );
   }
 
-  private _notifyAboutUnreadNotifications(
+  private notifyAboutUnreadNotifications(
     unreadNotificationIds: number[],
     notificationsData: NotificationsData
   ) {

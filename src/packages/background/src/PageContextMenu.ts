@@ -1,6 +1,7 @@
 import { Menus, Tabs } from 'webextension-polyfill';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import {
   ProjectsListInStorage,
@@ -9,27 +10,26 @@ import {
   TeamsListInStorage,
   Team,
 } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class PageContextMenu {
-  private readonly _options: Options;
-  private readonly _remotePontoon: RemotePontoon;
-  private readonly _remoteLinks: RemoteLinks;
+  private readonly options: Options;
+  private readonly remotePontoon: RemotePontoon;
+  private readonly remoteLinks: RemoteLinks;
 
   constructor(
     options: Options,
     remotePontoon: RemotePontoon,
     remoteLinks: RemoteLinks
   ) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
-    this._remoteLinks = remoteLinks;
+    this.options = options;
+    this.remotePontoon = remotePontoon;
+    this.remoteLinks = remoteLinks;
 
-    this._watchStorageChangesAndOptionsUpdates();
-    this._loadDataFromStorage();
+    this.watchStorageChangesAndOptionsUpdates();
+    this.loadDataFromStorage();
   }
 
-  private _createContextMenus(projects: ProjectsList, team: Team): void {
+  private createContextMenus(projects: ProjectsList, team: Team): void {
     // Create website patterns for all projects in Pontoon.
     const mozillaWebsitesUrlPatterns: string[] = [];
     Object.values(projects).forEach((project) =>
@@ -39,13 +39,13 @@ export class PageContextMenu {
     );
 
     // Recreate the selection context menus (report l10n bug & search in project)
-    const mozillaPageContextMenuParent = PageContextMenu._recreateContextMenu({
+    const mozillaPageContextMenuParent = PageContextMenu.recreateContextMenu({
       id: 'page-context-menu-parent',
       title: 'Pontoon Add-on',
       documentUrlPatterns: mozillaWebsitesUrlPatterns,
       contexts: ['selection'],
     });
-    PageContextMenu._recreateContextMenu({
+    PageContextMenu.recreateContextMenu({
       id: 'page-context-menu-report-l10n-bug',
       title: 'Report l10n bug for "%s"',
       documentUrlPatterns: mozillaWebsitesUrlPatterns,
@@ -53,7 +53,7 @@ export class PageContextMenu {
       parentId: mozillaPageContextMenuParent,
       onclick: (info: Menus.OnClickData, tab: Tabs.Tab) => {
         browser.tabs.create({
-          url: this._remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
+          url: this.remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
             info.selectionText!,
             tab.url!,
             team.code,
@@ -73,7 +73,7 @@ export class PageContextMenu {
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
               browser.tabs.create({
-                url: this._remotePontoon.getSearchInProjectUrl(
+                url: this.remotePontoon.getSearchInProjectUrl(
                   project.slug,
                   info.selectionText
                 ),
@@ -87,48 +87,48 @@ export class PageContextMenu {
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
               browser.tabs.create({
-                url: this._remotePontoon.getSearchInAllProjectsUrl(
+                url: this.remotePontoon.getSearchInAllProjectsUrl(
                   info.selectionText
                 ),
               }),
           } as Menus.CreateCreatePropertiesType,
         ])
-        .forEach(PageContextMenu._recreateContextMenu);
+        .forEach(PageContextMenu.recreateContextMenu);
     });
   }
 
-  private static _recreateContextMenu(
+  private static recreateContextMenu(
     contextMenuItem: Menus.CreateCreatePropertiesType
   ): number | string {
     browser.contextMenus.remove(contextMenuItem.id!);
     return browser.contextMenus.create(contextMenuItem);
   }
 
-  private _watchStorageChangesAndOptionsUpdates(): void {
-    this._remotePontoon.subscribeToProjectsListChange((_projectsList) =>
-      this._loadDataFromStorage()
+  private watchStorageChangesAndOptionsUpdates(): void {
+    this.remotePontoon.subscribeToProjectsListChange((_projectsList) =>
+      this.loadDataFromStorage()
     );
-    this._remotePontoon.subscribeToTeamsListChange((_teamsList) =>
-      this._loadDataFromStorage()
+    this.remotePontoon.subscribeToTeamsListChange((_teamsList) =>
+      this.loadDataFromStorage()
     );
-    this._options.subscribeToOptionChange('locale_team', (_teamOption) =>
-      this._loadDataFromStorage()
+    this.options.subscribeToOptionChange('locale_team', (_teamOption) =>
+      this.loadDataFromStorage()
     );
   }
 
-  private _loadDataFromStorage(): void {
+  private loadDataFromStorage(): void {
     const localeTeamOptionKey = 'locale_team';
     const teamsListDataKey = 'teamsList';
     const projectsListDataKey = 'projectsList';
     Promise.all([
-      this._options.get(localeTeamOptionKey) as Promise<any>,
+      this.options.get(localeTeamOptionKey) as Promise<any>,
       browser.storage.local.get([teamsListDataKey, projectsListDataKey]),
     ]).then(([optionsItems, storageItems]) => {
       const team = optionsItems[localeTeamOptionKey] as string;
       const projectsList = (storageItems as ProjectsListInStorage).projectsList;
       const teamsList = (storageItems as TeamsListInStorage).teamsList;
       if (projectsList && teamsList) {
-        this._createContextMenus(projectsList, teamsList[team]);
+        this.createContextMenus(projectsList, teamsList[team]);
       }
     });
   }

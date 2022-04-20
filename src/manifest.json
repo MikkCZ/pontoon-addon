@@ -33,7 +33,7 @@
     "<all_urls>"
   ],
   "options_ui": {
-    "page": "packages/options/index.html",
+    "page": "packages/options/dist/index.html",
     "open_in_tab": true
   },
   "browser_action": {

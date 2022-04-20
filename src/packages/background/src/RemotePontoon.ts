@@ -1,60 +1,60 @@
 import type { Storage } from 'webextension-polyfill';
 import { BackgroundPontoonMessageType } from '@pontoon-addon/commons/src/BackgroundPontoonMessageType';
 import type { Options } from '@pontoon-addon/commons/src/Options';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from './util/webExtensionsApi';
 import { DataFetcher } from './DataFetcher';
 
 export class RemotePontoon {
-  private _baseUrl: string;
-  private _baseUrlChangeListeners: Set<() => void>;
-  private _team: string;
-  private readonly _options: Options;
-  private readonly _domParser: DOMParser;
-  private readonly _dataFetcher: DataFetcher;
+  private baseUrl: string;
+  private baseUrlChangeListeners: Set<() => void>;
+  private team: string;
+  private readonly options: Options;
+  private readonly domParser: DOMParser;
+  private readonly dataFetcher: DataFetcher;
 
   // TODO: get rid of the 'team' parameter and use options to fetch is when needed
   constructor(baseUrl: string, team: string, options: Options) {
-    this._baseUrl = baseUrl;
-    this._baseUrlChangeListeners = new Set();
-    this._team = team;
-    this._options = options;
-    this._domParser = new DOMParser();
-    this._dataFetcher = new DataFetcher(this._options, this);
+    this.baseUrl = baseUrl;
+    this.baseUrlChangeListeners = new Set();
+    this.team = team;
+    this.options = options;
+    this.domParser = new DOMParser();
+    this.dataFetcher = new DataFetcher(this.options, this);
 
-    this._listenToMessagesFromClients();
-    this._watchOptionsUpdates();
+    this.listenToMessagesFromClients();
+    this.watchOptionsUpdates();
   }
 
   public getBaseUrl(): string {
-    return this._baseUrl;
+    return this.baseUrl;
   }
 
-  private _getSettingsUrl(utm_source?: string): string {
+  private getSettingsUrl(utm_source?: string): string {
     if (utm_source !== undefined) {
-      return `${this._baseUrl}/settings/?utm_source=${utm_source}`;
+      return `${this.baseUrl}/settings/?utm_source=${utm_source}`;
     }
-    return `${this._baseUrl}/settings/`;
+    return `${this.baseUrl}/settings/`;
   }
 
   public getTeamPageUrl(): string {
-    return `${this._baseUrl}/${this._team}/?utm_source=pontoon-addon`;
+    return `${this.baseUrl}/${this.team}/?utm_source=pontoon-addon`;
   }
 
   public getTeamInsightsUrl(): string {
-    return `${this._baseUrl}/${this._team}/insights/?utm_source=pontoon-addon`;
+    return `${this.baseUrl}/${this.team}/insights/?utm_source=pontoon-addon`;
   }
 
   // TODO: add 'utm_source'
   // see https://github.com/MikkCZ/pontoon-addon/pull/76#discussion_r195809548
   public getTeamBugsUrl(): string {
-    return `${this._baseUrl}/${this._team}/bugs/`;
+    return `${this.baseUrl}/${this.team}/bugs/`;
   }
 
   public getTeamProjectUrl(projectUrl: string): string {
-    const teamProjectUrl = `${this._baseUrl}${projectUrl.replace(
+    const teamProjectUrl = `${this.baseUrl}${projectUrl.replace(
       '/projects/',
-      `/${this._team}/`
+      `/${this.team}/`
     )}`;
     if (teamProjectUrl.includes('?')) {
       return `${teamProjectUrl}&utm_source=pontoon-addon`;
@@ -68,36 +68,36 @@ export class RemotePontoon {
     textToSearch?: string
   ): string {
     if (textToSearch !== undefined) {
-      return `${this._baseUrl}/${
-        this._team
+      return `${this.baseUrl}/${
+        this.team
       }/${projectSlug}/all-resources/?search="${textToSearch
         .trim()
         .replace(/ /g, '+')}"&utm_source=pontoon-addon`;
     }
-    return `${this._baseUrl}/${this._team}/${projectSlug}/all-resources/?utm_source=pontoon-addon`;
+    return `${this.baseUrl}/${this.team}/${projectSlug}/all-resources/?utm_source=pontoon-addon`;
   }
 
   public getSearchInAllProjectsUrl(textToSearch?: string): string {
     return this.getSearchInProjectUrl('all-projects', textToSearch);
   }
 
-  private _getStringsWithStatusSearchUrl(status: string): string {
-    return `${this._baseUrl}/${this._team}/all-projects/all-resources/?status=${status}&utm_source=pontoon-addon`;
+  private getStringsWithStatusSearchUrl(status: string): string {
+    return `${this.baseUrl}/${this.team}/all-projects/all-resources/?status=${status}&utm_source=pontoon-addon`;
   }
 
   public getTeamsListUrl(utm_source?: string): string {
     if (utm_source !== undefined) {
-      return `${this._baseUrl}/teams/?utm_source=${utm_source}`;
+      return `${this.baseUrl}/teams/?utm_source=${utm_source}`;
     }
-    return `${this._baseUrl}/teams/`;
+    return `${this.baseUrl}/teams/`;
   }
 
-  private _getQueryURL(query: string): string {
-    return `${this._baseUrl}/graphql?query=${query}`;
+  private getQueryURL(query: string): string {
+    return `${this.baseUrl}/graphql?query=${query}`;
   }
 
-  private _updateNotificationsIfThereAreNew(pageContent: string): void {
-    const page = this._domParser.parseFromString(pageContent, 'text/html');
+  private updateNotificationsIfThereAreNew(pageContent: string): void {
+    const page = this.domParser.parseFromString(pageContent, 'text/html');
     if (page.querySelector('header #notifications')) {
       const dataKey = 'notificationsData';
       Promise.all([
@@ -117,7 +117,7 @@ export class RemotePontoon {
     }
   }
 
-  private _subscribeToDataChange<T>(
+  private subscribeToDataChange<T>(
     dataKey: string,
     callback: (update: { newValue: T }) => void
   ): void {
@@ -131,20 +131,20 @@ export class RemotePontoon {
   public subscribeToNotificationsChange(
     callback: (update: { newValue: NotificationsData }) => void
   ): void {
-    this._subscribeToDataChange<NotificationsData>(
+    this.subscribeToDataChange<NotificationsData>(
       'notificationsData',
       callback
     );
   }
 
   public subscribeToBaseUrlChange(callback: () => void): void {
-    this._baseUrlChangeListeners.add(callback);
+    this.baseUrlChangeListeners.add(callback);
   }
 
   public updateNotificationsData(): void {
-    this._dataFetcher
+    this.dataFetcher
       .fetchFromPontoonSession(
-        `${this._baseUrl}/user-data/?utm_source=pontoon-addon-automation`
+        `${this.baseUrl}/user-data/?utm_source=pontoon-addon-automation`
       )
       .then((response) => {
         return response.json() as Promise<UserDataApiResponse>;
@@ -169,14 +169,14 @@ export class RemotePontoon {
   }
 
   public updateLatestTeamActivity(): void {
-    this._dataFetcher
+    this.dataFetcher
       .fetch(this.getTeamsListUrl('pontoon-addon-automation'))
       .then((response) => {
         return response.text();
       })
       .then((allTeamsPageContent) => {
         const latestActivityObj: { [key: string]: any } = {};
-        const allTeamsPage = this._domParser.parseFromString(
+        const allTeamsPage = this.domParser.parseFromString(
           allTeamsPageContent,
           'text/html'
         );
@@ -205,9 +205,9 @@ export class RemotePontoon {
 
   public async updateTeamsList(): Promise<TeamsList> {
     return await Promise.all([
-      this._dataFetcher
+      this.dataFetcher
         .fetch(
-          this._getQueryURL(
+          this.getQueryURL(
             '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}'
           )
         )
@@ -215,7 +215,7 @@ export class RemotePontoon {
           (response) =>
             response.json() as Promise<{ data: TeamsListGqlResponse }>
         ),
-      this._dataFetcher
+      this.dataFetcher
         .fetch('https://flod.org/mozilla-l10n-query/?bugzilla=product')
         .then(
           (response) => response.json() as Promise<{ [code: string]: string }>
@@ -251,7 +251,7 @@ export class RemotePontoon {
   public subscribeToProjectsListChange(
     callback: (change: { newValue: ProjectsList }) => void
   ): void {
-    this._subscribeToDataChange<ProjectsList>('projectsList', callback);
+    this.subscribeToDataChange<ProjectsList>('projectsList', callback);
   }
 
   public async getPontoonProjectForPageUrl(pageUrl: string): Promise<
@@ -297,13 +297,13 @@ export class RemotePontoon {
   public subscribeToTeamsListChange(
     callback: (update: { newValue: TeamsList }) => void
   ): void {
-    this._subscribeToDataChange<TeamsList>('teamsList', callback);
+    this.subscribeToDataChange<TeamsList>('teamsList', callback);
   }
 
   public async updateProjectsList(): Promise<{ [key: string]: any }> {
     return await Promise.all([
-      this._dataFetcher
-        .fetch(this._getQueryURL('{projects{slug,name}}'))
+      this.dataFetcher
+        .fetch(this.getQueryURL('{projects{slug,name}}'))
         .then(
           (response) =>
             response.json() as Promise<{ data: ProjectsListGqlResponse }>
@@ -334,26 +334,26 @@ export class RemotePontoon {
     });
   }
 
-  private _listenToMessagesFromClients(): void {
+  private listenToMessagesFromClients(): void {
     browser.runtime.onMessage.addListener((request, _sender) => {
       switch (request.type) {
         case BackgroundPontoonMessageType.TO_BACKGROUND.PAGE_LOADED:
-          this._updateNotificationsIfThereAreNew(request.value);
+          this.updateNotificationsIfThereAreNew(request.value);
           break;
         case BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
-          this._markAllNotificationsAsRead();
+          this.markAllNotificationsAsRead();
           break;
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_BASE_URL:
-          return Promise.resolve(this._baseUrl);
+          return Promise.resolve(this.baseUrl);
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
           return Promise.resolve(
-            `${this._baseUrl}/notifications/?utm_source=pontoon-addon`
+            `${this.baseUrl}/notifications/?utm_source=pontoon-addon`
           );
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL:
-          return Promise.resolve(this._getSettingsUrl('pontoon-addon'));
+          return Promise.resolve(this.getSettingsUrl('pontoon-addon'));
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
           return Promise.resolve(
-            `${this._baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`
+            `${this.baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`
           );
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
           return Promise.resolve(this.getTeamPageUrl());
@@ -362,12 +362,12 @@ export class RemotePontoon {
         case BackgroundPontoonMessageType.TO_BACKGROUND
           .GET_STRINGS_WITH_STATUS_SEARCH_URL:
           return Promise.resolve(
-            this._getStringsWithStatusSearchUrl(request.args[0])
+            this.getStringsWithStatusSearchUrl(request.args[0])
           );
         case BackgroundPontoonMessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
           return this.updateTeamsList();
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
-          return this._getTeamFromPontoon();
+          return this.getTeamFromPontoon();
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_CURRENT_TAB_PROJECT:
           return browser.tabs
             .query({ currentWindow: true, active: true })
@@ -382,7 +382,7 @@ export class RemotePontoon {
       };
       browser.runtime.sendMessage(message);
       browser.tabs
-        .query({ url: this.getBaseUrl() + '/*' })
+        .query({ url: `${this.getBaseUrl()}/*` })
         .then((pontoonTabs) =>
           pontoonTabs.forEach((tab) =>
             browser.tabs.sendMessage(tab.id!, message)
@@ -391,27 +391,27 @@ export class RemotePontoon {
     });
   }
 
-  private _watchOptionsUpdates(): void {
-    this._options.subscribeToOptionChange(
+  private watchOptionsUpdates(): void {
+    this.options.subscribeToOptionChange(
       'pontoon_base_url',
       (change: Storage.StorageChange) => {
-        this._baseUrl = change.newValue.replace(/\/$/, '');
-        this._baseUrlChangeListeners.forEach((callback) => callback());
+        this.baseUrl = change.newValue.replace(/\/$/, '');
+        this.baseUrlChangeListeners.forEach((callback) => callback());
       }
     );
-    this._options.subscribeToOptionChange(
+    this.options.subscribeToOptionChange(
       'locale_team',
       (change: Storage.StorageChange) => {
-        this._team = change.newValue;
+        this.team = change.newValue;
       }
     );
   }
 
-  private _markAllNotificationsAsRead(): void {
+  private markAllNotificationsAsRead(): void {
     const dataKey = 'notificationsData';
     Promise.all([
-      this._dataFetcher.fetchFromPontoonSession(
-        `${this._baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-addon-automation`
+      this.dataFetcher.fetchFromPontoonSession(
+        `${this.baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-addon-automation`
       ),
       browser.storage.local.get(dataKey) as Promise<NotificationsDataInStorage>,
     ]).then(([response, storageItem]) => {
@@ -426,12 +426,12 @@ export class RemotePontoon {
     });
   }
 
-  async _getTeamFromPontoon(): Promise<string | undefined> {
-    const response = await this._dataFetcher.fetchFromPontoonSession(
-      this._getSettingsUrl('pontoon-addon-automation')
+  async getTeamFromPontoon(): Promise<string | undefined> {
+    const response = await this.dataFetcher.fetchFromPontoonSession(
+      this.getSettingsUrl('pontoon-addon-automation')
     );
     const text = await response.text();
-    const language: any = this._domParser
+    const language: any = this.domParser
       .parseFromString(text, 'text/html')
       .querySelector('#homepage .language');
     return language?.dataset['code'] || undefined;

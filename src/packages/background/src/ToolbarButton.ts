@@ -1,53 +1,53 @@
 import type { Options } from '@pontoon-addon/commons/src/Options';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import type { RemotePontoon } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class ToolbarButton {
-  private readonly _options: Options;
-  private readonly _remotePontoon: RemotePontoon;
-  private readonly _defaultTitle: string;
-  private _badgeText: string;
-  private readonly _openPontoonTeamPage: () => void;
-  private readonly _openPontoonHomePage: () => void;
+  private readonly options: Options;
+  private readonly remotePontoon: RemotePontoon;
+  private readonly defaultTitle: string;
+  private badgeText: string;
+  private readonly openPontoonTeamPage: () => void;
+  private readonly openPontoonHomePage: () => void;
 
   constructor(options: Options, remotePontoon: RemotePontoon) {
-    this._options = options;
-    this._remotePontoon = remotePontoon;
-    this._defaultTitle = 'Pontoon notifications';
-    this._badgeText = '';
+    this.options = options;
+    this.remotePontoon = remotePontoon;
+    this.defaultTitle = 'Pontoon notifications';
+    this.badgeText = '';
 
-    this._openPontoonTeamPage = () =>
-      browser.tabs.create({ url: this._remotePontoon.getTeamPageUrl() });
-    this._openPontoonHomePage = () =>
-      browser.tabs.create({ url: this._remotePontoon.getBaseUrl() });
-    this._addOnClickAction();
-    this._watchStorageChanges();
-    this._watchOptionsUpdates();
+    this.openPontoonTeamPage = () =>
+      browser.tabs.create({ url: this.remotePontoon.getTeamPageUrl() });
+    this.openPontoonHomePage = () =>
+      browser.tabs.create({ url: this.remotePontoon.getBaseUrl() });
+    this.addOnClickAction();
+    this.watchStorageChanges();
+    this.watchOptionsUpdates();
   }
 
-  private _watchStorageChanges(): void {
-    this._remotePontoon.subscribeToNotificationsChange((change) => {
+  private watchStorageChanges(): void {
+    this.remotePontoon.subscribeToNotificationsChange((change) => {
       const notificationsData = change.newValue;
       if (notificationsData) {
-        this._updateBadge(
+        this.updateBadge(
           `${Object.values(notificationsData).filter((n) => n.unread).length}`
         );
       } else {
-        this._updateBadge('!');
+        this.updateBadge('!');
       }
     });
   }
 
-  private _watchOptionsUpdates(): void {
-    this._options.subscribeToOptionChange('toolbar_button_action', (change) => {
-      this._setButtonAction(change.newValue);
+  private watchOptionsUpdates(): void {
+    this.options.subscribeToOptionChange('toolbar_button_action', (change) => {
+      this.setButtonAction(change.newValue);
     });
-    this._options.subscribeToOptionChange(
+    this.options.subscribeToOptionChange(
       'display_toolbar_button_badge',
       (change) => {
         if (change.newValue) {
-          this._updateBadge(this._badgeText);
+          this.updateBadge(this.badgeText);
         } else {
           this.hideBadge();
         }
@@ -55,10 +55,10 @@ export class ToolbarButton {
     );
   }
 
-  private _setButtonAction(buttonAction: string): void {
+  private setButtonAction(buttonAction: string): void {
     browser.browserAction.setPopup({ popup: '' });
-    browser.browserAction.onClicked.removeListener(this._openPontoonTeamPage);
-    browser.browserAction.onClicked.removeListener(this._openPontoonHomePage);
+    browser.browserAction.onClicked.removeListener(this.openPontoonTeamPage);
+    browser.browserAction.onClicked.removeListener(this.openPontoonHomePage);
     switch (buttonAction) {
       case 'popup':
         browser.browserAction.setPopup({
@@ -68,31 +68,31 @@ export class ToolbarButton {
         });
         break;
       case 'team-page':
-        browser.browserAction.onClicked.addListener(this._openPontoonTeamPage);
+        browser.browserAction.onClicked.addListener(this.openPontoonTeamPage);
         break;
       case 'home-page':
-        browser.browserAction.onClicked.addListener(this._openPontoonHomePage);
+        browser.browserAction.onClicked.addListener(this.openPontoonHomePage);
         break;
     }
   }
 
-  private _addOnClickAction(): void {
+  private addOnClickAction(): void {
     const buttonActionOption = 'toolbar_button_action';
-    this._options.get(buttonActionOption).then((item: any) => {
-      this._setButtonAction(item[buttonActionOption]);
+    this.options.get(buttonActionOption).then((item: any) => {
+      this.setButtonAction(item[buttonActionOption]);
     });
   }
 
-  private _updateBadge(text: string): void {
+  private updateBadge(text: string): void {
     if (text.trim().length > 0) {
-      this._badgeText = text;
+      this.badgeText = text;
     }
     const optionKey = 'display_toolbar_button_badge';
-    this._options.get(optionKey).then((item: any) => {
+    this.options.get(optionKey).then((item: any) => {
       if (item[optionKey]) {
         browser.browserAction.setBadgeText({ text: text });
         browser.browserAction.setTitle({
-          title: `${this._defaultTitle} (${text})`,
+          title: `${this.defaultTitle} (${text})`,
         });
         if (text !== '0') {
           browser.browserAction.setBadgeBackgroundColor({ color: '#F36' });
@@ -107,6 +107,6 @@ export class ToolbarButton {
 
   public hideBadge(): void {
     browser.browserAction.setBadgeText({ text: '' });
-    browser.browserAction.setTitle({ title: this._defaultTitle });
+    browser.browserAction.setTitle({ title: this.defaultTitle });
   }
 }

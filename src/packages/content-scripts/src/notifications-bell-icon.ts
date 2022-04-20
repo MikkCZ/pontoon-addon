@@ -2,8 +2,7 @@ import {
   BackgroundPontoonClient,
   NotificationsData,
 } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
-
-import { browser } from './util/webExtensionsApi';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 const unreadNotificationsIcon =
   document.querySelector('#notifications.unread .button .icon') ||
