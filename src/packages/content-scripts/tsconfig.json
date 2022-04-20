@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "outDir": "dist",
     "target": "ES2019",
     "lib": [
@@ -18,6 +19,7 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
-  ]
+    "**/*.spec.tsx?"
+  ],
+  "resolveJsonModule": true
 }

@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: [
     './jest.setup.ts',
+    'jest-canvas-mock',
   ],
   collectCoverage: true,
   collectCoverageFrom: [
@@ -22,9 +23,12 @@ const config: Config.InitialOptions = {
     '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '.+\\.(png|svg)$': 'jest-transform-stub',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!react-game-snake)',
+  ],
   moduleNameMapper: {
     ...defaults.moduleNameMapper,
-    '@assets/.+\\.(png|svg)$': 'jest-transform-stub',
+    '@assets/.+\\.(png|svg|md)$': 'jest-transform-stub',
     '@pontoon-addon/commons/src/(.*)': '<rootDir>/../commons/src/$1.ts',
     '@pontoon-addon/commons/static/(.*)/(.*)': '<rootDir>/../commons/static/$1/$2',
   },

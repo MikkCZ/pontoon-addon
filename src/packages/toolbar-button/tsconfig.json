@@ -3,6 +3,11 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "outDir": "dist",
+    "target": "ES2019",
+    "lib": [
+      "DOM",
+      "ES2019"
+    ],
     "sourceMap": true,
     "paths": {
       "@pontoon-addon/commons/src/*": ["../commons/src/*"]
