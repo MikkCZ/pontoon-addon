@@ -1,4 +1,4 @@
-import { browser } from '../util/webExtensionsApi';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import { pontoonAddonInfo } from './commons';
 

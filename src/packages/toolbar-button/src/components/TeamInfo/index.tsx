@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import lightbulbIcon from '@assets/img/lightbulb-blue.svg';
 
-import { browser } from '../../util/webExtensionsApi';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 import { BottomLink } from '../BottomLink';
 

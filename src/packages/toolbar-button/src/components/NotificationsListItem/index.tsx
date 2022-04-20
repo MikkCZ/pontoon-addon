@@ -6,8 +6,8 @@ import DOMPurify from 'dompurify';
 import Linkify from 'react-linkify';
 import parse from 'html-react-parser';
 import type { BackgroundPontoonClient } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from '../../util/webExtensionsApi';
 import './index.css';
 
 interface Props {

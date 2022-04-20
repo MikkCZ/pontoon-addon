@@ -5,9 +5,8 @@ import {
   TeamsListInStorage,
 } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 import type { ContextualIdentities } from 'webextension-polyfill';
-
-import { browser } from './util/webExtensionsApi';
 
 import '../../commons/static/css/pontoon.css';
 import './index.css';
@@ -17,13 +16,13 @@ Options.create().then((options) => {
   const teamsListDataKey = 'teamsList';
   const dataUpdateSelect = document.querySelector(
     'select[data-option-id=data_update_interval]'
-  )!;
+  )! as HTMLSelectElement;
   const localeTeamSelect = document.querySelector(
     'select[data-option-id=locale_team]'
   )! as HTMLSelectElement;
   const containerSelect = document.querySelector(
     'select[data-option-id=contextual_identity]'
-  )!;
+  )! as HTMLSelectElement;
 
   // Fill update interval options
   [5, 15, 30, 60, 120]
@@ -117,7 +116,9 @@ Options.create().then((options) => {
         .querySelectorAll('[data-option-id]')
         .forEach((input) =>
           input.addEventListener('change', () =>
-            options.updateOptionFromInput(input as HTMLInputElement)
+            options.updateOptionFromInput(
+              input as HTMLInputElement | HTMLSelectElement
+            )
           )
         );
     })

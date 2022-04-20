@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import type { IOptions } from 'react-game-snake';
 import { SnakeGame } from 'react-game-snake';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import type { EventListeners } from '../../context/gameFunctions';
 import { useSnakeGameContext, GameState } from '../../context/SnakeGameContext';
-import { browser } from '../../util/webExtensionsApi';
 import '@pontoon-addon/commons/static/css/pontoon.css';
 import './index.css';
 

@@ -2,10 +2,14 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@pontoon-addon/commons/src/*": ["../commons/src/*"]
+    }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "../commons/src/**/*"
   ],
   "exclude": [
     "node_modules",

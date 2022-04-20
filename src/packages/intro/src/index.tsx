@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from './util/webExtensionsApi';
 import { TourRoot } from './root/TourRoot';
+
 import '@pontoon-addon/commons/static/css/pontoon.css';
 import './index.css';
 

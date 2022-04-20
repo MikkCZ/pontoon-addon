@@ -1,4 +1,5 @@
 import React from 'react';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
@@ -7,7 +8,6 @@ import contextButtonsImage from '@assets/img/context-buttons.png';
 import settingsImage from '@assets/img/settings.png';
 import feedbackImage from '@assets/img/2-Lions.png';
 
-import { browser } from '../../util/webExtensionsApi';
 import { TourPage } from '../../components/TourPage';
 import type { Props as TileProps } from '../../components/TourPageTile';
 

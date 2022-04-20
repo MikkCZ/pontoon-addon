@@ -1,8 +1,8 @@
 import URI from 'urijs';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 import type { ContentScripts } from 'webextension-polyfill';
 
 import type { RemotePontoon } from './RemotePontoon';
-import { browser } from './util/webExtensionsApi';
 
 export class PontoonAddonPromotion {
   private readonly remotePontoon: RemotePontoon;

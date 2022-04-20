@@ -1,7 +1,7 @@
 import React from 'react';
 import { Project } from '@pontoon-addon/commons/src/BackgroundPontoonClient';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from '../../util/webExtensionsApi';
 import { PanelSection } from '../../components/PanelSection';
 
 interface Props {

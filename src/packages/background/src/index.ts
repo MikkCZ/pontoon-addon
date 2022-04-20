@@ -1,8 +1,8 @@
 import type { Runtime } from 'webextension-polyfill';
 import { Options } from '@pontoon-addon/commons/src/Options';
 import { RemoteLinks } from '@pontoon-addon/commons/src/RemoteLinks';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
-import { browser } from './util/webExtensionsApi';
 import { RemotePontoon } from './RemotePontoon';
 import { ToolbarButton } from './ToolbarButton';
 import { PageAction } from './PageAction';

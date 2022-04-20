@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { browser } from '@pontoon-addon/commons/src/webExtensionsApi';
 
 import joystick from '@assets/img/joystick.svg';
 
-import { browser } from '../../util/webExtensionsApi';
 import { CloseButton } from '../CloseButton';
 import { TourPageTile, Props as TileProps } from '../TourPageTile';
 import './index.css';
