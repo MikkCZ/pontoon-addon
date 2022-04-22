@@ -1,5 +1,9 @@
 'use strict';
 
+const path = require('path');
+
+const rootDir = path.resolve(__dirname, '..');
+
 module.exports = {
   processors: [
     "stylelint-processor-styled-components"
@@ -10,7 +14,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['./src/**/*.{js,jsx,ts,tsx}'],
+      files: [`${rootDir}/src/**/*.tsx`],
       customSyntax: '@stylelint/postcss-css-in-js',
     }
   ],

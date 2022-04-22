@@ -15,5 +15,3 @@ cat ./dist/src/manifest.json | \
   jq 'del(.page_action)' | `# no support for both browser and page actions at the same time` \
   jq 'del(.permissions[] | select( .=="contextualIdentities" or .=="cookies" or .=="webRequest" or .=="webRequestBlocking" ))' | `# no support for contextual identities` \
   tee ./dist/chrome-src/manifest.json &>/dev/null
-
-web-ext build --config ./web-ext.config.js -s ./dist/chrome-src -a ./dist/web-ext/chrome

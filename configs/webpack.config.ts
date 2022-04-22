@@ -1,8 +1,11 @@
 import path from 'path';
-import type { Configuration } from 'webpack';
+import type { Configuration, RuleSetUseItem } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
+const rootDir = path.resolve(__dirname, '..');
+const srcDir = path.resolve(rootDir, 'src');
 
 enum WebpackModes {
   PROD = 'production',
@@ -12,6 +15,13 @@ enum WebpackModes {
 const mode = process.env.MODE === WebpackModes.DEVEL ? WebpackModes.DEVEL : WebpackModes.PROD;
 const devtool = mode === WebpackModes.DEVEL ? 'source-map' : undefined;
 
+const tsLoader: RuleSetUseItem = {
+  loader: 'ts-loader',
+  options: {
+      configFile: path.resolve(__dirname, 'tsconfig.json'),
+  },
+};
+
 const commonConfiguration: Configuration = {
   mode,
   devtool,
@@ -20,7 +30,7 @@ const commonConfiguration: Configuration = {
   },
   stats: 'errors-only',
   output: {
-    path: path.resolve(__dirname, 'dist/src'),
+    path: path.resolve(rootDir, 'dist/src'),
   },
   module: {
     rules: [
@@ -32,12 +42,12 @@ const commonConfiguration: Configuration = {
       {
         test: /\.tsx?$/,
         exclude: /(node_modules)/,
-        use: 'ts-loader',
+        use: [ tsLoader ],
       },
       {
         test: /\.json$/,
         exclude: /(node_modules)/,
-        loader: 'ts-loader',
+        use: [ tsLoader ],
       },
       {
         test: /\.png$/,
@@ -60,17 +70,17 @@ const commonConfiguration: Configuration = {
     modules: [ 'node_modules' ],
     extensions: [ '.ts', '.tsx', '.js', '.jsx', '.css', '.json', '.png', '.svg', '.md' ],
     alias: {
-      '@assets': path.resolve(__dirname, 'src/assets'),
-      '@background': path.resolve(__dirname, 'src/background'),
-      '@commons': path.resolve(__dirname, 'src/commons'),
-      '@frontend': path.resolve(__dirname, 'src/frontend'),
+      '@assets': path.resolve(srcDir, 'assets'),
+      '@background': path.resolve(srcDir, 'background'),
+      '@commons': path.resolve(srcDir, 'commons'),
+      '@frontend': path.resolve(srcDir, 'frontend'),
     },
   },
 };
 
 const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
-  template: path.resolve(__dirname, 'src/frontend/index.ejs'),
-  favicon: path.resolve(__dirname, 'src/assets/img/pontoon-logo.svg'),
+  template: path.resolve(srcDir, 'frontend/index.ejs'),
+  favicon: path.resolve(srcDir, 'assets/img/pontoon-logo.svg'),
   meta: {
     viewport: 'width=device-width,initial-scale=1',
   },
@@ -80,7 +90,7 @@ const configs: Configuration[] = [
   {
     name: 'background',
     ...commonConfiguration,
-    entry: path.resolve(__dirname, 'src/background/index.ts'),
+    entry: path.resolve(srcDir, 'background/index.ts'),
     output: {
       ...commonConfiguration.output,
       filename: 'background/main.js',
@@ -90,17 +100,17 @@ const configs: Configuration[] = [
     name: 'content-scripts',
     ...commonConfiguration,
     entry: {
-      'content-scripts/context-buttons': path.resolve(__dirname, 'src/content-scripts/context-buttons.ts'),
-      'content-scripts/live-data-provider': path.resolve(__dirname, 'src/content-scripts/live-data-provider.ts'),
-      'content-scripts/notifications-bell-icon': path.resolve(__dirname, 'src/content-scripts/notifications-bell-icon.ts'),
-      'content-scripts/pontoon-addon-promotion-content-script': path.resolve(__dirname, 'src/content-scripts/pontoon-addon-promotion/content-script.ts'),
-      'content-scripts/pontoon-addon-promotion-in-page': path.resolve(__dirname, 'src/content-scripts/pontoon-addon-promotion/in-page.ts'),
+      'content-scripts/context-buttons': path.resolve(srcDir, 'content-scripts/context-buttons.ts'),
+      'content-scripts/live-data-provider': path.resolve(srcDir, 'content-scripts/live-data-provider.ts'),
+      'content-scripts/notifications-bell-icon': path.resolve(srcDir, 'content-scripts/notifications-bell-icon.ts'),
+      'content-scripts/pontoon-addon-promotion-content-script': path.resolve(srcDir, 'content-scripts/pontoon-addon-promotion/content-script.ts'),
+      'content-scripts/pontoon-addon-promotion-in-page': path.resolve(srcDir, 'content-scripts/pontoon-addon-promotion/in-page.ts'),
     },
   },
   {
     name: 'frontend',
     ...commonConfiguration,
-    entry: path.resolve(__dirname, 'src/frontend/index.tsx'),
+    entry: path.resolve(srcDir, 'frontend/index.tsx'),
     output: {
       ...commonConfiguration.output,
       filename: 'frontend/main.js',
@@ -144,7 +154,7 @@ const configs: Configuration[] = [
   {
     name: 'options',
     ...commonConfiguration,
-    entry: path.resolve(__dirname, 'src/frontend/index-options.ts'),
+    entry: path.resolve(srcDir, 'frontend/index-options.ts'),
     output: {
       ...commonConfiguration.output,
       filename: 'frontend/options.js',
@@ -153,7 +163,7 @@ const configs: Configuration[] = [
       new HtmlWebpackPlugin({
         ...commonFrontendWebpackPluginOptions,
         filename: 'frontend/options.html',
-        template: path.resolve(__dirname, 'src/frontend/index-options.ejs'),
+        template: path.resolve(srcDir, 'frontend/index-options.ejs'),
         title: 'Pontoon Add-on Settings',
       }),
       new MiniCssExtractPlugin({
@@ -164,7 +174,7 @@ const configs: Configuration[] = [
   {
     name: 'manifest-json',
     mode: commonConfiguration.mode,
-    entry: path.resolve(__dirname, 'src/manifest.json'),
+    entry: path.resolve(srcDir, 'manifest.json'),
     output: {
       ...commonConfiguration.output,
       filename: 'manifest.js',
@@ -172,7 +182,7 @@ const configs: Configuration[] = [
     plugins: [
       new CopyPlugin({
         patterns:[
-          { from: path.resolve(__dirname, 'src/manifest.json'), to: '.' },
+          path.resolve(srcDir, 'manifest.json'),
           { from: 'src/assets/img/pontoon-logo*', to: '..' }, // overlap the source 'src' with dist 'src'
         ],
       }),
