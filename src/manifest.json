@@ -11,10 +11,10 @@
   "version": "4.4.2",
   "author": "Michal Stanke",
   "icons": {
-    "16": "packages/commons/static/img/pontoon-logo.svg",
-    "48": "packages/commons/static/img/pontoon-logo.svg",
-    "96": "packages/commons/static/img/pontoon-logo.svg",
-    "128": "packages/commons/static/img/pontoon-logo.svg"
+    "16": "assets/img/pontoon-logo.svg",
+    "48": "assets/img/pontoon-logo.svg",
+    "96": "assets/img/pontoon-logo.svg",
+    "128": "assets/img/pontoon-logo.svg"
   },
   "permissions": [
     "https://pontoon.mozilla.org/*",
@@ -33,24 +33,24 @@
     "<all_urls>"
   ],
   "options_ui": {
-    "page": "packages/options/dist/index.html",
+    "page": "frontend/options.html",
     "open_in_tab": true
   },
   "browser_action": {
     "default_title": "Pontoon notifications",
-    "default_icon": "packages/commons/static/img/pontoon-logo.svg"
+    "default_icon": "assets/img/pontoon-logo.svg"
   },
   "page_action": {
     "browser_style": true,
     "default_icon": {
-      "19": "packages/commons/static/img/pontoon-logo-gray-alpha.svg",
-      "38": "packages/commons/static/img/pontoon-logo-gray-alpha.svg"
+      "19": "assets/img/pontoon-logo-gray-alpha.svg",
+      "38": "assets/img/pontoon-logo-gray-alpha.svg"
     },
-    "default_popup": "packages/address-bar/dist/index.html"
+    "default_popup": "frontend/address-bar.html"
   },
   "background": {
     "scripts": [
-      "packages/background/dist/main.js"
+      "background/main.js"
     ]
   },
   "content_scripts": [
@@ -59,14 +59,14 @@
         "https://pontoon.mozilla.org/*"
       ],
       "js": [
-        "packages/content-scripts/dist/notifications-bell-icon.js"
+        "content-scripts/notifications-bell-icon.js"
       ],
       "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
-    "packages/content-scripts/dist/pontoon-addon-promotion-in-page.js",
-    "packages/commons/static/img/pontoon-logo.svg",
-    "packages/commons/static/img/bug.svg"
+    "content-scripts/pontoon-addon-promotion-in-page.js",
+    "assets/img/pontoon-logo.svg",
+    "assets/img/bug.svg"
   ]
 }
