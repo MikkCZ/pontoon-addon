@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-static-element-interactions */
 import React, { MouseEvent } from 'react';
+import styled, { css } from 'styled-components';
 import ReactTimeAgo from 'react-time-ago';
 import DOMPurify from 'dompurify';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -12,7 +13,49 @@ import parse from 'html-react-parser';
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { browser } from '@commons/webExtensionsApi';
 
-import './index.css';
+export const Wrapper = styled.li<{ unread: boolean; pointer: boolean }>`
+  ${({ unread }) =>
+    unread
+      ? css`
+          background-color: #333941;
+          border-bottom: 1px solid transparent;
+        `
+      : css`
+          &:not(:last-child) {
+            border-bottom: 1px solid #333941;
+          }
+        `}
+  ${({ pointer }) =>
+    pointer
+      ? css`
+          cursor: pointer;
+        `
+      : css``}
+  padding: 0.5em 1em;
+
+  &:hover {
+    background-color: #3f4752;
+  }
+`;
+
+export const ActorTargetLink = styled.button.attrs({ className: 'link' })`
+  && {
+    color: #f36;
+
+    &:hover {
+      color: #f36;
+    }
+  }
+`;
+
+export const Description = styled.div`
+  color: #888;
+`;
+
+export const TimeAgo = styled.div`
+  color: #888;
+  text-align: right;
+`;
 
 interface Props {
   unread: boolean;
@@ -74,10 +117,9 @@ export const NotificationsListItem: React.FC<Props> = ({
     verb === 'has reviewed suggestions';
   if (isSuggestion) {
     return (
-      <li
-        className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
-          linkUrls.length === 1 ? 'pointer' : ''
-        }`}
+      <Wrapper
+        unread={unread}
+        pointer={linkUrls.length === 1}
         onClick={onClickAll}
       >
         {description &&
@@ -103,63 +145,56 @@ export const NotificationsListItem: React.FC<Props> = ({
             </div>
           ))}
         {date_iso && (
-          <div className="NotificationsListItem-timeago" onClick={onClickAll}>
+          <TimeAgo onClick={onClickAll}>
             <ReactTimeAgo date={new Date(date_iso)} />
-          </div>
+          </TimeAgo>
         )}
-      </li>
+      </Wrapper>
     );
   } else {
     return (
-      <li
-        className={`NotificationsListItem ${unread ? 'unread' : 'read'} ${
-          linkUrls.length === 1 ? 'pointer' : ''
-        }`}
+      <Wrapper
+        unread={unread}
+        pointer={linkUrls.length === 1}
         onClick={onClickAll}
       >
         {actor && !isSuggestion && (
-          <button
-            className="link"
+          <ActorTargetLink
             onClick={(e) => {
               stopEvent(e);
               openTeamProject(backgroundPontoonClient, actor.url);
             }}
           >
             {actor.anchor}
-          </button>
+          </ActorTargetLink>
         )}
         {verb && <span onClick={onClickAll}> {verb} </span>}
         {target && (
-          <button
-            className="link"
+          <ActorTargetLink
             onClick={(e) => {
               stopEvent(e);
               openTeamProject(backgroundPontoonClient, target.url);
             }}
           >
             {target.anchor}
-          </button>
+          </ActorTargetLink>
         )}
         {date_iso && (
-          <div className="NotificationsListItem-timeago" onClick={onClickAll}>
+          <TimeAgo onClick={onClickAll}>
             <ReactTimeAgo date={new Date(date_iso)} />
-          </div>
+          </TimeAgo>
         )}
         {description &&
           description.content &&
           (description.safe ? (
-            <div
-              className="NotificationsListItem-description"
+            <Description
               onClick={onClickAll}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(description.content),
               }}
-            ></div>
+            ></Description>
           ) : (
-            <div
-              className="NotificationsListItem-description"
-              onClick={onClickAll}
-            >
+            <Description onClick={onClickAll}>
               <Linkify
                 properties={{
                   className: 'link',
@@ -169,9 +204,9 @@ export const NotificationsListItem: React.FC<Props> = ({
               >
                 {parse(description.content)}
               </Linkify>
-            </div>
+            </Description>
           ))}
-      </li>
+      </Wrapper>
     );
   }
 };

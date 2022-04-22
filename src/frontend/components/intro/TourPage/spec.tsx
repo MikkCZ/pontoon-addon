@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 import {
   mockBrowser,
@@ -9,7 +9,7 @@ import {
 import { CloseButton } from '../CloseButton';
 import { TourPageTile } from '../TourPageTile';
 
-import { TourPage } from '.';
+import { TourPage, PrivacyPolicyLinkWrapper } from '.';
 
 beforeEach(() => {
   mockBrowserNode.enable();
@@ -30,7 +30,7 @@ describe('TourPage', () => {
   });
 
   it('renders title', () => {
-    const wrapper = shallow(<TourPage title="TITLE" />);
+    const wrapper = mount(<TourPage title="TITLE" />);
 
     expect(wrapper.find('h2').text()).toBe('TITLE');
   });
@@ -55,9 +55,11 @@ describe('TourPage', () => {
     expect(wrapper.find(TourPageTile)).toHaveLength(1);
   });
 
-  it('renders privacy policy', () => {
-    const wrapper = shallow(<TourPage />);
+  it('renders privacy policy link', () => {
+    const wrapper = mount(<TourPage />);
 
-    expect(wrapper.find('.privacy-policy')).toHaveLength(1);
+    expect(wrapper.find(PrivacyPolicyLinkWrapper).text()).toBe(
+      'Privacy policy',
+    );
   });
 });

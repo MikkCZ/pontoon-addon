@@ -1,9 +1,17 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { useSnakeGameContext, GameState } from '../SnakeGameContext';
 
-import '@commons/pontoon.css';
-import './index.css';
+export const Wrapper = styled.div`
+  & > * {
+    margin-top: 0.5em;
+  }
+`;
+
+export const ControlsInfo = styled.div``;
+
+export const Score = styled.div``;
 
 export const SnakeGameInfo: React.FC = () => {
   const context = useSnakeGameContext();
@@ -14,11 +22,11 @@ export const SnakeGameInfo: React.FC = () => {
     gameState === GameState.RUNNING || gameState === GameState.PAUSED;
 
   return (
-    <div className="SnakeGameInfo">
+    <Wrapper>
       {gameState !== GameState.LOST && (
-        <div className="controlsInfo">Controls: arrows or WASD</div>
+        <ControlsInfo>Controls: arrows or WASD</ControlsInfo>
       )}
-      {gameInProgress && <div className="score">Your score: {score}</div>}
+      {gameInProgress && <Score>Your score: {score}</Score>}
       {gameState === GameState.RUNNING && (
         <button className="pontoon-style" onClick={controlFunctions.pauseGame}>
           PAUSE
@@ -29,6 +37,6 @@ export const SnakeGameInfo: React.FC = () => {
           RESUME
         </button>
       )}
-    </div>
+    </Wrapper>
   );
 };

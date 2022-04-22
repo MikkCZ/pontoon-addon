@@ -10,7 +10,13 @@ import {
   mockBrowserNode,
 } from '@commons/test/mockWebExtensionsApi';
 
-import { NotificationsListItem } from '.';
+import {
+  NotificationsListItem,
+  Wrapper,
+  ActorTargetLink,
+  Description,
+  TimeAgo,
+} from '.';
 
 const backgroundPontoonClientMock = {
   getTeamProjectUrl: async (projectUrl: string) => projectUrl,
@@ -44,20 +50,12 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find('.NotificationsListItem').hasClass('unread')).toBe(
-      true,
-    );
-    expect(wrapper.find('.NotificationsListItem').hasClass('read')).toBe(false);
-    expect(wrapper.find('.link')).toHaveLength(2);
-    expect(wrapper.find('.link').first().text()).toBe('ACTOR');
-    expect(wrapper.find('.link').last().text()).toBe('TARGET');
+    expect(wrapper.find(ActorTargetLink)).toHaveLength(2);
+    expect(wrapper.find(ActorTargetLink).first().text()).toBe('ACTOR');
+    expect(wrapper.find(ActorTargetLink).last().text()).toBe('TARGET');
     expect(wrapper.find('span').text()).toBe(' VERB ');
-    expect(
-      wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo),
-    ).toHaveLength(1);
-    expect(wrapper.find('.NotificationsListItem-description').text()).toBe(
-      'DESCRIPTION',
-    );
+    expect(wrapper.find(TimeAgo).find(ReactTimeAgo)).toHaveLength(1);
+    expect(wrapper.find(Description).text()).toBe('DESCRIPTION');
   });
 
   it('renders links and formatting tags in description', () => {
@@ -77,7 +75,7 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
+    expect(wrapper.find(Description).html()).toContain(
       'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
     );
   });
@@ -98,7 +96,7 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
+    expect(wrapper.find(Description).html()).toContain(
       '<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https://example.com/" class="link" target="_blank" rel="noopener noreferrer">https://example.com/</a></span>',
     );
   });
@@ -120,23 +118,9 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
+    expect(wrapper.find(Description).html()).toContain(
       'DESCRIPTION WITH(OUT) <a>XSS ATTEMPTS</a> ',
     );
-  });
-
-  it('renders read notification', () => {
-    const wrapper = shallow(
-      <NotificationsListItem
-        unread={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
-      />,
-    );
-
-    expect(wrapper.find('.NotificationsListItem').hasClass('unread')).toBe(
-      false,
-    );
-    expect(wrapper.find('.NotificationsListItem').hasClass('read')).toBe(true);
   });
 
   it('actor and target links work', async () => {
@@ -156,17 +140,14 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find('.NotificationsListItem').hasClass('pointer')).toBe(
-      false,
-    );
-    expect(wrapper.find('.link')).toHaveLength(2);
+    expect(wrapper.find(ActorTargetLink)).toHaveLength(2);
 
     act(() => {
-      wrapper.find('.link').first().simulate('click', {
+      wrapper.find(ActorTargetLink).first().simulate('click', {
         preventDefault: jest.fn(),
         stopPropagation: jest.fn(),
       });
-      wrapper.find('.link').last().simulate('click', {
+      wrapper.find(ActorTargetLink).last().simulate('click', {
         preventDefault: jest.fn(),
         stopPropagation: jest.fn(),
       });
@@ -192,12 +173,8 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find('.NotificationsListItem').hasClass('pointer')).toBe(
-      true,
-    );
-
     act(() => {
-      wrapper.find('.NotificationsListItem').simulate('click', {
+      wrapper.find(Wrapper).simulate('click', {
         preventDefault: jest.fn(),
         stopPropagation: jest.fn(),
       });

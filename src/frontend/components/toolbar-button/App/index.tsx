@@ -1,12 +1,24 @@
 import React from 'react';
+import { createGlobalStyle } from 'styled-components';
 
 import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 
 import { NotificationsList } from '../NotificationsList';
 import { TeamInfo } from '../TeamInfo';
 
-import '@commons/pontoon.css';
-import './index.css';
+const GlobalStyle = createGlobalStyle`
+  body {
+    width: fit-content;
+    min-width: 350px;
+    font: caption;
+    font-size: 14px;
+  }
+
+  body * {
+    text-align: left;
+  }
+`;
 
 interface Props {
   notificationsData: any;
@@ -32,6 +44,8 @@ export const App: React.FC<Props> = ({
 }) => {
   return (
     <>
+      <GlobalPontoonStyle />
+      <GlobalStyle />
       <NotificationsList
         notificationsData={notificationsData}
         hideReadNotifications={hideReadNotifications}

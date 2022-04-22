@@ -116,10 +116,6 @@ describe('NotificationsList', () => {
       />,
     );
 
-    expect(
-      wrapper.find(BottomLink).hasClass('NotificationsList-mark-all-as-read'),
-    ).toBe(true);
-
     act(() => {
       wrapper.find(BottomLink).simulate('click');
     });
@@ -139,10 +135,6 @@ describe('NotificationsList', () => {
         hideReadNotifications={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
       />,
-    );
-
-    expect(wrapper.find(BottomLink).hasClass('NotificationsList-see-all')).toBe(
-      true,
     );
 
     mockBrowser.tabs.create

@@ -12,7 +12,7 @@ import {
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 
-import { TeamInfo } from '.';
+import { TeamInfo, Name, Code } from '.';
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
@@ -48,8 +48,8 @@ describe('TeamInfo', () => {
       />,
     );
 
-    expect(wrapper.find('.TeamInfo-name').text()).toBe('Czech');
-    expect(wrapper.find('.TeamInfo-code').text()).toBe('cs');
+    expect(wrapper.find(Name).text()).toBe('Czech');
+    expect(wrapper.find(Code).text()).toBe('cs');
     expect(wrapper.find(TeamInfoListItem)).toHaveLength(8);
     expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
     expect(wrapper.find(ReactTimeAgo)).toHaveLength(1);
@@ -68,7 +68,6 @@ describe('TeamInfo', () => {
     expect(wrapper.find(TeamInfoListItem).at(7).prop('label')).toBe(
       'all strings',
     );
-    expect(wrapper.find(BottomLink).hasClass('TeamInfo-team-page')).toBe(true);
   });
 
   it('renders without activity', () => {
@@ -115,8 +114,8 @@ describe('TeamInfo', () => {
       .andResolve({} as any)
       .times(3); // eslint-disable-line @typescript-eslint/no-explicit-any
 
-    wrapper.find('.TeamInfo-name').simulate('click');
-    wrapper.find('.TeamInfo-code').simulate('click');
+    wrapper.find(Name).simulate('click');
+    wrapper.find(Code).simulate('click');
     wrapper.find(BottomLink).simulate('click');
 
     await flushPromises();

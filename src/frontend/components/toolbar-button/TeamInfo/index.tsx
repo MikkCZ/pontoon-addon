@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
+import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { browser } from '@commons/webExtensionsApi';
@@ -8,8 +9,39 @@ import lightbulbIcon from '@assets/img/lightbulb-blue.svg';
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 
-import '@commons/pontoon.css';
-import './index.css';
+const Title = styled.h1`
+  margin: 0 0.5em;
+  padding: 0;
+`;
+
+const TitleLink = styled.button.attrs({ className: 'link' })`
+  && {
+    display: inline-block;
+    width: 100%;
+    color: #ebebeb;
+
+    &:hover {
+      color: #7bc876;
+    }
+  }
+`;
+
+const List = styled.ul`
+  margin: 0 0.5em;
+  list-style-type: none;
+  padding: 0.5em 1em 0.5em 0.5em;
+  color: #aaa;
+`;
+
+export const Name = styled.span`
+  font-weight: bold;
+  color: #ebebeb;
+`;
+
+export const Code = styled.span`
+  font-weight: normal;
+  color: #7bc876;
+`;
 
 interface Props {
   name?: string;
@@ -47,17 +79,13 @@ export const TeamInfo: React.FC<Props> = ({
   backgroundPontoonClient,
 }) => {
   return (
-    <section className="TeamInfo">
-      <h1>
-        <button
-          className="link"
-          onClick={() => openTeamPage(backgroundPontoonClient)}
-        >
-          <span className="TeamInfo-name">{name}</span>{' '}
-          <span className="TeamInfo-code">{code}</span>
-        </button>
-      </h1>
-      <ul className="TeamInfo-list">
+    <section>
+      <Title>
+        <TitleLink onClick={() => openTeamPage(backgroundPontoonClient)}>
+          <Name>{name}</Name> <Code>{code}</Code>
+        </TitleLink>
+      </Title>
+      <List>
         {latestActivity && (
           <TeamInfoListItem
             key="activity"
@@ -119,7 +147,7 @@ export const TeamInfo: React.FC<Props> = ({
         ].map((category) => (
           <TeamInfoListItem
             key={category.status}
-            labelBeforeStyle={category.labelBeforeStyle}
+            squareStyle={category.labelBeforeStyle}
             label={category.text}
             value={stringsData ? stringsData[category.dataProperty] : ''}
             onClick={() =>
@@ -130,9 +158,8 @@ export const TeamInfo: React.FC<Props> = ({
             }
           />
         ))}
-      </ul>
+      </List>
       <BottomLink
-        className="TeamInfo-team-page"
         text="Open team page"
         onClick={() => openTeamPage(backgroundPontoonClient)}
       />

@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils';
 import { mountWithSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';
 
-import { SnakeGameInfo } from '.';
+import { SnakeGameInfo, Wrapper, ControlsInfo, Score } from '.';
 
 describe('SnakeGameInfo', () => {
   it('renders score and pause button when the game is running', () => {
@@ -15,10 +15,8 @@ describe('SnakeGameInfo', () => {
       score,
     });
 
-    expect(wrapper.find('.controlsInfo').text()).toBe(
-      'Controls: arrows or WASD',
-    );
-    expect(wrapper.find('.score').text()).toBe(`Your score: ${score}`);
+    expect(wrapper.find(ControlsInfo).text()).toBe('Controls: arrows or WASD');
+    expect(wrapper.find(Score).text()).toBe(`Your score: ${score}`);
     expect(wrapper.find('button')).toHaveLength(1);
     expect(wrapper.find('button').text()).toBe('PAUSE');
   });
@@ -46,10 +44,8 @@ describe('SnakeGameInfo', () => {
       score,
     });
 
-    expect(wrapper.find('.controlsInfo').text()).toBe(
-      'Controls: arrows or WASD',
-    );
-    expect(wrapper.find('.score').text()).toBe(`Your score: ${score}`);
+    expect(wrapper.find(ControlsInfo).text()).toBe('Controls: arrows or WASD');
+    expect(wrapper.find(Score).text()).toBe(`Your score: ${score}`);
     expect(wrapper.find('button')).toHaveLength(1);
     expect(wrapper.find('button').text()).toBe('RESUME');
   });
@@ -75,10 +71,8 @@ describe('SnakeGameInfo', () => {
       gameState: GameState.NOT_STARTED,
     });
 
-    expect(wrapper.find('.controlsInfo').text()).toBe(
-      'Controls: arrows or WASD',
-    );
-    expect(wrapper.find('.score')).toHaveLength(0);
+    expect(wrapper.find(ControlsInfo).text()).toBe('Controls: arrows or WASD');
+    expect(wrapper.find(Score)).toHaveLength(0);
     expect(wrapper.find('button')).toHaveLength(0);
   });
 
@@ -88,6 +82,6 @@ describe('SnakeGameInfo', () => {
       gameState: GameState.LOST,
     });
 
-    expect(wrapper.find('.SnakeGameInfo').children()).toHaveLength(0);
+    expect(wrapper.find(Wrapper).text()).toBe('');
   });
 });

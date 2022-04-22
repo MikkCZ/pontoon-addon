@@ -1,5 +1,6 @@
 /* eslint-disable testing-library/render-result-naming-convention */
 import ReactDOM from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
 import { Project } from '@background/BackgroundPontoonClient';
@@ -32,16 +33,19 @@ afterEach(() => {
   document.body.textContent = '';
 });
 
-async function renderInRootId(rootId: string): Promise<HTMLDivElement> {
+async function expectRendersToRoot(rootId: string): Promise<void> {
   const rootDiv = document.createElement('div');
   rootDiv.id = rootId;
   document.body.appendChild(rootDiv);
 
-  const renderPromise = await require('./index');
-  await renderPromise;
-  await flushPromises();
+  await act(async () => {
+    const renderPromise = await require('./index');
+    await renderPromise;
+    await flushPromises();
+  });
 
-  return rootDiv;
+  expect(reactDomRender).toHaveBeenCalledTimes(1);
+  expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
 }
 
 describe('address bar', () => {
@@ -54,37 +58,25 @@ describe('address bar', () => {
   });
 
   it('renders', async () => {
-    const rootDiv = await renderInRootId('address-bar-root');
-
-    expect(reactDomRender).toHaveBeenCalledTimes(1);
-    expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
+    await expectRendersToRoot('address-bar-root');
   });
 });
 
 describe('intro', () => {
   it('renders', async () => {
-    const rootDiv = await renderInRootId('intro-root');
-
-    expect(reactDomRender).toHaveBeenCalledTimes(1);
-    expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
+    await expectRendersToRoot('intro-root');
   });
 });
 
 describe('privacy policy', () => {
   it('renders', async () => {
-    const rootDiv = await renderInRootId('privacy-policy-root');
-
-    expect(reactDomRender).toHaveBeenCalledTimes(1);
-    expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
+    await expectRendersToRoot('privacy-policy-root');
   });
 });
 
 describe('snake game', () => {
   it('renders', async () => {
-    const rootDiv = await renderInRootId('snake-game-root');
-
-    expect(reactDomRender).toHaveBeenCalledTimes(1);
-    expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
+    await expectRendersToRoot('snake-game-root');
   });
 });
 
@@ -99,9 +91,6 @@ describe('toolbar button', () => {
   });
 
   it('renders', async () => {
-    const rootDiv = await renderInRootId('toolbar-button-root');
-
-    expect(reactDomRender).toHaveBeenCalledTimes(1);
-    expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
+    await expectRendersToRoot('toolbar-button-root');
   });
 });

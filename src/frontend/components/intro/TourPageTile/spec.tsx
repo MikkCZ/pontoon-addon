@@ -1,11 +1,11 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 
 import { TourPageTile } from '.';
 
 describe('TourPageTile', () => {
   it('renders full tile', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <TourPageTile
         {...{
           title: 'TITLE',
@@ -19,14 +19,14 @@ describe('TourPageTile', () => {
       />,
     );
 
-    expect(wrapper.find('.TourPageTile h3').text()).toBe('TITLE');
-    expect(wrapper.find('.TourPageTile img')).toHaveLength(1);
-    expect(wrapper.find('.TourPageTile p').text()).toBe('Lorem Ipsum');
-    expect(wrapper.find('.TourPageTile button').text()).toBe('Lipsum...');
+    expect(wrapper.find('h3').text()).toBe('TITLE');
+    expect(wrapper.find('img')).toHaveLength(1);
+    expect(wrapper.find('p').text()).toBe('Lorem Ipsum');
+    expect(wrapper.find('button').text()).toBe('Lipsum...');
   });
 
   it('renders tile without image', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <TourPageTile
         {...{
           title: 'TITLE',
@@ -40,6 +40,6 @@ describe('TourPageTile', () => {
       />,
     );
 
-    expect(wrapper.find('.TourPageTile img')).toHaveLength(0);
+    expect(wrapper.find('img')).toHaveLength(0);
   });
 });

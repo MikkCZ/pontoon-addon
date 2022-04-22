@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import type { IOptions } from 'react-game-snake';
 import { SnakeGame } from 'react-game-snake';
 
@@ -7,8 +8,21 @@ import { browser } from '@commons/webExtensionsApi';
 import type { EventListeners } from '../gameFunctions';
 import { useSnakeGameContext, GameState } from '../SnakeGameContext';
 
-import '@commons/pontoon.css';
-import './index.css';
+const Wrapper = styled.div`
+  position: relative;
+  margin: 0 auto;
+  border: 3px solid #7bc876;
+  display: inline-block;
+
+  & > * {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+`;
 
 const gameSpeed = 7;
 
@@ -53,8 +67,7 @@ export const SnakeGameBoard: React.FC = () => {
   const boardWithListeners = useBoardWith(eventListeners);
 
   return (
-    <div
-      className="SnakeGameBoard"
+    <Wrapper
       style={{
         width: finalBoardWidth,
         height: finalBoardHeight,
@@ -93,7 +106,7 @@ export const SnakeGameBoard: React.FC = () => {
             TRY AGAIN
           </button>
           <div>or</div>
-          <div className="shareScore">
+          <div>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <a
               onClick={() => {
@@ -113,6 +126,6 @@ export const SnakeGameBoard: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </Wrapper>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import { browser } from '@commons/webExtensionsApi';
 import joystick from '@assets/img/joystick.svg';
@@ -6,7 +7,54 @@ import joystick from '@assets/img/joystick.svg';
 import { CloseButton } from '../CloseButton';
 import { TourPageTile, Props as TileProps } from '../TourPageTile';
 
-import './index.css';
+const Wrapper = styled.div`
+  position: relative;
+`;
+
+const Title = styled.h2`
+  text-align: center;
+`;
+
+const CloseButtonWrapper = styled.div`
+  position: absolute;
+  right: 2em;
+
+  @media screen and (max-width: 640px) {
+    display: none;
+  }
+`;
+
+const TourPageTiles = styled.div`
+  width: 90vw;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+    margin: 0;
+  }
+`;
+
+export const PrivacyPolicyLinkWrapper = styled.div`
+  text-align: center;
+`;
+
+const EasterEggHint = styled.div<{ opacity?: number }>`
+  ${({ opacity }) =>
+    opacity
+      ? css`
+          opacity: ${opacity};
+        `
+      : css``}
+  text-align: center;
+  font-size: 0.8em;
+  position: relative;
+  top: -16px;
+`;
 
 function revealTheEasterEgg() {
   browser.tabs.create({
@@ -24,31 +72,30 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
   const [tilesToClick, setTilesToClick] = useState(new Set(allTitles));
 
   return (
-    <div className="TourPage">
+    <Wrapper>
+      <CloseButtonWrapper>
+        {tilesToClick.size !== 0 ? (
+          <CloseButton title="Close the tour" />
+        ) : (
+          <CloseButton
+            title="Play a game"
+            icon={joystick}
+            style={{ width: '32px', height: '32px' }}
+            onClick={() => {
+              revealTheEasterEgg();
+            }}
+          />
+        )}
+      </CloseButtonWrapper>
+      <Title>{title}</Title>
       {tilesToClick.size !== 0 ? (
-        <CloseButton title="Close the tour" />
-      ) : (
-        <CloseButton
-          title="Play a game"
-          icon={joystick}
-          style={{ width: '32px', height: '32px' }}
-          onClick={() => {
-            revealTheEasterEgg();
-          }}
-        />
-      )}
-      <h2>{title}</h2>
-      {tilesToClick.size !== 0 ? (
-        <div
-          className="easter-egg-hint"
-          style={{ opacity: 1 - (tilesToClick.size + 2) / tiles.length }}
-        >
+        <EasterEggHint opacity={1 - (tilesToClick.size + 2) / tiles.length}>
           Click all green buttons.
-        </div>
+        </EasterEggHint>
       ) : (
-        <div className="easter-egg-hint">See the top right corner.</div>
+        <EasterEggHint>See the top right corner.</EasterEggHint>
       )}
-      <div className="TourPageTiles">
+      <TourPageTiles>
         {tiles.map((tile, index) => (
           <TourPageTile
             key={`tile-${index}`}
@@ -68,8 +115,8 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
             }}
           />
         ))}
-      </div>
-      <div className="privacy-policy">
+      </TourPageTiles>
+      <PrivacyPolicyLinkWrapper>
         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
         <a
           onClick={() =>
@@ -80,7 +127,7 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
         >
           Privacy policy
         </a>
-      </div>
-    </div>
+      </PrivacyPolicyLinkWrapper>
+    </Wrapper>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { browser } from '@commons/webExtensionsApi';
@@ -7,7 +8,14 @@ import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
 import { NotificationsListError } from '../NotificationsListError';
 
-import './index.css';
+const List = styled.ul`
+  list-style: none;
+  text-align: center;
+  max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+`;
 
 interface Props {
   notificationsData: any;
@@ -32,8 +40,8 @@ export const NotificationsList: React.FC<Props> = ({
       (notification: any) => notification.unread,
     );
     return (
-      <section className="NotificationsList">
-        <ul className="NotificationsList-list">
+      <section>
+        <List>
           {Object.values(notificationsData)
             .sort((a: any, b: any) => a.id - b.id)
             .reverse()
@@ -49,16 +57,14 @@ export const NotificationsList: React.FC<Props> = ({
                 {...notification}
               />
             ))}
-        </ul>
+        </List>
         {containsUnreadNotifications ? (
           <BottomLink
-            className="NotificationsList-mark-all-as-read"
             text="Mark all Notifications as read"
             onClick={() => backgroundPontoonClient.markAllNotificationsAsRead()}
           />
         ) : (
           <BottomLink
-            className="NotificationsList-see-all"
             text="See all Notifications"
             onClick={async () => {
               const notificationsUrl =

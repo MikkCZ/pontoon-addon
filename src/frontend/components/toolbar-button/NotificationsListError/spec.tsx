@@ -9,7 +9,7 @@ import {
   mockBrowserNode,
 } from '@commons/test/mockWebExtensionsApi';
 
-import { NotificationsListError } from '.';
+import { NotificationsListError, SignInLink } from '.';
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
@@ -41,7 +41,7 @@ describe.skip('NotificationsListError', () => {
     );
 
     act(() => {
-      wrapper.find('.NotificationsListError-sign-in').simulate('click');
+      wrapper.find(SignInLink).simulate('click');
     });
     flushPromises();
 

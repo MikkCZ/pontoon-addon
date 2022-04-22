@@ -1,8 +1,10 @@
 import React from 'react';
+import { createGlobalStyle } from 'styled-components';
 
 import { browser } from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
 import { RemoteLinks } from '@commons/RemoteLinks';
+import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
 import pageActionImage from '@assets/img/page-action.png';
@@ -13,8 +15,13 @@ import feedbackImage from '@assets/img/2-Lions.png';
 import type { Props as TileProps } from '../TourPageTile';
 import { TourPage } from '../TourPage';
 
-import '@commons/pontoon.css';
-import './index.css';
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: #333941;
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+`;
 
 const pageTitle = 'Welcome to Pontoon Add-on';
 const remoteLinks = new RemoteLinks();
@@ -120,5 +127,11 @@ export const App: React.FC = () => {
     },
   });
 
-  return <TourPage title={pageTitle} tiles={tiles} />;
+  return (
+    <>
+      <GlobalPontoonStyle />
+      <GlobalStyle />
+      <TourPage title={pageTitle} tiles={tiles} />
+    </>
+  );
 };
