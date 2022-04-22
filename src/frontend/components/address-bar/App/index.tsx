@@ -14,9 +14,11 @@ export const App: React.FC = () => {
   const [project, setProject] = useState<Project | undefined>();
 
   useEffect(() => {
-    backgroundPontoonClient
-      .getPontoonProjectForTheCurrentTab()
-      .then(setProject);
+    (async () => {
+      setProject(
+        await backgroundPontoonClient.getPontoonProjectForTheCurrentTab(),
+      );
+    })();
   }, []);
 
   return project ? (

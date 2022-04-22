@@ -34,7 +34,10 @@ afterEach(() => {
 describe('address-bar/App', () => {
   it('renders items for the project', async () => {
     const wrapper = mount(<App />);
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.find(PanelSection)).toHaveLength(1);
     expect(wrapper.find(PanelListItem)).toHaveLength(2);
@@ -48,7 +51,10 @@ describe('address-bar/App', () => {
 
   it('handles click to open project page', async () => {
     const wrapper = mount(<App />);
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     mockBrowser.tabs.create
       .expect({ url: project.pageUrl })
@@ -62,7 +68,10 @@ describe('address-bar/App', () => {
 
   it('handles click to open translation view', async () => {
     const wrapper = mount(<App />);
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     mockBrowser.tabs.create
       .expect({ url: project.translationUrl })
