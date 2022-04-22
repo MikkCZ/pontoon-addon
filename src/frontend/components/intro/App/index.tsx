@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   const tiles: TileProps[] = [];
   tiles.push({
     title: 'Pontoon button',
-    image: toolbarButtonImage,
+    imageSrc: toolbarButtonImage,
     text: (
       <>
         Pontoon icon in the toolbar offers{' '}
@@ -47,7 +47,7 @@ export const App: React.FC = () => {
   });
   tiles.push({
     title: 'System notifications',
-    image: notificationsImage,
+    imageSrc: notificationsImage,
     text: 'Pontoon Add-on can bring notifications directly into your system. Try it!',
     button: {
       text: 'Preview system notifications',
@@ -67,7 +67,7 @@ export const App: React.FC = () => {
   if (browser.pageAction) {
     tiles.push({
       title: 'Address bar button',
-      image: pageActionImage,
+      imageSrc: pageActionImage,
       text: (
         <>
           So called <em>page action</em> is a button in the address bar, that
@@ -83,7 +83,7 @@ export const App: React.FC = () => {
   }
   tiles.push({
     title: 'Context buttons',
-    image: contextButtonsImage,
+    imageSrc: contextButtonsImage,
     text: (
       <>
         <strong>Look up strings in Pontoon</strong> or{' '}
@@ -98,7 +98,7 @@ export const App: React.FC = () => {
   });
   tiles.push({
     title: 'Add-on settings',
-    image: settingsImage,
+    imageSrc: settingsImage,
     text: (
       <>
         Pontoon button, notifications, ... all these features are{' '}
@@ -112,7 +112,7 @@ export const App: React.FC = () => {
   });
   tiles.push({
     title: 'Feedback and more',
-    image: feedbackImage,
+    imageSrc: feedbackImage,
     text: (
       <>
         This add-on won&apos;t exist and improve without you - Mozilla

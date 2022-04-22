@@ -65,8 +65,6 @@
     }
   ],
   "web_accessible_resources": [
-    "content-scripts/pontoon-addon-promotion-in-page.js",
-    "assets/img/pontoon-logo.svg",
-    "assets/img/bug.svg"
+    "content-scripts/pontoon-addon-promotion-in-page.js"
   ]
 }

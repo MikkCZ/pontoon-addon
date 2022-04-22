@@ -44,7 +44,7 @@ const Row = styled.div<{ order: number }>`
 
 export interface Props {
   title: string;
-  image: string | null;
+  imageSrc?: string;
   text: React.ReactNode | string;
   button: {
     text: string;
@@ -54,7 +54,7 @@ export interface Props {
 
 export const TourPageTile: React.FC<Props> = ({
   title,
-  image,
+  imageSrc,
   text,
   button,
 }) => {
@@ -63,7 +63,7 @@ export const TourPageTile: React.FC<Props> = ({
       <Row order={1}>
         <h3>{title}</h3>
       </Row>
-      <Row order={2}>{image && <Image src={image} alt="" />}</Row>
+      <Row order={2}>{imageSrc && <Image src={imageSrc} alt="" />}</Row>
       <Row order={3}>
         <Text>{text}</Text>
       </Row>

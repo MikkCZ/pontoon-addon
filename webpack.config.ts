@@ -40,14 +40,19 @@ const commonConfiguration: Configuration = {
         loader: 'ts-loader',
       },
       {
-        test: /\.(png|svg)$/,
+        test: /\.png$/,
         exclude: /(node_modules)/,
-        loader: 'file-loader',
+        type: 'asset/inline', // base64 encoded
+      },
+      {
+        test: /\.svg$/,
+        exclude: /(node_modules)/,
+        type: 'asset/inline', // base64 encoded
       },
       {
         test: /\.md$/,
         exclude: /(node_modules)/,
-        loader: 'file-loader',
+        type: 'asset/source', // as file content
       },
     ],
   },
@@ -168,7 +173,7 @@ const configs: Configuration[] = [
       new CopyPlugin({
         patterns:[
           { from: path.resolve(__dirname, 'src/manifest.json'), to: '.' },
-          { from: 'src/assets/img', to: 'assets/img' },
+          { from: 'src/assets/img/pontoon-logo*', to: '..' }, // overlap the source 'src' with dist 'src'
         ],
       }),
     ],

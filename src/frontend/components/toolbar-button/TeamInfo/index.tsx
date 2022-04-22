@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { browser } from '@commons/webExtensionsApi';
-import lightbulbIcon from '@assets/img/lightbulb-blue.svg';
+import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
@@ -140,7 +140,7 @@ export const TeamInfo: React.FC<Props> = ({
             dataProperty: 'unreviewedStrings',
             labelBeforeStyle: {
               height: '1em',
-              background: `center / contain no-repeat url(${lightbulbIcon})`,
+              background: `center / contain no-repeat url(${lightbulbImage})`,
             },
           },
           { status: 'all', text: 'all strings', dataProperty: 'totalStrings' },

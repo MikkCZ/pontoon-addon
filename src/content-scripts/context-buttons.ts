@@ -1,4 +1,6 @@
 import { browser } from '@commons/webExtensionsApi';
+import pontoonLogo from '@assets/img/pontoon-logo.svg';
+import bugImage from '@assets/img/bug.svg';
 
 const contextButtonWidth = 24;
 
@@ -13,14 +15,14 @@ function getSelectedText(): string {
 }
 
 function createButton(imageSrc: string): HTMLElement {
-  const button = document.createElement('img');
-  button.src = browser.runtime.getURL(imageSrc);
-  button.style.all = 'unset';
-  button.style.width = `${contextButtonWidth}px`;
-  button.style.position = 'absolute';
-  button.style.zIndex = '9999';
-  button.style.backgroundColor = 'white';
-  return button;
+  const imageButton = document.createElement('img');
+  imageButton.src = imageSrc;
+  imageButton.style.all = 'unset';
+  imageButton.style.width = `${contextButtonWidth}px`;
+  imageButton.style.position = 'absolute';
+  imageButton.style.zIndex = '9999';
+  imageButton.style.backgroundColor = 'white';
+  return imageButton;
 }
 
 function clickListener(
@@ -35,8 +37,8 @@ function clickListener(
   };
 }
 
-const pontoonSearchButton = createButton('assets/img/pontoon-logo.svg');
-const bugzillaReportButton = createButton('assets/img/bug.svg');
+const pontoonSearchButton = createButton(pontoonLogo);
+const bugzillaReportButton = createButton(bugImage);
 const allContextButtons = [pontoonSearchButton, bugzillaReportButton];
 
 pontoonSearchButton.addEventListener(

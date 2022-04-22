@@ -23,14 +23,14 @@ function closeCurrentTab(): void {
 
 interface Props {
   title?: string;
-  icon?: string;
+  imageSrc?: string;
   onClick?: () => void;
   style?: CSSProperties;
 }
 
 export const CloseButton: React.FC<Props> = ({
   title = '',
-  icon = closeIcon,
+  imageSrc = closeIcon,
   onClick = () => {
     closeCurrentTab();
   },
@@ -39,7 +39,7 @@ export const CloseButton: React.FC<Props> = ({
   return (
     <Button
       title={title}
-      style={{ backgroundImage: `url(${icon})`, ...style }}
+      style={{ backgroundImage: `url(${imageSrc})`, ...style }}
       onClick={() => onClick()}
     ></Button>
   );
