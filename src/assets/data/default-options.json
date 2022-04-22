@@ -1,8 +1,0 @@
-{
-  "pontoon_base_url": "https://pontoon.mozilla.org",
-  "data_update_interval": 15,
-  "display_toolbar_button_badge": true,
-  "toolbar_button_action": "popup",
-  "toolbar_button_popup_always_hide_read_notifications": false,
-  "show_notifications": true
-}

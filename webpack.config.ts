@@ -80,13 +80,6 @@ const configs: Configuration[] = [
       ...commonConfiguration.output,
       filename: 'background/main.js',
     },
-    plugins: [
-      new CopyPlugin({
-        patterns:[
-          { from: path.resolve(__dirname, 'src/assets/data'), to: 'assets/data' },
-        ],
-      }),
-    ],
   },
   {
     name: 'content-scripts',

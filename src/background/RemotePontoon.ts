@@ -5,6 +5,7 @@ import { browser } from '@commons/webExtensionsApi';
 
 import { BackgroundPontoonMessageType } from './BackgroundPontoonMessageType';
 import { DataFetcher } from './DataFetcher';
+import { projectsListData } from './data/projectsListData';
 
 export class RemotePontoon {
   private baseUrl: string;
@@ -302,35 +303,29 @@ export class RemotePontoon {
   }
 
   public async updateProjectsList(): Promise<{ [key: string]: any }> {
-    return await Promise.all([
-      this.dataFetcher
-        .fetch(this.getQueryURL('{projects{slug,name}}'))
-        .then(
-          (response) =>
-            response.json() as Promise<{ data: ProjectsListGqlResponse }>,
-        ),
-      fetch(browser.runtime.getURL('assets/data/projects-list.json')).then(
-        (response) => response.json() as Promise<ProjectsListJson>,
-      ),
-    ]).then(([pontoonData, projectsListJson]) => {
-      const partialProjectsMap = new Map<string, ProjectGqlReponse>();
-      pontoonData.data.projects.forEach((project) =>
-        partialProjectsMap.set(project.slug, project),
+    const pontoonData = await this.dataFetcher
+      .fetch(this.getQueryURL('{projects{slug,name}}'))
+      .then(
+        (response) =>
+          response.json() as Promise<{ data: ProjectsListGqlResponse }>,
       );
-      const projectsListObj: ProjectsList = {};
-      projectsListJson
-        .map((project) => ({
-          ...project,
-          ...partialProjectsMap.get(project.slug)!,
-        }))
-        .forEach((project) => {
-          projectsListObj[project.slug] = project;
-        });
-      browser.storage.local.set({
-        projectsList: projectsListObj,
-      } as ProjectsListInStorage);
-      return projectsListObj;
-    });
+    const partialProjectsMap = new Map<string, ProjectGqlReponse>();
+    pontoonData.data.projects.forEach((project) =>
+      partialProjectsMap.set(project.slug, project),
+    );
+    const projectsListObj: ProjectsList = {};
+    projectsListData
+      .map((project) => ({
+        ...project,
+        ...partialProjectsMap.get(project.slug)!,
+      }))
+      .forEach((project) => {
+        projectsListObj[project.slug] = project;
+      });
+    browser.storage.local.set({
+      projectsList: projectsListObj,
+    } as ProjectsListInStorage);
+    return projectsListObj;
   }
 
   private listenToMessagesFromClients(): void {
@@ -531,8 +526,3 @@ interface ProjectGqlReponse {
 interface ProjectsListGqlResponse {
   projects: ProjectGqlReponse[];
 }
-
-type ProjectsListJson = Array<{
-  slug: string;
-  domains: string[];
-}>;

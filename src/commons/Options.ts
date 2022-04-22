@@ -1,22 +1,13 @@
 import type { Storage } from 'webextension-polyfill';
 
 import { browser } from './webExtensionsApi';
-
-type OptionId =
-  | 'locale_team'
-  | 'data_update_interval'
-  | 'display_toolbar_button_badge'
-  | 'toolbar_button_action'
-  | 'toolbar_button_popup_always_hide_read_notifications'
-  | 'show_notifications'
-  | 'contextual_identity'
-  | 'pontoon_base_url';
-
-type OptionValue = boolean | number | string;
-
-type OptionsValues = {
-  [optionId in OptionId]?: OptionValue;
-};
+import {
+  defaultOptionsFor,
+  BrowserFamily,
+  OptionId,
+  OptionValue,
+  OptionsValues,
+} from './data/defaultOptions';
 
 /**
  * Encapsulates storing and retrieving user preferences and notifying about their updates.
@@ -42,39 +33,18 @@ export class Options {
     prefix: string,
   ): Promise<Record<string, OptionValue>> {
     const defaults: Record<string, OptionValue> = {};
-    let browserFamily = '';
+    let browserFamily: BrowserFamily;
     if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
       browserFamily = 'mozilla';
     } else {
       browserFamily = 'chromium';
     }
-    await Promise.all([
-      fetch(browser.runtime.getURL('assets/data/default-options.json')).then(
-        (response) => response.json(),
-      ),
-      fetch(
-        browser.runtime.getURL(
-          `assets/data/default-options-${browserFamily}.json`,
-        ),
-      ).then((response) => response.json()),
-      Promise.resolve({ locale_team: browser.i18n.getUILanguage() }),
-    ]).then(
-      ([
-        defaultOptionsFromJSON,
-        defaultOptionsForBrowser,
-        defaultOptionsFromRuntime,
-      ]) => {
-        const loadedDefaults = Object.assign(
-          {},
-          defaultOptionsFromJSON,
-          defaultOptionsForBrowser,
-          defaultOptionsFromRuntime,
-        );
-        Object.entries(loadedDefaults).forEach(
-          ([key, value]) =>
-            (defaults[`${prefix}${key}`] = value as OptionValue),
-        );
-      },
+    const loadedDefaults: OptionsValues = {
+      ...defaultOptionsFor(browserFamily),
+      locale_team: browser.i18n.getUILanguage(),
+    };
+    Object.entries(loadedDefaults).forEach(
+      ([key, value]) => (defaults[`${prefix}${key}`] = value as OptionValue),
     );
     return Object.freeze(defaults);
   }
