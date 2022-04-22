@@ -20,7 +20,7 @@ export class ContextButtons {
   constructor(
     options: Options,
     remotePontoon: RemotePontoon,
-    remoteLinks: RemoteLinks
+    remoteLinks: RemoteLinks,
   ) {
     this.options = options;
     this.remotePontoon = remotePontoon;
@@ -30,15 +30,15 @@ export class ContextButtons {
       .get(projectsListDataKey)
       .then((storageItem: unknown) =>
         this.initMozillaWebsitesList(
-          (storageItem as ProjectsListInStorage).projectsList
-        )
+          (storageItem as ProjectsListInStorage).projectsList,
+        ),
       )
       .then(() => {
         this.listenToMessagesFromContentScript();
         this.watchTabsUpdates();
         this.refreshContextButtonsInAllTabs();
         remotePontoon.subscribeToProjectsListChange((change) =>
-          this.initMozillaWebsitesList(change.newValue)
+          this.initMozillaWebsitesList(change.newValue),
         );
       });
   }
@@ -48,8 +48,8 @@ export class ContextButtons {
       this.mozillaWebsites = [];
       Object.values(projects).forEach((project) =>
         project.domains.forEach((domain) =>
-          this.mozillaWebsites.push(`https://${domain}`)
-        )
+          this.mozillaWebsites.push(`https://${domain}`),
+        ),
       );
       Object.freeze(this.mozillaWebsites);
     }
@@ -69,7 +69,7 @@ export class ContextButtons {
         if (this.isSupportedPage(tab.url)) {
           this.injectContextButtonsScript(tab);
         }
-      })
+      }),
     );
   }
 
@@ -87,7 +87,7 @@ export class ContextButtons {
           Promise.all([
             this.options.get(localeTeamOptionKey),
             browser.storage.local.get(
-              teamsListDataKey
+              teamsListDataKey,
             ) as Promise<TeamsListInStorage>,
           ]).then(([optionsItems, projectListInStorage]) => {
             const teamCode = optionsItems[localeTeamOptionKey] as string;
@@ -97,7 +97,7 @@ export class ContextButtons {
                 request.text,
                 sender.url!,
                 team.code,
-                team.bz_component
+                team.bz_component,
               ),
             });
           });

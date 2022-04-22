@@ -2,10 +2,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { SnakeGame } from 'react-game-snake';
 
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+import { mockBrowserNode } from '@commons/test/mockWebExtensionsApi';
 
 import { mountWithSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';

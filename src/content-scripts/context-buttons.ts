@@ -25,7 +25,7 @@ function createButton(imageSrc: string): HTMLElement {
 
 function clickListener(
   messageType: string,
-  buttonsToRemove: HTMLElement[]
+  buttonsToRemove: HTMLElement[],
 ): (e: MouseEvent) => void {
   return (e: MouseEvent) => {
     e.stopPropagation();
@@ -41,11 +41,11 @@ const allContextButtons = [pontoonSearchButton, bugzillaReportButton];
 
 pontoonSearchButton.addEventListener(
   'click',
-  clickListener('pontoon-search-context-button-clicked', allContextButtons)
+  clickListener('pontoon-search-context-button-clicked', allContextButtons),
 );
 bugzillaReportButton.addEventListener(
   'click',
-  clickListener('bugzilla-report-context-button-clicked', allContextButtons)
+  clickListener('bugzilla-report-context-button-clicked', allContextButtons),
 );
 
 document.addEventListener('mouseup', (e) => {

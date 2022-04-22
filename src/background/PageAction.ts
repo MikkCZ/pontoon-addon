@@ -19,7 +19,7 @@ export class PageAction {
 
   private watchStorageChanges(): void {
     this.remotePontoon.subscribeToProjectsListChange((_change) =>
-      this.refreshAllTabsPageActions()
+      this.refreshAllTabsPageActions(),
     );
   }
 
@@ -39,7 +39,7 @@ export class PageAction {
 
   private async showPageActionForTab(tab: Tabs.Tab): Promise<void> {
     const projectData = await this.remotePontoon.getPontoonProjectForPageUrl(
-      tab.url!
+      tab.url!,
     );
     if (projectData) {
       this.activatePageAction(tab.id);

@@ -46,25 +46,25 @@ Options.create().then((options) => {
       const remotePontoon = new RemotePontoon(
         optionsItems[pontoonBaseUrlOptionKey],
         optionsItems[localeTeamOptionKey],
-        options
+        options,
       );
       const toolbarButton = new ToolbarButton(options, remotePontoon);
       const _pageAction = new PageAction(remotePontoon);
       const _systemNotifications = new SystemNotifications(
         options,
-        remotePontoon
+        remotePontoon,
       );
       const remoteLinks = new RemoteLinks();
       const _pageContextMenu = new PageContextMenu(
         options,
         remotePontoon,
-        remoteLinks
+        remoteLinks,
       );
       const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
       const _contextButtons = new ContextButtons(
         options,
         remotePontoon,
-        remoteLinks
+        remoteLinks,
       );
       const dataRefresher = new DataRefresher(options, remotePontoon);
       const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
@@ -72,7 +72,7 @@ Options.create().then((options) => {
         remotePontoon,
         remoteLinks,
         dataRefresher,
-        toolbarButton
+        toolbarButton,
       );
 
       // If the onInstalled event has already fired, the details are stored by the function registered above.

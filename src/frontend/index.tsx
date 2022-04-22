@@ -44,7 +44,7 @@ async function renderTourRoot(element: HTMLElement): Promise<void> {
         browser.tabs.create({ url: remoteLinks.getPontoonAddonWikiUrl() })
       }
     />,
-    element
+    element,
   );
 }
 
@@ -101,7 +101,7 @@ async function renderToolbarButtonRoot(element: HTMLElement): Promise<void> {
       teamData={teamData}
       latestTeamActivity={latestTeamActivity}
     />,
-    element
+    element,
   );
 }
 

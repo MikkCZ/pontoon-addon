@@ -11,7 +11,7 @@ export class DataFetcher {
   private readonly remotePontoon: RemotePontoon;
   private readonly pontoonRequestTokens: Set<string>;
   private readonly pontoonRequestsListener: (
-    details: WebRequest.OnBeforeSendHeadersDetailsType
+    details: WebRequest.OnBeforeSendHeadersDetailsType,
   ) => WebRequest.BlockingResponseOrPromise;
 
   constructor(options: Options, remotePontoon: RemotePontoon) {
@@ -34,18 +34,18 @@ export class DataFetcher {
 
   private watchOptionsUpdates() {
     this.remotePontoon.subscribeToBaseUrlChange(() =>
-      this.watchPontoonRequests()
+      this.watchPontoonRequests(),
     );
   }
 
   private watchPontoonRequests() {
     browser.webRequest.onBeforeSendHeaders.removeListener(
-      this.pontoonRequestsListener
+      this.pontoonRequestsListener,
     );
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.pontoonRequestsListener,
       { urls: [`${this.remotePontoon.getBaseUrl()}/*`] },
-      ['blocking', 'requestHeaders']
+      ['blocking', 'requestHeaders'],
     );
   }
 
@@ -59,7 +59,7 @@ export class DataFetcher {
     if (
       browser.webRequest &&
       browser.webRequest.onBeforeSendHeaders.hasListener(
-        this.pontoonRequestsListener
+        this.pontoonRequestsListener,
       )
     ) {
       headers.append('pontoon-addon-token', this.issueNewToken());
@@ -86,14 +86,14 @@ export class DataFetcher {
   }
 
   private updatePontoonRequest(
-    details: WebRequest.OnBeforeSendHeadersDetailsType
+    details: WebRequest.OnBeforeSendHeadersDetailsType,
   ): WebRequest.BlockingResponseOrPromise {
     const tokenHeaders =
       details.requestHeaders?.filter(
-        (header) => header.name === 'pontoon-addon-token'
+        (header) => header.name === 'pontoon-addon-token',
       ) || [];
     details.requestHeaders = details.requestHeaders?.filter(
-      (header) => header.name !== 'pontoon-addon-token'
+      (header) => header.name !== 'pontoon-addon-token',
     );
     const isMarked =
       tokenHeaders.length > 0 &&

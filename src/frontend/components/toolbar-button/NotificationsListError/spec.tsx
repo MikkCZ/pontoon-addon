@@ -37,7 +37,7 @@ describe.skip('NotificationsListError', () => {
     const wrapper = shallow(
       <NotificationsListError
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     act(() => {

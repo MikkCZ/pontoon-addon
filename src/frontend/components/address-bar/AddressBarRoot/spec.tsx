@@ -34,10 +34,10 @@ describe('AddressBarRoot', () => {
     expect(wrapper.find(PanelSection)).toHaveLength(1);
     expect(wrapper.find(PanelListItem)).toHaveLength(2);
     expect(wrapper.find(PanelListItem).at(0).text()).toBe(
-      `Open ${project.name} project page`
+      `Open ${project.name} project page`,
     );
     expect(wrapper.find(PanelListItem).at(1).text()).toBe(
-      `Open ${project.name} translation view`
+      `Open ${project.name} translation view`,
     );
   });
 

@@ -23,14 +23,14 @@ function unreadNotificationsIconClickListener() {
 function addUnreadNotificationsIconClickListener() {
   unreadNotificationsIcon?.addEventListener(
     'click',
-    unreadNotificationsIconClickListener
+    unreadNotificationsIconClickListener,
   );
 }
 
 function removeUnreadNotificationsIconClickListener() {
   unreadNotificationsIcon?.removeEventListener(
     'click',
-    unreadNotificationsIconClickListener
+    unreadNotificationsIconClickListener,
   );
 }
 
@@ -42,7 +42,7 @@ function notificationsDataChangeListener(change: {
 }) {
   const notificationsData = change.newValue;
   const unreadNotifications = Object.values(notificationsData).filter(
-    (n) => n.unread
+    (n) => n.unread,
   ).length;
   if (unreadNotifications === 0) {
     removeUnreadNotificationsIconClickListener();
@@ -57,7 +57,7 @@ function registerAllListeners() {
   if (unreadNotificationsIcon !== null) {
     addUnreadNotificationsIconClickListener();
     backgroundPontoonClient.subscribeToNotificationsChange(
-      notificationsDataChangeListener
+      notificationsDataChangeListener,
     );
   }
 }
@@ -66,7 +66,7 @@ function deregisterAllListeners() {
   if (unreadNotificationsIcon !== null) {
     removeUnreadNotificationsIconClickListener();
     backgroundPontoonClient.unsubscribeFromNotificationsChange(
-      notificationsDataChangeListener
+      notificationsDataChangeListener,
     );
   }
 }
@@ -83,7 +83,7 @@ function backgroundMessageHandler(message: { type: string }) {
 }
 
 browser.runtime.onMessage.addListener((request, _sender) =>
-  backgroundMessageHandler(request)
+  backgroundMessageHandler(request),
 );
 
 browser.runtime

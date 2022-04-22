@@ -1,7 +1,23 @@
 'use strict';
 
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
+    'plugin:jest/recommended',
+    'plugin:jest/style',
+    'plugin:testing-library/dom',
+    'plugin:testing-library/react',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
+    'prettier',
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended', // must be the last one
+  ],
   rules: {
     'import/order': [
       'error',
@@ -27,32 +43,13 @@ module.exports = {
       'error',
       {
         singleQuote: true,
+        trailingComma: 'all',
+        tabWidth: 2,
       },
     ],
     'react/prop-types': 'off',
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:jest/recommended',
-    'plugin:jest/style',
-    'plugin:testing-library/dom',
-    'plugin:testing-library/react',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
-    'plugin:import/typescript',
-    'prettier',
-    'plugin:prettier/recommended', // must be the last one
-  ],
-  env: {
-    webextensions: true,
-    browser: true,
-    jest: true,
-    es2020: true,
-  },
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
     ecmaFeatures: {
@@ -67,5 +64,11 @@ module.exports = {
       '@typescript-eslint/parser': [ '.ts', '.tsx' ],
     },
     'import/resolver': 'webpack',
+  },
+  env: {
+    webextensions: true,
+    browser: true,
+    jest: true,
+    es2020: true,
   },
 };

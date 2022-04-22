@@ -16,7 +16,7 @@ describe('TourPageTile', () => {
             onClick: jest.fn(),
           },
         }}
-      />
+      />,
     );
 
     expect(wrapper.find('.TourPageTile h3').text()).toBe('TITLE');
@@ -37,7 +37,7 @@ describe('TourPageTile', () => {
             onClick: jest.fn(),
           },
         }}
-      />
+      />,
     );
 
     expect(wrapper.find('.TourPageTile img')).toHaveLength(0);

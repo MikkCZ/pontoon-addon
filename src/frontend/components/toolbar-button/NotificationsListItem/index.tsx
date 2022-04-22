@@ -36,10 +36,10 @@ interface Props {
 
 async function openTeamProject(
   backgroundPontoonClient: BackgroundPontoonClient,
-  projectUrl: string
+  projectUrl: string,
 ): Promise<void> {
   const teamProjectUrl = await backgroundPontoonClient.getTeamProjectUrl(
-    projectUrl
+    projectUrl,
   );
   await browser.tabs.create({ url: teamProjectUrl });
   window.close();

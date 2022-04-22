@@ -20,7 +20,7 @@ export class ToolbarButtonContextMenu {
     remotePontoon: RemotePontoon,
     remoteLinks: RemoteLinks,
     dataRefresher: DataRefresher,
-    toolbarButton: ToolbarButton
+    toolbarButton: ToolbarButton,
   ) {
     this.options = options;
     this.remotePontoon = remotePontoon;

@@ -45,7 +45,7 @@ describe('TeamInfo', () => {
           date_iso: '1970-01-01T00:00:00Z',
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.TeamInfo-name').text()).toBe('Czech');
@@ -54,19 +54,19 @@ describe('TeamInfo', () => {
     expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
     expect(wrapper.find(ReactTimeAgo)).toHaveLength(1);
     expect(wrapper.find(TeamInfoListItem).at(1).prop('label')).toBe(
-      'translated'
+      'translated',
     );
     expect(wrapper.find(TeamInfoListItem).at(2).prop('label')).toBe(
-      'pretranslated'
+      'pretranslated',
     );
     expect(wrapper.find(TeamInfoListItem).at(3).prop('label')).toBe('warnings');
     expect(wrapper.find(TeamInfoListItem).at(4).prop('label')).toBe('errors');
     expect(wrapper.find(TeamInfoListItem).at(5).prop('label')).toBe('missing');
     expect(wrapper.find(TeamInfoListItem).at(6).prop('label')).toBe(
-      'unreviewed'
+      'unreviewed',
     );
     expect(wrapper.find(TeamInfoListItem).at(7).prop('label')).toBe(
-      'all strings'
+      'all strings',
     );
     expect(wrapper.find(BottomLink).hasClass('TeamInfo-team-page')).toBe(true);
   });
@@ -81,7 +81,7 @@ describe('TeamInfo', () => {
           date_iso: undefined,
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
@@ -107,7 +107,7 @@ describe('TeamInfo', () => {
           date_iso: '1970-01-01T00:00:00Z',
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     mockBrowser.tabs.create
@@ -143,7 +143,7 @@ describe('TeamInfo', () => {
           date_iso: '1970-01-01T00:00:00Z',
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     [

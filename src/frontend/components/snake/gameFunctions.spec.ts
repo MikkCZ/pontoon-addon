@@ -21,7 +21,7 @@ beforeEach(() => {
   stateRef = { current: defaultState } as StateRef<State>;
   gameFunctions = buildGameFunctions(
     stateRef as StateRef<State>,
-    patchStateRef
+    patchStateRef,
   );
 });
 

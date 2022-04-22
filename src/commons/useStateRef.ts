@@ -6,7 +6,7 @@ export interface StateRef<S> extends MutableRefObject<S> {
 }
 
 export function useStateRef<S>(
-  initialState: S | (() => S)
+  initialState: S | (() => S),
 ): [StateRef<S>, Dispatch<SetStateAction<S>>] {
   const [stateValue, setState] = useState(initialState);
   const stateValueRef = useRef(stateValue);
@@ -22,7 +22,7 @@ export function useStateRef<S>(
       stateValueRef.current = newValue;
       setState(newValue);
     },
-    [stateValueRef]
+    [stateValueRef],
   );
   return [stateValueRef, updateRefAndSetState];
 }

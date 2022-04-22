@@ -27,7 +27,7 @@ export interface GameFunctions {
 
 function buildEventGameListeners(
   stateRef: StateRef<State>,
-  patchStateRef: (update: Partial<State>) => void
+  patchStateRef: (update: Partial<State>) => void,
 ): EventListeners {
   return {
     onLoopStart: (gameModel: GameModel) => {
@@ -63,7 +63,7 @@ function buildEventGameListeners(
 
 function buildGameControlFunctions(
   stateRef: StateRef<State>,
-  eventListeners: EventListeners
+  eventListeners: EventListeners,
 ): ControlFunctions {
   return {
     startGame: () => {
@@ -85,7 +85,7 @@ function buildGameControlFunctions(
 
 export function buildGameFunctions(
   stateRef: StateRef<State>,
-  patchStateRef: (update: Partial<State>) => void
+  patchStateRef: (update: Partial<State>) => void,
 ): GameFunctions {
   const eventListeners = buildEventGameListeners(stateRef, patchStateRef);
   const controlFunctions = buildGameControlFunctions(stateRef, eventListeners);

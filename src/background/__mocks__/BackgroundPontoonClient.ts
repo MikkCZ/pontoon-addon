@@ -18,10 +18,10 @@ export class BackgroundPontoonClient {
   pageLoaded: (pageUrl: string, documentHTML: string) => void;
   markAllNotificationsAsRead: () => void;
   subscribeToNotificationsChange: (
-    callback: NotificationsChangeCallback
+    callback: NotificationsChangeCallback,
   ) => void;
   unsubscribeFromNotificationsChange: (
-    callback: NotificationsChangeCallback
+    callback: NotificationsChangeCallback,
   ) => void;
 
   constructor() {

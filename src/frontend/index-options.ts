@@ -16,13 +16,13 @@ Options.create().then((options) => {
   const backgroundPontoonClient = new BackgroundPontoonClient();
   const teamsListDataKey = 'teamsList';
   const dataUpdateSelect = document.querySelector(
-    'select[data-option-id=data_update_interval]'
+    'select[data-option-id=data_update_interval]',
   )! as HTMLSelectElement;
   const localeTeamSelect = document.querySelector(
-    'select[data-option-id=locale_team]'
+    'select[data-option-id=locale_team]',
   )! as HTMLSelectElement;
   const containerSelect = document.querySelector(
-    'select[data-option-id=contextual_identity]'
+    'select[data-option-id=contextual_identity]',
   )! as HTMLSelectElement;
 
   // Fill update interval options
@@ -61,7 +61,7 @@ Options.create().then((options) => {
       .addEventListener('click', () => {
         if (
           window.confirm(
-            'If you do not login to Pontoon in a container tab, it’s better to keep this option to default. Do you really want to change it?'
+            'If you do not login to Pontoon in a container tab, it’s better to keep this option to default. Do you really want to change it?',
           )
         ) {
           containerSelect.removeAttribute('disabled');
@@ -69,7 +69,7 @@ Options.create().then((options) => {
       });
   } else {
     containerSelect.parentNode!.parentNode!.removeChild(
-      containerSelect.parentNode!
+      containerSelect.parentNode!,
     );
   }
 
@@ -77,7 +77,7 @@ Options.create().then((options) => {
   document.getElementById('reset_defaults')!.addEventListener('click', () => {
     if (
       window.confirm(
-        'Do you really want to reset all Pontoon Add-on settings to default?'
+        'Do you really want to reset all Pontoon Add-on settings to default?',
       )
     ) {
       options.resetDefaults().then(() => options.loadAllFromLocalStorage());
@@ -118,14 +118,14 @@ Options.create().then((options) => {
         .forEach((input) =>
           input.addEventListener('change', () =>
             options.updateOptionFromInput(
-              input as HTMLInputElement | HTMLSelectElement
-            )
-          )
+              input as HTMLInputElement | HTMLSelectElement,
+            ),
+          ),
         );
     })
     .then(() =>
       // Load options values from storage.
-      options.loadAllFromLocalStorage()
+      options.loadAllFromLocalStorage(),
     );
 
   // Links
@@ -134,29 +134,29 @@ Options.create().then((options) => {
     tourLink.addEventListener('click', () =>
       browser.tabs.create({
         url: browser.runtime.getURL('frontend/intro.html'),
-      })
-    )
+      }),
+    ),
   );
   document
     .querySelectorAll('a.open_wiki')
     .forEach((wikiLink) =>
       wikiLink.addEventListener('click', () =>
-        browser.tabs.create({ url: remoteLinks.getPontoonAddonWikiUrl() })
-      )
+        browser.tabs.create({ url: remoteLinks.getPontoonAddonWikiUrl() }),
+      ),
     );
   document.querySelectorAll('a.open_privacy_policy').forEach((tourLink) =>
     tourLink.addEventListener('click', () =>
       browser.tabs.create({
         url: browser.runtime.getURL('frontend/privacy-policy.html'),
-      })
-    )
+      }),
+    ),
   );
   backgroundPontoonClient
     .getSettingsUrl()
     .then((settingsUrl) =>
       document
         .querySelector('a.pontoon_settings')!
-        .setAttribute('href', settingsUrl)
+        .setAttribute('href', settingsUrl),
     );
 
   // Handle reload button
@@ -170,7 +170,8 @@ Options.create().then((options) => {
       ([teamsInPontoon, localeTeamFromPontoon, localeTeamFromOptions]) => {
         updateTeamsList(
           teamsInPontoon as TeamsList,
-          (localeTeamFromPontoon as string) || (localeTeamFromOptions as string)
+          (localeTeamFromPontoon as string) ||
+            (localeTeamFromOptions as string),
         );
         if (
           localeTeamFromPontoon &&
@@ -178,7 +179,7 @@ Options.create().then((options) => {
         ) {
           options.updateOptionFromInput(localeTeamSelect);
         }
-      }
+      },
     );
   });
 
@@ -188,17 +189,17 @@ Options.create().then((options) => {
     .addEventListener('click', () => {
       if (
         window.confirm(
-          'Changing Pontoon URL is for developers only. I know what I am doing!'
+          'Changing Pontoon URL is for developers only. I know what I am doing!',
         )
       ) {
         const pontoonBaseUrlInput = document.getElementById(
-          'pontoon_base_url'
+          'pontoon_base_url',
         )! as HTMLInputElement;
         pontoonBaseUrlInput.removeAttribute('disabled');
         pontoonBaseUrlInput.addEventListener('change', () =>
           browser.permissions.request({
             origins: [`${pontoonBaseUrlInput.value}/*`],
-          })
+          }),
         );
       }
     });

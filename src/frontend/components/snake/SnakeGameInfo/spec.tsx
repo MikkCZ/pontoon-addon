@@ -16,7 +16,7 @@ describe('SnakeGameInfo', () => {
     });
 
     expect(wrapper.find('.controlsInfo').text()).toBe(
-      'Controls: arrows or WASD'
+      'Controls: arrows or WASD',
     );
     expect(wrapper.find('.score').text()).toBe(`Your score: ${score}`);
     expect(wrapper.find('button')).toHaveLength(1);
@@ -47,7 +47,7 @@ describe('SnakeGameInfo', () => {
     });
 
     expect(wrapper.find('.controlsInfo').text()).toBe(
-      'Controls: arrows or WASD'
+      'Controls: arrows or WASD',
     );
     expect(wrapper.find('.score').text()).toBe(`Your score: ${score}`);
     expect(wrapper.find('button')).toHaveLength(1);
@@ -76,7 +76,7 @@ describe('SnakeGameInfo', () => {
     });
 
     expect(wrapper.find('.controlsInfo').text()).toBe(
-      'Controls: arrows or WASD'
+      'Controls: arrows or WASD',
     );
     expect(wrapper.find('.score')).toHaveLength(0);
     expect(wrapper.find('button')).toHaveLength(0);

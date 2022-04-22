@@ -57,7 +57,7 @@ export class BackgroundPontoonClient {
   private readonly notificationsChangeCallbacks: Set<NotificationsChangeCallback>;
   private readonly notificationsChangeListener: (
     message: { type: string; data: unknown },
-    sender: Runtime.MessageSender
+    sender: Runtime.MessageSender,
   ) => void;
 
   constructor() {
@@ -153,12 +153,12 @@ export class BackgroundPontoonClient {
   }
 
   unsubscribeFromNotificationsChange(
-    callback: NotificationsChangeCallback
+    callback: NotificationsChangeCallback,
   ): void {
     const deleted = this.notificationsChangeCallbacks.delete(callback);
     if (deleted && this.notificationsChangeCallbacks.size === 0) {
       browser.runtime.onMessage.removeListener(
-        this.notificationsChangeListener
+        this.notificationsChangeListener,
       );
     }
   }
@@ -169,7 +169,7 @@ export class BackgroundPontoonClient {
       BackgroundPontoonMessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED
     ) {
       this.notificationsChangeCallbacks.forEach((callback) =>
-        callback(message.data as NotificationsChange)
+        callback(message.data as NotificationsChange),
       );
     }
   }

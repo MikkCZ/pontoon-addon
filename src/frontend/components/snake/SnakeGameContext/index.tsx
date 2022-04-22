@@ -41,7 +41,7 @@ export function useSnakeGameContext(): SnakeGameContext {
   const context = useContext(SnakeGameReactContext);
   if (!context) {
     throw new Error(
-      '"useSnakeGameContext" hook may only be used inside "SnakeGameContextProvider".'
+      '"useSnakeGameContext" hook may only be used inside "SnakeGameContextProvider".',
     );
   }
   return context;
@@ -55,13 +55,13 @@ export const SnakeGameContextProvider: React.FC = ({ children }) => {
 
   const patchStateRef = useCallback(
     (update: Partial<State>) => patchState(update, _setStateRef),
-    [_setStateRef]
+    [_setStateRef],
   );
 
   const gameFunctions = useMemo(
     // (!) hack: the game does not survive re-renders, ensure it gets never re-rendered
     () => buildGameFunctions(stateRef, patchStateRef),
-    [stateRef, patchStateRef]
+    [stateRef, patchStateRef],
   );
 
   return (

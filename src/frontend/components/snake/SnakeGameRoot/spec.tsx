@@ -27,7 +27,7 @@ describe('SnakeGameRoot', () => {
     const wrapper = mount(<SnakeGameRoot />);
 
     expect(wrapper.find('h2').text()).toBe(
-      'Thank you for using Pontoon Add-on.'
+      'Thank you for using Pontoon Add-on.',
     );
     expect(wrapper.find('h3').first().text()).toBe('Enjoy the game.');
     expect(wrapper.find(SnakeGameBoard)).toHaveLength(1);

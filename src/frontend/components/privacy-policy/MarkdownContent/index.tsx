@@ -13,7 +13,7 @@ function renderMarkdown(markdown: string) {
     this: Renderer<never>,
     href: string | null,
     title: string | null,
-    text: string
+    text: string,
   ): string {
     return defaultLinkRenderer
       .call(this, href, title, text)

@@ -41,11 +41,11 @@ describe('NotificationsListItem', () => {
         date_iso="1970-01-01T00:00:00Z"
         description={{ safe: true, content: 'DESCRIPTION' }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem').hasClass('unread')).toBe(
-      true
+      true,
     );
     expect(wrapper.find('.NotificationsListItem').hasClass('read')).toBe(false);
     expect(wrapper.find('.link')).toHaveLength(2);
@@ -53,10 +53,10 @@ describe('NotificationsListItem', () => {
     expect(wrapper.find('.link').last().text()).toBe('TARGET');
     expect(wrapper.find('span').text()).toBe(' VERB ');
     expect(
-      wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo)
+      wrapper.find('.NotificationsListItem-timeago').find(ReactTimeAgo),
     ).toHaveLength(1);
     expect(wrapper.find('.NotificationsListItem-description').text()).toBe(
-      'DESCRIPTION'
+      'DESCRIPTION',
     );
   });
 
@@ -74,11 +74,11 @@ describe('NotificationsListItem', () => {
             'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
-      'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>'
+      'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
     );
   });
 
@@ -95,11 +95,11 @@ describe('NotificationsListItem', () => {
           content: 'DESCRIPTION WITH A LINK TO https://example.com/',
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
-      '<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https://example.com/" class="link" target="_blank" rel="noopener noreferrer">https://example.com/</a></span>'
+      '<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https://example.com/" class="link" target="_blank" rel="noopener noreferrer">https://example.com/</a></span>',
     );
   });
 
@@ -117,11 +117,11 @@ describe('NotificationsListItem', () => {
             'DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>',
         }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem-description').html()).toContain(
-      'DESCRIPTION WITH(OUT) <a>XSS ATTEMPTS</a> '
+      'DESCRIPTION WITH(OUT) <a>XSS ATTEMPTS</a> ',
     );
   });
 
@@ -130,11 +130,11 @@ describe('NotificationsListItem', () => {
       <NotificationsListItem
         unread={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem').hasClass('unread')).toBe(
-      false
+      false,
     );
     expect(wrapper.find('.NotificationsListItem').hasClass('read')).toBe(true);
   });
@@ -153,11 +153,11 @@ describe('NotificationsListItem', () => {
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
         target={{ url: targetUrl, anchor: 'TARGET' }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem').hasClass('pointer')).toBe(
-      false
+      false,
     );
     expect(wrapper.find('.link')).toHaveLength(2);
 
@@ -189,11 +189,11 @@ describe('NotificationsListItem', () => {
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find('.NotificationsListItem').hasClass('pointer')).toBe(
-      true
+      true,
     );
 
     act(() => {

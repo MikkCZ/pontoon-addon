@@ -20,7 +20,7 @@ describe('PanelSection', () => {
           { text: 'Text 1', onClick: jest.fn() },
           { text: 'Text 2', onClick: jest.fn() },
         ]}
-      />
+      />,
     );
 
     expect(wrapper.find(PanelListItem)).toHaveLength(2);

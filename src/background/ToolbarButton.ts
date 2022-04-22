@@ -31,7 +31,7 @@ export class ToolbarButton {
       const notificationsData = change.newValue;
       if (notificationsData) {
         this.updateBadge(
-          `${Object.values(notificationsData).filter((n) => n.unread).length}`
+          `${Object.values(notificationsData).filter((n) => n.unread).length}`,
         );
       } else {
         this.updateBadge('!');
@@ -51,7 +51,7 @@ export class ToolbarButton {
         } else {
           this.hideBadge();
         }
-      }
+      },
     );
   }
 

@@ -53,6 +53,6 @@ export function mountWithSnakeGameContext({
   return mount(
     <SnakeGameContextProviderMock {...mockProps}>
       {children}
-    </SnakeGameContextProviderMock>
+    </SnakeGameContextProviderMock>,
   );
 }

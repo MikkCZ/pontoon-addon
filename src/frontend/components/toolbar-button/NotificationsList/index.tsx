@@ -21,7 +21,7 @@ export const NotificationsList: React.FC<Props> = ({
   ...props
 }) => {
   const [notificationsData, setNotificationsData] = useState(
-    props.notificationsData
+    props.notificationsData,
   );
   backgroundPontoonClient.subscribeToNotificationsChange((change: any) => {
     setNotificationsData(change.newValue);
@@ -29,7 +29,7 @@ export const NotificationsList: React.FC<Props> = ({
 
   if (notificationsData) {
     const containsUnreadNotifications = Object.values(notificationsData).some(
-      (notification: any) => notification.unread
+      (notification: any) => notification.unread,
     );
     return (
       <section className="NotificationsList">
@@ -39,7 +39,7 @@ export const NotificationsList: React.FC<Props> = ({
             .reverse()
             .filter(
               (notification: any) =>
-                notification.unread || !hideReadNotifications
+                notification.unread || !hideReadNotifications,
             )
             .map((notification: any) => (
               <NotificationsListItem

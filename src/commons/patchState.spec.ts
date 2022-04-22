@@ -9,7 +9,7 @@ describe('patchState', () => {
     expect(setStateMock).toHaveBeenCalledTimes(1);
     expect(setStateMock.mock.calls[0]).toHaveLength(1);
     expect(
-      setStateMock.mock.calls[0][0]({ name: 'Jane', surname: 'Doe' })
+      setStateMock.mock.calls[0][0]({ name: 'Jane', surname: 'Doe' }),
     ).toEqual({ name: 'Jane', surname: 'Novak' });
   });
 

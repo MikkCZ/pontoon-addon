@@ -49,7 +49,7 @@ describe('TourPage', () => {
             },
           },
         ]}
-      />
+      />,
     );
 
     expect(wrapper.find(TourPageTile)).toHaveLength(1);

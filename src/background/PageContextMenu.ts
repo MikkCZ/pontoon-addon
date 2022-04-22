@@ -20,7 +20,7 @@ export class PageContextMenu {
   constructor(
     options: Options,
     remotePontoon: RemotePontoon,
-    remoteLinks: RemoteLinks
+    remoteLinks: RemoteLinks,
   ) {
     this.options = options;
     this.remotePontoon = remotePontoon;
@@ -35,8 +35,8 @@ export class PageContextMenu {
     const mozillaWebsitesUrlPatterns: string[] = [];
     Object.values(projects).forEach((project) =>
       project.domains.forEach((domain) =>
-        mozillaWebsitesUrlPatterns.push(`https://${domain}/*`)
-      )
+        mozillaWebsitesUrlPatterns.push(`https://${domain}/*`),
+      ),
     );
 
     // Recreate the selection context menus (report l10n bug & search in project)
@@ -58,7 +58,7 @@ export class PageContextMenu {
             info.selectionText!,
             tab.url!,
             team.code,
-            team.bz_component
+            team.bz_component,
           ),
         });
       },
@@ -76,7 +76,7 @@ export class PageContextMenu {
               browser.tabs.create({
                 url: this.remotePontoon.getSearchInProjectUrl(
                   project.slug,
-                  info.selectionText
+                  info.selectionText,
                 ),
               }),
           } as Menus.CreateCreatePropertiesType,
@@ -89,7 +89,7 @@ export class PageContextMenu {
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
               browser.tabs.create({
                 url: this.remotePontoon.getSearchInAllProjectsUrl(
-                  info.selectionText
+                  info.selectionText,
                 ),
               }),
           } as Menus.CreateCreatePropertiesType,
@@ -99,7 +99,7 @@ export class PageContextMenu {
   }
 
   private static recreateContextMenu(
-    contextMenuItem: Menus.CreateCreatePropertiesType
+    contextMenuItem: Menus.CreateCreatePropertiesType,
   ): number | string {
     browser.contextMenus.remove(contextMenuItem.id!);
     return browser.contextMenus.create(contextMenuItem);
@@ -107,13 +107,13 @@ export class PageContextMenu {
 
   private watchStorageChangesAndOptionsUpdates(): void {
     this.remotePontoon.subscribeToProjectsListChange((_projectsList) =>
-      this.loadDataFromStorage()
+      this.loadDataFromStorage(),
     );
     this.remotePontoon.subscribeToTeamsListChange((_teamsList) =>
-      this.loadDataFromStorage()
+      this.loadDataFromStorage(),
     );
     this.options.subscribeToOptionChange('locale_team', (_teamOption) =>
-      this.loadDataFromStorage()
+      this.loadDataFromStorage(),
     );
   }
 

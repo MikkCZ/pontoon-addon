@@ -39,7 +39,7 @@ export class Options {
   }
 
   private static async loadDefaultValues(
-    prefix: string
+    prefix: string,
   ): Promise<Record<string, OptionValue>> {
     const defaults: Record<string, OptionValue> = {};
     let browserFamily = '';
@@ -50,12 +50,12 @@ export class Options {
     }
     await Promise.all([
       fetch(browser.runtime.getURL('assets/data/default-options.json')).then(
-        (response) => response.json()
+        (response) => response.json(),
       ),
       fetch(
         browser.runtime.getURL(
-          `assets/data/default-options-${browserFamily}.json`
-        )
+          `assets/data/default-options-${browserFamily}.json`,
+        ),
       ).then((response) => response.json()),
       Promise.resolve({ locale_team: browser.i18n.getUILanguage() }),
     ]).then(
@@ -68,12 +68,13 @@ export class Options {
           {},
           defaultOptionsFromJSON,
           defaultOptionsForBrowser,
-          defaultOptionsFromRuntime
+          defaultOptionsFromRuntime,
         );
         Object.entries(loadedDefaults).forEach(
-          ([key, value]) => (defaults[`${prefix}${key}`] = value as OptionValue)
+          ([key, value]) =>
+            (defaults[`${prefix}${key}`] = value as OptionValue),
         );
-      }
+      },
     );
     return Object.freeze(defaults);
   }
@@ -87,7 +88,7 @@ export class Options {
   }
 
   private static isValidInput(
-    input: HTMLInputElement | HTMLSelectElement | HTMLElement
+    input: HTMLInputElement | HTMLSelectElement | HTMLElement,
   ): boolean {
     return (
       input.nodeName.toLowerCase() === 'select' ||
@@ -97,7 +98,7 @@ export class Options {
   }
 
   private static getValueFromInput(
-    input: HTMLInputElement | HTMLSelectElement
+    input: HTMLInputElement | HTMLSelectElement,
   ): OptionValue {
     if (input instanceof HTMLInputElement && input.type === 'checkbox') {
       return input.checked;
@@ -126,7 +127,7 @@ export class Options {
 
   private static setValueToInputs(
     inputs: (HTMLInputElement | HTMLSelectElement)[],
-    value: OptionValue
+    value: OptionValue,
   ): void {
     if (inputs.length === 1) {
       const input = inputs[0];
@@ -148,7 +149,7 @@ export class Options {
       } else {
         console.error(
           `The options inputs do not correspond with the stored value ${value}.`,
-          inputs
+          inputs,
         );
       }
     } else {
@@ -161,7 +162,7 @@ export class Options {
       .filter(([key, _value]) => key.startsWith(this.prefix))
       .forEach(([key, value]) => {
         const inputs = Array.from(
-          document.querySelectorAll(`[data-option-id=${this.getInputId(key)}]`)
+          document.querySelectorAll(`[data-option-id=${this.getInputId(key)}]`),
         ) as (HTMLInputElement | HTMLSelectElement)[];
         if (inputs.length > 0) {
           Options.setValueToInputs(inputs, value);
@@ -202,7 +203,7 @@ export class Options {
 
   subscribeToOptionChange(
     optionId: string,
-    callback: (change: Storage.StorageChange) => void
+    callback: (change: Storage.StorageChange) => void,
   ): void {
     browser.storage.onChanged.addListener((changes, _areaName) => {
       const realOptionId = `${this.prefix}${optionId}`;

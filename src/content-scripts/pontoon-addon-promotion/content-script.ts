@@ -14,7 +14,7 @@ async function postMessage(): Promise<void> {
       _type: 'PontoonAddonInfo',
       value: pontoonAddonInfo,
     },
-    '*' // required to work for localhost:<port> (<port> may not be part of the baseUrl)
+    '*', // required to work for localhost:<port> (<port> may not be part of the baseUrl)
   );
 }
 

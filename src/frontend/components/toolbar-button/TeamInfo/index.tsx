@@ -23,7 +23,7 @@ interface Props {
 }
 
 async function openTeamPage(
-  backgroundPontoonClient: BackgroundPontoonClient
+  backgroundPontoonClient: BackgroundPontoonClient,
 ): Promise<void> {
   const teamPageUrl = await backgroundPontoonClient.getTeamPageUrl();
   browser.tabs.create({ url: teamPageUrl }).then(() => window.close());
@@ -31,10 +31,10 @@ async function openTeamPage(
 
 async function openTeamStringsWithStatus(
   backgroundPontoonClient: BackgroundPontoonClient,
-  status: string
+  status: string,
 ): Promise<void> {
   const searchUrl = await backgroundPontoonClient.getStringsWithStatusSearchUrl(
-    status
+    status,
   );
   browser.tabs.create({ url: searchUrl }).then(() => window.close());
 }
@@ -125,7 +125,7 @@ export const TeamInfo: React.FC<Props> = ({
             onClick={() =>
               openTeamStringsWithStatus(
                 backgroundPontoonClient,
-                category.status
+                category.status,
               )
             }
           />

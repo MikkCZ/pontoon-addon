@@ -64,7 +64,7 @@ export class DataRefresher {
 
   private watchTabsUpdates(): void {
     browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) =>
-      this.addLiveDataProvider(tabId, changeInfo, tab)
+      this.addLiveDataProvider(tabId, changeInfo, tab),
     );
   }
 
@@ -86,7 +86,7 @@ export class DataRefresher {
   private addLiveDataProvider(
     tabId: number,
     changeInfo: Tabs.OnUpdatedChangeInfoType,
-    tab: Tabs.Tab
+    tab: Tabs.Tab,
   ): void {
     if (
       changeInfo.status === 'complete' &&

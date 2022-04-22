@@ -17,7 +17,7 @@ export class SystemNotifications {
 
   private watchNotificationClicks(): void {
     browser.notifications.onClicked.addListener((notificationId) =>
-      this.notificationClick(notificationId)
+      this.notificationClick(notificationId),
     );
   }
 
@@ -48,7 +48,7 @@ export class SystemNotifications {
         if (showNotifications && newUnreadNotificationIds.length > 0) {
           this.notifyAboutUnreadNotifications(
             newUnreadNotificationIds,
-            notificationsData
+            notificationsData,
           );
         }
       });
@@ -56,7 +56,7 @@ export class SystemNotifications {
   }
 
   private async getNewUnreadNotifications(
-    notificationsData: NotificationsData | undefined
+    notificationsData: NotificationsData | undefined,
   ): Promise<number[]> {
     let unreadNotificationIds: number[] = [0];
     if (notificationsData) {
@@ -69,13 +69,13 @@ export class SystemNotifications {
       .get(dataKey)
       .then((item) => item[dataKey] || 0);
     return unreadNotificationIds.filter(
-      (id) => id > lastKnownUnreadNotificationId
+      (id) => id > lastKnownUnreadNotificationId,
     );
   }
 
   private notifyAboutUnreadNotifications(
     unreadNotificationIds: number[],
-    notificationsData: NotificationsData
+    notificationsData: NotificationsData,
   ) {
     const notificationItems = unreadNotificationIds
       .sort()

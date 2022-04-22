@@ -13,11 +13,11 @@ describe('TeamInfoListItem', () => {
         label="LABEL"
         value="VALUE"
         onClick={onClick}
-      />
+      />,
     );
 
     expect(
-      wrapper.find('.TeamInfoListItem-label-before').getDOMNode()
+      wrapper.find('.TeamInfoListItem-label-before').getDOMNode(),
     ).toHaveStyle('background-color: black');
     expect(wrapper.find('.TeamInfoListItem-label').text()).toBe('LABEL');
     expect(wrapper.find('.TeamInfoListItem-value').text()).toBe('VALUE');

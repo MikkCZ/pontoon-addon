@@ -55,7 +55,7 @@ export class RemotePontoon {
   public getTeamProjectUrl(projectUrl: string): string {
     const teamProjectUrl = `${this.baseUrl}${projectUrl.replace(
       '/projects/',
-      `/${this.team}/`
+      `/${this.team}/`,
     )}`;
     if (teamProjectUrl.includes('?')) {
       return `${teamProjectUrl}&utm_source=pontoon-addon`;
@@ -66,7 +66,7 @@ export class RemotePontoon {
 
   public getSearchInProjectUrl(
     projectSlug: string,
-    textToSearch?: string
+    textToSearch?: string,
   ): string {
     if (textToSearch !== undefined) {
       return `${this.baseUrl}/${
@@ -104,7 +104,7 @@ export class RemotePontoon {
       Promise.all([
         browser.storage.local.get(dataKey),
         Array.from(page.querySelectorAll('header .notification-item')).map(
-          (n: any) => n.dataset.id
+          (n: any) => n.dataset.id,
         ),
       ]).then(([storageItem, notificationsIdsFromPage]) => {
         const notificationsInStorage = storageItem[dataKey];
@@ -120,7 +120,7 @@ export class RemotePontoon {
 
   private subscribeToDataChange<T>(
     dataKey: string,
-    callback: (update: { newValue: T }) => void
+    callback: (update: { newValue: T }) => void,
   ): void {
     browser.storage.onChanged.addListener((changes, _areaName) => {
       if (changes[dataKey] !== undefined) {
@@ -130,11 +130,11 @@ export class RemotePontoon {
   }
 
   public subscribeToNotificationsChange(
-    callback: (update: { newValue: NotificationsData }) => void
+    callback: (update: { newValue: NotificationsData }) => void,
   ): void {
     this.subscribeToDataChange<NotificationsData>(
       'notificationsData',
-      callback
+      callback,
     );
   }
 
@@ -145,7 +145,7 @@ export class RemotePontoon {
   public updateNotificationsData(): void {
     this.dataFetcher
       .fetchFromPontoonSession(
-        `${this.baseUrl}/user-data/?utm_source=pontoon-addon-automation`
+        `${this.baseUrl}/user-data/?utm_source=pontoon-addon-automation`,
       )
       .then((response) => {
         return response.json() as Promise<UserDataApiResponse>;
@@ -153,7 +153,7 @@ export class RemotePontoon {
       .then((userData) => {
         const notificationsDataObj: NotificationsData = {};
         userData.notifications.notifications.forEach(
-          (n) => (notificationsDataObj[n.id] = n)
+          (n) => (notificationsDataObj[n.id] = n),
         );
         return notificationsDataObj;
       })
@@ -179,12 +179,12 @@ export class RemotePontoon {
         const latestActivityObj: { [key: string]: any } = {};
         const allTeamsPage = this.domParser.parseFromString(
           allTeamsPageContent,
-          'text/html'
+          'text/html',
         );
         Array.from(allTeamsPage.querySelectorAll('.team-list tbody tr'))
           .map((row) => {
             const latestActivityTime = row.querySelector(
-              '.latest-activity time'
+              '.latest-activity time',
             ) as any;
             return {
               team: row.querySelector('.code a')?.textContent || '',
@@ -209,17 +209,17 @@ export class RemotePontoon {
       this.dataFetcher
         .fetch(
           this.getQueryURL(
-            '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}'
-          )
+            '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
+          ),
         )
         .then(
           (response) =>
-            response.json() as Promise<{ data: TeamsListGqlResponse }>
+            response.json() as Promise<{ data: TeamsListGqlResponse }>,
         ),
       this.dataFetcher
         .fetch('https://flod.org/mozilla-l10n-query/?bugzilla=product')
         .then(
-          (response) => response.json() as Promise<{ [code: string]: string }>
+          (response) => response.json() as Promise<{ [code: string]: string }>,
         ),
     ]).then(([pontoonData, bz_components]) => {
       const teamsListObj: TeamsList = {};
@@ -250,7 +250,7 @@ export class RemotePontoon {
   }
 
   public subscribeToProjectsListChange(
-    callback: (change: { newValue: ProjectsList }) => void
+    callback: (change: { newValue: ProjectsList }) => void,
   ): void {
     this.subscribeToDataChange<ProjectsList>('projectsList', callback);
   }
@@ -276,8 +276,8 @@ export class RemotePontoon {
         if (projectsList) {
           Object.values(projectsList).forEach((project) =>
             project.domains.forEach((domain) =>
-              toProjectMap.set(domain, project)
-            )
+              toProjectMap.set(domain, project),
+            ),
           );
         }
       });
@@ -287,7 +287,7 @@ export class RemotePontoon {
         name: projectData.name,
         pageUrl: this.getTeamProjectUrl(`/projects/${projectData.slug}/`),
         translationUrl: this.getTeamProjectUrl(
-          `/projects/${projectData.slug}/all-resources/`
+          `/projects/${projectData.slug}/all-resources/`,
         ),
       };
     } else {
@@ -296,7 +296,7 @@ export class RemotePontoon {
   }
 
   public subscribeToTeamsListChange(
-    callback: (update: { newValue: TeamsList }) => void
+    callback: (update: { newValue: TeamsList }) => void,
   ): void {
     this.subscribeToDataChange<TeamsList>('teamsList', callback);
   }
@@ -307,15 +307,15 @@ export class RemotePontoon {
         .fetch(this.getQueryURL('{projects{slug,name}}'))
         .then(
           (response) =>
-            response.json() as Promise<{ data: ProjectsListGqlResponse }>
+            response.json() as Promise<{ data: ProjectsListGqlResponse }>,
         ),
       fetch(browser.runtime.getURL('assets/data/projects-list.json')).then(
-        (response) => response.json() as Promise<ProjectsListJson>
+        (response) => response.json() as Promise<ProjectsListJson>,
       ),
     ]).then(([pontoonData, projectsListJson]) => {
       const partialProjectsMap = new Map<string, ProjectGqlReponse>();
       pontoonData.data.projects.forEach((project) =>
-        partialProjectsMap.set(project.slug, project)
+        partialProjectsMap.set(project.slug, project),
       );
       const projectsListObj: ProjectsList = {};
       projectsListJson
@@ -346,13 +346,13 @@ export class RemotePontoon {
           return Promise.resolve(this.baseUrl);
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL:
           return Promise.resolve(
-            `${this.baseUrl}/notifications/?utm_source=pontoon-addon`
+            `${this.baseUrl}/notifications/?utm_source=pontoon-addon`,
           );
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL:
           return Promise.resolve(this.getSettingsUrl('pontoon-addon'));
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL:
           return Promise.resolve(
-            `${this.baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`
+            `${this.baseUrl}/accounts/fxa/login/?scope=profile%3Auid+profile%3Aemail+profile%3Adisplay_name`,
           );
         case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL:
           return Promise.resolve(this.getTeamPageUrl());
@@ -361,7 +361,7 @@ export class RemotePontoon {
         case BackgroundPontoonMessageType.TO_BACKGROUND
           .GET_STRINGS_WITH_STATUS_SEARCH_URL:
           return Promise.resolve(
-            this.getStringsWithStatusSearchUrl(request.args[0])
+            this.getStringsWithStatusSearchUrl(request.args[0]),
           );
         case BackgroundPontoonMessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
           return this.updateTeamsList();
@@ -384,8 +384,8 @@ export class RemotePontoon {
         .query({ url: `${this.getBaseUrl()}/*` })
         .then((pontoonTabs) =>
           pontoonTabs.forEach((tab) =>
-            browser.tabs.sendMessage(tab.id!, message)
-          )
+            browser.tabs.sendMessage(tab.id!, message),
+          ),
         );
     });
   }
@@ -396,13 +396,13 @@ export class RemotePontoon {
       (change: Storage.StorageChange) => {
         this.baseUrl = change.newValue.replace(/\/$/, '');
         this.baseUrlChangeListeners.forEach((callback) => callback());
-      }
+      },
     );
     this.options.subscribeToOptionChange(
       'locale_team',
       (change: Storage.StorageChange) => {
         this.team = change.newValue;
-      }
+      },
     );
   }
 
@@ -410,13 +410,13 @@ export class RemotePontoon {
     const dataKey = 'notificationsData';
     Promise.all([
       this.dataFetcher.fetchFromPontoonSession(
-        `${this.baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-addon-automation`
+        `${this.baseUrl}/notifications/mark-all-as-read/?utm_source=pontoon-addon-automation`,
       ),
       browser.storage.local.get(dataKey) as Promise<NotificationsDataInStorage>,
     ]).then(([response, storageItem]) => {
       if (response.ok) {
         Object.values(storageItem.notificationsData!).forEach(
-          (n) => (n.unread = false)
+          (n) => (n.unread = false),
         );
         browser.storage.local.set({
           notificationsData: storageItem[dataKey],
@@ -427,7 +427,7 @@ export class RemotePontoon {
 
   async getTeamFromPontoon(): Promise<string | undefined> {
     const response = await this.dataFetcher.fetchFromPontoonSession(
-      this.getSettingsUrl('pontoon-addon-automation')
+      this.getSettingsUrl('pontoon-addon-automation'),
     );
     const text = await response.text();
     const language: any = this.domParser

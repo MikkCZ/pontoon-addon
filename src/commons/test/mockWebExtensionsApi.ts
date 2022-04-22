@@ -3,7 +3,7 @@ import { deepMock } from 'mockzilla';
 
 const [browser, mockBrowser, mockBrowserNode] = deepMock<Browser>(
   'browser',
-  false
+  false,
 );
 
 jest.mock('webextension-polyfill', () => ({ browser }));

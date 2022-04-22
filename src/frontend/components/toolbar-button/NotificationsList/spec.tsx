@@ -47,7 +47,7 @@ describe('NotificationsList', () => {
         }}
         hideReadNotifications={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find(NotificationsListItem)).toHaveLength(1);
@@ -65,7 +65,7 @@ describe('NotificationsList', () => {
         }}
         hideReadNotifications={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find(NotificationsListItem)).toHaveLength(3);
@@ -83,7 +83,7 @@ describe('NotificationsList', () => {
         }}
         hideReadNotifications={true}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find(NotificationsListItem)).toHaveLength(1);
@@ -96,7 +96,7 @@ describe('NotificationsList', () => {
         notificationsData={undefined}
         hideReadNotifications={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find(NotificationsListItem)).toHaveLength(0);
@@ -113,11 +113,11 @@ describe('NotificationsList', () => {
         }}
         hideReadNotifications={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(
-      wrapper.find(BottomLink).hasClass('NotificationsList-mark-all-as-read')
+      wrapper.find(BottomLink).hasClass('NotificationsList-mark-all-as-read'),
     ).toBe(true);
 
     act(() => {
@@ -125,7 +125,7 @@ describe('NotificationsList', () => {
     });
 
     expect(
-      backgroundPontoonClientMock.markAllNotificationsAsRead
+      backgroundPontoonClientMock.markAllNotificationsAsRead,
     ).toHaveBeenCalled();
   });
 
@@ -138,11 +138,11 @@ describe('NotificationsList', () => {
         }}
         hideReadNotifications={false}
         backgroundPontoonClient={backgroundPontoonClientMock}
-      />
+      />,
     );
 
     expect(wrapper.find(BottomLink).hasClass('NotificationsList-see-all')).toBe(
-      true
+      true,
     );
 
     mockBrowser.tabs.create
