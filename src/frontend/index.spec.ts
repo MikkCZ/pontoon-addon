@@ -62,25 +62,25 @@ describe('address bar', () => {
   });
 });
 
-describe('intro', () => {
+describe.skip('intro', () => {
   it('renders', async () => {
     await expectRendersToRoot('intro-root');
   });
 });
 
-describe('privacy policy', () => {
+describe.skip('privacy policy', () => {
   it('renders', async () => {
     await expectRendersToRoot('privacy-policy-root');
   });
 });
 
-describe('snake game', () => {
+describe.skip('snake game', () => {
   it('renders', async () => {
     await expectRendersToRoot('snake-game-root');
   });
 });
 
-describe('toolbar button', () => {
+describe.skip('toolbar button', () => {
   beforeEach(() => {
     mockBrowser.storage.local.get.expect(expect.anything()).andResolve({
       notificationsData: {},
