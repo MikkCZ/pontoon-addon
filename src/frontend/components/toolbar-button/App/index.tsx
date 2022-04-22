@@ -5,6 +5,7 @@ import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { NotificationsList } from '../NotificationsList';
 import { TeamInfo } from '../TeamInfo';
 
+import '@commons/pontoon.css';
 import './index.css';
 
 interface Props {
@@ -22,7 +23,7 @@ interface Props {
   };
 }
 
-export const ToolbarButtonRoot: React.FC<Props> = ({
+export const App: React.FC<Props> = ({
   notificationsData,
   hideReadNotifications,
   backgroundPontoonClient,

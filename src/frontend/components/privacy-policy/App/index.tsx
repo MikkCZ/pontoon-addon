@@ -6,11 +6,12 @@ import privacyMd from '@assets/PRIVACY.md';
 
 import { MarkdownContent } from '../MarkdownContent';
 
+import '@commons/pontoon.css';
 import './index.css';
 
-export const PrivacyPolicyRoot: React.FC = () => {
+export const App: React.FC = () => {
   return (
-    <div className="PrivacyPolicyRoot">
+    <div className="PrivacyPolicyApp">
       <MarkdownContent markdownFile={privacyMd} />
     </div>
   );

@@ -9,7 +9,7 @@ import {
 import { SnakeGameBoard } from '../SnakeGameBoard';
 import { SnakeGameInfo } from '../SnakeGameInfo';
 
-import { SnakeGameRoot } from '.';
+import { App } from '.';
 
 beforeEach(() => {
   mockBrowserNode.enable();
@@ -22,9 +22,9 @@ afterEach(() => {
   mockBrowserNode.disable();
 });
 
-describe('SnakeGameRoot', () => {
+describe('snake-game/App', () => {
   it('renders content', () => {
-    const wrapper = mount(<SnakeGameRoot />);
+    const wrapper = mount(<App />);
 
     expect(wrapper.find('h2').text()).toBe(
       'Thank you for using Pontoon Add-on.',

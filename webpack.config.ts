@@ -116,7 +116,7 @@ const configs: Configuration[] = [
         ...commonFrontendWebpackPluginOptions,
         filename: 'frontend/intro.html',
         title: 'Pontoon Add-on tour',
-        rootId: 'tour-root',
+        rootId: 'intro-root',
       }),
       new HtmlWebpackPlugin({
         ...commonFrontendWebpackPluginOptions,
@@ -126,9 +126,9 @@ const configs: Configuration[] = [
       }),
       new HtmlWebpackPlugin({
         ...commonFrontendWebpackPluginOptions,
-        filename: 'frontend/snake.html',
+        filename: 'frontend/snake-game.html',
         title: 'Pontoon Snake',
-        rootId: 'snake-root',
+        rootId: 'snake-game-root',
       }),
       new HtmlWebpackPlugin({
         ...commonFrontendWebpackPluginOptions,

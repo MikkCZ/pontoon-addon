@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { browser } from '@commons/webExtensionsApi';
+import { Options } from '@commons/Options';
+import { RemoteLinks } from '@commons/RemoteLinks';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
 import pageActionImage from '@assets/img/page-action.png';
@@ -11,19 +13,15 @@ import feedbackImage from '@assets/img/2-Lions.png';
 import type { Props as TileProps } from '../TourPageTile';
 import { TourPage } from '../TourPage';
 
+import '@commons/pontoon.css';
 import './index.css';
 
-interface Props {
-  title: string;
-  enableNotifications: () => void;
-  openWiki: () => void;
-}
+const pageTitle = 'Welcome to Pontoon Add-on';
+const remoteLinks = new RemoteLinks();
 
-export const TourRoot: React.FC<Props> = ({
-  title,
-  enableNotifications,
-  openWiki,
-}) => {
+export const App: React.FC = () => {
+  document.title = pageTitle;
+
   const tiles: TileProps[] = [];
   tiles.push({
     title: 'Pontoon button',
@@ -46,8 +44,9 @@ export const TourRoot: React.FC<Props> = ({
     text: 'Pontoon Add-on can bring notifications directly into your system. Try it!',
     button: {
       text: 'Preview system notifications',
-      onClick: () => {
-        enableNotifications();
+      onClick: async () => {
+        const options = await Options.create();
+        options.set('show_notifications', true);
         browser.notifications.create({
           type: 'basic',
           iconUrl: browser.runtime.getURL('assets/img/pontoon-logo.svg'),
@@ -116,9 +115,10 @@ export const TourRoot: React.FC<Props> = ({
     ),
     button: {
       text: 'Check the wiki',
-      onClick: () => openWiki(),
+      onClick: () =>
+        browser.tabs.create({ url: remoteLinks.getPontoonAddonWikiUrl() }),
     },
   });
 
-  return <TourPage title={title} tiles={tiles} />;
+  return <TourPage title={pageTitle} tiles={tiles} />;
 };

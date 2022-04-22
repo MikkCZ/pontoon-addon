@@ -4,11 +4,11 @@ body {
   font-size: 14px;
 }
 
-.PrivacyPolicyRoot {
+.PrivacyPolicyApp {
   max-width: 960px;
   margin: 0 auto;
 }
 
-.PrivacyPolicyRoot h1 {
+.PrivacyPolicyApp h1 {
   text-align: center;
 }

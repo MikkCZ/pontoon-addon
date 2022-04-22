@@ -32,7 +32,7 @@ afterEach(() => {
   document.body.textContent = '';
 });
 
-async function renderWithRoot(rootId: string): Promise<HTMLDivElement> {
+async function renderInRootId(rootId: string): Promise<HTMLDivElement> {
   const rootDiv = document.createElement('div');
   rootDiv.id = rootId;
   document.body.appendChild(rootDiv);
@@ -54,7 +54,7 @@ describe('address bar', () => {
   });
 
   it('renders', async () => {
-    const rootDiv = await renderWithRoot('address-bar-root');
+    const rootDiv = await renderInRootId('address-bar-root');
 
     expect(reactDomRender).toHaveBeenCalledTimes(1);
     expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
@@ -63,7 +63,7 @@ describe('address bar', () => {
 
 describe('intro', () => {
   it('renders', async () => {
-    const rootDiv = await renderWithRoot('tour-root');
+    const rootDiv = await renderInRootId('intro-root');
 
     expect(reactDomRender).toHaveBeenCalledTimes(1);
     expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
@@ -72,16 +72,16 @@ describe('intro', () => {
 
 describe('privacy policy', () => {
   it('renders', async () => {
-    const rootDiv = await renderWithRoot('privacy-policy-root');
+    const rootDiv = await renderInRootId('privacy-policy-root');
 
     expect(reactDomRender).toHaveBeenCalledTimes(1);
     expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
   });
 });
 
-describe('snake', () => {
+describe('snake game', () => {
   it('renders', async () => {
-    const rootDiv = await renderWithRoot('snake-root');
+    const rootDiv = await renderInRootId('snake-game-root');
 
     expect(reactDomRender).toHaveBeenCalledTimes(1);
     expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
@@ -99,7 +99,7 @@ describe('toolbar button', () => {
   });
 
   it('renders', async () => {
-    const rootDiv = await renderWithRoot('toolbar-button-root');
+    const rootDiv = await renderInRootId('toolbar-button-root');
 
     expect(reactDomRender).toHaveBeenCalledTimes(1);
     expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);

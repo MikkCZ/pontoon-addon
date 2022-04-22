@@ -10,7 +10,7 @@ import './index.css';
 
 function revealTheEasterEgg() {
   browser.tabs.create({
-    url: browser.runtime.getURL('frontend/snake.html'),
+    url: browser.runtime.getURL('frontend/snake-game.html'),
   });
 }
 

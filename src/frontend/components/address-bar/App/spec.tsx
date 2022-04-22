@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
+import flushPromises from 'flush-promises';
 
 import type { Project } from '@background/BackgroundPontoonClient';
 import {
@@ -11,7 +12,7 @@ import {
 import { PanelSection } from '../PanelSection';
 import { PanelListItem } from '../PanelListItem';
 
-import { AddressBarRoot } from '.';
+import { App } from '.';
 
 const project: Project = {
   name: 'Some Project',
@@ -21,15 +22,19 @@ const project: Project = {
 
 beforeEach(() => {
   mockBrowserNode.enable();
+  mockBrowser.runtime.sendMessage
+    .expect(expect.anything())
+    .andResolve(project as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 });
 
 afterEach(() => {
   mockBrowserNode.verifyAndDisable();
 });
 
-describe('AddressBarRoot', () => {
-  it('renders items for the project', () => {
-    const wrapper = mount(<AddressBarRoot project={project} />);
+describe('address-bar/App', () => {
+  it('renders items for the project', async () => {
+    const wrapper = mount(<App />);
+    await flushPromises();
 
     expect(wrapper.find(PanelSection)).toHaveLength(1);
     expect(wrapper.find(PanelListItem)).toHaveLength(2);
@@ -41,8 +46,9 @@ describe('AddressBarRoot', () => {
     );
   });
 
-  it('handles click to open project page', () => {
-    const wrapper = mount(<AddressBarRoot project={project} />);
+  it('handles click to open project page', async () => {
+    const wrapper = mount(<App />);
+    await flushPromises();
 
     mockBrowser.tabs.create
       .expect({ url: project.pageUrl })
@@ -54,8 +60,9 @@ describe('AddressBarRoot', () => {
     mockBrowserNode.verify();
   });
 
-  it('handles click to open translation view', () => {
-    const wrapper = mount(<AddressBarRoot project={project} />);
+  it('handles click to open translation view', async () => {
+    const wrapper = mount(<App />);
+    await flushPromises();
 
     mockBrowser.tabs.create
       .expect({ url: project.translationUrl })

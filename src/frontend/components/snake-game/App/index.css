@@ -4,12 +4,12 @@ body {
   font-size: 14px;
 }
 
-.SnakeGameRoot {
+.SnakeGameApp {
   text-align: center;
 }
 
-.SnakeGameRoot h2,
-.SnakeGameRoot h3 {
+.SnakeGameApp h2,
+.SnakeGameApp h3 {
   text-align: center;
 }
 
