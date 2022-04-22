@@ -177,7 +177,7 @@ const configs: Configuration[] = [
     entry: path.resolve(srcDir, 'manifest.json'),
     output: {
       ...commonConfiguration.output,
-      filename: 'manifest.js',
+      filename: path.relative(commonConfiguration.output?.path!, '/dev/null'),
     },
     plugins: [
       new CopyPlugin({
