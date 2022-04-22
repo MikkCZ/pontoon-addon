@@ -15,14 +15,7 @@ export const GlobalPontoonStyle = createGlobalStyle`
     cursor: pointer;
   }
 
-  a:hover,
-  button.link:hover {
-    color: inherit;
-  }
-
   button.link {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     display: inline-block;
     background: transparent;
@@ -30,6 +23,11 @@ export const GlobalPontoonStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-size: inherit;
+  }
+
+  a:hover,
+  button.link:hover {
+    color: inherit;
   }
 
   .hidden {
@@ -69,7 +67,7 @@ export const GlobalPontoonStyle = createGlobalStyle`
     padding: 0;
   }
 
-  header a {
+  header a { /* stylelint-disable-line no-descending-specificity */
     color: inherit;
   }
 
@@ -95,8 +93,6 @@ export const GlobalPontoonStyle = createGlobalStyle`
   input[type="url"],
   select,
   button.pontoon-style {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     box-sizing: border-box;
     height: 2em;
@@ -125,8 +121,6 @@ export const GlobalPontoonStyle = createGlobalStyle`
 
   input[type="radio"],
   input[type="checkbox"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     height: 1em;
     width: 1em;

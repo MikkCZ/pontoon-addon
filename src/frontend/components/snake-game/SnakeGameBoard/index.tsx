@@ -19,7 +19,6 @@ const Wrapper = styled.div`
     margin: 0;
     width: 100%;
     top: 50%;
-    -ms-transform: translateY(-50%);
     transform: translateY(-50%);
   }
 `;

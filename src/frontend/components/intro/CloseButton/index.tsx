@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import closeIcon from '@assets/img/glyph-dismiss-16.svg';
 
 const Button = styled.button`
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   display: inline-block;
   border: none;
