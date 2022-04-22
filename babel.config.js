@@ -1,15 +1,15 @@
 'use strict';
 
-module.exports = {
-  presets: [
-    '@babel/env',
-    '@babel/preset-react',
-    '@babel/preset-typescript',
-  ],
-  plugins: [
-    '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-transform-react-jsx',
-    '@babel/plugin-transform-runtime',
-    '@babel/plugin-transform-strict-mode',
-  ],
+module.exports = (api) => {
+  const isTest = api.env('test');
+
+  if (isTest) {
+    return {
+      presets: [
+        '@babel/env',
+      ],
+    };
+  } else {
+    throw new Error('Babel should not be needed outside of tests.');
+  }
 };
