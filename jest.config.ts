@@ -1,11 +1,17 @@
 import type { Config } from '@jest/types';
 import { defaults } from 'jest-config';
 
+const staticFilesTranform = {
+  '.+\\.css$': 'jest-transform-stub',
+  '.+\\.(png|svg)$': 'jest-transform-stub',
+  '.+\\.md$': 'jest-transform-stub',
+}
+
 const config: Config.InitialOptions = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: [
     './jest.setup.ts',
-    'jest-canvas-mock',
+    'jest-canvas-mock', // only for 'react-game-snake'
   ],
   collectCoverage: true,
   collectCoverageFrom: [
@@ -19,16 +25,16 @@ const config: Config.InitialOptions = {
   ],
   preset: 'ts-jest',
   transform: {
-    '.+\\.(js|jsx)$': 'babel-jest',
-    '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '.+\\.(png|svg)$': 'jest-transform-stub',
+    '.+\\.jsx?$': 'babel-jest',
+    ...staticFilesTranform,
   },
   transformIgnorePatterns: [
     'node_modules/(?!react-game-snake)',
   ],
   moduleNameMapper: {
     ...defaults.moduleNameMapper,
-    '@assets/.+\\.(css|png|svg|md)$': 'jest-transform-stub',
+    ...staticFilesTranform,
+    '@assets/(.*)$': '<rootDir>/src/assets/$1',
     '@background/(.*)$': '<rootDir>/src/background/$1',
     '@commons/(.*)$': '<rootDir>/src/commons/$1',
     '@frontend/(.*)$': '<rootDir>/src/frontend/$1',

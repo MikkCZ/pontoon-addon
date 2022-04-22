@@ -26,6 +26,7 @@ const commonConfiguration: Configuration = {
     rules: [
       {
         test: /\.css$/i,
+        exclude: /(node_modules)/,
         use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
       },
       {
@@ -40,6 +41,7 @@ const commonConfiguration: Configuration = {
       },
       {
         test: /\.(png|svg)$/,
+        exclude: /(node_modules)/,
         loader: 'file-loader',
       },
       {
