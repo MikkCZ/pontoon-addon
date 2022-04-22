@@ -9,6 +9,8 @@ import {
   mockBrowserNode,
 } from '@commons/test/mockWebExtensionsApi';
 
+import { render } from './index';
+
 jest.mock('@commons/Options', () => ({
   Options: {
     create: async () => ({
@@ -39,8 +41,7 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
   document.body.appendChild(rootDiv);
 
   await act(async () => {
-    const renderPromise = await require('./index');
-    await renderPromise;
+    await render();
     await flushPromises();
   });
 

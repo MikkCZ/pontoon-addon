@@ -13,7 +13,7 @@ export interface EventListeners extends Omit<IGameLogicEvents, 'onWin'> {
   onRestart: () => void;
 }
 
-export interface ControlFunctions {
+interface ControlFunctions {
   startGame: () => void;
   pauseGame: () => void;
   resumeGame: () => void;

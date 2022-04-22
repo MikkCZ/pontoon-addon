@@ -496,7 +496,7 @@ export interface Team {
   bz_component: string;
 }
 
-export interface TeamsList {
+interface TeamsList {
   [slug: string]: Team;
 }
 
