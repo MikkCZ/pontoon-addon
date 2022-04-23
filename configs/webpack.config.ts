@@ -11,13 +11,13 @@ import { getManifestFor, BrowserFamily } from '../src/manifest.json';
 const rootDir = path.resolve(__dirname, '..');
 const srcDir = path.resolve(rootDir, 'src');
 
-enum WebpackModes {
+enum WebpackMode {
   PROD = 'production',
   DEVEL = 'development',
 }
 
-const mode = process.env.MODE === WebpackModes.DEVEL ? WebpackModes.DEVEL : WebpackModes.PROD;
-const devtool = mode === WebpackModes.DEVEL ? 'source-map' : undefined;
+const mode = process.env.MODE === WebpackMode.DEVEL ? WebpackMode.DEVEL : WebpackMode.PROD;
+const devtool = mode === WebpackMode.DEVEL ? 'source-map' : 'nosources-source-map';
 
 const targetBrowser = process.env.TARGET_BROWSER as BrowserFamily || BrowserFamily.MOZILLA;
 const extensionManifestJson = getManifestFor(targetBrowser);
