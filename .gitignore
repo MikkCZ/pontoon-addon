@@ -11,4 +11,5 @@ node_modules/*
 scripts/jq
 .nvmrc
 .npmrc
+!scripts/.npmrc
 .yarnrc
