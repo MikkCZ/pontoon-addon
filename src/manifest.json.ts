@@ -15,19 +15,10 @@ const packageJson = JSON.parse(
   }),
 ) as IPackageJson;
 
-const pontoonLogoSvg = path.relative(__dirname, 'assets/img/pontoon-logo.svg');
-const pontoonLogoGrayAlphaSvg = path.relative(
-  __dirname,
-  'assets/img/pontoon-logo-gray-alpha.svg',
-);
-const pontoonLogo32Png = path.relative(
-  __dirname,
-  'assets/img/pontoon-logo-32.png',
-);
-const pontoonLogo128Png = path.relative(
-  __dirname,
-  'assets/img/pontoon-logo-128.png',
-);
+const pontoonLogoSvg = 'assets/img/pontoon-logo.svg';
+const pontoonLogoGrayAlphaSvg = 'assets/img/pontoon-logo-gray-alpha.svg';
+const pontoonLogo32Png = 'assets/img/pontoon-logo-32.png';
+const pontoonLogo128Png = 'assets/img/pontoon-logo-128.png';
 
 // ts-prune-ignore-next
 export function getManifestFor(
