@@ -15,7 +15,7 @@ import { App as ToolbarButtonApp } from './components/toolbar-button/App';
 
 async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
   TimeAgo.addLocale(en);
-  const options = await Options.create();
+  const options = new Options();
   const backgroundPontoonClient = new BackgroundPontoonClient();
 
   const hideReadNotificationsKey =

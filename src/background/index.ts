@@ -36,52 +36,52 @@ browser.runtime.onInstalled.addListener((details) => {
   }
 });
 
-Options.create().then((options) => {
-  const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-  const localeTeamOptionKey = 'locale_team';
+const options = new Options();
 
-  options
-    .get([pontoonBaseUrlOptionKey, localeTeamOptionKey])
-    .then((optionsItems: any) => {
-      const remotePontoon = new RemotePontoon(
-        optionsItems[pontoonBaseUrlOptionKey],
-        optionsItems[localeTeamOptionKey],
-        options,
-      );
-      const toolbarButton = new ToolbarButton(options, remotePontoon);
-      const _pageAction = new PageAction(remotePontoon);
-      const _systemNotifications = new SystemNotifications(
-        options,
-        remotePontoon,
-      );
-      const remoteLinks = new RemoteLinks();
-      const _pageContextMenu = new PageContextMenu(
-        options,
-        remotePontoon,
-        remoteLinks,
-      );
-      const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
-      const _contextButtons = new ContextButtons(
-        options,
-        remotePontoon,
-        remoteLinks,
-      );
-      const dataRefresher = new DataRefresher(options, remotePontoon);
-      const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
-        options,
-        remotePontoon,
-        remoteLinks,
-        dataRefresher,
-        toolbarButton,
-      );
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
+const localeTeamOptionKey = 'locale_team';
 
-      // If the onInstalled event has already fired, the details are stored by the function registered above.
-      onInstallFunction = (_details) =>
-        dataRefresher.refreshDataOnInstallOrUpdate();
-      if (newInstallationDetails) {
-        onInstallFunction(newInstallationDetails);
-      }
+options
+  .get([pontoonBaseUrlOptionKey, localeTeamOptionKey])
+  .then((optionsItems: any) => {
+    const remotePontoon = new RemotePontoon(
+      optionsItems[pontoonBaseUrlOptionKey],
+      optionsItems[localeTeamOptionKey],
+      options,
+    );
+    const toolbarButton = new ToolbarButton(options, remotePontoon);
+    const _pageAction = new PageAction(remotePontoon);
+    const _systemNotifications = new SystemNotifications(
+      options,
+      remotePontoon,
+    );
+    const remoteLinks = new RemoteLinks();
+    const _pageContextMenu = new PageContextMenu(
+      options,
+      remotePontoon,
+      remoteLinks,
+    );
+    const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
+    const _contextButtons = new ContextButtons(
+      options,
+      remotePontoon,
+      remoteLinks,
+    );
+    const dataRefresher = new DataRefresher(options, remotePontoon);
+    const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
+      options,
+      remotePontoon,
+      remoteLinks,
+      dataRefresher,
+      toolbarButton,
+    );
 
-      setTimeout(() => dataRefresher.refreshData(), 1000);
-    });
-});
+    // If the onInstalled event has already fired, the details are stored by the function registered above.
+    onInstallFunction = (_details) =>
+      dataRefresher.refreshDataOnInstallOrUpdate();
+    if (newInstallationDetails) {
+      onInstallFunction(newInstallationDetails);
+    }
+
+    setTimeout(() => dataRefresher.refreshData(), 1000);
+  });

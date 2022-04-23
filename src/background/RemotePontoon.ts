@@ -7,6 +7,9 @@ import { BackgroundPontoonMessageType } from './BackgroundPontoonMessageType';
 import { DataFetcher } from './DataFetcher';
 import { projectsListData } from './data/projectsListData';
 
+const pontoonBaseUrlOptionKey = 'pontoon_base_url';
+const localeTeamOptionKey = 'locale_team';
+
 export class RemotePontoon {
   private baseUrl: string;
   private baseUrlChangeListeners: Set<() => void>;
@@ -15,7 +18,6 @@ export class RemotePontoon {
   private readonly domParser: DOMParser;
   private readonly dataFetcher: DataFetcher;
 
-  // TODO: get rid of the 'team' parameter and use options to fetch is when needed
   constructor(baseUrl: string, team: string, options: Options) {
     this.baseUrl = baseUrl;
     this.baseUrlChangeListeners = new Set();
@@ -47,9 +49,8 @@ export class RemotePontoon {
     return `${this.baseUrl}/${this.team}/insights/?utm_source=pontoon-addon`;
   }
 
-  // TODO: add 'utm_source'
-  // see https://github.com/MikkCZ/pontoon-addon/pull/76#discussion_r195809548
   public getTeamBugsUrl(): string {
+    // no 'utm_source' here, see https://github.com/MikkCZ/pontoon-addon/pull/76#discussion_r195809548
     return `${this.baseUrl}/${this.team}/bugs/`;
   }
 
@@ -387,14 +388,14 @@ export class RemotePontoon {
 
   private watchOptionsUpdates(): void {
     this.options.subscribeToOptionChange(
-      'pontoon_base_url',
+      pontoonBaseUrlOptionKey,
       (change: Storage.StorageChange) => {
         this.baseUrl = change.newValue.replace(/\/$/, '');
         this.baseUrlChangeListeners.forEach((callback) => callback());
       },
     );
     this.options.subscribeToOptionChange(
-      'locale_team',
+      localeTeamOptionKey,
       (change: Storage.StorageChange) => {
         this.team = change.newValue;
       },

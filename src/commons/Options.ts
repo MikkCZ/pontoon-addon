@@ -9,29 +9,15 @@ import {
   OptionsValues,
 } from './data/defaultOptions';
 
+const PREFIX = 'options.';
+
 /**
  * Encapsulates storing and retrieving user preferences and notifying about their updates.
  */
 export class Options {
-  static async create(): Promise<Options> {
-    const prefix = 'options.';
-    const defaults = await Options.loadDefaultValues(prefix);
-    return new Options(prefix, defaults);
-  }
-
-  private readonly prefix: string;
-  private readonly prefixRegExp: RegExp;
-  private readonly defaultValues: Record<string, OptionValue>;
-
-  constructor(prefix: string, defaultValues: Record<string, OptionValue>) {
-    this.prefix = prefix;
-    this.prefixRegExp = new RegExp(`^${this.prefix}`);
-    this.defaultValues = defaultValues;
-  }
-
-  private static async loadDefaultValues(
+  private static loadDefaultValues(
     prefix: string,
-  ): Promise<Record<string, OptionValue>> {
+  ): Record<string, OptionValue> {
     const defaults: Record<string, OptionValue> = {};
     let browserFamily: BrowserFamily;
     if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
@@ -47,6 +33,16 @@ export class Options {
       ([key, value]) => (defaults[`${prefix}${key}`] = value as OptionValue),
     );
     return Object.freeze(defaults);
+  }
+
+  private readonly prefix: string;
+  private readonly prefixRegExp: RegExp;
+  private readonly defaultValues: Record<string, OptionValue>;
+
+  constructor() {
+    this.prefix = PREFIX;
+    this.prefixRegExp = new RegExp(`^${PREFIX}`);
+    this.defaultValues = Options.loadDefaultValues(PREFIX);
   }
 
   private getOptionId(input: HTMLInputElement | HTMLSelectElement): string {

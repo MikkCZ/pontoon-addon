@@ -52,8 +52,8 @@ export const App: React.FC = () => {
     text: 'Pontoon Add-on can bring notifications directly into your system. Try it!',
     button: {
       text: 'Preview system notifications',
-      onClick: async () => {
-        const options = await Options.create();
+      onClick: () => {
+        const options = new Options();
         options.set('show_notifications', true);
         browser.notifications.create({
           type: 'basic',

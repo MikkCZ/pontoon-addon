@@ -2,8 +2,6 @@ import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
-// TODO: bug in ESLint?
-// eslint-disable-next-line import/no-unresolved
 import privacyMdAsString from '@assets/PRIVACY.md';
 
 import { MarkdownContent } from '../MarkdownContent';

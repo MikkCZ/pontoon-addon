@@ -6,8 +6,6 @@ import DOMPurify from 'dompurify';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Linkify from 'react-linkify';
-// TODO: bug in ESLint?
-// eslint-disable-next-line import/no-unresolved
 import parse from 'html-react-parser';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
