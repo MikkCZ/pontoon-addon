@@ -160,7 +160,7 @@ export const NotificationsListItem: React.FC<Props> = ({
       >
         {actor && !isSuggestion && (
           <ActorTargetLink
-            onClick={(e) => {
+            onClick={(e: MouseEvent<HTMLButtonElement>) => {
               stopEvent(e);
               openTeamProject(backgroundPontoonClient, actor.url);
             }}
@@ -171,7 +171,7 @@ export const NotificationsListItem: React.FC<Props> = ({
         {verb && <span onClick={onClickAll}> {verb} </span>}
         {target && (
           <ActorTargetLink
-            onClick={(e) => {
+            onClick={(e: MouseEvent<HTMLButtonElement>) => {
               stopEvent(e);
               openTeamProject(backgroundPontoonClient, target.url);
             }}

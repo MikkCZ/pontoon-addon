@@ -6,23 +6,23 @@ all: prepare build test
 
 .PHONY: prepare
 prepare:
-	yarn clean-install
+	npm run clean-install
 
 .PHONY: build
 build:
-	yarn build
+	npm run build
 
 .PHONY: test
 test:
-	yarn test
+	npm run test
 
 .PHONY: watch
 watch:
-	yarn watch
+	npm run watch
 
 .PHONY: codecov
 codecov:
-	yarn codecov
+	npm run codecov
 
 .PHONY: all_in_docker
 all_in_docker:

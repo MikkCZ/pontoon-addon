@@ -12,7 +12,7 @@ podman run \
   -e CODECOV_TOKEN="${CODECOV_TOKEN}" \
   --workdir "${PWD}" \
   -v "${PWD}:${PWD}:Z" \
-  -v "${PWD}/scripts/.yarnrc:${PWD}/.yarnrc:Z" \
+  -v "${PWD}/scripts/.npmrc:${PWD}/.npmrc:Z" \
   --rm=true \
   --entrypoint=/bin/bash \
   "${CONTAINER_IMAGE}" -c "${COMMAND}"

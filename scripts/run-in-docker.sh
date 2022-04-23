@@ -12,7 +12,7 @@ docker run --user "$(id -u):$(id -g)" \
   -e CODECOV_TOKEN="${CODECOV_TOKEN}" \
   --workdir "${PWD}" \
   -v "${PWD}:${PWD}" \
-  -v "${PWD}/scripts/.yarnrc:${PWD}/.yarnrc" \
+  -v "${PWD}/scripts/.npmrc:${PWD}/.npmrc" \
   --rm=true \
   --entrypoint=/bin/bash \
   "${CONTAINER_IMAGE}" -c "${COMMAND}"
