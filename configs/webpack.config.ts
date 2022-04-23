@@ -4,6 +4,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import GenerateJsonPlugin from 'generate-json-webpack-plugin';
+import WebExtPlugin from 'web-ext-plugin';
 
 import { getManifestFor, BrowserFamily } from '../src/manifest.json';
 
@@ -196,6 +197,32 @@ const configs: Configuration[] = [
         patterns:[
           { from: 'src/assets/img/pontoon-logo*', to: '..' }, // overlap the source 'src' with dist 'src'
         ],
+      }),
+    ],
+  },
+  {
+    name: `${targetBrowser}/web-ext`,
+    dependencies: [
+      `${targetBrowser}/src/background`,
+      `${targetBrowser}/src/content-scripts`,
+      `${targetBrowser}/src/frontend/index`,
+      `${targetBrowser}/src/frontend/options`,
+      `${targetBrowser}/src/manifest.json`,
+    ],
+    mode: commonConfiguration.mode,
+    entry: './package.json', // anything webpack can load
+    output: {
+      ...commonConfiguration.output,
+      // ignore chunk emitted from the entry
+      filename: path.relative(commonConfiguration.output?.path!, '/dev/null'),
+    },
+    plugins: [
+      new WebExtPlugin({
+        runLint: true,
+        buildPackage: true,
+        overwriteDest: true,
+        sourceDir: commonConfiguration.output?.path!,
+        artifactsDir: path.resolve(commonConfiguration.output?.path!, '../web-ext'),
       }),
     ],
   },

@@ -14,8 +14,8 @@
     "url": "https://github.com/MikkCZ/pontoon-addon/issues"
   },
   "scripts": {
-    "clean-install": "rm -rf ./node_modules && yarn install --frozen-lockfile && run-s build:clean test:clean",
-    "build": "run-s build:clean tsc:check eslint:check ts-prune:check stylelint:check webpack:mozilla webpack:chromium web-ext:lint web-ext:build build:privacy-policy-html",
+    "clean-install": "rm -rf ./node_modules && yarn install --frozen-lockfile && run-s *:clean",
+    "build": "run-s build:clean tsc:check eslint:check ts-prune:check stylelint:check && run-p webpack:run:* build:privacy-policy-html",
     "test": "run-s test:clean && jest --ci --config ./configs/jest.config.ts",
     "build:clean": "rimraf ./dist",
     "test:clean": "rimraf ./coverage",
@@ -24,14 +24,13 @@
     "eslint:fix": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx --fix ./src",
     "ts-prune:check": "ts-prune --error --ignore '/__mocks__/' --project ./configs/tsconfig.json",
     "stylelint:check": "stylelint --config ./configs/.stylelintrc.js './src/**/*.tsx'",
-    "webpack:mozilla": "cross-env TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts",
-    "webpack:chromium": "cross-env TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts",
-    "webpack:watch": "cross-env MODE=development webpack --config ./configs/webpack.config.ts --watch",
-    "web-ext:lint": "web-ext lint --config ./configs/web-ext.config.js -s ./dist/mozilla/src && web-ext lint --config ./configs/web-ext.config.js -s ./dist/chromium/src",
-    "web-ext:build": "web-ext build --config ./configs/web-ext.config.js -s ./dist/mozilla/src -a ./dist/mozilla/web-ext && web-ext build --config ./configs/web-ext.config.js -s ./dist/chromium/src -a ./dist/chromium/web-ext",
+    "webpack:run:mozilla": "cross-env TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts",
+    "webpack:run:chromium": "cross-env TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts",
+    "webpack:watch:mozilla": "cross-env MODE=development TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts --watch",
+    "webpack:watch:chromium": "cross-env MODE=development TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts --watch",
     "build:privacy-policy-html": "mkdir -p ./dist && marked -i PRIVACY.md -o ./dist/privacy-policy.html",
     "codecov": "codecov",
-    "watch": "run-s prebuild webpack:watch"
+    "watch": "run-p *:clean && run-p webpack:watch:*"
   },
   "dependencies": {
     "dompurify": "^2.2.8",
@@ -116,6 +115,7 @@
     "ts-prune": "^0.10.3",
     "typescript": "^4.2.3",
     "web-ext": "^6.8.0",
+    "web-ext-plugin": "^1.8.0",
     "webpack": "^5.58.2",
     "webpack-cli": "^4.9.0"
   },
