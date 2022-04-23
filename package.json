@@ -14,7 +14,7 @@
     "url": "https://github.com/MikkCZ/pontoon-addon/issues"
   },
   "scripts": {
-    "clean-install": "rm -rf ./node_modules && yarn install --frozen-lockfile && run-s *:clean",
+    "clean-install": "rm -rf ./node_modules && npm ci && run-p *:clean",
     "build": "run-s build:clean tsc:check eslint:check ts-prune:check stylelint:check && run-p webpack:run:* build:privacy-policy-html",
     "test": "run-s test:clean && jest --ci --config ./configs/jest.config.ts",
     "build:clean": "rimraf ./dist",
@@ -120,9 +120,11 @@
     "webpack-cli": "^4.9.0"
   },
   "engines": {
-    "node": "^16.0.0",
-    "yarn": "^1.22.0"
+    "node": "^16.11.0",
+    "npm": "^8.0.0",
+    "yarn": "NO LONGER USED - Please use npm"
   },
+  "engineStrict": true,
   "browserslist": [
     "defaults",
     "Firefox >= 91"

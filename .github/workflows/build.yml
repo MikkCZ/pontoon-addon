@@ -21,7 +21,7 @@ jobs:
           path: |
             node_modules
             **/node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: make prepare_in_docker
       - name: Build add-on (development version)
