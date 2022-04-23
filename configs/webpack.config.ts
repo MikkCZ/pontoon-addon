@@ -25,16 +25,13 @@ const extensionManifestJson = getManifestFor(targetBrowser);
 const tsLoader: RuleSetUseItem = {
   loader: 'ts-loader',
   options: {
-      configFile: path.resolve(__dirname, 'tsconfig.json'),
+    configFile: path.resolve(__dirname, 'tsconfig.json'),
   },
 };
 
 const commonConfiguration: Configuration = {
   mode,
   devtool,
-  performance: {
-    hints: false,
-  },
   stats: 'errors-only',
   output: {
     path: path.resolve(rootDir, 'dist', targetBrowser, 'src'),
@@ -43,38 +40,38 @@ const commonConfiguration: Configuration = {
     rules: [
       {
         test: /\.css$/i,
-        exclude: /(node_modules)/,
+        include: srcDir,
         use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
       },
       {
         test: /\.tsx?$/,
-        exclude: /(node_modules)/,
+        include: srcDir,
         use: [ tsLoader ],
       },
       {
         test: /\.json$/,
-        exclude: /(node_modules)/,
+        include: srcDir,
         use: [ tsLoader ],
       },
       {
         test: /\.png$/,
-        exclude: /(node_modules)/,
+        include: srcDir,
         type: 'asset/inline', // base64 encoded
       },
       {
         test: /\.svg$/,
-        exclude: /(node_modules)/,
+        include: srcDir,
         type: 'asset/inline', // base64 encoded
       },
       {
         test: /\.md$/,
-        exclude: /(node_modules)/,
+        include: rootDir,
         type: 'asset/source', // as file content
       },
     ],
   },
   resolve: {
-    modules: [ 'node_modules' ],
+    modules: [ path.resolve(rootDir, 'node_modules') ],
     extensions: [ '.ts', '.tsx', '.js', '.jsx', '.css', '.json', '.png', '.svg', '.md' ],
     alias: {
       '@assets': path.resolve(srcDir, 'assets'),
@@ -184,8 +181,8 @@ const configs: Configuration[] = [
   },
   {
     name: `${targetBrowser}/src/manifest.json`,
-    mode: commonConfiguration.mode,
-    entry: './package.json', // anything webpack can load
+    ...commonConfiguration,
+    entry: './package.json', // anything webpack can load by itself
     output: {
       ...commonConfiguration.output,
       // ignore chunk emitted from the entry
@@ -209,8 +206,8 @@ const configs: Configuration[] = [
       `${targetBrowser}/src/frontend/options`,
       `${targetBrowser}/src/manifest.json`,
     ],
-    mode: commonConfiguration.mode,
-    entry: './package.json', // anything webpack can load
+    ...commonConfiguration,
+    entry: './package.json', // anything webpack can load by itself
     output: {
       ...commonConfiguration.output,
       // ignore chunk emitted from the entry
