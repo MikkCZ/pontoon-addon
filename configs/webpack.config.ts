@@ -3,6 +3,9 @@ import type { Configuration, RuleSetUseItem } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import GenerateJsonPlugin from 'generate-json-webpack-plugin';
+
+import { getManifestFor, BrowserFamily } from '../src/manifest.json';
 
 const rootDir = path.resolve(__dirname, '..');
 const srcDir = path.resolve(rootDir, 'src');
@@ -14,6 +17,9 @@ enum WebpackModes {
 
 const mode = process.env.MODE === WebpackModes.DEVEL ? WebpackModes.DEVEL : WebpackModes.PROD;
 const devtool = mode === WebpackModes.DEVEL ? 'source-map' : undefined;
+
+const targetBrowser = process.env.TARGET_BROWSER as BrowserFamily || BrowserFamily.MOZILLA;
+const extensionManifestJson = getManifestFor(targetBrowser);
 
 const tsLoader: RuleSetUseItem = {
   loader: 'ts-loader',
@@ -30,7 +36,7 @@ const commonConfiguration: Configuration = {
   },
   stats: 'errors-only',
   output: {
-    path: path.resolve(rootDir, 'dist/src'),
+    path: path.resolve(rootDir, 'dist', targetBrowser, 'src'),
   },
   module: {
     rules: [
@@ -88,7 +94,7 @@ const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
 
 const configs: Configuration[] = [
   {
-    name: 'background',
+    name: `${targetBrowser}/src/background`,
     ...commonConfiguration,
     entry: path.resolve(srcDir, 'background/index.ts'),
     output: {
@@ -97,7 +103,7 @@ const configs: Configuration[] = [
     },
   },
   {
-    name: 'content-scripts',
+    name: `${targetBrowser}/src/content-scripts`,
     ...commonConfiguration,
     entry: {
       'content-scripts/context-buttons': path.resolve(srcDir, 'content-scripts/context-buttons.ts'),
@@ -108,7 +114,7 @@ const configs: Configuration[] = [
     },
   },
   {
-    name: 'frontend',
+    name: `${targetBrowser}/src/frontend/index`,
     ...commonConfiguration,
     entry: path.resolve(srcDir, 'frontend/index.tsx'),
     output: {
@@ -116,12 +122,16 @@ const configs: Configuration[] = [
       filename: 'frontend/main.js',
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        ...commonFrontendWebpackPluginOptions,
-        filename: 'frontend/address-bar.html',
-        title: 'Address Bar',
-        rootId: 'address-bar-root',
-      }),
+      ...(extensionManifestJson.page_action
+        ? [
+          new HtmlWebpackPlugin({
+            ...commonFrontendWebpackPluginOptions,
+            filename: 'frontend/address-bar.html',
+            title: 'Address Bar',
+            rootId: 'address-bar-root',
+          })
+        ]: []
+      ),
       new HtmlWebpackPlugin({
         ...commonFrontendWebpackPluginOptions,
         filename: 'frontend/intro.html',
@@ -152,7 +162,7 @@ const configs: Configuration[] = [
     ],
   },
   {
-    name: 'options',
+    name: `${targetBrowser}/src/frontend/options`,
     ...commonConfiguration,
     entry: path.resolve(srcDir, 'frontend/index-options.ts'),
     output: {
@@ -172,17 +182,18 @@ const configs: Configuration[] = [
     ],
   },
   {
-    name: 'manifest-json',
+    name: `${targetBrowser}/src/manifest.json`,
     mode: commonConfiguration.mode,
-    entry: path.resolve(srcDir, 'manifest.json'),
+    entry: './package.json', // anything webpack can load
     output: {
       ...commonConfiguration.output,
+      // ignore chunk emitted from the entry
       filename: path.relative(commonConfiguration.output?.path!, '/dev/null'),
     },
     plugins: [
+      new GenerateJsonPlugin('manifest.json', extensionManifestJson) as any,
       new CopyPlugin({
         patterns:[
-          path.resolve(srcDir, 'manifest.json'),
           { from: 'src/assets/img/pontoon-logo*', to: '..' }, // overlap the source 'src' with dist 'src'
         ],
       }),

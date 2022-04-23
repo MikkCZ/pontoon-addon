@@ -13,9 +13,7 @@ import { App } from '.';
 
 beforeEach(() => {
   mockBrowserNode.enable();
-  mockBrowser.runtime.getURL
-    .expect('/')
-    .andReturn('moz-extension://foo-bar');
+  mockBrowser.runtime.getURL.expect('/').andReturn('moz-extension://foo-bar');
 });
 
 afterEach(() => {
