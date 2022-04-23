@@ -41,7 +41,6 @@ describe('TourPage', () => {
         tiles={[
           {
             title: '',
-            image: null,
             text: '',
             button: {
               text: '',

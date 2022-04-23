@@ -62,7 +62,7 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
   );
 }
 
-async function render(): Promise<void> {
+export async function render(): Promise<void> {
   const addressBarRoot = document.getElementById('address-bar-root');
   const introRoot = document.getElementById('intro-root');
   const privacyPolicyRoot = document.getElementById('privacy-policy-root');
@@ -76,4 +76,4 @@ async function render(): Promise<void> {
   toolbarButtonRoot && (await renderToolbarButtonApp(toolbarButtonRoot));
 }
 
-export default render();
+render();

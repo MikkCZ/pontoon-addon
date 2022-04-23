@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 module.exports = {
   extends: [
     'eslint:recommended',
@@ -63,7 +65,11 @@ module.exports = {
     'import/parsers': {
       '@typescript-eslint/parser': [ '.ts', '.tsx' ],
     },
-    'import/resolver': 'webpack',
+    'import/resolver': {
+      webpack: {
+        config: path.resolve(__dirname, 'webpack.config.ts'),
+      },
+    },
   },
   env: {
     webextensions: true,

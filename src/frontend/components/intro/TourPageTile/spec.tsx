@@ -9,7 +9,7 @@ describe('TourPageTile', () => {
       <TourPageTile
         {...{
           title: 'TITLE',
-          image: 'mock.jpg',
+          imageSrc: 'mock.jpg',
           text: 'Lorem Ipsum',
           button: {
             text: 'Lipsum...',
@@ -30,7 +30,6 @@ describe('TourPageTile', () => {
       <TourPageTile
         {...{
           title: 'TITLE',
-          image: null,
           text: 'Lorem Ipsum',
           button: {
             text: 'Lipsum...',

@@ -9,7 +9,7 @@
     ],
     "strict": true,
     "sourceMap": true,
-    "baseUrl": "./",
+    "baseUrl": "../",
     "paths": {
       "@background/*": ["src/background/*"],
       "@commons/*": ["src/commons/*"],
@@ -19,7 +19,7 @@
     "outDir": "dist"
   },
   "include": [
-    "src/"
+    "../src/"
   ],
   "exclude": [
     "node_modules"

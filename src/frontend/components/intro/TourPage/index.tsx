@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { browser } from '@commons/webExtensionsApi';
-import joystick from '@assets/img/joystick.svg';
+import joystickImage from '@assets/img/joystick.svg';
 
 import { CloseButton } from '../CloseButton';
 import { TourPageTile, Props as TileProps } from '../TourPageTile';
@@ -79,7 +79,7 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
         ) : (
           <CloseButton
             title="Play a game"
-            icon={joystick}
+            imageSrc={joystickImage}
             style={{ width: '32px', height: '32px' }}
             onClick={() => {
               revealTheEasterEgg();

@@ -4,7 +4,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 // TODO: bug in ESLint?
 // eslint-disable-next-line import/no-unresolved
-import privacyMd from '@assets/PRIVACY.md';
+import privacyMdAsString from '@assets/PRIVACY.md';
 
 import { MarkdownContent } from '../MarkdownContent';
 
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
       <GlobalPontoonStyle />
       <GlobalStyle />
       <Wrapper>
-        <MarkdownContent markdownFile={privacyMd} />
+        <MarkdownContent markdownText={privacyMdAsString} />
       </Wrapper>
     </>
   );

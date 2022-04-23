@@ -2,8 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Button = styled.button`
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   display: block;
   width: 100%;

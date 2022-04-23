@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import closeIcon from '@assets/img/glyph-dismiss-16.svg';
 
 const Button = styled.button`
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   display: inline-block;
   border: none;
@@ -25,14 +23,14 @@ function closeCurrentTab(): void {
 
 interface Props {
   title?: string;
-  icon?: string;
+  imageSrc?: string;
   onClick?: () => void;
   style?: CSSProperties;
 }
 
 export const CloseButton: React.FC<Props> = ({
   title = '',
-  icon = closeIcon,
+  imageSrc = closeIcon,
   onClick = () => {
     closeCurrentTab();
   },
@@ -41,7 +39,7 @@ export const CloseButton: React.FC<Props> = ({
   return (
     <Button
       title={title}
-      style={{ backgroundImage: `url(${icon})`, ...style }}
+      style={{ backgroundImage: `url(${imageSrc})`, ...style }}
       onClick={() => onClick()}
     ></Button>
   );

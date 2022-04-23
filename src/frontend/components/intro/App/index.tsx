@@ -7,6 +7,7 @@ import { RemoteLinks } from '@commons/RemoteLinks';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
+import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import pageActionImage from '@assets/img/page-action.png';
 import contextButtonsImage from '@assets/img/context-buttons.png';
 import settingsImage from '@assets/img/settings.png';
@@ -32,7 +33,7 @@ export const App: React.FC = () => {
   const tiles: TileProps[] = [];
   tiles.push({
     title: 'Pontoon button',
-    image: toolbarButtonImage,
+    imageSrc: toolbarButtonImage,
     text: (
       <>
         Pontoon icon in the toolbar offers{' '}
@@ -47,7 +48,7 @@ export const App: React.FC = () => {
   });
   tiles.push({
     title: 'System notifications',
-    image: notificationsImage,
+    imageSrc: notificationsImage,
     text: 'Pontoon Add-on can bring notifications directly into your system. Try it!',
     button: {
       text: 'Preview system notifications',
@@ -56,7 +57,7 @@ export const App: React.FC = () => {
         options.set('show_notifications', true);
         browser.notifications.create({
           type: 'basic',
-          iconUrl: browser.runtime.getURL('assets/img/pontoon-logo.svg'),
+          iconUrl: pontoonLogo,
           title: 'Notification from Pontoon',
           message:
             'Similar notifications will appear if there is something new in Pontoon. You can click them to open related project in Pontoon.',
@@ -67,7 +68,7 @@ export const App: React.FC = () => {
   if (browser.pageAction) {
     tiles.push({
       title: 'Address bar button',
-      image: pageActionImage,
+      imageSrc: pageActionImage,
       text: (
         <>
           So called <em>page action</em> is a button in the address bar, that
@@ -83,7 +84,7 @@ export const App: React.FC = () => {
   }
   tiles.push({
     title: 'Context buttons',
-    image: contextButtonsImage,
+    imageSrc: contextButtonsImage,
     text: (
       <>
         <strong>Look up strings in Pontoon</strong> or{' '}
@@ -98,7 +99,7 @@ export const App: React.FC = () => {
   });
   tiles.push({
     title: 'Add-on settings',
-    image: settingsImage,
+    imageSrc: settingsImage,
     text: (
       <>
         Pontoon button, notifications, ... all these features are{' '}
@@ -112,7 +113,7 @@ export const App: React.FC = () => {
   });
   tiles.push({
     title: 'Feedback and more',
-    image: feedbackImage,
+    imageSrc: feedbackImage,
     text: (
       <>
         This add-on won&apos;t exist and improve without you - Mozilla

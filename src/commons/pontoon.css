@@ -12,14 +12,7 @@ button.link {
   cursor: pointer;
 }
 
-a:hover,
-button.link:hover {
-  color: inherit;
-}
-
 button.link {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   display: inline-block;
   background: transparent;
@@ -27,6 +20,11 @@ button.link {
   margin: 0;
   padding: 0;
   font-size: inherit;
+}
+
+a:hover,
+button.link:hover {
+  color: inherit;
 }
 
 .hidden {
@@ -92,8 +90,6 @@ input[type="text"],
 input[type="url"],
 select,
 button.pontoon-style {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   box-sizing: border-box;
   height: 2em;
@@ -122,8 +118,6 @@ label {
 
 input[type="radio"],
 input[type="checkbox"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   height: 1em;
   width: 1em;

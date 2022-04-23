@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { marked, Renderer } from 'marked';
 import DOMPurify from 'dompurify';
 
-async function getTextContent(file: string): Promise<string> {
-  return (await fetch(file)).text();
-}
-
 function renderMarkdown(markdown: string) {
   const renderer = new marked.Renderer();
   const defaultLinkRenderer = renderer.link;
@@ -24,17 +20,17 @@ function renderMarkdown(markdown: string) {
 }
 
 interface Props {
-  markdownFile: string;
+  markdownText: string;
 }
 
-export const MarkdownContent: React.FC<Props> = ({ markdownFile }) => {
+export const MarkdownContent: React.FC<Props> = ({ markdownText }) => {
   const [markdownContent, setMarkdownContent] = useState<string>();
 
   useEffect(() => {
     (async () => {
-      setMarkdownContent(await getTextContent(markdownFile));
+      setMarkdownContent(markdownText);
     })();
-  }, [markdownFile]);
+  }, [markdownText]);
 
   const html = markdownContent ? renderMarkdown(markdownContent) : '';
   return <div dangerouslySetInnerHTML={{ __html: html }} />;
