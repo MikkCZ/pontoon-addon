@@ -14,7 +14,7 @@ import { App } from '.';
 beforeEach(() => {
   mockBrowserNode.enable();
   mockBrowser.runtime.getURL
-    .expect(expect.anything())
+    .expect('/')
     .andReturn('moz-extension://foo-bar');
 });
 

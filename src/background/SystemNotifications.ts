@@ -1,5 +1,6 @@
 import { Options } from '@commons/Options';
 import { browser } from '@commons/webExtensionsApi';
+import pontoonLogo from '@assets/img/pontoon-logo.svg';
 
 import { NotificationsData, RemotePontoon } from './RemotePontoon';
 
@@ -104,14 +105,14 @@ export class SystemNotifications {
     if (notificationItems.length === 1) {
       browser.notifications.create(`${lastNotificationId}`, {
         type: 'basic',
-        iconUrl: browser.runtime.getURL('assets/img/pontoon-logo.svg'),
+        iconUrl: pontoonLogo,
         title: notificationItems[0].title,
         message: notificationItems[0].message,
       });
     } else {
       browser.notifications.create({
         type: 'list',
-        iconUrl: browser.runtime.getURL('assets/img/pontoon-logo.svg'),
+        iconUrl: pontoonLogo,
         title: 'You have new unread notifications',
         message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
         items: notificationItems,

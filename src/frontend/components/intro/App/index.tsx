@@ -7,6 +7,7 @@ import { RemoteLinks } from '@commons/RemoteLinks';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
+import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import pageActionImage from '@assets/img/page-action.png';
 import contextButtonsImage from '@assets/img/context-buttons.png';
 import settingsImage from '@assets/img/settings.png';
@@ -56,7 +57,7 @@ export const App: React.FC = () => {
         options.set('show_notifications', true);
         browser.notifications.create({
           type: 'basic',
-          iconUrl: browser.runtime.getURL('assets/img/pontoon-logo.svg'),
+          iconUrl: pontoonLogo,
           title: 'Notification from Pontoon',
           message:
             'Similar notifications will appear if there is something new in Pontoon. You can click them to open related project in Pontoon.',
