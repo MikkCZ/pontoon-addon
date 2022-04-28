@@ -21,7 +21,7 @@ Pontoon Add-on started as [Michal's](https://people.mozilla.org/p/mstanke/) pers
 
 ### Build instructions
 
-To build the extension, the supported operating systems are Linux (or WSL) and macOS, with Make and Node.js installed. For an initial full build, run `make`. Alternatively if you have Docker instead of Node.js, run `make all_in_docker`. The extension can then be found in `dist/<browser>/web-ext` folder. Please see the [wiki](https://github.com/MikkCZ/pontoon-addon/wiki/Technical-Overview) for more detailed info.
+The extension is regularly built on a Linux host with Make and Node.js installed (macOS and WSL should also work). For an initial full build, run `make`. Alternatively if you have Podman/Docker instead of Node.js, run `make all_in_container`. The extension can then be found in `dist/<browser>/web-ext` folder. Please see the [wiki](https://github.com/MikkCZ/pontoon-addon/wiki/Technical-Overview) for more detailed info.
 
 ## Privacy policy
 
