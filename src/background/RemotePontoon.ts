@@ -436,21 +436,21 @@ export class RemotePontoon {
 interface NotificationApiResponse {
   id: number;
   unread: boolean;
-  date_iso: string;
-  actor: {
+  actor?: {
     anchor: string;
     url: string;
-  } | null;
-  verb: string;
-  target: {
-    anchor: string;
-    url: string;
-  } | null;
-  message: string | undefined;
-  description: {
-    content: string | null;
-    is_comment: boolean;
   };
+  target?: {
+    anchor: string;
+    url: string;
+  };
+  verb?: string;
+  description?: {
+    safe: boolean;
+    content?: string;
+    is_comment?: boolean;
+  };
+  date_iso?: string;
 }
 
 interface UserDataApiResponse {
