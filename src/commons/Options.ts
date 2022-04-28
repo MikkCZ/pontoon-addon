@@ -5,13 +5,14 @@ import {
   defaultOptionsFor,
   BrowserFamily,
   OptionId as DataOptionId,
-  OptionValue,
+  OptionValue as DataOptionValue,
   OptionsValues,
 } from './data/defaultOptions';
 
 const PREFIX = 'options.';
 
 export type OptionId = DataOptionId;
+export type OptionValue = DataOptionValue;
 
 /**
  * Encapsulates storing and retrieving user preferences and notifying about their updates.
@@ -45,12 +46,8 @@ export class Options {
     this.defaultValues = Options.loadDefaultValues(PREFIX);
   }
 
-  private saveOption(id: string, value: OptionValue | undefined): void {
-    browser.storage.local.set({ [id]: value });
-  }
-
   set(id: string, value: OptionValue | undefined): void {
-    this.saveOption(`${this.prefix}${id}`, value);
+    browser.storage.local.set({ [`${this.prefix}${id}`]: value });
   }
 
   async get(optionIds: OptionId | OptionId[]): Promise<OptionsValues> {
