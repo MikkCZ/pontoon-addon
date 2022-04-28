@@ -40,10 +40,6 @@ export interface TeamsList {
   [slug: string]: Team;
 }
 
-export interface TeamsListInStorage {
-  teamsList: TeamsList;
-}
-
 interface NotificationsChange {
   newValue: NotificationsData;
 }
