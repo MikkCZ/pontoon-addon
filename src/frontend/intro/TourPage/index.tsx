@@ -43,6 +43,23 @@ export const PrivacyPolicyLinkWrapper = styled.div`
   text-align: center;
 `;
 
+const Link = styled.button`
+  appearance: none;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  color: #7bc876;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: inherit;
+  }
+`;
+
 const EasterEggHint = styled.div<{ opacity?: number }>`
   ${({ opacity }) =>
     opacity
@@ -117,8 +134,7 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
         ))}
       </TourPageTiles>
       <PrivacyPolicyLinkWrapper>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-        <a
+        <Link
           onClick={() =>
             browser.tabs.create({
               url: browser.runtime.getURL('frontend/privacy-policy.html'),
@@ -126,7 +142,7 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
           }
         >
           Privacy policy
-        </a>
+        </Link>
       </PrivacyPolicyLinkWrapper>
     </Wrapper>
   );

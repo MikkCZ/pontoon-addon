@@ -40,10 +40,6 @@ export interface TeamsList {
   [slug: string]: Team;
 }
 
-export interface TeamsListInStorage {
-  teamsList: TeamsList;
-}
-
 interface NotificationsChange {
   newValue: NotificationsData;
 }
@@ -109,6 +105,10 @@ export class BackgroundPontoonClient {
     return await browser.runtime.sendMessage({
       type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL,
     });
+  }
+
+  async getTeamsList(): Promise<TeamsList> {
+    return (await browser.storage.local.get('teamsList'))['teamsList'];
   }
 
   async updateTeamsList(): Promise<TeamsList> {

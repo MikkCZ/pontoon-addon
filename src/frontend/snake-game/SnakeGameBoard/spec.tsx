@@ -54,7 +54,7 @@ describe('SnakeGameBoard', () => {
 
     expect(wrapper.find('h3').text()).toBe('GAMEOVER'); // <br> in the middle
     expect(wrapper.find('h4').text()).toBe(`You scored ${score} points.`);
-    expect(wrapper.find('button').text()).toBe('TRY AGAIN');
+    expect(wrapper.find('button').first().text()).toBe('TRY AGAIN');
     expect(wrapper.find(SnakeGame)).toHaveLength(0);
   });
 
@@ -67,7 +67,7 @@ describe('SnakeGameBoard', () => {
     });
 
     act(() => {
-      wrapper.find('button').simulate('click');
+      wrapper.find('button').first().simulate('click');
     });
 
     expect(restartGame).toHaveBeenCalled();

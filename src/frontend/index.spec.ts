@@ -3,25 +3,15 @@ import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import { Project } from '@background/BackgroundPontoonClient';
 import {
   mockBrowser,
   mockBrowserNode,
 } from '@commons/test/mockWebExtensionsApi';
+import { Project } from '@background/BackgroundPontoonClient';
 
 import { render } from './index';
 
-jest.mock('@commons/Options', () => ({
-  Options: {
-    create: async () => ({
-      set: jest.fn(),
-      get: jest.fn(async () => ({
-        toolbar_button_popup_always_hide_read_notifications: false,
-        locale_team: 'cs',
-      })),
-    }),
-  },
-}));
+jest.mock('@commons/Options');
 
 const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
 
@@ -69,13 +59,19 @@ describe.skip('intro', () => {
   });
 });
 
+describe.skip('options', () => {
+  it('renders', async () => {
+    await expectRendersToRoot('options-root');
+  });
+});
+
 describe.skip('privacy policy', () => {
   it('renders', async () => {
     await expectRendersToRoot('privacy-policy-root');
   });
 });
 
-describe.skip('snake game', () => {
+describe('snake game', () => {
   it('renders', async () => {
     await expectRendersToRoot('snake-game-root');
   });

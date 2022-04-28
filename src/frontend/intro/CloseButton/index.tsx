@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import closeIcon from '@assets/img/glyph-dismiss-16.svg';
 
-const Button = styled.button`
+const Link = styled.button`
   appearance: none;
   display: inline-block;
   border: none;
@@ -37,10 +37,10 @@ export const CloseButton: React.FC<Props> = ({
   style = {},
 }) => {
   return (
-    <Button
+    <Link
       title={title}
       style={{ backgroundImage: `url(${imageSrc})`, ...style }}
       onClick={() => onClick()}
-    ></Button>
+    ></Link>
   );
 };
