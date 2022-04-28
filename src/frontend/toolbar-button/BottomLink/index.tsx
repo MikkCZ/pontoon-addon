@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Button = styled.button`
+const Link = styled.button`
   appearance: none;
   display: block;
   width: 100%;
@@ -26,5 +26,5 @@ interface Props {
 }
 
 export const BottomLink: React.FC<Props> = ({ text, onClick }) => {
-  return <Button onClick={onClick}>{text}</Button>;
+  return <Link onClick={onClick}>{text}</Link>;
 };

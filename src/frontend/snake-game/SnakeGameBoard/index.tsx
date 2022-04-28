@@ -23,6 +23,23 @@ const Wrapper = styled.div`
   }
 `;
 
+const Link = styled.button`
+  appearance: none;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  color: #7bc876;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: inherit;
+  }
+`;
+
 const gameSpeed = 7;
 
 const gameOptions: IOptions = {
@@ -106,8 +123,7 @@ export const SnakeGameBoard: React.FC = () => {
           </button>
           <div>or</div>
           <div>
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-            <a
+            <Link
               onClick={() => {
                 let reviewLink;
                 if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
@@ -121,7 +137,7 @@ export const SnakeGameBoard: React.FC = () => {
               }}
             >
               Let us know how you like Pontoon Add-on
-            </a>
+            </Link>
           </div>
         </div>
       )}

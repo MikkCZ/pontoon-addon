@@ -83,7 +83,7 @@ const commonConfiguration: Configuration = {
 };
 
 const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
-  template: path.resolve(srcDir, 'frontend/index.ejs'),
+  template: path.resolve(srcDir, 'frontend/index.html.ejs'),
   favicon: path.resolve(srcDir, 'assets/img/pontoon-logo.svg'),
   meta: {
     viewport: 'width=device-width,initial-scale=1',
@@ -112,7 +112,7 @@ const configs: Configuration[] = [
     },
   },
   {
-    name: `${targetBrowser}/src/frontend/index`,
+    name: `${targetBrowser}/src/frontend`,
     ...commonConfiguration,
     entry: path.resolve(srcDir, 'frontend/index.tsx'),
     output: {
@@ -138,6 +138,12 @@ const configs: Configuration[] = [
       }),
       new HtmlWebpackPlugin({
         ...commonFrontendWebpackPluginOptions,
+        filename: 'frontend/options.html',
+        title: 'Pontoon Add-on - Settings',
+        rootId: 'options-root',
+      }),
+      new HtmlWebpackPlugin({
+        ...commonFrontendWebpackPluginOptions,
         filename: 'frontend/privacy-policy.html',
         title: 'Pontoon Add-on - Privacy Policy',
         rootId: 'privacy-policy-root',
@@ -156,26 +162,6 @@ const configs: Configuration[] = [
       }),
       new MiniCssExtractPlugin({
         filename: 'frontend/main.css',
-      }),
-    ],
-  },
-  {
-    name: `${targetBrowser}/src/frontend/options`,
-    ...commonConfiguration,
-    entry: path.resolve(srcDir, 'frontend/index-options.ts'),
-    output: {
-      ...commonConfiguration.output,
-      filename: 'frontend/options.js',
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        ...commonFrontendWebpackPluginOptions,
-        filename: 'frontend/options.html',
-        template: path.resolve(srcDir, 'frontend/index-options.ejs'),
-        title: 'Pontoon Add-on Settings',
-      }),
-      new MiniCssExtractPlugin({
-        filename: 'frontend/options.css',
       }),
     ],
   },
@@ -202,8 +188,7 @@ const configs: Configuration[] = [
     dependencies: [
       `${targetBrowser}/src/background`,
       `${targetBrowser}/src/content-scripts`,
-      `${targetBrowser}/src/frontend/index`,
-      `${targetBrowser}/src/frontend/options`,
+      `${targetBrowser}/src/frontend`,
       `${targetBrowser}/src/manifest.json`,
     ],
     ...commonConfiguration,

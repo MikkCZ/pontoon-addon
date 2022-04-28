@@ -69,6 +69,12 @@ describe.skip('intro', () => {
   });
 });
 
+describe.skip('options', () => {
+  it('renders', async () => {
+    await expectRendersToRoot('options-root');
+  });
+});
+
 describe.skip('privacy policy', () => {
   it('renders', async () => {
     await expectRendersToRoot('privacy-policy-root');
