@@ -96,8 +96,16 @@ export class SystemNotifications {
         if (notification.target) {
           item.title = `${item.title} ${notification.target.anchor}`;
         }
-        if (notification.message) {
-          item.message = notification.message;
+        if (notification.verb === 'has reviewed suggestions') {
+          if (
+            notification.description?.content?.startsWith(
+              'Your suggestions have been reviewed',
+            )
+          ) {
+            item.title = 'Your suggestions have been reviewed';
+          } else {
+            item.title = 'Suggestions reviewed';
+          }
         }
         return item;
       });

@@ -11,7 +11,7 @@ import parse from 'html-react-parser';
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { browser } from '@commons/webExtensionsApi';
 
-export const Wrapper = styled.li<{ unread: boolean; pointer: boolean }>`
+export const Wrapper = styled.li<{ unread: boolean; pointer?: boolean }>`
   ${({ unread }) =>
     unread
       ? css`
@@ -104,33 +104,31 @@ export const NotificationsListItem: React.FC<Props> = ({
     .filter((it) => it)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .map((it) => it!.url);
-  const onClickAll = (e: MouseEvent): void => {
-    if (linkUrls.length === 1) {
-      stopEvent(e);
-      openTeamProject(backgroundPontoonClient, linkUrls[0]);
-    }
-  };
   const isSuggestion =
     description?.content?.startsWith('Unreviewed suggestions') ||
     verb === 'has reviewed suggestions';
+  const hasSingleLink =
+    linkUrls.length === 1 && !isSuggestion && !description?.content;
+  const openSingleLink = hasSingleLink
+    ? (e: MouseEvent): void => {
+        stopEvent(e);
+        openTeamProject(backgroundPontoonClient, linkUrls[0]);
+      }
+    : undefined;
   if (isSuggestion) {
     return (
-      <Wrapper
-        unread={unread}
-        pointer={linkUrls.length === 1}
-        onClick={onClickAll}
-      >
+      <Wrapper unread={unread} pointer={hasSingleLink} onClick={openSingleLink}>
         {description &&
           description.content &&
           (description.safe ? (
             <div
-              onClick={onClickAll}
+              onClick={openSingleLink}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(description.content),
               }}
             ></div>
           ) : (
-            <div onClick={onClickAll}>
+            <div onClick={openSingleLink}>
               <Linkify
                 properties={{
                   className: 'link',
@@ -143,7 +141,7 @@ export const NotificationsListItem: React.FC<Props> = ({
             </div>
           ))}
         {date_iso && (
-          <TimeAgo onClick={onClickAll}>
+          <TimeAgo onClick={openSingleLink}>
             <ReactTimeAgo date={new Date(date_iso)} />
           </TimeAgo>
         )}
@@ -151,11 +149,7 @@ export const NotificationsListItem: React.FC<Props> = ({
     );
   } else {
     return (
-      <Wrapper
-        unread={unread}
-        pointer={linkUrls.length === 1}
-        onClick={onClickAll}
-      >
+      <Wrapper unread={unread} pointer={hasSingleLink} onClick={openSingleLink}>
         {actor && !isSuggestion && (
           <ActorTargetLink
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
@@ -166,7 +160,7 @@ export const NotificationsListItem: React.FC<Props> = ({
             {actor.anchor}
           </ActorTargetLink>
         )}
-        {verb && <span onClick={onClickAll}> {verb} </span>}
+        {verb && <span onClick={openSingleLink}> {verb} </span>}
         {target && (
           <ActorTargetLink
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
@@ -178,7 +172,7 @@ export const NotificationsListItem: React.FC<Props> = ({
           </ActorTargetLink>
         )}
         {date_iso && (
-          <TimeAgo onClick={onClickAll}>
+          <TimeAgo onClick={openSingleLink}>
             <ReactTimeAgo date={new Date(date_iso)} />
           </TimeAgo>
         )}
@@ -186,13 +180,13 @@ export const NotificationsListItem: React.FC<Props> = ({
           description.content &&
           (description.safe ? (
             <Description
-              onClick={onClickAll}
+              onClick={openSingleLink}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(description.content),
               }}
             ></Description>
           ) : (
-            <Description onClick={onClickAll}>
+            <Description onClick={openSingleLink}>
               <Linkify
                 properties={{
                   className: 'link',
