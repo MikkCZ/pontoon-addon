@@ -31,19 +31,25 @@ export class SystemNotifications {
     const item = await browser.storage.local.get(dataKey);
     const notificationsData = item[dataKey];
     const notification = notificationsData[notificationId];
-    if (notification && !notification.target) {
+
+    const isSuggestion =
+      notification?.description?.content?.startsWith(
+        'Unreviewed suggestions have been submitted',
+      ) || notification?.verb === 'has reviewed suggestions';
+
+    if (isSuggestion || notification.target || !notification) {
+      browser.tabs.create({
+        url: pontoonTeam(
+          this.remotePontoon.getBaseUrl(),
+          this.remotePontoon.getTeam(),
+        ),
+      });
+    } else {
       browser.tabs.create({
         url: toPontoonTeamSpecificProjectUrl(
           this.remotePontoon.getBaseUrl(),
           this.remotePontoon.getTeam(),
           notification.actor.url,
-        ),
-      });
-    } else {
-      browser.tabs.create({
-        url: pontoonTeam(
-          this.remotePontoon.getBaseUrl(),
-          this.remotePontoon.getTeam(),
         ),
       });
     }
@@ -119,6 +125,13 @@ export class SystemNotifications {
           } else {
             item.title = 'Suggestions reviewed';
           }
+        }
+        if (
+          notification.description?.content?.startsWith(
+            'Unreviewed suggestions have been submitted',
+          )
+        ) {
+          item.title = 'Unreviewed suggestions have been submitted';
         }
         return item;
       });

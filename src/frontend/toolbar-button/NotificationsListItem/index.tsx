@@ -105,8 +105,9 @@ export const NotificationsListItem: React.FC<Props> = ({
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .map((it) => it!.url);
   const isSuggestion =
-    description?.content?.startsWith('Unreviewed suggestions') ||
-    verb === 'has reviewed suggestions';
+    description?.content?.startsWith(
+      'Unreviewed suggestions have been submitted',
+    ) || verb === 'has reviewed suggestions';
   const hasSingleLink =
     linkUrls.length === 1 && !isSuggestion && !description?.content;
   const openSingleLink = hasSingleLink
