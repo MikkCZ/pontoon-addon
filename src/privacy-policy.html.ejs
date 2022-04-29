@@ -1,0 +1,5 @@
+<% const Marked = require('marked'); %>
+<% const striptags = require('striptags'); %>
+<% const htmlContent = Marked.marked(require('markdown-loader!../PRIVACY.md')); %>
+<% const allowedTags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul']; %>
+<%= striptags(htmlContent, allowedTags, '\n').trim() %>

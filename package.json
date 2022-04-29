@@ -14,9 +14,10 @@
     "url": "https://github.com/MikkCZ/pontoon-addon/issues"
   },
   "scripts": {
-    "clean-install": "rm -rf ./node_modules && npm ci && run-p *:clean",
-    "build": "run-s build:clean tsc:check eslint:check ts-prune:check stylelint:check && run-p webpack:build:* build:privacy-policy-html",
-    "test": "run-s test:clean && jest --ci --config ./configs/jest.config.ts",
+    "clean-install": "npm ci",
+    "postinstall": "run-p *:clean",
+    "build": "npm-run-all build:clean --parallel *:check --parallel webpack:build:*",
+    "test": "run-s test:clean jest:run",
     "build:clean": "rimraf ./dist",
     "test:clean": "rimraf ./coverage",
     "tsc:check": "tsc --noEmit --project ./configs/tsconfig.json",
@@ -28,9 +29,9 @@
     "webpack:build:chromium": "cross-env TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts",
     "webpack:watch:mozilla": "cross-env MODE=development TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts --watch",
     "webpack:watch:chromium": "cross-env MODE=development TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts --watch",
-    "build:privacy-policy-html": "mkdir -p ./dist && marked -i PRIVACY.md -o ./dist/privacy-policy.html",
+    "jest:run": "jest --ci --config ./configs/jest.config.ts",
     "codecov": "codecov",
-    "watch": "run-p *:clean && run-p webpack:watch:*"
+    "watch": "npm-run-all build:clean --parallel webpack:watch:*"
   },
   "dependencies": {
     "dompurify": "^2.2.8",
@@ -97,6 +98,7 @@
     "jest": "^27.5.1",
     "jest-canvas-mock": "^2.3.1",
     "jest-transform-stub": "^2.0.0",
+    "markdown-loader": "^8.0.0",
     "mini-css-extract-plugin": "^2.4.2",
     "mockzilla": "^0.12.0",
     "mockzilla-webextension": "^0.13.0",
@@ -105,6 +107,7 @@
     "postcss-syntax": "^0.36.2",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
+    "striptags": "^3.2.0",
     "stylelint": "^14.7.1",
     "stylelint-config-recommended": "^7.0.0",
     "stylelint-config-styled-components": "^0.1.1",

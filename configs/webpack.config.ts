@@ -208,6 +208,27 @@ const configs: Configuration[] = [
       }),
     ],
   },
+  ...(targetBrowser === 'mozilla' ? [
+      {
+        name: 'privacy-policy',
+        ...commonConfiguration,
+        entry: './package.json', // anything webpack can load by itself
+        output: {
+          ...commonConfiguration.output,
+          // ignore chunk emitted from the entry
+          filename: path.relative(commonConfiguration.output?.path!, '/dev/null'),
+          path: path.resolve(commonConfiguration.output?.path!, '..', '..'),
+        },
+        plugins: [
+          new HtmlWebpackPlugin({
+            template: path.resolve(srcDir, 'privacy-policy.html.ejs'),
+            filename: 'privacy-policy.html',
+            minify: false,
+          }),
+        ],
+      }
+    ] : []
+  ),
 ];
 
 export default configs;

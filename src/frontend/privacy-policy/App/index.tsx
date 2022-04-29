@@ -29,6 +29,7 @@ export const App: React.FC = () => {
       <GlobalPontoonStyle />
       <GlobalStyle />
       <Wrapper>
+        <h1>Privacy policy</h1>
         <MarkdownContent markdownText={privacyMdAsString} />
       </Wrapper>
     </>
