@@ -1,7 +1,6 @@
 import type { Runtime } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
-import { RemoteLinks } from '@commons/RemoteLinks';
 import { browser } from '@commons/webExtensionsApi';
 
 import { ContextButtons } from './ContextButtons';
@@ -55,23 +54,13 @@ options
       options,
       remotePontoon,
     );
-    const remoteLinks = new RemoteLinks();
-    const _pageContextMenu = new PageContextMenu(
-      options,
-      remotePontoon,
-      remoteLinks,
-    );
+    const _pageContextMenu = new PageContextMenu(options, remotePontoon);
     const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
-    const _contextButtons = new ContextButtons(
-      options,
-      remotePontoon,
-      remoteLinks,
-    );
+    const _contextButtons = new ContextButtons(options, remotePontoon);
     const dataRefresher = new DataRefresher(options, remotePontoon);
     const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
       options,
       remotePontoon,
-      remoteLinks,
       dataRefresher,
       toolbarButton,
     );

@@ -1,5 +1,9 @@
 import { Options } from '@commons/Options';
 import { browser } from '@commons/webExtensionsApi';
+import {
+  pontoonTeam,
+  toPontoonTeamSpecificProjectUrl,
+} from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
 
 import { NotificationsData, RemotePontoon } from './RemotePontoon';
@@ -29,10 +33,19 @@ export class SystemNotifications {
     const notification = notificationsData[notificationId];
     if (notification && !notification.target) {
       browser.tabs.create({
-        url: this.remotePontoon.getTeamProjectUrl(notification.actor.url),
+        url: toPontoonTeamSpecificProjectUrl(
+          this.remotePontoon.getBaseUrl(),
+          this.remotePontoon.getTeam(),
+          notification.actor.url,
+        ),
       });
     } else {
-      browser.tabs.create({ url: this.remotePontoon.getTeamPageUrl() });
+      browser.tabs.create({
+        url: pontoonTeam(
+          this.remotePontoon.getBaseUrl(),
+          this.remotePontoon.getTeam(),
+        ),
+      });
     }
     browser.notifications.clear(notificationId);
   }

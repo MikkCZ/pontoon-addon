@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { browser } from '@commons/webExtensionsApi';
-import { RemoteLinks } from '@commons/RemoteLinks';
+import { pontoonAddonWiki } from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
 
 const Item = styled.li`
@@ -31,8 +31,6 @@ const HeaderLink = styled.button`
   }
 `;
 
-const remoteLinks = new RemoteLinks();
-
 export const Header: React.FC = () => {
   return (
     <header>
@@ -54,7 +52,7 @@ export const Header: React.FC = () => {
             <HeaderLink
               onClick={() => {
                 browser.tabs.create({
-                  url: remoteLinks.getPontoonAddonWikiUrl(),
+                  url: pontoonAddonWiki(),
                 });
               }}
             >

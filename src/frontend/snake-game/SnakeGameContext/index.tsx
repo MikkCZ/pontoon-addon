@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useCallback, useMemo } from 'react';
 import type { IGame } from 'react-game-snake/lib/model/Game';
 
-import type { StateRef } from '@commons/useStateRef';
-import { useStateRef } from '@commons/useStateRef';
-import { patchState } from '@commons/patchState';
+import type { StateRef } from '@commons/react/useStateRef';
+import { useStateRef } from '@commons/react/useStateRef';
+import { patchState } from '@commons/react/patchState';
 
 import type { GameFunctions } from '../gameFunctions';
 import { buildGameFunctions } from '../gameFunctions';

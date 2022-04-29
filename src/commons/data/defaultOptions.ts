@@ -1,3 +1,5 @@
+import { DEFAULT_PONTOON_BASE_URL } from '../../const';
+
 export type OptionId =
   | 'locale_team'
   | 'data_update_interval'
@@ -15,7 +17,7 @@ export type OptionsValues = {
 };
 
 const generalDefaultOptions: OptionsValues = {
-  pontoon_base_url: 'https://pontoon.mozilla.org',
+  pontoon_base_url: DEFAULT_PONTOON_BASE_URL,
   data_update_interval: 15,
   display_toolbar_button_badge: true,
   toolbar_button_action: 'popup',

@@ -1,6 +1,6 @@
 import type { IGameLogicEvents } from 'react-game-snake';
 
-import type { StateRef } from '@commons/useStateRef';
+import type { StateRef } from '@commons/react/useStateRef';
 
 import type { State, GameModel } from './SnakeGameContext';
 import { GameState } from './SnakeGameContext';

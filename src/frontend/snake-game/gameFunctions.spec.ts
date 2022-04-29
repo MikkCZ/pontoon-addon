@@ -1,7 +1,7 @@
 import { MutableRefObject } from 'react';
 import { Context } from 'react-game-snake';
 
-import type { StateRef } from '@commons/useStateRef';
+import type { StateRef } from '@commons/react/useStateRef';
 import { setLocation } from '@commons/test/setLocation';
 
 import { State, GameState } from './SnakeGameContext';

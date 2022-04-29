@@ -1,7 +1,7 @@
 import { Tabs } from 'webextension-polyfill';
 
 import type { Options } from '@commons/Options';
-import type { RemoteLinks } from '@commons/RemoteLinks';
+import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import { browser } from '@commons/webExtensionsApi';
 
 import type {
@@ -14,17 +14,11 @@ import type {
 export class ContextButtons {
   private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
-  private readonly remoteLinks: RemoteLinks;
   private mozillaWebsites: string[] = [];
 
-  constructor(
-    options: Options,
-    remotePontoon: RemotePontoon,
-    remoteLinks: RemoteLinks,
-  ) {
+  constructor(options: Options, remotePontoon: RemotePontoon) {
     this.options = options;
     this.remotePontoon = remotePontoon;
-    this.remoteLinks = remoteLinks;
     const projectsListDataKey = 'projectsList';
     browser.storage.local
       .get(projectsListDataKey)
@@ -78,7 +72,12 @@ export class ContextButtons {
       switch (request.type) {
         case 'pontoon-search-context-button-clicked':
           browser.tabs.create({
-            url: this.remotePontoon.getSearchInAllProjectsUrl(request.text),
+            url: pontoonSearchInProject(
+              this.remotePontoon.getBaseUrl(),
+              this.remotePontoon.getTeam(),
+              { slug: 'all-projects' },
+              request.text,
+            ),
           });
           break;
         case 'bugzilla-report-context-button-clicked': {
@@ -93,12 +92,11 @@ export class ContextButtons {
             const teamCode = optionsItems[localeTeamOptionKey] as string;
             const team = projectListInStorage.teamsList[teamCode];
             browser.tabs.create({
-              url: this.remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
-                request.text,
-                sender.url!,
-                team.code,
-                team.bz_component,
-              ),
+              url: newLocalizationBug({
+                team,
+                selectedText: request.text,
+                url: sender.url!,
+              }),
             });
           });
           break;

@@ -91,7 +91,7 @@ export class DataFetcher {
     const tokenHeaders =
       details.requestHeaders?.filter(
         (header) => header.name === 'pontoon-addon-token',
-      ) || [];
+      ) ?? [];
     details.requestHeaders = details.requestHeaders?.filter(
       (header) => header.name !== 'pontoon-addon-token',
     );
@@ -109,8 +109,7 @@ export class DataFetcher {
           });
         })
         .then((cookie) => {
-          const finalHeaders = details.requestHeaders
-            ?.filter((header) => header.name !== 'pontoon-addon-token')
+          const finalHeaders = (details.requestHeaders ?? [])
             .filter((header) => header.name.toLowerCase() !== 'cookie')
             .concat({
               name: 'Cookie',
