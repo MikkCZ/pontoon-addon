@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { browser } from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
-import { RemoteLinks } from '@commons/RemoteLinks';
+import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
@@ -25,7 +25,6 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const pageTitle = 'Welcome to Pontoon Add-on';
-const remoteLinks = new RemoteLinks();
 
 export const App: React.FC = () => {
   document.title = pageTitle;
@@ -78,7 +77,7 @@ export const App: React.FC = () => {
       ),
       button: {
         text: 'Try it on mozilla.org',
-        onClick: () => browser.tabs.create({ url: 'https://www.mozilla.org/' }),
+        onClick: () => browser.tabs.create({ url: mozillaOrg() }),
       },
     });
   }
@@ -94,7 +93,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Try it on mozilla.org',
-      onClick: () => browser.tabs.create({ url: 'https://www.mozilla.org/' }),
+      onClick: () => browser.tabs.create({ url: mozillaOrg() }),
     },
   });
   tiles.push({
@@ -123,8 +122,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Check the wiki',
-      onClick: () =>
-        browser.tabs.create({ url: remoteLinks.getPontoonAddonWikiUrl() }),
+      onClick: () => browser.tabs.create({ url: pontoonAddonWiki() }),
     },
   });
 

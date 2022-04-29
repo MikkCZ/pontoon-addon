@@ -1,7 +1,7 @@
 import { Menus, Tabs } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
-import { RemoteLinks } from '@commons/RemoteLinks';
+import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import { browser } from '@commons/webExtensionsApi';
 
 import {
@@ -15,16 +15,10 @@ import {
 export class PageContextMenu {
   private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
-  private readonly remoteLinks: RemoteLinks;
 
-  constructor(
-    options: Options,
-    remotePontoon: RemotePontoon,
-    remoteLinks: RemoteLinks,
-  ) {
+  constructor(options: Options, remotePontoon: RemotePontoon) {
     this.options = options;
     this.remotePontoon = remotePontoon;
-    this.remoteLinks = remoteLinks;
 
     this.watchStorageChangesAndOptionsUpdates();
     this.loadDataFromStorage();
@@ -54,12 +48,11 @@ export class PageContextMenu {
       parentId: mozillaPageContextMenuParent,
       onclick: (info: Menus.OnClickData, tab: Tabs.Tab) => {
         browser.tabs.create({
-          url: this.remoteLinks.getBugzillaReportUrlForSelectedTextOnPage(
-            info.selectionText!,
-            tab.url!,
-            team.code,
-            team.bz_component,
-          ),
+          url: newLocalizationBug({
+            team,
+            selectedText: info.selectionText ?? '',
+            url: tab.url!,
+          }),
         });
       },
     });
@@ -74,8 +67,10 @@ export class PageContextMenu {
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
               browser.tabs.create({
-                url: this.remotePontoon.getSearchInProjectUrl(
-                  project.slug,
+                url: pontoonSearchInProject(
+                  this.remotePontoon.getBaseUrl(),
+                  this.remotePontoon.getTeam(),
+                  project,
                   info.selectionText,
                 ),
               }),
@@ -88,7 +83,10 @@ export class PageContextMenu {
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
               browser.tabs.create({
-                url: this.remotePontoon.getSearchInAllProjectsUrl(
+                url: pontoonSearchInProject(
+                  this.remotePontoon.getBaseUrl(),
+                  this.remotePontoon.getTeam(),
+                  { slug: 'all-projects' },
                   info.selectionText,
                 ),
               }),

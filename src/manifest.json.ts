@@ -3,6 +3,8 @@ import path from 'path';
 
 import type { IPackageJson } from 'package-json-type';
 
+import { DEFAULT_PONTOON_BASE_URL } from './const';
+
 // ts-prune-ignore-next
 export enum BrowserFamily {
   MOZILLA = 'mozilla',
@@ -69,7 +71,7 @@ export function getManifestFor(
         : {}),
     },
     permissions: [
-      'https://pontoon.mozilla.org/*',
+      `${DEFAULT_PONTOON_BASE_URL}/*`,
       'storage',
       'contextMenus',
       'tabs',
@@ -120,7 +122,7 @@ export function getManifestFor(
     },
     content_scripts: [
       {
-        matches: ['https://pontoon.mozilla.org/*'],
+        matches: [`${DEFAULT_PONTOON_BASE_URL}/*`],
         js: ['content-scripts/notifications-bell-icon.js'],
         run_at: 'document_end',
       },

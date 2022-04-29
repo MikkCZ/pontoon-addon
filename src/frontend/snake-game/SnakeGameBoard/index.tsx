@@ -4,6 +4,10 @@ import type { IOptions } from 'react-game-snake';
 import { SnakeGame } from 'react-game-snake';
 
 import { browser } from '@commons/webExtensionsApi';
+import {
+  pontoonAddonAmoPage,
+  pontoonAddonChromeWebStorePage,
+} from '@commons/webLinks';
 
 import type { EventListeners } from '../gameFunctions';
 import { useSnakeGameContext, GameState } from '../SnakeGameContext';
@@ -125,15 +129,13 @@ export const SnakeGameBoard: React.FC = () => {
           <div>
             <Link
               onClick={() => {
-                let reviewLink;
                 if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
-                  reviewLink =
-                    'https://addons.mozilla.org/firefox/addon/pontoon-tools/';
+                  browser.tabs.create({ url: pontoonAddonAmoPage() });
                 } else {
-                  reviewLink =
-                    'https://chrome.google.com/webstore/detail/pontoon-add-on/gnbfbnpjncpghhjmmhklfhcglbopagbb';
+                  browser.tabs.create({
+                    url: pontoonAddonChromeWebStorePage(),
+                  });
                 }
-                browser.tabs.create({ url: reviewLink });
               }}
             >
               Let us know how you like Pontoon Add-on

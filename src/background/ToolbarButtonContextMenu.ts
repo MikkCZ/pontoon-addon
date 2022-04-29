@@ -1,7 +1,17 @@
 import type { Menus } from 'webextension-polyfill';
 
 import type { Options } from '@commons/Options';
-import type { RemoteLinks } from '@commons/RemoteLinks';
+import {
+  pontoonTeam,
+  pontoonTeamInsights,
+  pontoonTeamBugs,
+  pontoonSearchInProject,
+  transvisionHome,
+  mozillaL10nStyleGuide,
+  mozillaWikiL10nTeamPage,
+  microsoftTerminologySearch,
+  pontoonAddonWiki,
+} from '@commons/webLinks';
 import { browser } from '@commons/webExtensionsApi';
 
 import type { DataRefresher } from './DataRefresher';
@@ -11,20 +21,17 @@ import type { ToolbarButton } from './ToolbarButton';
 export class ToolbarButtonContextMenu {
   private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
-  private readonly remoteLinks: RemoteLinks;
   private readonly dataRefresher: DataRefresher;
   private readonly toolbarButton: ToolbarButton;
 
   constructor(
     options: Options,
     remotePontoon: RemotePontoon,
-    remoteLinks: RemoteLinks,
     dataRefresher: DataRefresher,
     toolbarButton: ToolbarButton,
   ) {
     this.options = options;
     this.remotePontoon = remotePontoon;
-    this.remoteLinks = remoteLinks;
     this.dataRefresher = dataRefresher;
     this.toolbarButton = toolbarButton;
 
@@ -54,7 +61,12 @@ export class ToolbarButtonContextMenu {
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({ url: this.remotePontoon.getTeamPageUrl() }),
+          browser.tabs.create({
+            url: pontoonTeam(
+              this.remotePontoon.getBaseUrl(),
+              this.remotePontoon.getTeam(),
+            ),
+          }),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Team insights',
@@ -62,7 +74,10 @@ export class ToolbarButtonContextMenu {
         parentId: pontoonPagesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remotePontoon.getTeamInsightsUrl(),
+            url: pontoonTeamInsights(
+              this.remotePontoon.getBaseUrl(),
+              this.remotePontoon.getTeam(),
+            ),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -70,7 +85,12 @@ export class ToolbarButtonContextMenu {
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({ url: this.remotePontoon.getTeamBugsUrl() }),
+          browser.tabs.create({
+            url: pontoonTeamBugs(
+              this.remotePontoon.getBaseUrl(),
+              this.remotePontoon.getTeam(),
+            ),
+          }),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Search in Pontoon',
@@ -78,7 +98,11 @@ export class ToolbarButtonContextMenu {
         parentId: pontoonPagesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remotePontoon.getSearchInAllProjectsUrl(),
+            url: pontoonSearchInProject(
+              this.remotePontoon.getBaseUrl(),
+              this.remotePontoon.getTeam(),
+              { slug: 'all-projects' },
+            ),
           }),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
@@ -94,7 +118,11 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remotePontoon.getSearchInAllProjectsUrl(),
+            url: pontoonSearchInProject(
+              this.remotePontoon.getBaseUrl(),
+              this.remotePontoon.getTeam(),
+              { slug: 'all-projects' },
+            ),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -103,7 +131,7 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remoteLinks.getTransvisionUrl(localeTeam),
+            url: transvisionHome(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -112,7 +140,7 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remoteLinks.getMicrosoftTerminologySearchUrl(),
+            url: microsoftTerminologySearch(),
           }),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
@@ -128,7 +156,7 @@ export class ToolbarButtonContextMenu {
         parentId: localizationResourcesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remoteLinks.getMozillaStyleGuidesUrl(localeTeam),
+            url: mozillaL10nStyleGuide(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
       {
@@ -137,7 +165,7 @@ export class ToolbarButtonContextMenu {
         parentId: localizationResourcesMenuId,
         onclick: () =>
           browser.tabs.create({
-            url: this.remoteLinks.getMozillaWikiL10nTeamUrl(localeTeam),
+            url: mozillaWikiL10nTeamPage(localeTeam),
           }),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
@@ -147,7 +175,7 @@ export class ToolbarButtonContextMenu {
       contexts: ['browser_action'],
       onclick: () =>
         browser.tabs.create({
-          url: this.remoteLinks.getPontoonAddonWikiUrl(),
+          url: pontoonAddonWiki(),
         }),
     });
 

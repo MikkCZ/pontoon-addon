@@ -1,5 +1,13 @@
 import { Runtime } from 'webextension-polyfill';
 
+import {
+  pontoonFxaSignIn,
+  pontoonSettings,
+  pontoonTeam,
+  pontoonNotifications,
+  pontoonSearchStringsWithStatus,
+  toPontoonTeamSpecificProjectUrl,
+} from '@commons/webLinks';
 import { browser } from '@commons/webExtensionsApi';
 
 import { BackgroundPontoonMessageType } from './BackgroundPontoonMessageType';
@@ -68,43 +76,46 @@ export class BackgroundPontoonClient {
     });
   }
 
-  async getNotificationsUrl(): Promise<string> {
+  private async getTeam(): Promise<{ code: string }> {
     return await browser.runtime.sendMessage({
-      type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_NOTIFICATIONS_URL,
+      type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM,
     });
+  }
+
+  async getNotificationsUrl(): Promise<string> {
+    return pontoonNotifications(await this.getBaseUrl());
   }
 
   async getSettingsUrl(): Promise<string> {
-    return await browser.runtime.sendMessage({
-      type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_SETTINGS_URL,
-    });
+    return pontoonSettings(await this.getBaseUrl());
   }
 
   async getTeamPageUrl(): Promise<string> {
-    return await browser.runtime.sendMessage({
-      type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PAGE_URL,
-    });
+    const [baseUrl, team] = await Promise.all([
+      this.getBaseUrl(),
+      this.getTeam(),
+    ]);
+    return pontoonTeam(baseUrl, team);
   }
 
   async getTeamProjectUrl(projectUrl: string): Promise<string> {
-    return await browser.runtime.sendMessage({
-      type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_PROJECT_URL,
-      args: [projectUrl],
-    });
+    const [baseUrl, team] = await Promise.all([
+      this.getBaseUrl(),
+      this.getTeam(),
+    ]);
+    return toPontoonTeamSpecificProjectUrl(baseUrl, team, projectUrl);
   }
 
   async getStringsWithStatusSearchUrl(status: string): Promise<string> {
-    return await browser.runtime.sendMessage({
-      type: BackgroundPontoonMessageType.TO_BACKGROUND
-        .GET_STRINGS_WITH_STATUS_SEARCH_URL,
-      args: [status],
-    });
+    const [baseUrl, team] = await Promise.all([
+      this.getBaseUrl(),
+      this.getTeam(),
+    ]);
+    return pontoonSearchStringsWithStatus(baseUrl, team, status);
   }
 
   async getSignInURL(): Promise<string> {
-    return await browser.runtime.sendMessage({
-      type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_SIGN_IN_URL,
-    });
+    return pontoonFxaSignIn(await this.getBaseUrl());
   }
 
   async getTeamsList(): Promise<TeamsList> {

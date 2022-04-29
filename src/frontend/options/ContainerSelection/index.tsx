@@ -3,6 +3,7 @@ import type { ContextualIdentities } from 'webextension-polyfill';
 
 import { browser } from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
+import { containersInfoPage } from '@commons/webLinks';
 
 type ContainerInfo = Pick<
   ContextualIdentities.ContextualIdentity,
@@ -72,11 +73,7 @@ export const ContainerSelection: React.FC<{ options: Options }> = ({
       </button>
       <aside>
         If you use a specific{' '}
-        <a
-          href="https://support.mozilla.org/kb/containers"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={containersInfoPage()} target="_blank" rel="noreferrer">
           container
         </a>{' '}
         for Pontoon, select it here.

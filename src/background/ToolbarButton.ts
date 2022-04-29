@@ -1,5 +1,6 @@
 import type { Options } from '@commons/Options';
 import { browser } from '@commons/webExtensionsApi';
+import { pontoonTeam } from '@commons/webLinks';
 
 import type { RemotePontoon } from './RemotePontoon';
 
@@ -18,7 +19,12 @@ export class ToolbarButton {
     this.badgeText = '';
 
     this.openPontoonTeamPage = () =>
-      browser.tabs.create({ url: this.remotePontoon.getTeamPageUrl() });
+      browser.tabs.create({
+        url: pontoonTeam(
+          this.remotePontoon.getBaseUrl(),
+          this.remotePontoon.getTeam(),
+        ),
+      });
     this.openPontoonHomePage = () =>
       browser.tabs.create({ url: this.remotePontoon.getBaseUrl() });
     this.addOnClickAction();

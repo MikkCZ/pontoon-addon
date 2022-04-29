@@ -64,7 +64,8 @@ export const LocaleSelection: React.FC<{ options: Options }> = ({
               setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);
               setTeamsList(teamsInPontoon);
             })
-            .catch(() => {
+            .catch((error) => {
+              console.error(error);
               setLocaleTeam(previousLocaleTeam);
             });
         }}
