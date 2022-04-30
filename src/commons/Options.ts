@@ -1,9 +1,8 @@
 import type { Storage } from 'webextension-polyfill';
 
-import { browser } from './webExtensionsApi';
+import { browser, browserFamily } from './webExtensionsApi';
 import {
   defaultOptionsFor,
-  BrowserFamily,
   OptionId as DataOptionId,
   OptionValue as DataOptionValue,
   OptionsValues,
@@ -22,14 +21,8 @@ export class Options {
     prefix: string,
   ): Record<string, OptionValue> {
     const defaults: Record<string, OptionValue> = {};
-    let browserFamily: BrowserFamily;
-    if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
-      browserFamily = 'mozilla';
-    } else {
-      browserFamily = 'chromium';
-    }
     const loadedDefaults: OptionsValues = {
-      ...defaultOptionsFor(browserFamily),
+      ...defaultOptionsFor(browserFamily()),
       locale_team: browser.i18n.getUILanguage(),
     };
     Object.entries(loadedDefaults).forEach(

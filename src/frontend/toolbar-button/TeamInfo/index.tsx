@@ -3,7 +3,7 @@ import ReactTimeAgo from 'react-time-ago';
 import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { browser } from '@commons/webExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 
 import { BottomLink } from '../BottomLink';
@@ -58,7 +58,8 @@ async function openTeamPage(
   backgroundPontoonClient: BackgroundPontoonClient,
 ): Promise<void> {
   const teamPageUrl = await backgroundPontoonClient.getTeamPageUrl();
-  browser.tabs.create({ url: teamPageUrl }).then(() => window.close());
+  await openNewTab(teamPageUrl);
+  window.close();
 }
 
 async function openTeamStringsWithStatus(
@@ -68,7 +69,8 @@ async function openTeamStringsWithStatus(
   const searchUrl = await backgroundPontoonClient.getStringsWithStatusSearchUrl(
     status,
   );
-  browser.tabs.create({ url: searchUrl }).then(() => window.close());
+  await openNewTab(searchUrl);
+  window.close();
 }
 
 export const TeamInfo: React.FC<Props> = ({

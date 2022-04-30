@@ -12,7 +12,7 @@ import {
   microsoftTerminologySearch,
   pontoonAddonWiki,
 } from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, openNewTab, openIntro } from '@commons/webExtensionsApi';
 
 import type { DataRefresher } from './DataRefresher';
 import type { RemotePontoon } from './RemotePontoon';
@@ -61,49 +61,49 @@ export class ToolbarButtonContextMenu {
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({
-            url: pontoonTeam(
+          openNewTab(
+            pontoonTeam(
               this.remotePontoon.getBaseUrl(),
               this.remotePontoon.getTeam(),
             ),
-          }),
+          ),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Team insights',
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({
-            url: pontoonTeamInsights(
+          openNewTab(
+            pontoonTeamInsights(
               this.remotePontoon.getBaseUrl(),
               this.remotePontoon.getTeam(),
             ),
-          }),
+          ),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Team bugs',
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({
-            url: pontoonTeamBugs(
+          openNewTab(
+            pontoonTeamBugs(
               this.remotePontoon.getBaseUrl(),
               this.remotePontoon.getTeam(),
             ),
-          }),
+          ),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Search in Pontoon',
         contexts: ['browser_action'],
         parentId: pontoonPagesMenuId,
         onclick: () =>
-          browser.tabs.create({
-            url: pontoonSearchInProject(
+          openNewTab(
+            pontoonSearchInProject(
               this.remotePontoon.getBaseUrl(),
               this.remotePontoon.getTeam(),
               { slug: 'all-projects' },
             ),
-          }),
+          ),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
 
@@ -117,31 +117,25 @@ export class ToolbarButtonContextMenu {
         contexts: ['browser_action'],
         parentId: searchMenuId,
         onclick: () =>
-          browser.tabs.create({
-            url: pontoonSearchInProject(
+          openNewTab(
+            pontoonSearchInProject(
               this.remotePontoon.getBaseUrl(),
               this.remotePontoon.getTeam(),
               { slug: 'all-projects' },
             ),
-          }),
+          ),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Transvision',
         contexts: ['browser_action'],
         parentId: searchMenuId,
-        onclick: () =>
-          browser.tabs.create({
-            url: transvisionHome(localeTeam),
-          }),
+        onclick: () => openNewTab(transvisionHome(localeTeam)),
       } as Menus.CreateCreatePropertiesType,
       {
         title: 'Microsoft Terminology Search',
         contexts: ['browser_action'],
         parentId: searchMenuId,
-        onclick: () =>
-          browser.tabs.create({
-            url: microsoftTerminologySearch(),
-          }),
+        onclick: () => openNewTab(microsoftTerminologySearch()),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
 
@@ -154,38 +148,26 @@ export class ToolbarButtonContextMenu {
         title: `Mozilla Style Guide (${localeTeam})`,
         contexts: ['browser_action'],
         parentId: localizationResourcesMenuId,
-        onclick: () =>
-          browser.tabs.create({
-            url: mozillaL10nStyleGuide(localeTeam),
-          }),
+        onclick: () => openNewTab(mozillaL10nStyleGuide(localeTeam)),
       } as Menus.CreateCreatePropertiesType,
       {
         title: `L10n:Teams:${localeTeam} - MozillaWiki`,
         contexts: ['browser_action'],
         parentId: localizationResourcesMenuId,
-        onclick: () =>
-          browser.tabs.create({
-            url: mozillaWikiL10nTeamPage(localeTeam),
-          }),
+        onclick: () => openNewTab(mozillaWikiL10nTeamPage(localeTeam)),
       } as Menus.CreateCreatePropertiesType,
     ].forEach((it) => browser.contextMenus.create(it));
 
     browser.contextMenus.create({
       title: 'Pontoon Add-on wiki',
       contexts: ['browser_action'],
-      onclick: () =>
-        browser.tabs.create({
-          url: pontoonAddonWiki(),
-        }),
+      onclick: () => openNewTab(pontoonAddonWiki()),
     });
 
     browser.contextMenus.create({
       title: 'Pontoon Add-on tour',
       contexts: ['browser_action'],
-      onclick: () =>
-        browser.tabs.create({
-          url: browser.runtime.getURL('frontend/intro.html'),
-        }),
+      onclick: () => openIntro(),
     });
   }
 }

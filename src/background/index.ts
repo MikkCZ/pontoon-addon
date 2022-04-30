@@ -1,7 +1,7 @@
 import type { Runtime } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, openIntro } from '@commons/webExtensionsApi';
 
 import { ContextButtons } from './ContextButtons';
 import { DataRefresher } from './DataRefresher';
@@ -29,9 +29,7 @@ browser.runtime.onInstalled.addListener((details) => {
     parseInt(details?.previousVersion?.split('.')[0] || '') <
       parseInt(browser.runtime.getManifest().version.split('.')[0])
   ) {
-    browser.tabs.create({
-      url: browser.runtime.getURL('frontend/intro.html'),
-    });
+    openIntro();
   }
 });
 

@@ -1,4 +1,5 @@
 import { DEFAULT_PONTOON_BASE_URL } from '../../const';
+import { BrowserFamily } from '../webExtensionsApi';
 
 export type OptionId =
   | 'locale_team'
@@ -33,16 +34,14 @@ const defaultOptionsForChromium: OptionsValues = {
   contextual_identity: '0',
 };
 
-export type BrowserFamily = 'mozilla' | 'chromium';
-
 export function defaultOptionsFor(browserFamily: BrowserFamily): OptionsValues {
   switch (browserFamily) {
-    case 'mozilla':
+    case BrowserFamily.MOZILLA:
       return {
         ...generalDefaultOptions,
         ...defaultOptionsForFirefox,
       };
-    case 'chromium':
+    case BrowserFamily.CHROMIUM:
       return {
         ...generalDefaultOptions,
         ...defaultOptionsForChromium,

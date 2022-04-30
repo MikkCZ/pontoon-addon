@@ -9,7 +9,7 @@ import Linkify from 'react-linkify';
 import parse from 'html-react-parser';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { browser } from '@commons/webExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 export const Wrapper = styled.li<{ unread: boolean; pointer?: boolean }>`
   ${({ unread }) =>
@@ -82,7 +82,7 @@ async function openTeamProject(
   const teamProjectUrl = await backgroundPontoonClient.getTeamProjectUrl(
     projectUrl,
   );
-  await browser.tabs.create({ url: teamProjectUrl });
+  openNewTab(teamProjectUrl);
   window.close();
 }
 

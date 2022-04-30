@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { browser } from '@commons/webExtensionsApi';
+import { openPrivacyPolicy, openSnakeGame } from '@commons/webExtensionsApi';
 import joystickImage from '@assets/img/joystick.svg';
 
 import { CloseButton } from '../CloseButton';
@@ -73,12 +73,6 @@ const EasterEggHint = styled.div<{ opacity?: number }>`
   top: -16px;
 `;
 
-function revealTheEasterEgg() {
-  browser.tabs.create({
-    url: browser.runtime.getURL('frontend/snake-game.html'),
-  });
-}
-
 interface Props {
   title?: string;
   tiles?: TileProps[];
@@ -98,9 +92,7 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
             title="Play a game"
             imageSrc={joystickImage}
             style={{ width: '32px', height: '32px' }}
-            onClick={() => {
-              revealTheEasterEgg();
-            }}
+            onClick={() => openSnakeGame()}
           />
         )}
       </CloseButtonWrapper>
@@ -134,15 +126,7 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
         ))}
       </TourPageTiles>
       <PrivacyPolicyLinkWrapper>
-        <Link
-          onClick={() =>
-            browser.tabs.create({
-              url: browser.runtime.getURL('frontend/privacy-policy.html'),
-            })
-          }
-        >
-          Privacy policy
-        </Link>
+        <Link onClick={() => openPrivacyPolicy()}>Privacy policy</Link>
       </PrivacyPolicyLinkWrapper>
     </Wrapper>
   );

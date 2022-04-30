@@ -1,7 +1,12 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { browser } from '@commons/webExtensionsApi';
+import {
+  browser,
+  openNewTab,
+  openOptions,
+  openToolbarButtonPopup,
+} from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
 import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
@@ -42,7 +47,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'See the Pontoon button',
-      onClick: () => browser.browserAction.openPopup(),
+      onClick: () => openToolbarButtonPopup(),
     },
   });
   tiles.push({
@@ -77,7 +82,7 @@ export const App: React.FC = () => {
       ),
       button: {
         text: 'Try it on mozilla.org',
-        onClick: () => browser.tabs.create({ url: mozillaOrg() }),
+        onClick: () => openNewTab(mozillaOrg()),
       },
     });
   }
@@ -93,7 +98,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Try it on mozilla.org',
-      onClick: () => browser.tabs.create({ url: mozillaOrg() }),
+      onClick: () => openNewTab(mozillaOrg()),
     },
   });
   tiles.push({
@@ -107,7 +112,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Open Pontoon Add-on settings',
-      onClick: () => browser.runtime.openOptionsPage(),
+      onClick: () => openOptions(),
     },
   });
   tiles.push({
@@ -122,7 +127,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Check the wiki',
-      onClick: () => browser.tabs.create({ url: pontoonAddonWiki() }),
+      onClick: () => openNewTab(pontoonAddonWiki()),
     },
   });
 

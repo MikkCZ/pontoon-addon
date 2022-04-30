@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
-import { browser } from '@commons/webExtensionsApi';
+import { browser, openIntro } from '@commons/webExtensionsApi';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import { Options } from '@commons/Options';
 
@@ -113,17 +113,8 @@ export const App: React.FC = () => {
               Use system notifications to show what&apos;s new in Pontoon
             </Checkbox>
             <aside>
-              See the{' '}
-              <Link
-                onClick={() => {
-                  browser.tabs.create({
-                    url: browser.runtime.getURL('frontend/intro.html'),
-                  });
-                }}
-              >
-                Tour
-              </Link>{' '}
-              for a preview.
+              See the <Link onClick={() => openIntro()}>Tour</Link> for a
+              preview.
             </aside>
           </div>
         </Section>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { browser } from '@commons/webExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -67,9 +67,9 @@ export const NotificationsList: React.FC<Props> = ({
           <BottomLink
             text="See all Notifications"
             onClick={async () => {
-              const notificationsUrl =
-                await backgroundPontoonClient.getNotificationsUrl();
-              await browser.tabs.create({ url: notificationsUrl });
+              await openNewTab(
+                await backgroundPontoonClient.getNotificationsUrl(),
+              );
               window.close();
             }}
           />

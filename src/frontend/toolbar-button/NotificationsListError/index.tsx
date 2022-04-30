@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { browser } from '@commons/webExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 const Wrapper = styled.section`
   margin: 1em;
@@ -50,8 +50,7 @@ export const NotificationsListError: React.FC<Props> = ({
         There was an error fetching data from Pontoon. Please check, if you are{' '}
         <SignInLink
           onClick={async () => {
-            const signInUrl = await backgroundPontoonClient.getSignInURL();
-            await browser.tabs.create({ url: signInUrl });
+            await openNewTab(await backgroundPontoonClient.getSignInURL());
             window.close();
           }}
         >

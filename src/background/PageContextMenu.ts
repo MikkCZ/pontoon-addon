@@ -2,7 +2,7 @@ import { Menus, Tabs } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, openNewTab } from '@commons/webExtensionsApi';
 
 import {
   ProjectsListInStorage,
@@ -46,15 +46,14 @@ export class PageContextMenu {
       documentUrlPatterns: mozillaWebsitesUrlPatterns,
       contexts: ['selection'],
       parentId: mozillaPageContextMenuParent,
-      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) => {
-        browser.tabs.create({
-          url: newLocalizationBug({
+      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) =>
+        openNewTab(
+          newLocalizationBug({
             team,
             selectedText: info.selectionText ?? '',
             url: tab.url!,
           }),
-        });
-      },
+        ),
     });
     Object.values(projects).forEach((project) => {
       project.domains
@@ -66,14 +65,14 @@ export class PageContextMenu {
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
-              browser.tabs.create({
-                url: pontoonSearchInProject(
+              openNewTab(
+                pontoonSearchInProject(
                   this.remotePontoon.getBaseUrl(),
                   this.remotePontoon.getTeam(),
                   project,
                   info.selectionText,
                 ),
-              }),
+              ),
           } as Menus.CreateCreatePropertiesType,
           {
             id: `page-context-menu-search-all-${domain}`,
@@ -82,14 +81,14 @@ export class PageContextMenu {
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
-              browser.tabs.create({
-                url: pontoonSearchInProject(
+              openNewTab(
+                pontoonSearchInProject(
                   this.remotePontoon.getBaseUrl(),
                   this.remotePontoon.getTeam(),
                   { slug: 'all-projects' },
                   info.selectionText,
                 ),
-              }),
+              ),
           } as Menus.CreateCreatePropertiesType,
         ])
         .forEach(PageContextMenu.recreateContextMenu);

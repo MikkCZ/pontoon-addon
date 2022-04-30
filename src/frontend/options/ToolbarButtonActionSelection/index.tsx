@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 
-import { browser } from '@commons/webExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
 import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 
@@ -79,9 +79,7 @@ export const ToolbarButtonActionSelection: React.FC<{ options: Options }> = ({
         You can set your Pontoon homepage in{' '}
         <Link
           onClick={async () => {
-            browser.tabs.create({
-              url: await backgroundPontoonClient.getSettingsUrl(),
-            });
+            openNewTab(await backgroundPontoonClient.getSettingsUrl());
           }}
         >
           Pontoon Settings

@@ -2,7 +2,7 @@ import { Tabs } from 'webextension-polyfill';
 
 import type { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, openNewTab } from '@commons/webExtensionsApi';
 
 import type {
   ProjectsList,
@@ -71,14 +71,14 @@ export class ContextButtons {
     browser.runtime.onMessage.addListener((request, sender) => {
       switch (request.type) {
         case 'pontoon-search-context-button-clicked':
-          browser.tabs.create({
-            url: pontoonSearchInProject(
+          openNewTab(
+            pontoonSearchInProject(
               this.remotePontoon.getBaseUrl(),
               this.remotePontoon.getTeam(),
               { slug: 'all-projects' },
               request.text,
             ),
-          });
+          );
           break;
         case 'bugzilla-report-context-button-clicked': {
           const localeTeamOptionKey = 'locale_team';
@@ -91,13 +91,13 @@ export class ContextButtons {
           ]).then(([optionsItems, projectListInStorage]) => {
             const teamCode = optionsItems[localeTeamOptionKey] as string;
             const team = projectListInStorage.teamsList[teamCode];
-            browser.tabs.create({
-              url: newLocalizationBug({
+            openNewTab(
+              newLocalizationBug({
                 team,
                 selectedText: request.text,
                 url: sender.url!,
               }),
-            });
+            );
           });
           break;
         }

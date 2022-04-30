@@ -1,5 +1,5 @@
 import { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, openNewTab } from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
   toPontoonTeamSpecificProjectUrl,
@@ -38,20 +38,20 @@ export class SystemNotifications {
       ) || notification?.verb === 'has reviewed suggestions';
 
     if (isSuggestion || notification.target || !notification) {
-      browser.tabs.create({
-        url: pontoonTeam(
+      openNewTab(
+        pontoonTeam(
           this.remotePontoon.getBaseUrl(),
           this.remotePontoon.getTeam(),
         ),
-      });
+      );
     } else {
-      browser.tabs.create({
-        url: toPontoonTeamSpecificProjectUrl(
+      openNewTab(
+        toPontoonTeamSpecificProjectUrl(
           this.remotePontoon.getBaseUrl(),
           this.remotePontoon.getTeam(),
           notification.actor.url,
         ),
-      });
+      );
     }
     browser.notifications.clear(notificationId);
   }
