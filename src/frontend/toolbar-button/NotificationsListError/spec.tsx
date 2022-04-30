@@ -3,48 +3,42 @@ import { shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import { NotificationsListError, SignInLink } from '.';
 
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/BackgroundPontoonClient', () => ({
+  BackgroundPontoonClient: jest.fn(() => ({
+    getSignInURL: getSignInURLMock,
+  })),
+}));
+
 const windowCloseSpy = jest.spyOn(window, 'close');
+const getSignInURLMock = jest.fn();
 
 afterEach(() => {
   windowCloseSpy.mockReset();
-});
-
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
+  (openNewTab as jest.Mock).mockReset();
+  getSignInURLMock.mockReset();
 });
 
 describe.skip('NotificationsListError', () => {
   it('opens sign-in page on click', async () => {
     const signInUrl = 'https://127.0.0.1/';
-
-    const backgroundPontoonClientMock = {
-      getSignInURL: async () => signInUrl,
-    } as unknown as BackgroundPontoonClient;
-    mockBrowser.tabs.create.expect({ url: signInUrl }).andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
+    getSignInURLMock.mockReturnValue(signInUrl);
     const wrapper = shallow(
       <NotificationsListError
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
     act(() => {
       wrapper.find(SignInLink).simulate('click');
     });
-    flushPromises();
+    await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(signInUrl);
   });
 });

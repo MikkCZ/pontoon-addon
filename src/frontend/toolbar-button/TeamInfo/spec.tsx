@@ -3,35 +3,28 @@ import ReactTimeAgo from 'react-time-ago';
 import { mount } from 'enzyme';
 import flushPromises from 'flush-promises';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 
 import { TeamInfo, Name, Code } from '.';
 
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/BackgroundPontoonClient', () => ({
+  BackgroundPontoonClient: jest.fn(() => ({
+    getTeamPageUrl: () => 'https://127.0.0.1/team-page',
+    getStringsWithStatusSearchUrl: async (status: string) =>
+      `https://127.0.0.1/${status}/`,
+  })),
+}));
+
 const windowCloseSpy = jest.spyOn(window, 'close');
 
 afterEach(() => {
+  (openNewTab as jest.Mock).mockReset();
   windowCloseSpy.mockReset();
-});
-
-const backgroundPontoonClientMock = {
-  getTeamPageUrl: async () => 'https://127.0.0.1/team-page',
-  getStringsWithStatusSearchUrl: async (status: string) =>
-    `https://127.0.0.1/${status}/`,
-} as unknown as BackgroundPontoonClient;
-
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
 });
 
 describe('TeamInfo', () => {
@@ -44,7 +37,7 @@ describe('TeamInfo', () => {
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -79,7 +72,7 @@ describe('TeamInfo', () => {
           user: '',
           date_iso: undefined,
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -105,14 +98,9 @@ describe('TeamInfo', () => {
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
-
-    mockBrowser.tabs.create
-      .expect({ url: 'https://127.0.0.1/team-page' })
-      .andResolve({} as any)
-      .times(3); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     wrapper.find(Name).simulate('click');
     wrapper.find(Code).simulate('click');
@@ -120,7 +108,8 @@ describe('TeamInfo', () => {
 
     await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith('https://127.0.0.1/team-page');
+    expect(openNewTab).toHaveBeenCalledTimes(3);
   });
 
   it('string status links work', async () => {
@@ -141,7 +130,7 @@ describe('TeamInfo', () => {
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -154,16 +143,14 @@ describe('TeamInfo', () => {
       'unreviewed',
       'all',
     ].forEach(async (status, index) => {
-      mockBrowser.tabs.create
-        .expect({ url: `https://127.0.0.1/${status}/` })
-        .andResolve({} as any)
-        .times(1); // eslint-disable-line @typescript-eslint/no-explicit-any
       wrapper
         .find(TeamInfoListItem)
         .at(index + 1)
         .simulate('click');
       await flushPromises();
-      mockBrowserNode.verify();
+      expect(openNewTab).toHaveBeenCalledWith(`https://127.0.0.1/${status}/`);
+      expect(openNewTab).toHaveBeenCalledTimes(1);
+      (openNewTab as jest.Mock).mockReset();
     });
   });
 });

@@ -4,15 +4,20 @@ import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
 import type { Project } from '@background/BackgroundPontoonClient';
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import { PanelSection } from '../PanelSection';
 import { PanelListItem } from '../PanelListItem';
 
 import { App } from '.';
+
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/BackgroundPontoonClient', () => ({
+  BackgroundPontoonClient: jest.fn(() => ({
+    getBaseUrl: () => 'https://127.0.0.1',
+    getPontoonProjectForTheCurrentTab: () => project,
+  })),
+}));
 
 const project: Project = {
   name: 'Some Project',
@@ -20,15 +25,8 @@ const project: Project = {
   translationUrl: 'https://127.0.0.1/translationUrl',
 };
 
-beforeEach(() => {
-  mockBrowserNode.enable();
-  mockBrowser.runtime.sendMessage
-    .expect(expect.anything())
-    .andResolve(project as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-});
-
 afterEach(() => {
-  mockBrowserNode.verifyAndDisable();
+  (openNewTab as jest.Mock).mockReset();
 });
 
 describe('address-bar/App', () => {
@@ -56,14 +54,12 @@ describe('address-bar/App', () => {
       wrapper.update();
     });
 
-    mockBrowser.tabs.create
-      .expect({ url: project.pageUrl })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
     act(() => {
       wrapper.find(PanelListItem).at(0).simulate('click');
     });
+    await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(project.pageUrl);
   });
 
   it('handles click to open translation view', async () => {
@@ -73,13 +69,11 @@ describe('address-bar/App', () => {
       wrapper.update();
     });
 
-    mockBrowser.tabs.create
-      .expect({ url: project.translationUrl })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
     act(() => {
       wrapper.find(PanelListItem).at(1).simulate('click');
     });
+    await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(project.translationUrl);
   });
 });

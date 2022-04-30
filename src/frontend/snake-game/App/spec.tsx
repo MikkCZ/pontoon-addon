@@ -1,24 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
-
 import { SnakeGameBoard } from '../SnakeGameBoard';
 import { SnakeGameInfo } from '../SnakeGameInfo';
 
 import { App } from '.';
 
-beforeEach(() => {
-  mockBrowserNode.enable();
-  mockBrowser.runtime.getURL.expect('/').andReturn('moz-extension://foo-bar');
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
-});
+jest.mock('@commons/webExtensionsApi');
 
 describe('snake-game/App', () => {
   it('renders content', () => {

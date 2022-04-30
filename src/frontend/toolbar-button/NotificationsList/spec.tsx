@@ -3,11 +3,8 @@ import { shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -15,27 +12,22 @@ import { NotificationsListError } from '../NotificationsListError';
 
 import { NotificationsList } from '.';
 
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/BackgroundPontoonClient', () => ({
+  BackgroundPontoonClient: jest.fn(() => ({
+    getNotificationsUrl: () => 'https://127.0.0.1/notifications',
+    markAllNotificationsAsRead: markAllNotificationsAsReadMock,
+    subscribeToNotificationsChange: jest.fn(),
+  })),
+}));
+
 const windowCloseSpy = jest.spyOn(window, 'close');
+const markAllNotificationsAsReadMock = jest.fn();
 
 afterEach(() => {
+  (openNewTab as jest.Mock).mockReset();
+  markAllNotificationsAsReadMock.mockReset();
   windowCloseSpy.mockReset();
-});
-
-const backgroundPontoonClientMock = {
-  getNotificationsUrl: async () => 'https://127.0.0.1/notifications',
-  markAllNotificationsAsRead: jest.fn(),
-  subscribeToNotificationsChange: jest.fn(),
-} as unknown as BackgroundPontoonClient;
-
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
-  (
-    backgroundPontoonClientMock.markAllNotificationsAsRead as jest.Mock
-  ).mockReset();
 });
 
 describe('NotificationsList', () => {
@@ -46,7 +38,7 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -64,7 +56,7 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -82,7 +74,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={true}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -95,7 +87,7 @@ describe('NotificationsList', () => {
       <NotificationsList
         notificationsData={undefined}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -112,7 +104,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -120,9 +112,7 @@ describe('NotificationsList', () => {
       wrapper.find(BottomLink).simulate('click');
     });
 
-    expect(
-      backgroundPontoonClientMock.markAllNotificationsAsRead,
-    ).toHaveBeenCalled();
+    expect(markAllNotificationsAsReadMock).toHaveBeenCalled();
   });
 
   it('bottom link shows all when all notifications are read', async () => {
@@ -133,19 +123,16 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
-
-    mockBrowser.tabs.create
-      .expect({ url: 'https://127.0.0.1/notifications' })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     act(() => {
       wrapper.find(BottomLink).simulate('click');
     });
     await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith('https://127.0.0.1/notifications');
+    expect(windowCloseSpy).toHaveBeenCalled();
   });
 });

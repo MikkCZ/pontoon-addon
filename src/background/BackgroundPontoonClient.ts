@@ -52,7 +52,7 @@ interface NotificationsChange {
   newValue: NotificationsData;
 }
 
-export type NotificationsChangeCallback = (update: NotificationsChange) => void;
+type NotificationsChangeCallback = (update: NotificationsChange) => void;
 
 /**
  * Client to communicate with background/RemotePontoon.js. Should be used in all contexts outside of background itself.

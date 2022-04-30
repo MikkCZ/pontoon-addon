@@ -4,11 +4,8 @@ import { act } from 'react-dom/test-utils';
 import ReactTimeAgo from 'react-time-ago';
 import flushPromises from 'flush-promises';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import {
   NotificationsListItem,
@@ -18,22 +15,18 @@ import {
   TimeAgo,
 } from '.';
 
-const backgroundPontoonClientMock = {
-  getTeamProjectUrl: async (projectUrl: string) => projectUrl,
-} as unknown as BackgroundPontoonClient;
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/BackgroundPontoonClient', () => ({
+  BackgroundPontoonClient: jest.fn(() => ({
+    getTeamProjectUrl: (projectUrl: string) => projectUrl,
+  })),
+}));
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
 afterEach(() => {
   windowCloseSpy.mockReset();
-});
-
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
+  (openNewTab as jest.Mock).mockReset();
 });
 
 describe('NotificationsListItem', () => {
@@ -46,7 +39,7 @@ describe('NotificationsListItem', () => {
         target={{ anchor: 'TARGET', url: '' }}
         date_iso="1970-01-01T00:00:00Z"
         description={{ safe: true, content: 'DESCRIPTION' }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -71,7 +64,7 @@ describe('NotificationsListItem', () => {
           content:
             'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -92,7 +85,7 @@ describe('NotificationsListItem', () => {
           safe: false,
           content: 'DESCRIPTION WITH A LINK TO https://example.com/',
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -114,7 +107,7 @@ describe('NotificationsListItem', () => {
           content:
             'DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>',
         }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -126,17 +119,12 @@ describe('NotificationsListItem', () => {
   it('actor and target links work', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
     const targetUrl = 'https://127.0.0.1/target/';
-    mockBrowser.tabs.create
-      .expect(expect.anything())
-      .andResolve({} as any)
-      .times(2); // eslint-disable-line @typescript-eslint/no-explicit-any
-
     const wrapper = shallow(
       <NotificationsListItem
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
         target={{ url: targetUrl, anchor: 'TARGET' }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -152,24 +140,19 @@ describe('NotificationsListItem', () => {
         stopPropagation: jest.fn(),
       });
     });
-
     await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(actorUrl);
+    expect(openNewTab).toHaveBeenCalledWith(targetUrl);
   });
 
   it('whole item is clickable when only one link is present', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
-    mockBrowser.tabs.create
-      .expect(expect.anything())
-      .andResolve({} as any)
-      .times(0); // eslint-disable-line @typescript-eslint/no-explicit-any
-
     const wrapper = shallow(
       <NotificationsListItem
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
-        backgroundPontoonClient={backgroundPontoonClientMock}
+        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -179,9 +162,8 @@ describe('NotificationsListItem', () => {
         stopPropagation: jest.fn(),
       });
     });
-
     await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(actorUrl);
   });
 });
