@@ -1,0 +1,4 @@
+// of VSCode
+{
+  "extends": "./configs/tsconfig.json"
+}

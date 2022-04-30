@@ -13,7 +13,6 @@ export class BackgroundPontoonClient {
   getStringsWithStatusSearchUrl: (status: string) => Promise<string>;
   getSignInURL: () => Promise<string>;
   updateTeamsList: () => Promise<TeamsList>;
-  getTeamsList: () => Promise<TeamsList>;
   getTeamFromPontoon: () => Promise<string>;
   getPontoonProjectForTheCurrentTab: () => Promise<Project>;
   pageLoaded: (pageUrl: string, documentHTML: string) => void;
@@ -33,7 +32,6 @@ export class BackgroundPontoonClient {
     this.getTeamProjectUrl = jest.fn();
     this.getStringsWithStatusSearchUrl = jest.fn();
     this.getSignInURL = jest.fn();
-    this.getTeamsList = jest.fn();
     this.updateTeamsList = jest.fn();
     this.getTeamFromPontoon = jest.fn();
     this.getPontoonProjectForTheCurrentTab = jest.fn();

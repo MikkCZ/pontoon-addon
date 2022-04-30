@@ -5,7 +5,7 @@ import en from 'javascript-time-ago/locale/en.json';
 
 import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import { getFromStorage } from '@commons/webExtensionsApi';
 
 import { App as AddressBarApp } from './address-bar/App';
 import { App as IntroApp } from './intro/App';
@@ -22,29 +22,19 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
   const hideReadNotificationsKey =
     'toolbar_button_popup_always_hide_read_notifications';
   const localeTeamOptionKey = 'locale_team';
-  const notificationsDataKey = 'notificationsData';
-  const teamsListKey = 'teamsList';
-  const latestTeamsActivityKey = 'latestTeamsActivity';
-  const [
-    notificationsData,
-    hideReadNotifications,
-    teamData,
-    latestTeamActivity,
-  ] = await Promise.all([
-    options.get([hideReadNotificationsKey, localeTeamOptionKey]),
-    browser.storage.local.get([
-      notificationsDataKey,
-      teamsListKey,
-      latestTeamsActivityKey,
-    ]),
-  ]).then(([optionsItems, storageItems]) => [
-    storageItems[notificationsDataKey],
-    optionsItems[hideReadNotificationsKey],
-    storageItems[teamsListKey][optionsItems[localeTeamOptionKey] as string],
-    storageItems[latestTeamsActivityKey][
-      optionsItems[localeTeamOptionKey] as string
-    ],
-  ]);
+  const [optionsItems, { notificationsData, teamsList, latestTeamsActivity }] =
+    await Promise.all([
+      options.get([hideReadNotificationsKey, localeTeamOptionKey]),
+      getFromStorage<'notificationsData' | 'teamsList' | 'latestTeamsActivity'>(
+        ['notificationsData', 'teamsList', 'latestTeamsActivity'],
+      ),
+    ]);
+  const teamCode = optionsItems[localeTeamOptionKey] as string;
+  const hideReadNotifications = optionsItems[
+    hideReadNotificationsKey
+  ] as boolean;
+  const teamData = teamsList![teamCode];
+  const latestTeamActivity = latestTeamsActivity![teamCode];
 
   const pontoonBaseUrl = await backgroundPontoonClient.getBaseUrl();
   const baseTag = document.createElement('base');

@@ -118,10 +118,6 @@ export class BackgroundPontoonClient {
     return pontoonFxaSignIn(await this.getBaseUrl());
   }
 
-  async getTeamsList(): Promise<TeamsList> {
-    return (await browser.storage.local.get('teamsList'))['teamsList'];
-  }
-
   async updateTeamsList(): Promise<TeamsList> {
     return await browser.runtime.sendMessage({
       type: BackgroundPontoonMessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST,

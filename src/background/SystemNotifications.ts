@@ -1,5 +1,9 @@
 import { Options } from '@commons/Options';
-import { browser, openNewTab } from '@commons/webExtensionsApi';
+import {
+  browser,
+  openNewTab,
+  getOneFromStorage,
+} from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
   toPontoonTeamSpecificProjectUrl,
@@ -27,10 +31,10 @@ export class SystemNotifications {
   }
 
   private async notificationClick(notificationId: string): Promise<void> {
-    const dataKey = 'notificationsData';
-    const item = await browser.storage.local.get(dataKey);
-    const notificationsData = item[dataKey];
-    const notification = notificationsData[notificationId];
+    const notificationsData = await getOneFromStorage<NotificationsData>(
+      'notificationsData',
+    );
+    const notification = notificationsData![parseInt(notificationId, 10)];
 
     const isSuggestion =
       notification?.description?.content?.startsWith(
@@ -49,7 +53,7 @@ export class SystemNotifications {
         toPontoonTeamSpecificProjectUrl(
           this.remotePontoon.getBaseUrl(),
           this.remotePontoon.getTeam(),
-          notification.actor.url,
+          notification.actor!.url,
         ),
       );
     }
@@ -57,21 +61,20 @@ export class SystemNotifications {
   }
 
   private watchStorageChanges(): void {
-    this.remotePontoon.subscribeToNotificationsChange((change) => {
+    this.remotePontoon.subscribeToNotificationsChange(async (change) => {
       const notificationsData = change.newValue;
-      Promise.all([
+      const [newUnreadNotificationIds, showNotifications] = await Promise.all([
         this.getNewUnreadNotifications(notificationsData),
         this.options.get('show_notifications').then((option: any) => {
           return option['show_notifications'];
         }),
-      ]).then(([newUnreadNotificationIds, showNotifications]) => {
-        if (showNotifications && newUnreadNotificationIds.length > 0) {
-          this.notifyAboutUnreadNotifications(
-            newUnreadNotificationIds,
-            notificationsData,
-          );
-        }
-      });
+      ]);
+      if (showNotifications && newUnreadNotificationIds.length > 0) {
+        this.notifyAboutUnreadNotifications(
+          newUnreadNotificationIds,
+          notificationsData,
+        );
+      }
     });
   }
 
@@ -84,10 +87,8 @@ export class SystemNotifications {
         .filter((notification) => notification.unread)
         .map((notification) => notification.id);
     }
-    const dataKey = 'lastUnreadNotificationId';
-    const lastKnownUnreadNotificationId = await browser.storage.local
-      .get(dataKey)
-      .then((item) => item[dataKey] || 0);
+    const lastKnownUnreadNotificationId =
+      (await getOneFromStorage<number>('lastUnreadNotificationId')) ?? 0;
     return unreadNotificationIds.filter(
       (id) => id > lastKnownUnreadNotificationId,
     );

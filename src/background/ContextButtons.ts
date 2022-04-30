@@ -2,14 +2,13 @@ import { Tabs } from 'webextension-polyfill';
 
 import type { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser, openNewTab } from '@commons/webExtensionsApi';
+import {
+  browser,
+  getOneFromStorage,
+  openNewTab,
+} from '@commons/webExtensionsApi';
 
-import type {
-  ProjectsList,
-  ProjectsListInStorage,
-  RemotePontoon,
-  TeamsListInStorage,
-} from './RemotePontoon';
+import type { ProjectsList, RemotePontoon, TeamsList } from './RemotePontoon';
 
 export class ContextButtons {
   private readonly options: Options;
@@ -19,25 +18,18 @@ export class ContextButtons {
   constructor(options: Options, remotePontoon: RemotePontoon) {
     this.options = options;
     this.remotePontoon = remotePontoon;
-    const projectsListDataKey = 'projectsList';
-    browser.storage.local
-      .get(projectsListDataKey)
-      .then((storageItem: unknown) =>
-        this.initMozillaWebsitesList(
-          (storageItem as ProjectsListInStorage).projectsList,
-        ),
-      )
-      .then(() => {
-        this.listenToMessagesFromContentScript();
-        this.watchTabsUpdates();
-        this.refreshContextButtonsInAllTabs();
-        remotePontoon.subscribeToProjectsListChange((change) =>
-          this.initMozillaWebsitesList(change.newValue),
-        );
-      });
+    getOneFromStorage<ProjectsList>('projectsList').then((projectsList) => {
+      this.initMozillaWebsitesList(projectsList);
+      this.listenToMessagesFromContentScript();
+      this.watchTabsUpdates();
+      this.refreshContextButtonsInAllTabs();
+      remotePontoon.subscribeToProjectsListChange((change) =>
+        this.initMozillaWebsitesList(change.newValue),
+      );
+    });
   }
 
-  private initMozillaWebsitesList(projects: ProjectsList): void {
+  private initMozillaWebsitesList(projects?: ProjectsList): void {
     if (projects) {
       this.mozillaWebsites = [];
       Object.values(projects).forEach((project) =>
@@ -82,15 +74,12 @@ export class ContextButtons {
           break;
         case 'bugzilla-report-context-button-clicked': {
           const localeTeamOptionKey = 'locale_team';
-          const teamsListDataKey = 'teamsList';
           Promise.all([
             this.options.get(localeTeamOptionKey),
-            browser.storage.local.get(
-              teamsListDataKey,
-            ) as Promise<TeamsListInStorage>,
-          ]).then(([optionsItems, projectListInStorage]) => {
+            getOneFromStorage<TeamsList>('teamsList'),
+          ]).then(([optionsItems, teamsList]) => {
             const teamCode = optionsItems[localeTeamOptionKey] as string;
-            const team = projectListInStorage.teamsList[teamCode];
+            const team = teamsList![teamCode];
             openNewTab(
               newLocalizationBug({
                 team,

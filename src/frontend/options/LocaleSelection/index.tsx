@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Options } from '@commons/Options';
+import { getOneFromStorage } from '@commons/webExtensionsApi';
 import {
   BackgroundPontoonClient,
   TeamsList,
@@ -17,13 +18,12 @@ export const LocaleSelection: React.FC<{ options: Options }> = ({
 
   useEffect(() => {
     (async () => {
-      Promise.all([
-        backgroundPontoonClient.getTeamsList(),
+      const [teamsInPontoon, localeTeamFromOptions] = await Promise.all([
+        getOneFromStorage<TeamsList>('teamsList'),
         options.get(OPTION_KEY) as Promise<{ [OPTION_KEY]: string }>,
-      ]).then(([teamsInPontoon, localeTeamFromOptions]) => {
-        _setLocaleTeamState(localeTeamFromOptions[OPTION_KEY]);
-        setTeamsList(teamsInPontoon);
-      });
+      ]);
+      _setLocaleTeamState(localeTeamFromOptions[OPTION_KEY]);
+      setTeamsList(teamsInPontoon);
     })();
   }, [options]);
 
@@ -53,21 +53,20 @@ export const LocaleSelection: React.FC<{ options: Options }> = ({
       <button
         className="pontoon-style"
         title="Sync with your Pontoon homepage preference"
-        onClick={() => {
+        onClick={async () => {
           const previousLocaleTeam = localeTeam;
           setLocaleTeam(undefined);
-          Promise.all([
-            backgroundPontoonClient.updateTeamsList(),
-            backgroundPontoonClient.getTeamFromPontoon(),
-          ])
-            .then(([teamsInPontoon, localeTeamFromPontoon]) => {
-              setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);
-              setTeamsList(teamsInPontoon);
-            })
-            .catch((error) => {
-              console.error(error);
-              setLocaleTeam(previousLocaleTeam);
-            });
+          try {
+            const [teamsInPontoon, localeTeamFromPontoon] = await Promise.all([
+              backgroundPontoonClient.updateTeamsList(),
+              backgroundPontoonClient.getTeamFromPontoon(),
+            ]);
+            setTeamsList(teamsInPontoon);
+            setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);
+          } catch (error) {
+            console.error(error);
+            setLocaleTeam(previousLocaleTeam);
+          }
         }}
       >
         Load from Pontoon

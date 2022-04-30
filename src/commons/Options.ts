@@ -57,7 +57,9 @@ export class Options {
         optionIdsArray.forEach((optionId) => {
           const realOptionId = `${this.prefix}${optionId}`;
           if (items[realOptionId] !== undefined) {
-            optionsWithDefaultValues[optionId] = items[realOptionId];
+            optionsWithDefaultValues[optionId] = items[
+              realOptionId
+            ] as OptionValue;
           } else {
             optionsWithDefaultValues[optionId] =
               this.defaultValues[realOptionId];

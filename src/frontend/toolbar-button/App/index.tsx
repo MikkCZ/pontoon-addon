@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
 
 interface Props {
   notificationsData: any;
-  hideReadNotifications: boolean;
+  hideReadNotifications?: boolean;
   backgroundPontoonClient: BackgroundPontoonClient;
   teamData?: {
     name?: string;

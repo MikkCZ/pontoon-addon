@@ -8,6 +8,77 @@ export enum BrowserFamily {
   CHROMIUM = 'chromium',
 }
 
+interface StorageContent {
+  projectsList: {
+    [slug: string]: {
+      slug: string;
+      name: string;
+      domains: string[];
+    };
+  };
+  teamsList: {
+    [code: string]: {
+      code: string;
+      name: string;
+      strings: {
+        approvedStrings: number;
+        pretranslatedStrings: number;
+        stringsWithWarnings: number;
+        stringsWithErrors: number;
+        missingStrings: number;
+        unreviewedStrings: number;
+        totalStrings: number;
+      };
+      bz_component: string;
+    };
+  };
+  notificationsData: {
+    [id: number]: {
+      id: number;
+      unread: boolean;
+      actor?: {
+        anchor: string;
+        url: string;
+      };
+      target?: {
+        anchor: string;
+        url: string;
+      };
+      verb?: string;
+      description?: {
+        safe: boolean;
+        content?: string;
+        is_comment?: boolean;
+      };
+      date_iso?: string;
+    };
+  };
+  lastUnreadNotificationId: number;
+  latestTeamsActivity: {
+    [code: string]: {
+      team: string;
+      user: string;
+      date_iso?: string;
+    };
+  };
+}
+
+type StorageResult<K extends keyof StorageContent> = Partial<
+  Pick<StorageContent, K>
+>;
+
+export async function getFromStorage<K extends keyof StorageContent>(
+  storageKeys: K[],
+): Promise<StorageResult<K>> {
+  return (await browser.storage.local.get(storageKeys)) as StorageResult<K>;
+}
+
+export async function getOneFromStorage<T = unknown>(
+  storageKey: keyof StorageContent,
+): Promise<T | undefined> {
+  return (await getFromStorage([storageKey]))[storageKey] as unknown as T;
+}
+
 export function browserFamily(): BrowserFamily {
   if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
     return BrowserFamily.MOZILLA;

@@ -2,15 +2,9 @@ import { Menus, Tabs } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser, openNewTab } from '@commons/webExtensionsApi';
+import { browser, openNewTab, getFromStorage } from '@commons/webExtensionsApi';
 
-import {
-  ProjectsListInStorage,
-  ProjectsList,
-  RemotePontoon,
-  TeamsListInStorage,
-  Team,
-} from './RemotePontoon';
+import { ProjectsList, RemotePontoon, Team } from './RemotePontoon';
 
 export class PageContextMenu {
   private readonly options: Options;
@@ -114,20 +108,18 @@ export class PageContextMenu {
     );
   }
 
-  private loadDataFromStorage(): void {
+  private async loadDataFromStorage(): Promise<void> {
     const localeTeamOptionKey = 'locale_team';
-    const teamsListDataKey = 'teamsList';
-    const projectsListDataKey = 'projectsList';
-    Promise.all([
-      this.options.get(localeTeamOptionKey) as Promise<any>,
-      browser.storage.local.get([teamsListDataKey, projectsListDataKey]),
-    ]).then(([optionsItems, storageItems]) => {
-      const team = optionsItems[localeTeamOptionKey] as string;
-      const projectsList = (storageItems as ProjectsListInStorage).projectsList;
-      const teamsList = (storageItems as TeamsListInStorage).teamsList;
-      if (projectsList && teamsList) {
-        this.createContextMenus(projectsList, teamsList[team]);
-      }
-    });
+    const [optionsItems, { projectsList, teamsList }] = await Promise.all([
+      this.options.get(localeTeamOptionKey),
+      getFromStorage<'teamsList' | 'projectsList'>([
+        'teamsList',
+        'projectsList',
+      ]),
+    ]);
+    const teamCode = optionsItems[localeTeamOptionKey] as string;
+    if (projectsList && teamsList) {
+      this.createContextMenus(projectsList, teamsList[teamCode]);
+    }
   }
 }
