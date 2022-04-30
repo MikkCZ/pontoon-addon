@@ -20,7 +20,7 @@ export async function openNewTab(url: string): Promise<void> {
   await browser.tabs.create({ url });
 }
 
-export async function getResourceUrl(resource: string): Promise<string> {
+export function getResourceUrl(resource: string): string {
   return browser.runtime.getURL(resource);
 }
 
