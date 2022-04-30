@@ -91,6 +91,10 @@ export async function deleteFromStorage<K extends keyof StorageContent>(
   await browser.storage.local.remove(storageKeys);
 }
 
+export const { create: createNotification, clear: closeNotification } = browser.notifications;
+
+export const { create: createContextMenu, remove: removeContextMenu } = browser.contextMenus;
+
 export function browserFamily(): BrowserFamily {
   if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
     return BrowserFamily.MOZILLA;
@@ -103,9 +107,7 @@ export async function openNewTab(url: string): Promise<void> {
   await browser.tabs.create({ url });
 }
 
-export function getResourceUrl(resource: string): string {
-  return browser.runtime.getURL(resource);
-}
+export const { getURL: getResourceUrl, openOptionsPage: openOptions } = browser.runtime;
 
 export async function openIntro(): Promise<void> {
   await openNewTab(browser.runtime.getURL('frontend/intro.html'));
@@ -119,10 +121,4 @@ export async function openSnakeGame(): Promise<void> {
   await openNewTab(browser.runtime.getURL('frontend/snake-game.html'));
 }
 
-export async function openOptions(): Promise<void> {
-  await browser.runtime.openOptionsPage();
-}
-
-export async function openToolbarButtonPopup(): Promise<void> {
-  await browser.browserAction.openPopup();
-}
+export const { openPopup: openToolbarButtonPopup } = browser.browserAction;

@@ -12,7 +12,7 @@ import {
   microsoftTerminologySearch,
   pontoonAddonWiki,
 } from '@commons/webLinks';
-import { browser, openNewTab, openIntro } from '@commons/webExtensionsApi';
+import { openNewTab, openIntro, createContextMenu } from '@commons/webExtensionsApi';
 
 import type { DataRefresher } from './DataRefresher';
 import type { RemotePontoon } from './RemotePontoon';
@@ -42,7 +42,7 @@ export class ToolbarButtonContextMenu {
     const localeTeam = await this.options
       .get('locale_team')
       .then((item: any) => item['locale_team']);
-    browser.contextMenus.create({
+    createContextMenu({
       title: 'Reload notifications',
       contexts: ['browser_action'],
       onclick: () => {
@@ -51,7 +51,7 @@ export class ToolbarButtonContextMenu {
       },
     });
 
-    const pontoonPagesMenuId = browser.contextMenus.create({
+    const pontoonPagesMenuId = createContextMenu({
       title: 'Pontoon',
       contexts: ['browser_action'],
     });
@@ -105,9 +105,9 @@ export class ToolbarButtonContextMenu {
             ),
           ),
       } as Menus.CreateCreatePropertiesType,
-    ].forEach((it) => browser.contextMenus.create(it));
+    ].forEach((it) => createContextMenu(it));
 
-    const searchMenuId = browser.contextMenus.create({
+    const searchMenuId = createContextMenu({
       title: 'Search l10n',
       contexts: ['browser_action'],
     });
@@ -137,9 +137,9 @@ export class ToolbarButtonContextMenu {
         parentId: searchMenuId,
         onclick: () => openNewTab(microsoftTerminologySearch()),
       } as Menus.CreateCreatePropertiesType,
-    ].forEach((it) => browser.contextMenus.create(it));
+    ].forEach((it) => createContextMenu(it));
 
-    const localizationResourcesMenuId = browser.contextMenus.create({
+    const localizationResourcesMenuId = createContextMenu({
       title: 'Other l10n sources',
       contexts: ['browser_action'],
     });
@@ -156,15 +156,15 @@ export class ToolbarButtonContextMenu {
         parentId: localizationResourcesMenuId,
         onclick: () => openNewTab(mozillaWikiL10nTeamPage(localeTeam)),
       } as Menus.CreateCreatePropertiesType,
-    ].forEach((it) => browser.contextMenus.create(it));
+    ].forEach((it) => createContextMenu(it));
 
-    browser.contextMenus.create({
+    createContextMenu({
       title: 'Pontoon Add-on wiki',
       contexts: ['browser_action'],
       onclick: () => openNewTab(pontoonAddonWiki()),
     });
 
-    browser.contextMenus.create({
+    createContextMenu({
       title: 'Pontoon Add-on tour',
       contexts: ['browser_action'],
       onclick: () => openIntro(),

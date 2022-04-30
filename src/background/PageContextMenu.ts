@@ -2,7 +2,7 @@ import { Menus, Tabs } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser, openNewTab, getFromStorage } from '@commons/webExtensionsApi';
+import { browser, openNewTab, getFromStorage, createContextMenu, removeContextMenu } from '@commons/webExtensionsApi';
 
 import { ProjectsList, RemotePontoon, Team } from './RemotePontoon';
 
@@ -92,8 +92,8 @@ export class PageContextMenu {
   private static recreateContextMenu(
     contextMenuItem: Menus.CreateCreatePropertiesType,
   ): number | string {
-    browser.contextMenus.remove(contextMenuItem.id!);
-    return browser.contextMenus.create(contextMenuItem);
+    removeContextMenu(contextMenuItem.id!);
+    return createContextMenu(contextMenuItem);
   }
 
   private watchStorageChangesAndOptionsUpdates(): void {

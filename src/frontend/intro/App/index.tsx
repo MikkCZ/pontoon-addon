@@ -3,6 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import {
   browser,
+  createNotification,
   openNewTab,
   openOptions,
   openToolbarButtonPopup,
@@ -57,9 +58,8 @@ export const App: React.FC = () => {
     button: {
       text: 'Preview system notifications',
       onClick: () => {
-        const options = new Options();
-        options.set('show_notifications', true);
-        browser.notifications.create({
+        new Options().set('show_notifications', true);
+        createNotification({
           type: 'basic',
           iconUrl: pontoonLogo,
           title: 'Notification from Pontoon',

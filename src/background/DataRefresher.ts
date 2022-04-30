@@ -120,6 +120,6 @@ export class DataRefresher {
   }
 
   private supportsContainers(): boolean {
-    return browser.contextualIdentities !== undefined;
+    return !!browser.contextualIdentities;
   }
 }

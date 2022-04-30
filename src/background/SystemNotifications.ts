@@ -4,6 +4,8 @@ import {
   openNewTab,
   getOneFromStorage,
   saveToStorage,
+  createNotification,
+  closeNotification,
 } from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
@@ -58,7 +60,7 @@ export class SystemNotifications {
         ),
       );
     }
-    browser.notifications.clear(notificationId);
+    closeNotification(notificationId);
   }
 
   private watchStorageChanges(): void {
@@ -139,14 +141,14 @@ export class SystemNotifications {
       });
     const lastUnreadNotificationId = unreadNotificationIds.sort().reverse()[0];
     if (notificationItems.length === 1) {
-      browser.notifications.create(`${lastUnreadNotificationId}`, {
+      await createNotification(`${lastUnreadNotificationId}`, {
         type: 'basic',
         iconUrl: pontoonLogo,
         title: notificationItems[0].title,
         message: notificationItems[0].message,
       });
     } else {
-      browser.notifications.create({
+      await createNotification({
         type: 'list',
         iconUrl: pontoonLogo,
         title: 'You have new unread notifications',
