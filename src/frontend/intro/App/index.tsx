@@ -2,11 +2,11 @@ import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
 import {
-  browser,
   createNotification,
   openNewTab,
   openOptions,
   openToolbarButtonPopup,
+  supportsAddressBar,
 } from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
 import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
@@ -69,7 +69,7 @@ export const App: React.FC = () => {
       },
     },
   });
-  if (browser.pageAction) {
+  if (supportsAddressBar()) {
     tiles.push({
       title: 'Address bar button',
       imageSrc: pageActionImage,

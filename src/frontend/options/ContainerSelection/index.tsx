@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { ContextualIdentities } from 'webextension-polyfill';
 
-import { browser } from '@commons/webExtensionsApi';
+import { getAllContainers } from '@commons/webExtensionsApi';
 import { Options } from '@commons/Options';
 import { containersInfoPage } from '@commons/webLinks';
 
@@ -25,7 +25,7 @@ export const ContainerSelection: React.FC<{ options: Options }> = ({
     (async () => {
       setContainersList([
         { cookieStoreId: 'firefox-default', name: 'Default (no container)' },
-        ...((await browser.contextualIdentities.query({})) as ContainerInfo[]),
+        ...(await getAllContainers()),
       ]);
       _setContainerState((await options.get(OPTION_KEY))[OPTION_KEY] as string);
     })();

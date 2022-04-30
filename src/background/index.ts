@@ -1,11 +1,15 @@
 import type { Runtime } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
-import { browser, openIntro } from '@commons/webExtensionsApi';
+import {
+  browser,
+  openIntro,
+  supportsAddressBar,
+} from '@commons/webExtensionsApi';
 
 import { ContextButtons } from './ContextButtons';
 import { DataRefresher } from './DataRefresher';
-import { PageAction } from './PageAction';
+import { AddressBarIcon } from './AddressBarIcon';
 import { PageContextMenu } from './PageContextMenu';
 import { PontoonAddonPromotion } from './PontoonAddonPromotion';
 import { RemotePontoon } from './RemotePontoon';
@@ -47,7 +51,9 @@ options
       options,
     );
     const toolbarButton = new ToolbarButton(options, remotePontoon);
-    const _pageAction = new PageAction(remotePontoon);
+    if (supportsAddressBar()) {
+      const _addressBarIcon = new AddressBarIcon(remotePontoon);
+    }
     const _systemNotifications = new SystemNotifications(
       options,
       remotePontoon,

@@ -12,7 +12,11 @@ import {
   microsoftTerminologySearch,
   pontoonAddonWiki,
 } from '@commons/webLinks';
-import { openNewTab, openIntro, createContextMenu } from '@commons/webExtensionsApi';
+import {
+  openNewTab,
+  openIntro,
+  createContextMenu,
+} from '@commons/webExtensionsApi';
 
 import type { DataRefresher } from './DataRefresher';
 import type { RemotePontoon } from './RemotePontoon';

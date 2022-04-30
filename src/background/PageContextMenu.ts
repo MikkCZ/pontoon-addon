@@ -2,7 +2,12 @@ import { Menus, Tabs } from 'webextension-polyfill';
 
 import { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser, openNewTab, getFromStorage, createContextMenu, removeContextMenu } from '@commons/webExtensionsApi';
+import {
+  openNewTab,
+  getFromStorage,
+  createContextMenu,
+  removeContextMenu,
+} from '@commons/webExtensionsApi';
 
 import { ProjectsList, RemotePontoon, Team } from './RemotePontoon';
 

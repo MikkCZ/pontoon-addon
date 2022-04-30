@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
-import { browser, openIntro } from '@commons/webExtensionsApi';
+import { openIntro, supportsContainers } from '@commons/webExtensionsApi';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import { Options } from '@commons/Options';
 
@@ -120,9 +120,7 @@ export const App: React.FC = () => {
         </Section>
         <Section>
           <h3>Advanced</h3>
-          {browser.contextualIdentities && (
-            <ContainerSelection options={options} />
-          )}
+          {supportsContainers() && <ContainerSelection options={options} />}
           <PontoonBaseUrlInput options={options} />
           <div>
             <Link

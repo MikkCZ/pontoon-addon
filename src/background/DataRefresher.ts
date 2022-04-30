@@ -1,7 +1,7 @@
 import type { Tabs } from 'webextension-polyfill';
 
 import type { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, supportsContainers } from '@commons/webExtensionsApi';
 
 import type { RemotePontoon } from './RemotePontoon';
 
@@ -74,7 +74,7 @@ export class DataRefresher {
         return this.options.get('contextual_identity').then((item: any) => {
           if (
             item['contextual_identity'] === sender.tab?.cookieStoreId ||
-            !this.supportsContainers()
+            !supportsContainers()
           ) {
             return { type: 'enable-notifications-bell-script' };
           }
@@ -95,7 +95,7 @@ export class DataRefresher {
       this.options.get('contextual_identity').then((item: any) => {
         if (
           item['contextual_identity'] === tab.cookieStoreId ||
-          !this.supportsContainers()
+          !supportsContainers()
         ) {
           browser.tabs.executeScript(tabId, {
             file: 'content-scripts/live-data-provider.js',
@@ -117,9 +117,5 @@ export class DataRefresher {
     browser.alarms.create(this.alarmName, {
       periodInMinutes: intervalMinutes,
     });
-  }
-
-  private supportsContainers(): boolean {
-    return !!browser.contextualIdentities;
   }
 }

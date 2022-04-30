@@ -1,4 +1,8 @@
-import type { Browser } from 'webextension-polyfill';
+import type {
+  Browser,
+  ContextualIdentities,
+  Tabs,
+} from 'webextension-polyfill';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const browser = require('webextension-polyfill') as Browser;
@@ -91,9 +95,11 @@ export async function deleteFromStorage<K extends keyof StorageContent>(
   await browser.storage.local.remove(storageKeys);
 }
 
-export const { create: createNotification, clear: closeNotification } = browser.notifications;
+export const { create: createNotification, clear: closeNotification } =
+  browser.notifications;
 
-export const { create: createContextMenu, remove: removeContextMenu } = browser.contextMenus;
+export const { create: createContextMenu, remove: removeContextMenu } =
+  browser.contextMenus;
 
 export function browserFamily(): BrowserFamily {
   if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
@@ -107,7 +113,8 @@ export async function openNewTab(url: string): Promise<void> {
   await browser.tabs.create({ url });
 }
 
-export const { getURL: getResourceUrl, openOptionsPage: openOptions } = browser.runtime;
+export const { getURL: getResourceUrl, openOptionsPage: openOptions } =
+  browser.runtime;
 
 export async function openIntro(): Promise<void> {
   await openNewTab(browser.runtime.getURL('frontend/intro.html'));
@@ -122,3 +129,48 @@ export async function openSnakeGame(): Promise<void> {
 }
 
 export const { openPopup: openToolbarButtonPopup } = browser.browserAction;
+
+export function supportsAddressBar(): boolean {
+  return !!browser.pageAction;
+}
+
+export async function showAddressBarIcon(
+  tab: Tabs.Tab,
+  title: string,
+  icons: { 16: string; 32: string },
+): Promise<void> {
+  if (supportsAddressBar() && tab.id) {
+    const tabId = tab.id;
+    browser.pageAction.setTitle({ tabId, title });
+    await browser.pageAction.setIcon({ tabId, path: icons });
+    await browser.pageAction.show(tabId);
+  }
+}
+
+export async function hideAddressBarIcon(
+  tab: Tabs.Tab,
+  title: string,
+): Promise<void> {
+  if (supportsAddressBar() && tab.id) {
+    const tabId = tab.id;
+    await Promise.all([
+      browser.pageAction.hide(tabId),
+      browser.pageAction.setTitle({ tabId, title }),
+      browser.pageAction.setIcon({ tabId }),
+    ]);
+  }
+}
+
+export function supportsContainers(): boolean {
+  return !!browser.contextualIdentities;
+}
+
+export async function getAllContainers(): Promise<
+  ContextualIdentities.ContextualIdentity[]
+> {
+  if (supportsContainers()) {
+    return browser.contextualIdentities.query({});
+  } else {
+    return [];
+  }
+}
