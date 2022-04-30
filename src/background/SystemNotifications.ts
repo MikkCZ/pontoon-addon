@@ -3,6 +3,7 @@ import {
   browser,
   openNewTab,
   getOneFromStorage,
+  saveToStorage,
 } from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
@@ -94,10 +95,10 @@ export class SystemNotifications {
     );
   }
 
-  private notifyAboutUnreadNotifications(
+  private async notifyAboutUnreadNotifications(
     unreadNotificationIds: number[],
     notificationsData: NotificationsData,
-  ) {
+  ): Promise<void> {
     const notificationItems = unreadNotificationIds
       .sort()
       .reverse()
@@ -136,9 +137,9 @@ export class SystemNotifications {
         }
         return item;
       });
-    const lastNotificationId = unreadNotificationIds.sort().reverse()[0];
+    const lastUnreadNotificationId = unreadNotificationIds.sort().reverse()[0];
     if (notificationItems.length === 1) {
-      browser.notifications.create(`${lastNotificationId}`, {
+      browser.notifications.create(`${lastUnreadNotificationId}`, {
         type: 'basic',
         iconUrl: pontoonLogo,
         title: notificationItems[0].title,
@@ -153,6 +154,6 @@ export class SystemNotifications {
         items: notificationItems,
       });
     }
-    browser.storage.local.set({ lastUnreadNotificationId: lastNotificationId });
+    await saveToStorage({ lastUnreadNotificationId });
   }
 }

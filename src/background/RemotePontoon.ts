@@ -2,7 +2,13 @@ import type { Storage } from 'webextension-polyfill';
 import URI from 'urijs';
 
 import type { Options } from '@commons/Options';
-import { browser, getOneFromStorage } from '@commons/webExtensionsApi';
+import {
+  browser,
+  deleteFromStorage,
+  getOneFromStorage,
+  saveToStorage,
+  StorageContent,
+} from '@commons/webExtensionsApi';
 import {
   pontoonSettings,
   toPontoonTeamSpecificProjectUrl,
@@ -19,6 +25,68 @@ import {
 import { BackgroundPontoonMessageType } from './BackgroundPontoonMessageType';
 import { DataFetcher } from './DataFetcher';
 import { projectsListData } from './data/projectsListData';
+
+interface NotificationApiResponse {
+  id: number;
+  unread: boolean;
+  actor?: {
+    anchor: string;
+    url: string;
+  };
+  target?: {
+    anchor: string;
+    url: string;
+  };
+  verb?: string;
+  description?: {
+    safe: boolean;
+    content?: string;
+    is_comment?: boolean;
+  };
+  date_iso?: string;
+}
+
+interface UserDataApiResponse {
+  notifications: {
+    has_unread: boolean;
+    notifications: NotificationApiResponse[];
+  };
+}
+
+export interface NotificationsData {
+  [id: number]: NotificationApiResponse;
+}
+
+interface TeamsListGqlResponse {
+  locales: Array<{
+    code: string;
+    name: string;
+    approvedStrings: number;
+    pretranslatedStrings: number;
+    stringsWithWarnings: number;
+    stringsWithErrors: number;
+    missingStrings: number;
+    unreviewedStrings: number;
+    totalStrings: number;
+  }>;
+}
+
+export type TeamsList = StorageContent['teamsList'];
+
+export type Team = TeamsList['code'];
+
+export type ProjectsList = StorageContent['projectsList'];
+
+type Project = ProjectsList['slug'];
+
+interface ProjectGqlReponse {
+  slug: string;
+  name: string;
+}
+
+interface ProjectsListGqlResponse {
+  projects: ProjectGqlReponse[];
+}
 
 const pontoonBaseUrlOptionKey = 'pontoon_base_url';
 const localeTeamOptionKey = 'locale_team';
@@ -95,65 +163,53 @@ export class RemotePontoon {
     this.baseUrlChangeListeners.add(callback);
   }
 
-  public updateNotificationsData(): void {
-    this.dataFetcher
-      .fetchFromPontoonSession(pontoonUserData(this.baseUrl))
-      .then((response) => {
-        return response.json() as Promise<UserDataApiResponse>;
-      })
-      .then((userData) => {
-        const notificationsDataObj: NotificationsData = {};
-        userData.notifications.notifications.forEach(
-          (n) => (notificationsDataObj[n.id] = n),
-        );
-        return notificationsDataObj;
-      })
-      .then((nData) => {
-        return browser.storage.local.set({
-          notificationsData: nData,
-        } as NotificationsDataInStorage);
-      })
-      .catch((error) => {
-        browser.storage.local.set({
-          notificationsData: undefined,
-        } as NotificationsDataInStorage);
-        console.error(error);
-      });
+  public async updateNotificationsData(): Promise<void> {
+    try {
+      const reponse = await this.dataFetcher.fetchFromPontoonSession(
+        pontoonUserData(this.baseUrl),
+      );
+      const userData = (await reponse.json()) as UserDataApiResponse;
+      const notificationsDataObj: NotificationsData = {};
+      userData.notifications.notifications.forEach(
+        (n) => (notificationsDataObj[n.id] = n),
+      );
+      await saveToStorage({ notificationsData: notificationsDataObj });
+    } catch (error) {
+      await deleteFromStorage('notificationsData');
+      console.error(error);
+    }
   }
 
-  public updateLatestTeamActivity(): void {
-    this.dataFetcher
-      .fetch(pontoonTeamsList(this.baseUrl, AUTOMATION_UTM_SOURCE))
-      .then((response) => {
-        return response.text();
+  public async updateLatestTeamActivity(): Promise<void> {
+    const reponse = await this.dataFetcher.fetch(
+      pontoonTeamsList(this.baseUrl, AUTOMATION_UTM_SOURCE),
+    );
+    const allTeamsPageContent = await reponse.text();
+    const latestActivityObj: { [key: string]: any } = {};
+    const allTeamsPage = this.domParser.parseFromString(
+      allTeamsPageContent,
+      'text/html',
+    );
+    Array.from(allTeamsPage.querySelectorAll('.team-list tbody tr'))
+      .map((row) => {
+        const latestActivityTime = row.querySelector(
+          '.latest-activity time',
+        ) as any;
+        return {
+          team: row.querySelector('.code a')?.textContent || '',
+          user: latestActivityTime?.dataset?.userName || '',
+          date_iso:
+            latestActivityTime?.attributes?.datetime?.value || undefined,
+        };
       })
-      .then((allTeamsPageContent) => {
-        const latestActivityObj: { [key: string]: any } = {};
-        const allTeamsPage = this.domParser.parseFromString(
-          allTeamsPageContent,
-          'text/html',
-        );
-        Array.from(allTeamsPage.querySelectorAll('.team-list tbody tr'))
-          .map((row) => {
-            const latestActivityTime = row.querySelector(
-              '.latest-activity time',
-            ) as any;
-            return {
-              team: row.querySelector('.code a')?.textContent || '',
-              user: latestActivityTime?.dataset?.userName || '',
-              date_iso:
-                latestActivityTime?.attributes?.datetime?.value || undefined,
-            };
-          })
-          .forEach((teamActivity) => {
-            latestActivityObj[teamActivity.team] = teamActivity;
-          });
-        if (Object.keys(latestActivityObj).length > 0) {
-          browser.storage.local.set({ latestTeamsActivity: latestActivityObj });
-        } else {
-          browser.storage.local.remove('latestTeamsActivity');
-        }
+      .forEach((teamActivity) => {
+        latestActivityObj[teamActivity.team] = teamActivity;
       });
+    if (Object.keys(latestActivityObj).length > 0) {
+      await saveToStorage({ latestTeamsActivity: latestActivityObj });
+    } else {
+      await deleteFromStorage('latestTeamsActivity');
+    }
   }
 
   public async updateTeamsList(): Promise<TeamsList> {
@@ -195,9 +251,7 @@ export class RemotePontoon {
           bz_component: bz_components[team.code],
         };
       });
-    browser.storage.local.set({
-      teamsList: teamsListObj,
-    } as TeamsListInStorage);
+    await saveToStorage({ teamsList: teamsListObj });
     return teamsListObj;
   }
 
@@ -274,9 +328,7 @@ export class RemotePontoon {
       .forEach((project) => {
         projectsListObj[project.slug] = project;
       });
-    browser.storage.local.set({
-      projectsList: projectsListObj,
-    } as ProjectsListInStorage);
+    await saveToStorage({ projectsList: projectsListObj });
     return projectsListObj;
   }
 
@@ -345,9 +397,7 @@ export class RemotePontoon {
     ]);
     if (response.ok) {
       Object.values(notificationsData!).forEach((n) => (n.unread = false));
-      browser.storage.local.set({
-        notificationsData,
-      } as NotificationsDataInStorage);
+      await saveToStorage({ notificationsData });
     }
   }
 
@@ -361,101 +411,4 @@ export class RemotePontoon {
       .querySelector('#homepage .language');
     return language?.dataset['code'] || undefined;
   }
-}
-
-interface NotificationApiResponse {
-  id: number;
-  unread: boolean;
-  actor?: {
-    anchor: string;
-    url: string;
-  };
-  target?: {
-    anchor: string;
-    url: string;
-  };
-  verb?: string;
-  description?: {
-    safe: boolean;
-    content?: string;
-    is_comment?: boolean;
-  };
-  date_iso?: string;
-}
-
-interface UserDataApiResponse {
-  notifications: {
-    has_unread: boolean;
-    notifications: NotificationApiResponse[];
-  };
-}
-
-export interface NotificationsData {
-  [id: number]: NotificationApiResponse;
-}
-
-interface NotificationsDataInStorage {
-  notificationsData: NotificationsData | undefined;
-}
-
-interface TeamGqlResponse {
-  code: string;
-  name: string;
-  approvedStrings: number;
-  pretranslatedStrings: number;
-  stringsWithWarnings: number;
-  stringsWithErrors: number;
-  missingStrings: number;
-  unreviewedStrings: number;
-  totalStrings: number;
-}
-
-interface TeamsListGqlResponse {
-  locales: TeamGqlResponse[];
-}
-
-export interface Team {
-  code: string;
-  name: string;
-  strings: {
-    approvedStrings: number;
-    pretranslatedStrings: number;
-    stringsWithWarnings: number;
-    stringsWithErrors: number;
-    missingStrings: number;
-    unreviewedStrings: number;
-    totalStrings: number;
-  };
-  bz_component: string;
-}
-
-export interface TeamsList {
-  [slug: string]: Team;
-}
-
-interface TeamsListInStorage {
-  teamsList: TeamsList;
-}
-
-interface Project {
-  slug: string;
-  name: string;
-  domains: string[];
-}
-
-export interface ProjectsList {
-  [slug: string]: Project;
-}
-
-interface ProjectsListInStorage {
-  projectsList: ProjectsList;
-}
-
-interface ProjectGqlReponse {
-  slug: string;
-  name: string;
-}
-
-interface ProjectsListGqlResponse {
-  projects: ProjectGqlReponse[];
 }

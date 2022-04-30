@@ -8,7 +8,7 @@ export enum BrowserFamily {
   CHROMIUM = 'chromium',
 }
 
-interface StorageContent {
+export interface StorageContent {
   projectsList: {
     [slug: string]: {
       slug: string;
@@ -77,6 +77,18 @@ export async function getOneFromStorage<T = unknown>(
   storageKey: keyof StorageContent,
 ): Promise<T | undefined> {
   return (await getFromStorage([storageKey]))[storageKey] as unknown as T;
+}
+
+export async function saveToStorage(
+  toSave: Partial<StorageContent>,
+): Promise<void> {
+  await browser.storage.local.set(toSave);
+}
+
+export async function deleteFromStorage<K extends keyof StorageContent>(
+  ...storageKeys: K[]
+) {
+  await browser.storage.local.remove(storageKeys);
 }
 
 export function browserFamily(): BrowserFamily {

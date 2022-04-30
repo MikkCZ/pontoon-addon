@@ -1,6 +1,6 @@
 import type { Storage } from 'webextension-polyfill';
 
-import { browser, browserFamily } from './webExtensionsApi';
+import { browser, browserFamily, saveToStorage } from './webExtensionsApi';
 import {
   defaultOptionsFor,
   OptionId as DataOptionId,
@@ -82,6 +82,6 @@ export class Options {
   }
 
   async resetDefaults(): Promise<void> {
-    await browser.storage.local.set(this.defaultValues);
+    await saveToStorage(this.defaultValues);
   }
 }
