@@ -5,8 +5,8 @@ import { containersInfoPage } from '@commons/webLinks';
 import { getOneOption, setOption } from '@commons/options';
 
 interface ContainerInfo {
-  name: string,
-  cookieStoreId: string,
+  name: string;
+  cookieStoreId: string;
 }
 
 export const ContainerSelection: React.FC = () => {
