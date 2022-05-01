@@ -1,4 +1,4 @@
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { markAllNotificationsAsRead } from '@background/backgroundClient';
 import { browser, listenToStorageChange } from '@commons/webExtensionsApi';
 
 const unreadNotificationsIcon =
@@ -16,7 +16,7 @@ function registerAllListeners() {
     unreadNotificationsIcon.addEventListener('click', () => {
       if (listenersEnabled) {
         listenersEnabled = false;
-        new BackgroundPontoonClient().markAllNotificationsAsRead();
+        markAllNotificationsAsRead();
         console.info('Pontoon Add-on: notified markAllNotificationsAsRead');
       }
     });

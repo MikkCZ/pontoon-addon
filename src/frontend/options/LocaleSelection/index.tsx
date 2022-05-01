@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { getOneFromStorage } from '@commons/webExtensionsApi';
 import {
-  BackgroundPontoonClient,
+  updateTeamsList,
+  getTeamFromPontoon,
   TeamsList,
-} from '@background/BackgroundPontoonClient';
+} from '@background/backgroundClient';
 import { getOneOption, setOption } from '@commons/options';
-
-const backgroundPontoonClient = new BackgroundPontoonClient();
 
 export const LocaleSelection: React.FC = () => {
   const [teamsList, setTeamsList] = useState<TeamsList | undefined>();
@@ -58,8 +57,8 @@ export const LocaleSelection: React.FC = () => {
           setLocaleTeam(undefined);
           try {
             const [teamsInPontoon, localeTeamFromPontoon] = await Promise.all([
-              backgroundPontoonClient.updateTeamsList(),
-              backgroundPontoonClient.getTeamFromPontoon(),
+              updateTeamsList(),
+              getTeamFromPontoon(),
             ]);
             setTeamsList(teamsInPontoon);
             setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);

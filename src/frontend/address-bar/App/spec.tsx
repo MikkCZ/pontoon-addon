@@ -3,7 +3,10 @@ import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import type { Project } from '@background/BackgroundPontoonClient';
+import {
+  getPontoonProjectForTheCurrentTab,
+  Project,
+} from '@background/backgroundClient';
 import { openNewTab } from '@commons/webExtensionsApi';
 
 import { PanelSection } from '../PanelSection';
@@ -12,12 +15,7 @@ import { PanelListItem } from '../PanelListItem';
 import { App } from '.';
 
 jest.mock('@commons/webExtensionsApi');
-jest.mock('@background/BackgroundPontoonClient', () => ({
-  BackgroundPontoonClient: jest.fn(() => ({
-    getBaseUrl: () => 'https://127.0.0.1',
-    getPontoonProjectForTheCurrentTab: () => project,
-  })),
-}));
+jest.mock('@background/backgroundClient');
 
 const project: Project = {
   name: 'Some Project',
@@ -25,8 +23,13 @@ const project: Project = {
   translationUrl: 'https://127.0.0.1/translationUrl',
 };
 
+beforeEach(() => {
+  (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue(project);
+});
+
 afterEach(() => {
   (openNewTab as jest.Mock).mockReset();
+  (getPontoonProjectForTheCurrentTab as jest.Mock).mockReset();
 });
 
 describe('address-bar/App', () => {

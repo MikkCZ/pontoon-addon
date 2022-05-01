@@ -2,7 +2,7 @@ import React, { useEffect, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 import { openNewTab } from '@commons/webExtensionsApi';
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { getSettingsUrl } from '@background/backgroundClient';
 import { getOneOption, setOption } from '@commons/options';
 
 const Link = styled.button`
@@ -21,8 +21,6 @@ const Link = styled.button`
     color: inherit;
   }
 `;
-
-const backgroundPontoonClient = new BackgroundPontoonClient();
 
 export const ToolbarButtonActionSelection: React.FC = () => {
   const [value, setValue] = useState<string | undefined>();
@@ -75,7 +73,7 @@ export const ToolbarButtonActionSelection: React.FC = () => {
         You can set your Pontoon homepage in{' '}
         <Link
           onClick={async () => {
-            openNewTab(await backgroundPontoonClient.getSettingsUrl());
+            openNewTab(await getSettingsUrl());
           }}
         >
           Pontoon Settings

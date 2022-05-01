@@ -2,7 +2,10 @@ import React from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import styled from 'styled-components';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import {
+  getTeamPageUrl,
+  getStringsWithStatusSearchUrl,
+} from '@background/backgroundClient';
 import { openNewTab } from '@commons/webExtensionsApi';
 import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 
@@ -51,24 +54,16 @@ interface Props {
     user: string;
     date_iso?: string;
   };
-  backgroundPontoonClient: BackgroundPontoonClient;
 }
 
-async function openTeamPage(
-  backgroundPontoonClient: BackgroundPontoonClient,
-): Promise<void> {
-  const teamPageUrl = await backgroundPontoonClient.getTeamPageUrl();
+async function openTeamPage(): Promise<void> {
+  const teamPageUrl = await getTeamPageUrl();
   await openNewTab(teamPageUrl);
   window.close();
 }
 
-async function openTeamStringsWithStatus(
-  backgroundPontoonClient: BackgroundPontoonClient,
-  status: string,
-): Promise<void> {
-  const searchUrl = await backgroundPontoonClient.getStringsWithStatusSearchUrl(
-    status,
-  );
+async function openTeamStringsWithStatus(status: string): Promise<void> {
+  const searchUrl = await getStringsWithStatusSearchUrl(status);
   await openNewTab(searchUrl);
   window.close();
 }
@@ -78,12 +73,11 @@ export const TeamInfo: React.FC<Props> = ({
   code = '',
   stringsData,
   latestActivity,
-  backgroundPontoonClient,
 }) => {
   return (
     <section>
       <Title>
-        <TitleLink onClick={() => openTeamPage(backgroundPontoonClient)}>
+        <TitleLink onClick={() => openTeamPage()}>
           <Name>{name}</Name> <Code>{code}</Code>
         </TitleLink>
       </Title>
@@ -152,19 +146,11 @@ export const TeamInfo: React.FC<Props> = ({
             squareStyle={category.labelBeforeStyle}
             label={category.text}
             value={stringsData ? stringsData[category.dataProperty] : ''}
-            onClick={() =>
-              openTeamStringsWithStatus(
-                backgroundPontoonClient,
-                category.status,
-              )
-            }
+            onClick={() => openTeamStringsWithStatus(category.status)}
           />
         ))}
       </List>
-      <BottomLink
-        text="Open team page"
-        onClick={() => openTeamPage(backgroundPontoonClient)}
-      />
+      <BottomLink text="Open team page" onClick={() => openTeamPage()} />
     </section>
   );
 };

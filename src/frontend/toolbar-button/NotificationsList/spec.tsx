@@ -3,8 +3,11 @@ import { shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { openNewTab } from '@commons/webExtensionsApi';
+import {
+  getNotificationsUrl,
+  markAllNotificationsAsRead,
+} from '@background/backgroundClient';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -13,19 +16,20 @@ import { NotificationsListError } from '../NotificationsListError';
 import { NotificationsList } from '.';
 
 jest.mock('@commons/webExtensionsApi');
-jest.mock('@background/BackgroundPontoonClient', () => ({
-  BackgroundPontoonClient: jest.fn(() => ({
-    getNotificationsUrl: () => 'https://127.0.0.1/notifications',
-    markAllNotificationsAsRead: markAllNotificationsAsReadMock,
-  })),
-}));
+jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
-const markAllNotificationsAsReadMock = jest.fn();
+
+beforeEach(() => {
+  (getNotificationsUrl as jest.Mock).mockReturnValue(
+    'https://127.0.0.1/notifications',
+  );
+});
 
 afterEach(() => {
   (openNewTab as jest.Mock).mockReset();
-  markAllNotificationsAsReadMock.mockReset();
+  (getNotificationsUrl as jest.Mock).mockReset();
+  (markAllNotificationsAsRead as jest.Mock).mockReset();
   windowCloseSpy.mockReset();
 });
 
@@ -37,7 +41,6 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -55,7 +58,6 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -73,7 +75,6 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={true}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -86,7 +87,6 @@ describe('NotificationsList', () => {
       <NotificationsList
         notificationsData={undefined}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -103,7 +103,6 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -111,7 +110,7 @@ describe('NotificationsList', () => {
       wrapper.find(BottomLink).simulate('click');
     });
 
-    expect(markAllNotificationsAsReadMock).toHaveBeenCalled();
+    expect(markAllNotificationsAsRead).toHaveBeenCalled();
   });
 
   it('bottom link shows all when all notifications are read', async () => {
@@ -122,7 +121,6 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 

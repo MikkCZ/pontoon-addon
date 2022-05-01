@@ -1,7 +1,6 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 
 import { NotificationsList } from '../NotificationsList';
@@ -23,7 +22,6 @@ const GlobalStyle = createGlobalStyle`
 interface Props {
   notificationsData: any;
   hideReadNotifications?: boolean;
-  backgroundPontoonClient: BackgroundPontoonClient;
   teamData?: {
     name?: string;
     code?: string;
@@ -38,7 +36,6 @@ interface Props {
 export const App: React.FC<Props> = ({
   notificationsData,
   hideReadNotifications,
-  backgroundPontoonClient,
   teamData,
   latestTeamActivity,
 }) => {
@@ -49,14 +46,12 @@ export const App: React.FC<Props> = ({
       <NotificationsList
         notificationsData={notificationsData}
         hideReadNotifications={hideReadNotifications}
-        backgroundPontoonClient={backgroundPontoonClient}
       />
       <TeamInfo
         name={teamData?.name}
         code={teamData?.code}
         stringsData={teamData?.strings}
         latestActivity={latestTeamActivity}
-        backgroundPontoonClient={backgroundPontoonClient}
       />
     </>
   );

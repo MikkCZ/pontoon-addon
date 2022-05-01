@@ -3,8 +3,11 @@ import ReactTimeAgo from 'react-time-ago';
 import { mount } from 'enzyme';
 import flushPromises from 'flush-promises';
 
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { openNewTab } from '@commons/webExtensionsApi';
+import {
+  getStringsWithStatusSearchUrl,
+  getTeamPageUrl,
+} from '@background/backgroundClient';
 
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
@@ -12,19 +15,22 @@ import { TeamInfoListItem } from '../TeamInfoListItem';
 import { TeamInfo, Name, Code } from '.';
 
 jest.mock('@commons/webExtensionsApi');
-jest.mock('@background/BackgroundPontoonClient', () => ({
-  BackgroundPontoonClient: jest.fn(() => ({
-    getTeamPageUrl: () => 'https://127.0.0.1/team-page',
-    getStringsWithStatusSearchUrl: async (status: string) =>
-      `https://127.0.0.1/${status}/`,
-  })),
-}));
+jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+
+beforeEach(() => {
+  (getTeamPageUrl as jest.Mock).mockReturnValue('https://127.0.0.1/team-page');
+  (getStringsWithStatusSearchUrl as jest.Mock).mockImplementation(
+    (status: string) => `https://127.0.0.1/${status}/`,
+  );
+});
 
 afterEach(() => {
   (openNewTab as jest.Mock).mockReset();
   windowCloseSpy.mockReset();
+  (getTeamPageUrl as jest.Mock).mockReset();
+  (getStringsWithStatusSearchUrl as jest.Mock).mockReset();
 });
 
 describe('TeamInfo', () => {
@@ -37,7 +43,6 @@ describe('TeamInfo', () => {
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -72,7 +77,6 @@ describe('TeamInfo', () => {
           user: '',
           date_iso: undefined,
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -98,7 +102,6 @@ describe('TeamInfo', () => {
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -130,7 +133,6 @@ describe('TeamInfo', () => {
           user: 'USER',
           date_iso: '1970-01-01T00:00:00Z',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 

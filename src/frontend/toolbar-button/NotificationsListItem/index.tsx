@@ -8,7 +8,7 @@ import DOMPurify from 'dompurify';
 import Linkify from 'react-linkify';
 import parse from 'html-react-parser';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { getTeamProjectUrl } from '@background/backgroundClient';
 import { openNewTab } from '@commons/webExtensionsApi';
 
 export const Wrapper = styled.li<{ unread: boolean; pointer?: boolean }>`
@@ -72,16 +72,10 @@ interface Props {
     is_comment?: boolean;
   };
   date_iso?: string;
-  backgroundPontoonClient: BackgroundPontoonClient;
 }
 
-async function openTeamProject(
-  backgroundPontoonClient: BackgroundPontoonClient,
-  projectUrl: string,
-): Promise<void> {
-  const teamProjectUrl = await backgroundPontoonClient.getTeamProjectUrl(
-    projectUrl,
-  );
+async function openTeamProject(projectUrl: string): Promise<void> {
+  const teamProjectUrl = await getTeamProjectUrl(projectUrl);
   openNewTab(teamProjectUrl);
   window.close();
 }
@@ -98,7 +92,6 @@ export const NotificationsListItem: React.FC<Props> = ({
   verb,
   description,
   date_iso,
-  backgroundPontoonClient,
 }) => {
   const linkUrls = [actor, target]
     .filter((it) => it)
@@ -113,7 +106,7 @@ export const NotificationsListItem: React.FC<Props> = ({
   const openSingleLink = hasSingleLink
     ? (e: MouseEvent): void => {
         stopEvent(e);
-        openTeamProject(backgroundPontoonClient, linkUrls[0]);
+        openTeamProject(linkUrls[0]);
       }
     : undefined;
   if (isSuggestion) {
@@ -155,7 +148,7 @@ export const NotificationsListItem: React.FC<Props> = ({
           <ActorTargetLink
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
               stopEvent(e);
-              openTeamProject(backgroundPontoonClient, actor.url);
+              openTeamProject(actor.url);
             }}
           >
             {actor.anchor}
@@ -166,7 +159,7 @@ export const NotificationsListItem: React.FC<Props> = ({
           <ActorTargetLink
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
               stopEvent(e);
-              openTeamProject(backgroundPontoonClient, target.url);
+              openTeamProject(target.url);
             }}
           >
             {target.anchor}

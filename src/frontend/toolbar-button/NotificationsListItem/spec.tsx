@@ -4,8 +4,8 @@ import { act } from 'react-dom/test-utils';
 import ReactTimeAgo from 'react-time-ago';
 import flushPromises from 'flush-promises';
 
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { openNewTab } from '@commons/webExtensionsApi';
+import { getTeamProjectUrl } from '@background/backgroundClient';
 
 import {
   NotificationsListItem,
@@ -16,17 +16,20 @@ import {
 } from '.';
 
 jest.mock('@commons/webExtensionsApi');
-jest.mock('@background/BackgroundPontoonClient', () => ({
-  BackgroundPontoonClient: jest.fn(() => ({
-    getTeamProjectUrl: (projectUrl: string) => projectUrl,
-  })),
-}));
+jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+
+beforeEach(() => {
+  (getTeamProjectUrl as jest.Mock).mockImplementation(
+    (projectUrl: string) => projectUrl,
+  );
+});
 
 afterEach(() => {
   windowCloseSpy.mockReset();
   (openNewTab as jest.Mock).mockReset();
+  (getTeamProjectUrl as jest.Mock).mockReset();
 });
 
 describe('NotificationsListItem', () => {
@@ -39,7 +42,6 @@ describe('NotificationsListItem', () => {
         target={{ anchor: 'TARGET', url: '' }}
         date_iso="1970-01-01T00:00:00Z"
         description={{ safe: true, content: 'DESCRIPTION' }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -64,7 +66,6 @@ describe('NotificationsListItem', () => {
           content:
             'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -85,7 +86,6 @@ describe('NotificationsListItem', () => {
           safe: false,
           content: 'DESCRIPTION WITH A LINK TO https://example.com/',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -107,7 +107,6 @@ describe('NotificationsListItem', () => {
           content:
             'DESCRIPTION WITH(OUT) <a onload=alert("XSS")>XSS ATTEMPTS</a> <script>alert("XSS");</script>',
         }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -124,7 +123,6 @@ describe('NotificationsListItem', () => {
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
         target={{ url: targetUrl, anchor: 'TARGET' }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 
@@ -152,7 +150,6 @@ describe('NotificationsListItem', () => {
       <NotificationsListItem
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
-        backgroundPontoonClient={new BackgroundPontoonClient()}
       />,
     );
 

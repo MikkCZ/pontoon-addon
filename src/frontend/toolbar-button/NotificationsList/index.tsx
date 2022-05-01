@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import {
+  getNotificationsUrl,
+  markAllNotificationsAsRead,
+} from '@background/backgroundClient';
 import { listenToStorageChange, openNewTab } from '@commons/webExtensionsApi';
 
 import { BottomLink } from '../BottomLink';
@@ -20,12 +23,10 @@ const List = styled.ul`
 interface Props {
   notificationsData: any;
   hideReadNotifications?: boolean;
-  backgroundPontoonClient: BackgroundPontoonClient;
 }
 
 export const NotificationsList: React.FC<Props> = ({
   hideReadNotifications,
-  backgroundPontoonClient,
   ...props
 }) => {
   const [notificationsData, setNotificationsData] = useState(
@@ -56,7 +57,6 @@ export const NotificationsList: React.FC<Props> = ({
               <NotificationsListItem
                 unread={notification.unread}
                 key={notification.id}
-                backgroundPontoonClient={backgroundPontoonClient}
                 {...notification}
               />
             ))}
@@ -64,15 +64,13 @@ export const NotificationsList: React.FC<Props> = ({
         {containsUnreadNotifications ? (
           <BottomLink
             text="Mark all Notifications as read"
-            onClick={() => backgroundPontoonClient.markAllNotificationsAsRead()}
+            onClick={() => markAllNotificationsAsRead()}
           />
         ) : (
           <BottomLink
             text="See all Notifications"
             onClick={async () => {
-              await openNewTab(
-                await backgroundPontoonClient.getNotificationsUrl(),
-              );
+              await openNewTab(await getNotificationsUrl());
               window.close();
             }}
           />
@@ -80,10 +78,6 @@ export const NotificationsList: React.FC<Props> = ({
       </section>
     );
   } else {
-    return (
-      <NotificationsListError
-        backgroundPontoonClient={backgroundPontoonClient}
-      />
-    );
+    return <NotificationsListError />;
   }
 };

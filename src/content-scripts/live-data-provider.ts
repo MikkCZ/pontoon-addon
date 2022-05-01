@@ -1,6 +1,3 @@
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { pageLoaded } from '@background/backgroundClient';
 
-new BackgroundPontoonClient().pageLoaded(
-  document.location.toString(),
-  document.documentElement.innerHTML,
-);
+pageLoaded(document.location.toString(), document.documentElement.innerHTML);

@@ -5,23 +5,16 @@ import flushPromises from 'flush-promises';
 
 import { getFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
-import type { Project } from '@background/BackgroundPontoonClient';
+import {
+  getPontoonProjectForTheCurrentTab,
+  Project,
+} from '@background/backgroundClient';
 
 import { render } from './index';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
-jest.mock('@background/BackgroundPontoonClient', () => ({
-  BackgroundPontoonClient: jest.fn(() => ({
-    getBaseUrl: () => 'https://127.0.0.1',
-    getPontoonProjectForTheCurrentTab: () =>
-      ({
-        name: 'Some project',
-        pageUrl: 'https://127.0.0.1/',
-        translationUrl: 'https://127.0.0.1/',
-      } as Project),
-  })),
-}));
+jest.mock('@background/backgroundClient');
 
 const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
 
@@ -45,6 +38,18 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
 }
 
 describe('address bar', () => {
+  beforeEach(() => {
+    (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue({
+      name: 'Some project',
+      pageUrl: 'https://127.0.0.1/',
+      translationUrl: 'https://127.0.0.1/',
+    } as Project);
+  });
+
+  afterEach(() => {
+    (getPontoonProjectForTheCurrentTab as jest.Mock).mockReset();
+  });
+
   it('renders', async () => {
     await expectRendersToRoot('address-bar-root');
   });
@@ -79,6 +84,7 @@ describe('toolbar button', () => {
     (getOptions as jest.Mock).mockImplementation(async () => ({
       locale_team: 'cs',
       toolbar_button_popup_always_hide_read_notifications: true,
+      pontoon_base_url: 'https://127.0.0.1',
     }));
     (getFromStorage as jest.Mock).mockImplementation(async () => ({
       notificationsData: {},

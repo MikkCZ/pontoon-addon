@@ -2,22 +2,18 @@ import React, { useEffect, useState } from 'react';
 
 import { openNewTab } from '@commons/webExtensionsApi';
 import {
-  BackgroundPontoonClient,
+  getPontoonProjectForTheCurrentTab,
   Project,
-} from '@background/BackgroundPontoonClient';
+} from '@background/backgroundClient';
 
 import { PanelSection } from '../PanelSection';
-
-const backgroundPontoonClient = new BackgroundPontoonClient();
 
 export const App: React.FC = () => {
   const [project, setProject] = useState<Project | undefined>();
 
   useEffect(() => {
     (async () => {
-      setProject(
-        await backgroundPontoonClient.getPontoonProjectForTheCurrentTab(),
-      );
+      setProject(await getPontoonProjectForTheCurrentTab());
     })();
   }, []);
 

@@ -21,7 +21,7 @@ import {
   pontoonUserData,
   bugzillaTeamComponents,
 } from './apiEndpoints';
-import { BackgroundPontoonMessageType } from './BackgroundPontoonMessageType';
+import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import { DataFetcher } from './DataFetcher';
 import { projectsListData } from './data/projectsListData';
 
@@ -296,21 +296,17 @@ export class RemotePontoon {
   private listenToMessagesFromClients(): void {
     browser.runtime.onMessage.addListener((request, _sender) => {
       switch (request.type) {
-        case BackgroundPontoonMessageType.TO_BACKGROUND.PAGE_LOADED:
+        case BackgroundClientMessageType.PAGE_LOADED:
           this.updateNotificationsIfThereAreNew(request.value);
           break;
-        case BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ:
+        case BackgroundClientMessageType.NOTIFICATIONS_READ:
           this.markAllNotificationsAsRead();
           break;
-        case BackgroundPontoonMessageType.TO_BACKGROUND.GET_BASE_URL:
-          return Promise.resolve(this.baseUrl);
-        case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM:
-          return Promise.resolve({ code: this.team });
-        case BackgroundPontoonMessageType.TO_BACKGROUND.UPDATE_TEAMS_LIST:
+        case BackgroundClientMessageType.UPDATE_TEAMS_LIST:
           return this.updateTeamsList();
-        case BackgroundPontoonMessageType.TO_BACKGROUND.GET_TEAM_FROM_PONTOON:
+        case BackgroundClientMessageType.GET_TEAM_FROM_PONTOON:
           return this.getTeamFromPontoon();
-        case BackgroundPontoonMessageType.TO_BACKGROUND.GET_CURRENT_TAB_PROJECT:
+        case BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT:
           return browser.tabs
             .query({ currentWindow: true, active: true })
             .then((tab) => this.getPontoonProjectForPageUrl(tab[0].url!));

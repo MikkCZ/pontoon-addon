@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
 import { getFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 
@@ -16,26 +15,26 @@ import { App as ToolbarButtonApp } from './toolbar-button/App';
 
 async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
   TimeAgo.addLocale(en);
-  const backgroundPontoonClient = new BackgroundPontoonClient();
 
   const [
     {
       toolbar_button_popup_always_hide_read_notifications:
         hideReadNotifications,
       locale_team: teamCode,
+      pontoon_base_url: pontoonBaseUrl,
     },
     { notificationsData, teamsList, latestTeamsActivity },
   ] = await Promise.all([
     getOptions([
       'toolbar_button_popup_always_hide_read_notifications',
       'locale_team',
+      'pontoon_base_url',
     ]),
     getFromStorage(['notificationsData', 'teamsList', 'latestTeamsActivity']),
   ]);
   const teamData = teamsList![teamCode];
   const latestTeamActivity = latestTeamsActivity![teamCode];
 
-  const pontoonBaseUrl = await backgroundPontoonClient.getBaseUrl();
   const baseTag = document.createElement('base');
   baseTag.href = pontoonBaseUrl;
   document.getElementsByTagName('head')[0].appendChild(baseTag);
@@ -44,7 +43,6 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
     <ToolbarButtonApp
       notificationsData={notificationsData}
       hideReadNotifications={hideReadNotifications}
-      backgroundPontoonClient={backgroundPontoonClient}
       teamData={teamData}
       latestTeamActivity={latestTeamActivity}
     />,
