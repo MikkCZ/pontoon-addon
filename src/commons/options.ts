@@ -29,20 +29,19 @@ export async function getOptions<ID extends OptionId>(
   optionIds: ID[],
 ): Promise<OptionValues<ID>> {
   const defaultValues = defaultOptionsFor(browserFamily());
-  return await browser.storage.local
-    .get(optionIds.map((optionId) => storageKeyFor(optionId)))
-    .then((storageItems) => {
-      const optionsWithDefaultValues: Partial<OptionValues<ID>> = {};
-      optionIds.forEach((optionId) => {
-        const storageKey = storageKeyFor(optionId);
-        if (typeof storageItems[storageKey] !== 'undefined') {
-          optionsWithDefaultValues[optionId] = storageItems[storageKey];
-        } else {
-          optionsWithDefaultValues[optionId] = defaultValues[optionId];
-        }
-      });
-      return optionsWithDefaultValues as OptionValues<ID>;
-    });
+  const storageItems = await browser.storage.local.get(
+    optionIds.map((optionId) => storageKeyFor(optionId)),
+  );
+  const optionsWithDefaultValues: Partial<OptionValues<ID>> = {};
+  for (const optionId of optionIds) {
+    const storageKey = storageKeyFor(optionId);
+    if (typeof storageItems[storageKey] !== 'undefined') {
+      optionsWithDefaultValues[optionId] = storageItems[storageKey];
+    } else {
+      optionsWithDefaultValues[optionId] = defaultValues[optionId];
+    }
+  }
+  return optionsWithDefaultValues as OptionValues<ID>;
 }
 
 export async function getOneOption<ID extends OptionId>(

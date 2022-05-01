@@ -48,19 +48,17 @@ export class DataRefresher {
     );
     subscribeToOptionChange(
       'contextual_identity',
-      ({ newValue: contextualIdentity }) => {
-        browser.tabs
-          .query({ url: `${this.remotePontoon.getBaseUrl()}/*` })
-          .then((pontoonTabs) => {
-            pontoonTabs
-              .filter((tab) => contextualIdentity !== tab.cookieStoreId)
-              .forEach((tab) => {
-                browser.tabs.sendMessage(tab.id!, {
-                  type: 'disable-notifications-bell-script',
-                });
-              });
-          })
-          .then(() => this.refreshData());
+      async ({ newValue: contextualIdentity }) => {
+        const pontoonTabs = await browser.tabs.query({
+          url: `${this.remotePontoon.getBaseUrl()}/*`,
+        });
+        for (const tab of pontoonTabs) {
+          if (contextualIdentity !== tab.cookieStoreId) {
+            browser.tabs.sendMessage(tab.id!, {
+              type: 'disable-notifications-bell-script',
+            });
+          }
+        }
       },
     );
   }

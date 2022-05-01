@@ -47,14 +47,13 @@ export class ContextButtons {
     });
   }
 
-  private refreshContextButtonsInAllTabs(): void {
-    browser.tabs.query({}).then((tabs) =>
-      tabs.forEach((tab) => {
-        if (this.isSupportedPage(tab.url)) {
-          this.injectContextButtonsScript(tab);
-        }
-      }),
-    );
+  private async refreshContextButtonsInAllTabs(): Promise<void> {
+    const tabs = await browser.tabs.query({});
+    for (const tab of tabs) {
+      if (this.isSupportedPage(tab.url)) {
+        this.injectContextButtonsScript(tab);
+      }
+    }
   }
 
   private listenToMessagesFromContentScript(): void {

@@ -210,24 +210,23 @@ export class RemotePontoon {
   }
 
   public async updateTeamsList(): Promise<TeamsList> {
-    const [pontoonData, bz_components] = await Promise.all([
-      this.dataFetcher
-        .fetch(
+    const [pontoonDataResponse, bugzillaComponentsResponse] = await Promise.all(
+      [
+        this.dataFetcher.fetch(
           pontoonGraphQL(
             this.baseUrl,
             '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
           ),
-        )
-        .then(
-          (response) =>
-            response.json() as Promise<{ data: TeamsListGqlResponse }>,
         ),
-      this.dataFetcher
-        .fetch(bugzillaTeamComponents())
-        .then(
-          (response) => response.json() as Promise<{ [code: string]: string }>,
-        ),
-    ]);
+        this.dataFetcher.fetch(bugzillaTeamComponents()),
+      ],
+    );
+    const pontoonData = (await pontoonDataResponse.json()) as {
+      data: TeamsListGqlResponse;
+    };
+    const bugzillaComponents = (await bugzillaComponentsResponse.json()) as {
+      [code: string]: string;
+    };
     const teamsListObj: TeamsList = {};
     pontoonData.data.locales
       .filter((team) => team.totalStrings > 0)
@@ -245,7 +244,7 @@ export class RemotePontoon {
             unreviewedStrings: team.unreviewedStrings,
             totalStrings: team.totalStrings,
           },
-          bz_component: bz_components[team.code],
+          bz_component: bugzillaComponents[team.code],
         };
       });
     await saveToStorage({ teamsList: teamsListObj });
@@ -306,12 +305,12 @@ export class RemotePontoon {
   }
 
   public async updateProjectsList(): Promise<{ [key: string]: any }> {
-    const pontoonData = await this.dataFetcher
-      .fetch(pontoonGraphQL(this.baseUrl, '{projects{slug,name}}'))
-      .then(
-        (response) =>
-          response.json() as Promise<{ data: ProjectsListGqlResponse }>,
-      );
+    const pontoonDataResponse = await this.dataFetcher.fetch(
+      pontoonGraphQL(this.baseUrl, '{projects{slug,name}}'),
+    );
+    const pontoonData = (await pontoonDataResponse.json()) as {
+      data: ProjectsListGqlResponse;
+    };
     const partialProjectsMap = new Map<string, ProjectGqlReponse>();
     pontoonData.data.projects.forEach((project) =>
       partialProjectsMap.set(project.slug, project),
@@ -352,20 +351,19 @@ export class RemotePontoon {
             .then((tab) => this.getPontoonProjectForPageUrl(tab[0].url!));
       }
     });
-    this.subscribeToNotificationsChange((change) => {
+    this.subscribeToNotificationsChange(async (change) => {
       const message = {
         type: BackgroundPontoonMessageType.FROM_BACKGROUND
           .NOTIFICATIONS_UPDATED,
         data: change,
       };
       browser.runtime.sendMessage(message);
-      browser.tabs
-        .query({ url: `${this.getBaseUrl()}/*` })
-        .then((pontoonTabs) =>
-          pontoonTabs.forEach((tab) =>
-            browser.tabs.sendMessage(tab.id!, message),
-          ),
-        );
+      const pontoonTabs = await browser.tabs.query({
+        url: `${this.getBaseUrl()}/*`,
+      });
+      for (const tab of pontoonTabs) {
+        browser.tabs.sendMessage(tab.id!, message);
+      }
     });
   }
 

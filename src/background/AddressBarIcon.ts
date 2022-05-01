@@ -33,10 +33,11 @@ export class AddressBarIcon {
     });
   }
 
-  private refreshAllTabsPageActions(): void {
-    browser.tabs
-      .query({})
-      .then((tabs) => tabs.forEach((tab) => this.showPageActionForTab(tab)));
+  private async refreshAllTabsPageActions(): Promise<void> {
+    const tabs = await browser.tabs.query({});
+    for (const tab of tabs) {
+      this.showPageActionForTab(tab);
+    }
   }
 
   private async showPageActionForTab(tab: Tabs.Tab): Promise<void> {

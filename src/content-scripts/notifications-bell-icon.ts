@@ -82,10 +82,14 @@ function backgroundMessageHandler(message: { type: string }) {
   }
 }
 
-browser.runtime.onMessage.addListener((request, _sender) =>
-  backgroundMessageHandler(request),
-);
+async function init() {
+  browser.runtime.onMessage.addListener((request, _sender) =>
+    backgroundMessageHandler(request),
+  );
+  const response = await browser.runtime.sendMessage({
+    type: 'notifications-bell-script-loaded',
+  });
+  backgroundMessageHandler(response);
+}
 
-browser.runtime
-  .sendMessage({ type: 'notifications-bell-script-loaded' })
-  .then((response) => backgroundMessageHandler(response));
+init();
