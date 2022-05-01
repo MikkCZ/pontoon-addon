@@ -1,7 +1,7 @@
 import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
 
-import { browser } from '@commons/webExtensionsApi';
+import { browser, hasPermissions } from '@commons/webExtensionsApi';
 import {
   getOneOption,
   getOptions,
@@ -20,11 +20,9 @@ export class DataFetcher {
       return this.updatePontoonRequest(details);
     };
 
-    const requiredPermissions = ['cookies', 'webRequest', 'webRequestBlocking'];
-    browser.permissions
-      .contains({ permissions: requiredPermissions })
-      .then(async (hasPermissions) => {
-        if (hasPermissions) {
+    hasPermissions('cookies', 'webRequest', 'webRequestBlocking').then(
+      async (hasRequiredPermissions) => {
+        if (hasRequiredPermissions) {
           listenToOptionChange(
             'pontoon_base_url',
             ({ newValue: pontoonBaseUrl }) => {
@@ -34,7 +32,8 @@ export class DataFetcher {
           const pontoonBaseUrl = await getOneOption('pontoon_base_url');
           this.watchPontoonRequests(pontoonBaseUrl);
         }
-      });
+      },
+    );
   }
 
   private watchPontoonRequests(pontoonBaseUrl: string) {

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import type { ContextualIdentities } from 'webextension-polyfill';
 
 import { getAllContainers } from '@commons/webExtensionsApi';
 import { containersInfoPage } from '@commons/webLinks';
 import { getOneOption, setOption } from '@commons/options';
 
-type ContainerInfo = Pick<
-  ContextualIdentities.ContextualIdentity,
-  'cookieStoreId' | 'name'
->;
+interface ContainerInfo {
+  name: string,
+  cookieStoreId: string,
+}
 
 export const ContainerSelection: React.FC = () => {
   const [containersList, setContainersList] = useState<

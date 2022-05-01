@@ -48,3 +48,7 @@ export const hideAddressBarIcon = jest.fn();
 export const supportsContainers = jest.fn().mockReturnValue(true);
 
 export const getAllContainers = jest.fn().mockReturnValue([]);
+
+export const requestPermissionForPontoon = jest.fn();
+
+export const hasPermissions = jest.fn();

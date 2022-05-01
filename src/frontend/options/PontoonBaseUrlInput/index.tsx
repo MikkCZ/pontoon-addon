@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { browser } from '@commons/webExtensionsApi';
+import { requestPermissionForPontoon } from '@commons/webExtensionsApi';
 import { getOneOption, setOption } from '@commons/options';
 
 export const PontoonBaseUrlInput: React.FC = () => {
@@ -17,9 +17,10 @@ export const PontoonBaseUrlInput: React.FC = () => {
 
   const setPontoonBaseUrl = async (url: string) => {
     const baseUrl = url.replace(/\/+$/, '');
-    await browser.permissions.request({ origins: [`${baseUrl}/*`] });
-    _setPontoonBaseUrlState(baseUrl);
-    await setOption('pontoon_base_url', baseUrl);
+    if (await requestPermissionForPontoon(baseUrl)) {
+      _setPontoonBaseUrlState(baseUrl);
+      await setOption('pontoon_base_url', baseUrl);
+    }
   };
 
   return (

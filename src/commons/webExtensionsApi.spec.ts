@@ -14,6 +14,7 @@ import {
   getFromStorage,
   getOneFromStorage,
   getResourceUrl,
+  hasPermissions,
   hideAddressBarIcon,
   openIntro,
   openNewTab,
@@ -22,6 +23,7 @@ import {
   openSnakeGame,
   openToolbarButtonPopup,
   removeContextMenu,
+  requestPermissionForPontoon,
   saveToStorage,
   showAddressBarIcon,
   supportsAddressBar,
@@ -258,6 +260,28 @@ describe('webExtensionsApi', () => {
 
     await getAllContainers();
 
+    mockBrowserNode.verify();
+  });
+
+  it('requestPermissionForPontoon', async () => {
+    mockBrowser.permissions.request
+      .expect({ origins: ['https://localhost/*'] })
+      .andResolve(true);
+
+    const granted = await requestPermissionForPontoon('https://localhost');
+
+    expect(granted).toBe(true);
+    mockBrowserNode.verify();
+  });
+
+  it('hasPermissions', async () => {
+    mockBrowser.permissions.contains
+      .expect({ permissions: ['cookies', 'webRequest'] })
+      .andResolve(true);
+
+    const result = await hasPermissions('cookies', 'webRequest');
+
+    expect(result).toBe(true);
     mockBrowserNode.verify();
   });
 });
