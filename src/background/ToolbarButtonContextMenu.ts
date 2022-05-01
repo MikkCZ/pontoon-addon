@@ -1,6 +1,5 @@
 import type { Menus } from 'webextension-polyfill';
 
-import type { Options } from '@commons/Options';
 import {
   pontoonTeam,
   pontoonTeamInsights,
@@ -17,24 +16,22 @@ import {
   openIntro,
   createContextMenu,
 } from '@commons/webExtensionsApi';
+import { getOneOption } from '@commons/options';
 
 import type { DataRefresher } from './DataRefresher';
 import type { RemotePontoon } from './RemotePontoon';
 import type { ToolbarButton } from './ToolbarButton';
 
 export class ToolbarButtonContextMenu {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
   private readonly dataRefresher: DataRefresher;
   private readonly toolbarButton: ToolbarButton;
 
   constructor(
-    options: Options,
     remotePontoon: RemotePontoon,
     dataRefresher: DataRefresher,
     toolbarButton: ToolbarButton,
   ) {
-    this.options = options;
     this.remotePontoon = remotePontoon;
     this.dataRefresher = dataRefresher;
     this.toolbarButton = toolbarButton;
@@ -43,9 +40,7 @@ export class ToolbarButtonContextMenu {
   }
 
   private async addContextMenu(): Promise<void> {
-    const localeTeam = await this.options
-      .get('locale_team')
-      .then((item: any) => item['locale_team']);
+    const localeTeam = await getOneOption('locale_team');
     createContextMenu({
       title: 'Reload notifications',
       contexts: ['browser_action'],

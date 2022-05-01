@@ -8,7 +8,7 @@ import {
   openToolbarButtonPopup,
   supportsAddressBar,
 } from '@commons/webExtensionsApi';
-import { Options } from '@commons/Options';
+import { setOption } from '@commons/options';
 import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
@@ -58,7 +58,7 @@ export const App: React.FC = () => {
     button: {
       text: 'Preview system notifications',
       onClick: () => {
-        new Options().set('show_notifications', true);
+        setOption('show_notifications', true);
         createNotification({
           type: 'basic',
           iconUrl: pontoonLogo,

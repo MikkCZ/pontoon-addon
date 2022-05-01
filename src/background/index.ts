@@ -1,11 +1,11 @@
 import type { Runtime } from 'webextension-polyfill';
 
-import { Options } from '@commons/Options';
 import {
   browser,
   openIntro,
   supportsAddressBar,
 } from '@commons/webExtensionsApi';
+import { getOptions } from '@commons/options';
 
 import { ContextButtons } from './ContextButtons';
 import { DataRefresher } from './DataRefresher';
@@ -37,44 +37,34 @@ browser.runtime.onInstalled.addListener((details) => {
   }
 });
 
-const options = new Options();
+async function init() {
+  const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
+    await getOptions(['pontoon_base_url', 'locale_team']);
 
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
+  const remotePontoon = new RemotePontoon(pontoonBaseUrl, teamCode);
+  const toolbarButton = new ToolbarButton(remotePontoon);
+  if (supportsAddressBar()) {
+    const _addressBarIcon = new AddressBarIcon(remotePontoon);
+  }
+  const _systemNotifications = new SystemNotifications(remotePontoon);
+  const _pageContextMenu = new PageContextMenu(remotePontoon);
+  const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
+  const _contextButtons = new ContextButtons(remotePontoon);
+  const dataRefresher = new DataRefresher(remotePontoon);
+  const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
+    remotePontoon,
+    dataRefresher,
+    toolbarButton,
+  );
 
-options
-  .get([pontoonBaseUrlOptionKey, localeTeamOptionKey])
-  .then((optionsItems: any) => {
-    const remotePontoon = new RemotePontoon(
-      optionsItems[pontoonBaseUrlOptionKey],
-      optionsItems[localeTeamOptionKey],
-      options,
-    );
-    const toolbarButton = new ToolbarButton(options, remotePontoon);
-    if (supportsAddressBar()) {
-      const _addressBarIcon = new AddressBarIcon(remotePontoon);
-    }
-    const _systemNotifications = new SystemNotifications(
-      options,
-      remotePontoon,
-    );
-    const _pageContextMenu = new PageContextMenu(options, remotePontoon);
-    const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
-    const _contextButtons = new ContextButtons(options, remotePontoon);
-    const dataRefresher = new DataRefresher(options, remotePontoon);
-    const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
-      options,
-      remotePontoon,
-      dataRefresher,
-      toolbarButton,
-    );
+  // If the onInstalled event has already fired, the details are stored by the function registered above.
+  onInstallFunction = (_details) =>
+    dataRefresher.refreshDataOnInstallOrUpdate();
+  if (newInstallationDetails) {
+    onInstallFunction(newInstallationDetails);
+  }
 
-    // If the onInstalled event has already fired, the details are stored by the function registered above.
-    onInstallFunction = (_details) =>
-      dataRefresher.refreshDataOnInstallOrUpdate();
-    if (newInstallationDetails) {
-      onInstallFunction(newInstallationDetails);
-    }
+  setTimeout(() => dataRefresher.refreshData(), 1000);
+}
 
-    setTimeout(() => dataRefresher.refreshData(), 1000);
-  });
+init();

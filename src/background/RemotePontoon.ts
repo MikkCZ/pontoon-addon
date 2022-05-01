@@ -1,7 +1,5 @@
-import type { Storage } from 'webextension-polyfill';
 import URI from 'urijs';
 
-import type { Options } from '@commons/Options';
 import {
   browser,
   deleteFromStorage,
@@ -14,6 +12,7 @@ import {
   toPontoonTeamSpecificProjectUrl,
   pontoonTeamsList,
 } from '@commons/webLinks';
+import { subscribeToOptionChange } from '@commons/options';
 
 import {
   AUTOMATION_UTM_SOURCE,
@@ -95,17 +94,15 @@ export class RemotePontoon {
   private baseUrl: string;
   private baseUrlChangeListeners: Set<() => void>;
   private team: string;
-  private readonly options: Options;
   private readonly domParser: DOMParser;
   private readonly dataFetcher: DataFetcher;
 
-  constructor(baseUrl: string, team: string, options: Options) {
+  constructor(baseUrl: string, team: string) {
     this.baseUrl = baseUrl;
     this.baseUrlChangeListeners = new Set();
     this.team = team;
-    this.options = options;
     this.domParser = new DOMParser();
-    this.dataFetcher = new DataFetcher(this.options, this);
+    this.dataFetcher = new DataFetcher(this);
 
     this.listenToMessagesFromClients();
     this.watchOptionsUpdates();
@@ -373,19 +370,16 @@ export class RemotePontoon {
   }
 
   private watchOptionsUpdates(): void {
-    this.options.subscribeToOptionChange(
+    subscribeToOptionChange(
       pontoonBaseUrlOptionKey,
-      (change: Storage.StorageChange) => {
-        this.baseUrl = change.newValue.replace(/\/$/, '');
+      ({ newValue: pontoonBaseUrl }) => {
+        this.baseUrl = pontoonBaseUrl.replace(/\/$/, '');
         this.baseUrlChangeListeners.forEach((callback) => callback());
       },
     );
-    this.options.subscribeToOptionChange(
-      localeTeamOptionKey,
-      (change: Storage.StorageChange) => {
-        this.team = change.newValue;
-      },
-    );
+    subscribeToOptionChange(localeTeamOptionKey, ({ newValue: teamCode }) => {
+      this.team = teamCode;
+    });
   }
 
   private async markAllNotificationsAsRead(): Promise<void> {

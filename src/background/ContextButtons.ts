@@ -1,22 +1,20 @@
 import { Tabs } from 'webextension-polyfill';
 
-import type { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import {
   browser,
   getOneFromStorage,
   openNewTab,
 } from '@commons/webExtensionsApi';
+import { getOneOption } from '@commons/options';
 
 import type { ProjectsList, RemotePontoon } from './RemotePontoon';
 
 export class ContextButtons {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
   private mozillaWebsites: string[] = [];
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
     getOneFromStorage('projectsList').then((projectsList) => {
       this.initMozillaWebsitesList(projectsList);
@@ -73,12 +71,10 @@ export class ContextButtons {
           );
           break;
         case 'bugzilla-report-context-button-clicked': {
-          const localeTeamOptionKey = 'locale_team';
           Promise.all([
-            this.options.get(localeTeamOptionKey),
+            getOneOption('locale_team'),
             getOneFromStorage('teamsList'),
-          ]).then(([optionsItems, teamsList]) => {
-            const teamCode = optionsItems[localeTeamOptionKey] as string;
+          ]).then(([teamCode, teamsList]) => {
             const team = teamsList![teamCode];
             openNewTab(
               newLocalizationBug({

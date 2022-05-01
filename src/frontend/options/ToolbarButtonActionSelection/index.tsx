@@ -2,10 +2,8 @@ import React, { useEffect, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 import { openNewTab } from '@commons/webExtensionsApi';
-import { Options } from '@commons/Options';
 import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-
-const OPTION_KEY = 'toolbar_button_action';
+import { getOneOption, setOption } from '@commons/options';
 
 const Link = styled.button`
   appearance: none;
@@ -26,20 +24,18 @@ const Link = styled.button`
 
 const backgroundPontoonClient = new BackgroundPontoonClient();
 
-export const ToolbarButtonActionSelection: React.FC<{ options: Options }> = ({
-  options,
-}) => {
+export const ToolbarButtonActionSelection: React.FC = () => {
   const [value, setValue] = useState<string | undefined>();
 
   useEffect(() => {
     (async () => {
-      setValue((await options.get(OPTION_KEY))[OPTION_KEY] as string);
+      setValue(await getOneOption('toolbar_button_action'));
     })();
-  }, [options]);
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-    options.set(OPTION_KEY, e.target.value);
+    setOption('toolbar_button_action', e.target.value);
   };
 
   return (
@@ -48,7 +44,7 @@ export const ToolbarButtonActionSelection: React.FC<{ options: Options }> = ({
       <label>
         <input
           type="radio"
-          name={OPTION_KEY}
+          name="toolbar_button_action"
           value="popup"
           checked={value === 'popup'}
           onChange={handleChange}
@@ -58,7 +54,7 @@ export const ToolbarButtonActionSelection: React.FC<{ options: Options }> = ({
       <label>
         <input
           type="radio"
-          name={OPTION_KEY}
+          name="toolbar_button_action"
           value="team-page"
           checked={value === 'team-page'}
           onChange={handleChange}
@@ -68,7 +64,7 @@ export const ToolbarButtonActionSelection: React.FC<{ options: Options }> = ({
       <label>
         <input
           type="radio"
-          name={OPTION_KEY}
+          name="toolbar_button_action"
           value="home-page"
           checked={value === 'home-page'}
           onChange={handleChange}

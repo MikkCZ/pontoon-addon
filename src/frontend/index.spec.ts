@@ -4,16 +4,13 @@ import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
 import { getFromStorage } from '@commons/webExtensionsApi';
+import { getOptions } from '@commons/options';
 import type { Project } from '@background/BackgroundPontoonClient';
 
 import { render } from './index';
 
 jest.mock('@commons/webExtensionsApi');
-jest.mock('@commons/Options', () => ({
-  Options: jest.fn(() => ({
-    get: () => ({ locale_team: 'cs' }),
-  })),
-}));
+jest.mock('@commons/options');
 jest.mock('@background/BackgroundPontoonClient', () => ({
   BackgroundPontoonClient: jest.fn(() => ({
     getBaseUrl: () => 'https://127.0.0.1',
@@ -30,7 +27,6 @@ const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
 
 afterEach(() => {
   reactDomRender.mockReset();
-  (getFromStorage as jest.Mock).mockReset();
   document.body.textContent = '';
 });
 
@@ -80,11 +76,20 @@ describe('snake game', () => {
 
 describe('toolbar button', () => {
   beforeEach(() => {
+    (getOptions as jest.Mock).mockImplementation(async () => ({
+      locale_team: 'cs',
+      toolbar_button_popup_always_hide_read_notifications: true,
+    }));
     (getFromStorage as jest.Mock).mockImplementation(async () => ({
       notificationsData: {},
       teamsList: { cs: {} },
       latestTeamsActivity: { cs: {} },
     }));
+  });
+
+  afterEach(() => {
+    (getOptions as jest.Mock).mockReset();
+    (getFromStorage as jest.Mock).mockReset();
   });
 
   it('renders', async () => {

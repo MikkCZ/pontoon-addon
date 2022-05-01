@@ -1,41 +1,41 @@
 import React, { useEffect, useState } from 'react';
 
-import { Options } from '@commons/Options';
 import { getOneFromStorage } from '@commons/webExtensionsApi';
 import {
   BackgroundPontoonClient,
   TeamsList,
 } from '@background/BackgroundPontoonClient';
+import { getOneOption, setOption } from '@commons/options';
 
 const backgroundPontoonClient = new BackgroundPontoonClient();
-const OPTION_KEY = 'locale_team';
 
-export const LocaleSelection: React.FC<{ options: Options }> = ({
-  options,
-}) => {
+export const LocaleSelection: React.FC = () => {
   const [teamsList, setTeamsList] = useState<TeamsList | undefined>();
   const [localeTeam, _setLocaleTeamState] = useState<string | undefined>();
 
   useEffect(() => {
     (async () => {
-      const [teamsInPontoon, localeTeamFromOptions] = await Promise.all([
+      const [teamsInPontoon, teamCode] = await Promise.all([
         getOneFromStorage('teamsList'),
-        options.get(OPTION_KEY) as Promise<{ [OPTION_KEY]: string }>,
+        getOneOption('locale_team'),
       ]);
-      _setLocaleTeamState(localeTeamFromOptions[OPTION_KEY]);
+      _setLocaleTeamState(teamCode);
       setTeamsList(teamsInPontoon);
     })();
-  }, [options]);
+  }, []);
 
   const setLocaleTeam = (selected?: string) => {
     _setLocaleTeamState(selected);
-    options.set(OPTION_KEY, selected);
+    if (selected) {
+      setOption('locale_team', selected);
+    }
   };
 
   return (
     <div>
-      <label htmlFor={OPTION_KEY}>Select your locale team</label>
+      <label htmlFor="locale_team">Select your locale team</label>
       <select
+        id="locale_team"
         value={localeTeam}
         onChange={(e) => setLocaleTeam(e.target.value)}
       >

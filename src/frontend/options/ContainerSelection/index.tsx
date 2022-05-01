@@ -2,19 +2,15 @@ import React, { useEffect, useState } from 'react';
 import type { ContextualIdentities } from 'webextension-polyfill';
 
 import { getAllContainers } from '@commons/webExtensionsApi';
-import { Options } from '@commons/Options';
 import { containersInfoPage } from '@commons/webLinks';
+import { getOneOption, setOption } from '@commons/options';
 
 type ContainerInfo = Pick<
   ContextualIdentities.ContextualIdentity,
   'cookieStoreId' | 'name'
 >;
 
-const OPTION_KEY = 'contextual_identity';
-
-export const ContainerSelection: React.FC<{ options: Options }> = ({
-  options,
-}) => {
+export const ContainerSelection: React.FC = () => {
   const [containersList, setContainersList] = useState<
     ContainerInfo[] | undefined
   >();
@@ -27,13 +23,13 @@ export const ContainerSelection: React.FC<{ options: Options }> = ({
         { cookieStoreId: 'firefox-default', name: 'Default (no container)' },
         ...(await getAllContainers()),
       ]);
-      _setContainerState((await options.get(OPTION_KEY))[OPTION_KEY] as string);
+      _setContainerState(await getOneOption('contextual_identity'));
     })();
-  }, [options]);
+  }, []);
 
   const setContainer = async (cookieStoreId: string) => {
     _setContainerState(cookieStoreId);
-    await options.set(OPTION_KEY, cookieStoreId);
+    await setOption('contextual_identity', cookieStoreId);
   };
 
   return (

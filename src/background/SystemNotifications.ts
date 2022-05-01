@@ -1,4 +1,3 @@
-import { Options } from '@commons/Options';
 import {
   browser,
   openNewTab,
@@ -12,15 +11,14 @@ import {
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
+import { getOneOption } from '@commons/options';
 
 import { NotificationsData, RemotePontoon } from './RemotePontoon';
 
 export class SystemNotifications {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
 
     this.watchNotificationClicks();
@@ -66,9 +64,7 @@ export class SystemNotifications {
       const notificationsData = change.newValue;
       const [newUnreadNotificationIds, showNotifications] = await Promise.all([
         this.getNewUnreadNotifications(notificationsData),
-        this.options.get('show_notifications').then((option: any) => {
-          return option['show_notifications'];
-        }),
+        getOneOption('show_notifications'),
       ]);
       if (showNotifications && newUnreadNotificationIds.length > 0) {
         this.notifyAboutUnreadNotifications(

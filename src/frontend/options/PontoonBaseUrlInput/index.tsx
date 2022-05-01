@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import { browser } from '@commons/webExtensionsApi';
-import { Options } from '@commons/Options';
+import { getOneOption, setOption } from '@commons/options';
 
-const OPTION_KEY = 'pontoon_base_url';
-
-export const PontoonBaseUrlInput: React.FC<{ options: Options }> = ({
-  options,
-}) => {
+export const PontoonBaseUrlInput: React.FC = () => {
   const [pontoonBaseUrl, _setPontoonBaseUrlState] = useState<
     string | undefined
   >();
@@ -15,16 +11,14 @@ export const PontoonBaseUrlInput: React.FC<{ options: Options }> = ({
 
   useEffect(() => {
     (async () => {
-      _setPontoonBaseUrlState(
-        (await options.get(OPTION_KEY))[OPTION_KEY] as string,
-      );
+      _setPontoonBaseUrlState(await getOneOption('pontoon_base_url'));
     })();
-  }, [options]);
+  }, []);
 
   const setPontoonBaseUrl = async (url: string) => {
     await browser.permissions.request({ origins: [`${url}/*`] });
     _setPontoonBaseUrlState(url);
-    await options.set(OPTION_KEY, url);
+    await setOption('pontoon_base_url', url);
   };
 
   return (

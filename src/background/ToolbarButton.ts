@@ -1,19 +1,17 @@
-import type { Options } from '@commons/Options';
+import { getOneOption, subscribeToOptionChange } from '@commons/options';
 import { browser, openNewTab, getResourceUrl } from '@commons/webExtensionsApi';
 import { pontoonTeam } from '@commons/webLinks';
 
 import type { RemotePontoon } from './RemotePontoon';
 
 export class ToolbarButton {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
   private readonly defaultTitle: string;
   private badgeText: string;
   private readonly openPontoonTeamPage: () => void;
   private readonly openPontoonHomePage: () => void;
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
     this.defaultTitle = 'Pontoon notifications';
     this.badgeText = '';
@@ -46,13 +44,16 @@ export class ToolbarButton {
   }
 
   private watchOptionsUpdates(): void {
-    this.options.subscribeToOptionChange('toolbar_button_action', (change) => {
-      this.setButtonAction(change.newValue);
-    });
-    this.options.subscribeToOptionChange(
+    subscribeToOptionChange(
+      'toolbar_button_action',
+      ({ newValue: buttonAction }) => {
+        this.setButtonAction(buttonAction);
+      },
+    );
+    subscribeToOptionChange(
       'display_toolbar_button_badge',
-      (change) => {
-        if (change.newValue) {
+      ({ newValue: displayBadge }) => {
+        if (displayBadge) {
           this.updateBadge(this.badgeText);
         } else {
           this.hideBadge();
@@ -80,33 +81,29 @@ export class ToolbarButton {
     }
   }
 
-  private addOnClickAction(): void {
-    const buttonActionOption = 'toolbar_button_action';
-    this.options.get(buttonActionOption).then((item: any) => {
-      this.setButtonAction(item[buttonActionOption]);
-    });
+  private async addOnClickAction(): Promise<void> {
+    const clickAction = await getOneOption('toolbar_button_action');
+    this.setButtonAction(clickAction);
   }
 
-  private updateBadge(text: string): void {
+  private async updateBadge(text: string): Promise<void> {
     if (text.trim().length > 0) {
       this.badgeText = text;
     }
-    const optionKey = 'display_toolbar_button_badge';
-    this.options.get(optionKey).then((item: any) => {
-      if (item[optionKey]) {
-        browser.browserAction.setBadgeText({ text: text });
-        browser.browserAction.setTitle({
-          title: `${this.defaultTitle} (${text})`,
-        });
-        if (text !== '0') {
-          browser.browserAction.setBadgeBackgroundColor({ color: '#F36' });
-        } else {
-          browser.browserAction.setBadgeBackgroundColor({ color: '#4d5967' });
-        }
+    const displayBadge = await getOneOption('display_toolbar_button_badge');
+    if (displayBadge) {
+      browser.browserAction.setBadgeText({ text: text });
+      browser.browserAction.setTitle({
+        title: `${this.defaultTitle} (${text})`,
+      });
+      if (text !== '0') {
+        browser.browserAction.setBadgeBackgroundColor({ color: '#F36' });
       } else {
-        this.hideBadge();
+        browser.browserAction.setBadgeBackgroundColor({ color: '#4d5967' });
       }
-    });
+    } else {
+      this.hideBadge();
+    }
   }
 
   public hideBadge(): void {

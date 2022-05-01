@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
 import { openIntro, supportsContainers } from '@commons/webExtensionsApi';
+import { resetDefaultOptions } from '@commons/options';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
-import { Options } from '@commons/Options';
 
 import { Header } from '../Header';
 import { LocaleSelection } from '../LocaleSelection';
@@ -64,8 +64,6 @@ const Link = styled.button`
   }
 `;
 
-const options = new Options();
-
 export const App: React.FC = () => {
   return (
     <>
@@ -79,25 +77,19 @@ export const App: React.FC = () => {
       <Content>
         <Section>
           <h3>General</h3>
-          <LocaleSelection options={options} />
-          <DataIntervalUpdateSelection options={options} />
+          <LocaleSelection />
+          <DataIntervalUpdateSelection />
         </Section>
         <Section>
           <h3>Toolbar button</h3>
           <div>
-            <Checkbox
-              options={options}
-              optionKey="display_toolbar_button_badge"
-            >
+            <Checkbox optionKey="display_toolbar_button_badge">
               Show the number of unread notifications in the toolbar button
             </Checkbox>
           </div>
-          <ToolbarButtonActionSelection options={options} />
+          <ToolbarButtonActionSelection />
           <div>
-            <Checkbox
-              options={options}
-              optionKey="toolbar_button_popup_always_hide_read_notifications"
-            >
+            <Checkbox optionKey="toolbar_button_popup_always_hide_read_notifications">
               In the popup, display unread notifications only
             </Checkbox>
             <aside>
@@ -109,7 +101,7 @@ export const App: React.FC = () => {
         <Section>
           <h3>System notifications</h3>
           <div>
-            <Checkbox options={options} optionKey="show_notifications">
+            <Checkbox optionKey="show_notifications">
               Use system notifications to show what&apos;s new in Pontoon
             </Checkbox>
             <aside>
@@ -120,8 +112,8 @@ export const App: React.FC = () => {
         </Section>
         <Section>
           <h3>Advanced</h3>
-          {supportsContainers() && <ContainerSelection options={options} />}
-          <PontoonBaseUrlInput options={options} />
+          {supportsContainers() && <ContainerSelection />}
+          <PontoonBaseUrlInput />
           <div>
             <Link
               onClick={async () => {
@@ -130,7 +122,7 @@ export const App: React.FC = () => {
                     'Do you really want to reset all Pontoon Add-on settings to default?',
                   )
                 ) {
-                  await options.resetDefaults();
+                  await resetDefaultOptions();
                   window.location.reload();
                 }
               }}

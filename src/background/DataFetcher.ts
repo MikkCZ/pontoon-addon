@@ -1,21 +1,19 @@
 import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { Options } from '@commons/Options';
 import { browser } from '@commons/webExtensionsApi';
+import { getOneOption } from '@commons/options';
 
 import type { RemotePontoon } from './RemotePontoon';
 
 export class DataFetcher {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
   private readonly pontoonRequestTokens: Set<string>;
   private readonly pontoonRequestsListener: (
     details: WebRequest.OnBeforeSendHeadersDetailsType,
   ) => WebRequest.BlockingResponseOrPromise;
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
     this.pontoonRequestTokens = new Set();
     this.pontoonRequestsListener = (details) =>
@@ -99,13 +97,12 @@ export class DataFetcher {
       tokenHeaders.length > 0 &&
       tokenHeaders.every((header) => this.verifyToken(header?.value));
     if (isMarked) {
-      return this.options
-        .get('contextual_identity')
-        .then((item: any) => {
+      return getOneOption('contextual_identity')
+        .then((contextualIdentity) => {
           return browser.cookies.get({
             url: this.remotePontoon.getBaseUrl(),
             name: 'sessionid',
-            storeId: item['contextual_identity'],
+            storeId: contextualIdentity,
           });
         })
         .then((cookie) => {
