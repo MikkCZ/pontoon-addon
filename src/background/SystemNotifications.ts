@@ -1,5 +1,4 @@
 import {
-  browser,
   openNewTab,
   getOneFromStorage,
   saveToStorage,
@@ -14,7 +13,11 @@ import {
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import { getOneOption } from '@commons/options';
 
-import { NotificationsData, RemotePontoon } from './RemotePontoon';
+import {
+  NotificationsData,
+  NotificationApiResponse as Notification,
+  RemotePontoon,
+} from './RemotePontoon';
 
 export class SystemNotifications {
   private readonly remotePontoon: RemotePontoon;
@@ -22,26 +25,19 @@ export class SystemNotifications {
   constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
 
-    this.watchNotificationClicks();
     this.watchStorageChanges();
   }
 
-  private watchNotificationClicks(): void {
-    browser.notifications.onClicked.addListener((notificationId) =>
-      this.notificationClick(notificationId),
-    );
-  }
-
-  private async notificationClick(notificationId: string): Promise<void> {
-    const notificationsData = await getOneFromStorage('notificationsData');
-    const notification = notificationsData![parseInt(notificationId, 10)];
-
+  private async handleNotificationClick(
+    id: string,
+    notification?: Notification,
+  ): Promise<void> {
     const isSuggestion =
       notification?.description?.content?.startsWith(
         'Unreviewed suggestions have been submitted',
       ) || notification?.verb === 'has reviewed suggestions';
 
-    if (isSuggestion || notification.target || !notification) {
+    if (isSuggestion || notification?.target || !notification) {
       openNewTab(
         pontoonTeam(
           this.remotePontoon.getBaseUrl(),
@@ -57,7 +53,7 @@ export class SystemNotifications {
         ),
       );
     }
-    closeNotification(notificationId);
+    closeNotification(id);
   }
 
   private watchStorageChanges(): void {
@@ -110,6 +106,7 @@ export class SystemNotifications {
       .map((id) => notificationsData[id])
       .map((notification) => {
         const item = {
+          id: notification.id,
           title: '',
           message: '',
         };
@@ -151,16 +148,26 @@ export class SystemNotifications {
           title: notificationItems[0].title,
           message: notificationItems[0].message,
         },
-        `${lastUnreadNotificationId}`,
+        (notificationId) => {
+          this.handleNotificationClick(
+            notificationId,
+            notificationsData[notificationItems[0].id],
+          );
+        },
       );
     } else {
-      await createNotification({
-        type: 'list',
-        iconUrl: pontoonLogo,
-        title: 'You have new unread notifications',
-        message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
-        items: notificationItems,
-      });
+      await createNotification(
+        {
+          type: 'list',
+          iconUrl: pontoonLogo,
+          title: 'You have new unread notifications',
+          message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
+          items: notificationItems,
+        },
+        (notificationId) => {
+          this.handleNotificationClick(notificationId);
+        },
+      );
     }
     await saveToStorage({ lastUnreadNotificationId });
   }

@@ -52,12 +52,12 @@ export async function getOneOption<ID extends OptionId>(
 
 export function listenToOptionChange<ID extends OptionId>(
   optionId: ID,
-  callback: (change: OptionChange<ID>) => void,
+  listener: (change: OptionChange<ID>) => void,
 ) {
   const storageKey = storageKeyFor(optionId);
   return browser.storage.onChanged.addListener((changes, _areaName) => {
     if (changes[storageKey]) {
-      callback(changes[storageKey] as OptionChange<ID>);
+      listener(changes[storageKey] as OptionChange<ID>);
     }
   });
 }

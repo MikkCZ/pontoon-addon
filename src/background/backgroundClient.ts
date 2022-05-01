@@ -1,3 +1,5 @@
+import { Tabs } from 'webextension-polyfill';
+
 import {
   pontoonFxaSignIn,
   pontoonSettings,
@@ -82,11 +84,10 @@ export async function getPontoonProjectForTheCurrentTab(): Promise<Project> {
   });
 }
 
-export function pageLoaded(pageUrl: string, documentHTML: string): void {
+export function pageLoaded(documentHTML: string): void {
   browser.runtime.sendMessage({
     type: BackgroundClientMessageType.PAGE_LOADED,
-    url: pageUrl,
-    value: documentHTML,
+    documentHTML,
   });
 }
 
@@ -119,7 +120,10 @@ export async function notificationBellIconScriptLoaded(): Promise<{
 }
 
 export function listenToMessages(
-  callback: (message: { type: BackgroundClientMessageType }) => void,
+  listener: (
+    message: { type: BackgroundClientMessageType; [key: string]: unknown },
+    sender: { tab?: Tabs.Tab; url?: string },
+  ) => void,
 ) {
-  browser.runtime.onMessage.addListener(callback);
+  browser.runtime.onMessage.addListener(listener);
 }

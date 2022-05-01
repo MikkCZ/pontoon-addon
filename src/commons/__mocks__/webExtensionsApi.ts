@@ -26,6 +26,12 @@ export const browserFamily = jest.fn().mockReturnValue('mozilla');
 
 export const openNewTab = jest.fn();
 
+export const getAllTabs = jest.fn();
+
+export const getTabsWithBaseUrl = jest.fn();
+
+export const getActiveTab = jest.fn();
+
 export const { getURL: getResourceUrl, openOptionsPage: openOptions } = {
   getURL: jest.fn(),
   openOptionsPage: jest.fn(),
@@ -52,3 +58,7 @@ export const getAllContainers = jest.fn().mockReturnValue([]);
 export const requestPermissionForPontoon = jest.fn();
 
 export const hasPermissions = jest.fn();
+
+export const registerScriptForBaseUrl = jest.fn();
+
+export const executeScript = jest.fn();

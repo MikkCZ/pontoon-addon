@@ -1,13 +1,15 @@
-import URI from 'urijs';
-import type { ContentScripts, Tabs } from 'webextension-polyfill';
-
-import { browser } from '@commons/webExtensionsApi';
+import {
+  executeScript,
+  getTabsWithBaseUrl,
+  registerScriptForBaseUrl,
+} from '@commons/webExtensionsApi';
 import { getOneOption, listenToOptionChange } from '@commons/options';
 
 export class PontoonAddonPromotion {
-  private contentScript: ContentScripts.RegisteredContentScript | undefined;
+  private unregisterContentScript: () => Promise<void>;
 
   constructor() {
+    this.unregisterContentScript = () => Promise.resolve();
     listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
       this.registerContentScript(pontoonBaseUrl);
     });
@@ -17,31 +19,16 @@ export class PontoonAddonPromotion {
   }
 
   private async registerContentScript(pontoonBaseUrl: string): Promise<void> {
-    const contentScriptInfo = {
-      file: 'content-scripts/pontoon-addon-promotion-content-script.js',
-    };
-    await this.contentScript?.unregister();
-    this.contentScript = await browser.contentScripts.register({
-      js: [contentScriptInfo],
-      matches: [`${URI(pontoonBaseUrl).port('').valueOf()}*`],
-      runAt: 'document_end', // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
-    });
-    const tabs = await browser.tabs.query({});
-    for (const tab of tabs) {
-      if (this.isPontoonServer(tab, pontoonBaseUrl)) {
-        browser.tabs.executeScript(tab.id, contentScriptInfo);
+    const contentScriptFile =
+      'content-scripts/pontoon-addon-promotion-content-script.js';
+    await this.unregisterContentScript();
+    this.unregisterContentScript = (
+      await registerScriptForBaseUrl(pontoonBaseUrl, contentScriptFile)
+    ).unregister;
+    for (const tab of await getTabsWithBaseUrl(pontoonBaseUrl)) {
+      if (typeof tab.id !== 'undefined') {
+        executeScript(tab.id, contentScriptFile);
       }
-    }
-  }
-
-  private isPontoonServer(tab: Tabs.Tab, pontoonBaseUrl: string): boolean {
-    if (tab.url) {
-      return URI(tab.url)
-        .port('')
-        .valueOf()
-        .startsWith(URI(pontoonBaseUrl).port('').valueOf());
-    } else {
-      return false;
     }
   }
 }

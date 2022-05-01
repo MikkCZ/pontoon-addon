@@ -2,9 +2,10 @@ import { Tabs } from 'webextension-polyfill';
 
 import {
   showAddressBarIcon,
-  browser,
   hideAddressBarIcon,
   listenToStorageChange,
+  getAllTabs,
+  listenToTabsCompletedLoading,
 } from '@commons/webExtensionsApi';
 
 import { RemotePontoon } from './RemotePontoon';
@@ -27,16 +28,13 @@ export class AddressBarIcon {
   }
 
   private watchTabsUpdates(): void {
-    browser.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
-      if (changeInfo.status === 'complete') {
-        this.showPageActionForTab(tab);
-      }
+    listenToTabsCompletedLoading((tab) => {
+      this.showPageActionForTab(tab);
     });
   }
 
   private async refreshAllTabsPageActions(): Promise<void> {
-    const tabs = await browser.tabs.query({});
-    for (const tab of tabs) {
+    for (const tab of await getAllTabs()) {
       this.showPageActionForTab(tab);
     }
   }

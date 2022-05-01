@@ -96,11 +96,11 @@ export async function getOneFromStorage<K extends keyof StorageContent>(
 
 export function listenToStorageChange<K extends keyof StorageContent>(
   storageKey: K,
-  callback: (change: StorageChange<K>) => void,
+  listener: (change: StorageChange<K>) => void,
 ) {
   return browser.storage.onChanged.addListener((changes, _areaName) => {
     if (changes[storageKey]) {
-      callback(changes[storageKey] as StorageChange<K>);
+      listener(changes[storageKey] as StorageChange<K>);
     }
   });
 }
@@ -117,12 +117,15 @@ export async function deleteFromStorage<K extends keyof StorageContent>(
 
 export async function createNotification(
   options: Notifications.CreateNotificationOptions,
-  notificationId?: string,
+  onClick: (notificationId: string) => void = closeNotification,
 ) {
-  if (typeof notificationId !== 'undefined') {
-    return browser.notifications.create(notificationId, options);
-  } else {
-    return browser.notifications.create(options);
+  const createdNotificationId = await browser.notifications.create(options);
+  if (onClick) {
+    browser.notifications.onClicked.addListener((clickedNotificationId) => {
+      if (clickedNotificationId === createdNotificationId) {
+        onClick(clickedNotificationId);
+      }
+    });
   }
 }
 
@@ -150,6 +153,28 @@ export function browserFamily(): BrowserFamily {
 
 export async function openNewTab(url: string) {
   return browser.tabs.create({ url });
+}
+
+export async function getAllTabs() {
+  return browser.tabs.query({});
+}
+
+export async function getTabsWithBaseUrl(baseUrl: string) {
+  return browser.tabs.query({ url: `${baseUrl}/*` });
+}
+
+export async function getActiveTab(): Promise<Tabs.Tab> {
+  return (await browser.tabs.query({ currentWindow: true, active: true }))[0];
+}
+
+export async function listenToTabsCompletedLoading(
+  listener: (tab: Tabs.Tab & { id: number }) => void,
+) {
+  browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete') {
+      listener({ ...tab, id: tabId });
+    }
+  });
 }
 
 export function getResourceUrl(path: string) {
@@ -185,7 +210,7 @@ export async function showAddressBarIcon(
   title: string,
   icons: { 16: string; 32: string },
 ) {
-  if (supportsAddressBar() && tab.id) {
+  if (supportsAddressBar() && typeof tab.id !== 'undefined') {
     const tabId = tab.id;
     browser.pageAction.setTitle({ tabId, title });
     await browser.pageAction.setIcon({ tabId, path: icons });
@@ -194,7 +219,7 @@ export async function showAddressBarIcon(
 }
 
 export async function hideAddressBarIcon(tab: Tabs.Tab, title: string) {
-  if (supportsAddressBar() && tab.id) {
+  if (supportsAddressBar() && typeof tab.id !== 'undefined') {
     const tabId = tab.id;
     await Promise.all([
       browser.pageAction.hide(tabId),
@@ -222,4 +247,29 @@ export async function requestPermissionForPontoon(pontoonBaseUrl: string) {
 
 export async function hasPermissions(...permissions: Manifest.Permission[]) {
   return browser.permissions.contains({ permissions });
+}
+
+export async function registerScriptForBaseUrl(baseUrl: string, file: string) {
+  return browser.contentScripts.register({
+    js: [{ file }],
+    matches: [`${baseUrl}/*`],
+    runAt: 'document_end', // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
+  });
+}
+
+export async function executeScript(tabId: number, file: string) {
+  return browser.tabs.executeScript(tabId, { file });
+}
+
+export async function callWithInterval(
+  name: string,
+  interval: { periodInMinutes: number },
+  action: () => void,
+) {
+  browser.alarms.create(name, interval);
+  browser.alarms.onAlarm.addListener(({ name: triggeredAlarmName }) => {
+    if (triggeredAlarmName === name) {
+      action();
+    }
+  });
 }

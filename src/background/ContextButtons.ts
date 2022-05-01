@@ -1,16 +1,17 @@
-import { Tabs } from 'webextension-polyfill';
-
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import {
-  browser,
   getOneFromStorage,
+  getAllTabs,
   listenToStorageChange,
   openNewTab,
+  executeScript,
+  listenToTabsCompletedLoading,
 } from '@commons/webExtensionsApi';
 import { getOneOption } from '@commons/options';
 
 import type { ProjectsList, RemotePontoon } from './RemotePontoon';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
+import { listenToMessages } from './backgroundClient';
 
 export class ContextButtons {
   private readonly remotePontoon: RemotePontoon;
@@ -42,53 +43,57 @@ export class ContextButtons {
   }
 
   private watchTabsUpdates(): void {
-    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-      if (changeInfo.status === 'complete' && this.isSupportedPage(tab.url)) {
-        this.injectContextButtonsScript(tab);
+    listenToTabsCompletedLoading((tab) => {
+      if (this.isSupportedPage(tab.url)) {
+        this.injectContextButtonsScript(tab.id);
       }
     });
   }
 
   private async refreshContextButtonsInAllTabs(): Promise<void> {
-    const tabs = await browser.tabs.query({});
-    for (const tab of tabs) {
-      if (this.isSupportedPage(tab.url)) {
-        this.injectContextButtonsScript(tab);
+    for (const tab of await getAllTabs()) {
+      if (this.isSupportedPage(tab.url) && typeof tab.id !== 'undefined') {
+        this.injectContextButtonsScript(tab.id);
       }
     }
   }
 
   private listenToMessagesFromContentScript(): void {
-    browser.runtime.onMessage.addListener((request, sender) => {
-      switch (request.type) {
-        case BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON:
-          openNewTab(
-            pontoonSearchInProject(
-              this.remotePontoon.getBaseUrl(),
-              this.remotePontoon.getTeam(),
-              { slug: 'all-projects' },
-              request.text,
-            ),
-          );
-          break;
-        case BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA: {
-          Promise.all([
-            getOneOption('locale_team'),
-            getOneFromStorage('teamsList'),
-          ]).then(([teamCode, teamsList]) => {
-            const team = teamsList![teamCode];
+    listenToMessages(
+      (
+        message: { type: BackgroundClientMessageType; text?: string },
+        { url: fromUrl },
+      ) => {
+        switch (message.type) {
+          case BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON:
             openNewTab(
-              newLocalizationBug({
-                team,
-                selectedText: request.text,
-                url: sender.url!,
-              }),
+              pontoonSearchInProject(
+                this.remotePontoon.getBaseUrl(),
+                this.remotePontoon.getTeam(),
+                { slug: 'all-projects' },
+                message.text!,
+              ),
             );
-          });
-          break;
+            break;
+          case BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA: {
+            Promise.all([
+              getOneOption('locale_team'),
+              getOneFromStorage('teamsList'),
+            ]).then(([teamCode, teamsList]) => {
+              const team = teamsList![teamCode];
+              openNewTab(
+                newLocalizationBug({
+                  team,
+                  selectedText: message.text!,
+                  url: fromUrl!,
+                }),
+              );
+            });
+            break;
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   private isSupportedPage(url: string | undefined): boolean {
@@ -99,9 +104,7 @@ export class ContextButtons {
     }
   }
 
-  private injectContextButtonsScript(tab: Tabs.Tab): void {
-    browser.tabs.executeScript(tab.id, {
-      file: 'content-scripts/context-buttons.js',
-    });
+  private injectContextButtonsScript(tabId: number): void {
+    executeScript(tabId, 'content-scripts/context-buttons.js');
   }
 }

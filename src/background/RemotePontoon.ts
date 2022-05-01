@@ -1,8 +1,8 @@
 import URI from 'urijs';
 
 import {
-  browser,
   deleteFromStorage,
+  getActiveTab,
   getOneFromStorage,
   saveToStorage,
   StorageContent,
@@ -24,8 +24,9 @@ import {
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import { DataFetcher } from './DataFetcher';
 import { projectsListData } from './data/projectsListData';
+import { listenToMessages } from './backgroundClient';
 
-interface NotificationApiResponse {
+export interface NotificationApiResponse {
   id: number;
   unread: boolean;
   actor?: {
@@ -294,24 +295,29 @@ export class RemotePontoon {
   }
 
   private listenToMessagesFromClients(): void {
-    browser.runtime.onMessage.addListener((request, _sender) => {
-      switch (request.type) {
-        case BackgroundClientMessageType.PAGE_LOADED:
-          this.updateNotificationsIfThereAreNew(request.value);
-          break;
-        case BackgroundClientMessageType.NOTIFICATIONS_READ:
-          this.markAllNotificationsAsRead();
-          break;
-        case BackgroundClientMessageType.UPDATE_TEAMS_LIST:
-          return this.updateTeamsList();
-        case BackgroundClientMessageType.GET_TEAM_FROM_PONTOON:
-          return this.getTeamFromPontoon();
-        case BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT:
-          return browser.tabs
-            .query({ currentWindow: true, active: true })
-            .then((tab) => this.getPontoonProjectForPageUrl(tab[0].url!));
-      }
-    });
+    listenToMessages(
+      (message: {
+        type: BackgroundClientMessageType;
+        documentHTML?: string;
+      }) => {
+        switch (message.type) {
+          case BackgroundClientMessageType.PAGE_LOADED:
+            this.updateNotificationsIfThereAreNew(message.documentHTML!);
+            break;
+          case BackgroundClientMessageType.NOTIFICATIONS_READ:
+            this.markAllNotificationsAsRead();
+            break;
+          case BackgroundClientMessageType.UPDATE_TEAMS_LIST:
+            return this.updateTeamsList();
+          case BackgroundClientMessageType.GET_TEAM_FROM_PONTOON:
+            return this.getTeamFromPontoon();
+          case BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT:
+            return getActiveTab().then((tab) =>
+              this.getPontoonProjectForPageUrl(tab.url!),
+            );
+        }
+      },
+    );
   }
 
   private async markAllNotificationsAsRead(): Promise<void> {

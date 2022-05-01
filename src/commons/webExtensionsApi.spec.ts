@@ -1,6 +1,6 @@
 /* eslint-disable jest/expect-expect */
 import type { MockzillaDeep } from 'mockzilla';
-import type { Notifications, Tabs } from 'webextension-polyfill';
+import { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 
 import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
 import {
@@ -10,9 +10,13 @@ import {
   createContextMenu,
   createNotification,
   deleteFromStorage,
+  executeScript,
+  getActiveTab,
   getAllContainers,
+  getAllTabs,
   getFromStorage,
   getOneFromStorage,
+  getTabsWithBaseUrl,
   getResourceUrl,
   hasPermissions,
   hideAddressBarIcon,
@@ -28,6 +32,8 @@ import {
   showAddressBarIcon,
   supportsAddressBar,
   supportsContainers,
+  registerScriptForBaseUrl,
+  callWithInterval,
 } from './webExtensionsApi';
 
 beforeEach(() => {
@@ -79,28 +85,11 @@ describe('webExtensionsApi', () => {
     mockBrowser.notifications.create
       .expect({ type: 'basic', title: 'foo', message: 'bar' })
       .andResolve('id');
+    mockBrowser.notifications.onClicked.addListener
+      .expect(expect.anything())
+      .andReturn();
 
     await createNotification({ type: 'basic', title: 'foo', message: 'bar' });
-
-    mockBrowserNode.verify();
-  });
-
-  it('createNotification with id', async () => {
-    (
-      mockBrowser.notifications.create as unknown as MockzillaDeep<{
-        (
-          notificationId: string,
-          options: Notifications.CreateNotificationOptions,
-        ): Promise<string>;
-      }>
-    )
-      .expect('id', { type: 'basic', title: 'foo', message: 'bar' })
-      .andResolve('id');
-
-    await createNotification(
-      { type: 'basic', title: 'foo', message: 'bar' },
-      'id',
-    );
 
     mockBrowserNode.verify();
   });
@@ -149,6 +138,42 @@ describe('webExtensionsApi', () => {
       .andResolve({} as Tabs.Tab);
 
     await openNewTab('https://localhost');
+
+    mockBrowserNode.verify();
+  });
+
+  it('getAllTabs', async () => {
+    mockBrowser.tabs.query.expect({}).andResolve([]);
+
+    await getAllTabs();
+
+    mockBrowserNode.verify();
+  });
+
+  it('getTabsWithBaseUrl', async () => {
+    mockBrowser.tabs.query
+      .expect({ url: 'https://localhost/*' })
+      .andResolve([]);
+
+    await getTabsWithBaseUrl('https://localhost');
+
+    mockBrowserNode.verify();
+  });
+
+  it('getActiveTab', async () => {
+    mockBrowser.tabs.query
+      .expect({ currentWindow: true, active: true })
+      .andResolve([
+        {
+          index: 0,
+          highlighted: true,
+          active: true,
+          pinned: false,
+          incognito: false,
+        },
+      ]);
+
+    await getActiveTab();
 
     mockBrowserNode.verify();
   });
@@ -282,6 +307,51 @@ describe('webExtensionsApi', () => {
     const result = await hasPermissions('cookies', 'webRequest');
 
     expect(result).toBe(true);
+    mockBrowserNode.verify();
+  });
+
+  it('registerScriptForBaseUrl', async () => {
+    mockBrowser.contentScripts.register
+      .expect({
+        js: [{ file: 'foo/bar.js' }],
+        matches: ['https://localhost/*'],
+        runAt: 'document_end',
+      })
+      .andResolve({ unregister: jest.fn() });
+
+    await registerScriptForBaseUrl('https://localhost', 'foo/bar.js');
+
+    mockBrowserNode.verify();
+  });
+
+  it('executeScript', async () => {
+    (
+      mockBrowser.tabs.executeScript as unknown as MockzillaDeep<{
+        (tabId: number, details: ExtensionTypes.InjectDetails): Promise<unknown[]>;
+      }>
+    )
+      .expect(42, { file: 'foo/bar.js' })
+      .andResolve([]);
+
+    executeScript(42, 'foo/bar.js');
+
+    mockBrowserNode.verify();
+  });
+
+  it('callWithInterval', async () => {
+    (
+      mockBrowser.alarms.create as unknown as MockzillaDeep<{
+        (name: string, alarmInfo: Alarms.CreateAlarmInfoType): void;
+      }>
+    )
+      .expect('name', { periodInMinutes: 42 })
+      .andReturn();
+    mockBrowser.alarms.onAlarm.addListener
+      .expect(expect.anything())
+      .andReturn();
+
+    callWithInterval('name', { periodInMinutes: 42 }, jest.fn());
+
     mockBrowserNode.verify();
   });
 });
