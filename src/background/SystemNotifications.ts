@@ -34,9 +34,7 @@ export class SystemNotifications {
   }
 
   private async notificationClick(notificationId: string): Promise<void> {
-    const notificationsData = await getOneFromStorage<NotificationsData>(
-      'notificationsData',
-    );
+    const notificationsData = await getOneFromStorage('notificationsData');
     const notification = notificationsData![parseInt(notificationId, 10)];
 
     const isSuggestion =
@@ -91,7 +89,7 @@ export class SystemNotifications {
         .map((notification) => notification.id);
     }
     const lastKnownUnreadNotificationId =
-      (await getOneFromStorage<number>('lastUnreadNotificationId')) ?? 0;
+      (await getOneFromStorage('lastUnreadNotificationId')) ?? 0;
     return unreadNotificationIds.filter(
       (id) => id > lastKnownUnreadNotificationId,
     );
@@ -141,12 +139,15 @@ export class SystemNotifications {
       });
     const lastUnreadNotificationId = unreadNotificationIds.sort().reverse()[0];
     if (notificationItems.length === 1) {
-      await createNotification(`${lastUnreadNotificationId}`, {
-        type: 'basic',
-        iconUrl: pontoonLogo,
-        title: notificationItems[0].title,
-        message: notificationItems[0].message,
-      });
+      await createNotification(
+        {
+          type: 'basic',
+          iconUrl: pontoonLogo,
+          title: notificationItems[0].title,
+          message: notificationItems[0].message,
+        },
+        `${lastUnreadNotificationId}`,
+      );
     } else {
       await createNotification({
         type: 'list',

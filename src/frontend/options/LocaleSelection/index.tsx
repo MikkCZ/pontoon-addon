@@ -19,7 +19,7 @@ export const LocaleSelection: React.FC<{ options: Options }> = ({
   useEffect(() => {
     (async () => {
       const [teamsInPontoon, localeTeamFromOptions] = await Promise.all([
-        getOneFromStorage<TeamsList>('teamsList'),
+        getOneFromStorage('teamsList'),
         options.get(OPTION_KEY) as Promise<{ [OPTION_KEY]: string }>,
       ]);
       _setLocaleTeamState(localeTeamFromOptions[OPTION_KEY]);

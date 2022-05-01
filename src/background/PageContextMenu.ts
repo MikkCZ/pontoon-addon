@@ -117,10 +117,7 @@ export class PageContextMenu {
     const localeTeamOptionKey = 'locale_team';
     const [optionsItems, { projectsList, teamsList }] = await Promise.all([
       this.options.get(localeTeamOptionKey),
-      getFromStorage<'teamsList' | 'projectsList'>([
-        'teamsList',
-        'projectsList',
-      ]),
+      getFromStorage(['teamsList', 'projectsList']),
     ]);
     const teamCode = optionsItems[localeTeamOptionKey] as string;
     if (projectsList && teamsList) {

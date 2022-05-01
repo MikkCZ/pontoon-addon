@@ -25,9 +25,7 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
   const [optionsItems, { notificationsData, teamsList, latestTeamsActivity }] =
     await Promise.all([
       options.get([hideReadNotificationsKey, localeTeamOptionKey]),
-      getFromStorage<'notificationsData' | 'teamsList' | 'latestTeamsActivity'>(
-        ['notificationsData', 'teamsList', 'latestTeamsActivity'],
-      ),
+      getFromStorage(['notificationsData', 'teamsList', 'latestTeamsActivity']),
     ]);
   const teamCode = optionsItems[localeTeamOptionKey] as string;
   const hideReadNotifications = optionsItems[

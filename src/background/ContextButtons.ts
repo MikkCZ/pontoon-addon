@@ -8,7 +8,7 @@ import {
   openNewTab,
 } from '@commons/webExtensionsApi';
 
-import type { ProjectsList, RemotePontoon, TeamsList } from './RemotePontoon';
+import type { ProjectsList, RemotePontoon } from './RemotePontoon';
 
 export class ContextButtons {
   private readonly options: Options;
@@ -18,7 +18,7 @@ export class ContextButtons {
   constructor(options: Options, remotePontoon: RemotePontoon) {
     this.options = options;
     this.remotePontoon = remotePontoon;
-    getOneFromStorage<ProjectsList>('projectsList').then((projectsList) => {
+    getOneFromStorage('projectsList').then((projectsList) => {
       this.initMozillaWebsitesList(projectsList);
       this.listenToMessagesFromContentScript();
       this.watchTabsUpdates();
@@ -76,7 +76,7 @@ export class ContextButtons {
           const localeTeamOptionKey = 'locale_team';
           Promise.all([
             this.options.get(localeTeamOptionKey),
-            getOneFromStorage<TeamsList>('teamsList'),
+            getOneFromStorage('teamsList'),
           ]).then(([optionsItems, teamsList]) => {
             const teamCode = optionsItems[localeTeamOptionKey] as string;
             const team = teamsList![teamCode];

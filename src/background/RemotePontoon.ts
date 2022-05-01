@@ -71,7 +71,7 @@ interface TeamsListGqlResponse {
   }>;
 }
 
-export type TeamsList = StorageContent['teamsList'];
+type TeamsList = StorageContent['teamsList'];
 
 export type Team = TeamsList['code'];
 
@@ -125,7 +125,7 @@ export class RemotePontoon {
     const page = this.domParser.parseFromString(pageContent, 'text/html');
     if (page.querySelector('header #notifications')) {
       const [notificationsData, notificationsIdsFromPage] = await Promise.all([
-        getOneFromStorage<NotificationsData>('notificationsData'),
+        getOneFromStorage('notificationsData'),
         Array.from(page.querySelectorAll('header .notification-item')).map(
           (n: any) => n.dataset.id,
         ),
@@ -270,7 +270,7 @@ export class RemotePontoon {
     | undefined
   > {
     const toProjectMap = new Map<string, Project>();
-    const projectsList = await getOneFromStorage<ProjectsList>('projectsList');
+    const projectsList = await getOneFromStorage('projectsList');
     if (projectsList) {
       Object.values(projectsList).forEach((project) =>
         project.domains.forEach((domain) => toProjectMap.set(domain, project)),
@@ -393,7 +393,7 @@ export class RemotePontoon {
       this.dataFetcher.fetchFromPontoonSession(
         markAllNotificationsAsRead(this.baseUrl),
       ),
-      getOneFromStorage<NotificationsData>('notificationsData'),
+      getOneFromStorage('notificationsData'),
     ]);
     if (response.ok) {
       Object.values(notificationsData!).forEach((n) => (n.unread = false));

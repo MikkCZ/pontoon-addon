@@ -1,6 +1,7 @@
 import type {
   Browser,
-  ContextualIdentities,
+  Menus,
+  Notifications,
   Tabs,
 } from 'webextension-polyfill';
 
@@ -77,58 +78,84 @@ export async function getFromStorage<K extends keyof StorageContent>(
   return (await browser.storage.local.get(storageKeys)) as StorageResult<K>;
 }
 
-export async function getOneFromStorage<T = unknown>(
-  storageKey: keyof StorageContent,
-): Promise<T | undefined> {
-  return (await getFromStorage([storageKey]))[storageKey] as unknown as T;
+export async function getOneFromStorage<K extends keyof StorageContent>(
+  storageKey: K,
+): Promise<StorageResult<K>[K]> {
+  return (await getFromStorage([storageKey]))[
+    storageKey
+  ] as StorageResult<K>[K];
 }
 
-export async function saveToStorage(
-  toSave: Partial<StorageContent>,
-): Promise<void> {
-  await browser.storage.local.set(toSave);
+export async function saveToStorage(toSave: Partial<StorageContent>) {
+  return browser.storage.local.set(toSave);
 }
 
 export async function deleteFromStorage<K extends keyof StorageContent>(
   ...storageKeys: K[]
 ) {
-  await browser.storage.local.remove(storageKeys);
+  return browser.storage.local.remove(storageKeys);
 }
 
-export const { create: createNotification, clear: closeNotification } =
-  browser.notifications;
+export async function createNotification(
+  options: Notifications.CreateNotificationOptions,
+  notificationId?: string,
+) {
+  if (typeof notificationId !== 'undefined') {
+    return browser.notifications.create(notificationId, options);
+  } else {
+    return browser.notifications.create(options);
+  }
+}
 
-export const { create: createContextMenu, remove: removeContextMenu } =
-  browser.contextMenus;
+export async function closeNotification(notificationId: string) {
+  return browser.notifications.clear(notificationId);
+}
+
+export function createContextMenu(
+  createProperties: Menus.CreateCreatePropertiesType,
+) {
+  return browser.contextMenus.create(createProperties);
+}
+
+export async function removeContextMenu(menuItemId: number | string) {
+  return browser.contextMenus.remove(menuItemId);
+}
 
 export function browserFamily(): BrowserFamily {
-  if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
+  if (browser.runtime.getURL('/').startsWith('moz-extension://')) {
     return BrowserFamily.MOZILLA;
   } else {
     return BrowserFamily.CHROMIUM;
   }
 }
 
-export async function openNewTab(url: string): Promise<void> {
-  await browser.tabs.create({ url });
+export async function openNewTab(url: string) {
+  return browser.tabs.create({ url });
 }
 
-export const { getURL: getResourceUrl, openOptionsPage: openOptions } =
-  browser.runtime;
-
-export async function openIntro(): Promise<void> {
-  await openNewTab(browser.runtime.getURL('frontend/intro.html'));
+export function getResourceUrl(path: string) {
+  return browser.runtime.getURL(path);
 }
 
-export async function openPrivacyPolicy(): Promise<void> {
-  await openNewTab(browser.runtime.getURL('frontend/privacy-policy.html'));
+export async function openOptions() {
+  return browser.runtime.openOptionsPage();
 }
 
-export async function openSnakeGame(): Promise<void> {
-  await openNewTab(browser.runtime.getURL('frontend/snake-game.html'));
+export async function openIntro() {
+  return openNewTab(browser.runtime.getURL('frontend/intro.html'));
 }
 
-export const { openPopup: openToolbarButtonPopup } = browser.browserAction;
+export async function openPrivacyPolicy() {
+  return openNewTab(browser.runtime.getURL('frontend/privacy-policy.html'));
+}
+
+export async function openSnakeGame() {
+  return openNewTab(browser.runtime.getURL('frontend/snake-game.html'));
+}
+
+export async function openToolbarButtonPopup() {
+  return browser.browserAction.openPopup();
+}
 
 export function supportsAddressBar(): boolean {
   return !!browser.pageAction;
@@ -138,7 +165,7 @@ export async function showAddressBarIcon(
   tab: Tabs.Tab,
   title: string,
   icons: { 16: string; 32: string },
-): Promise<void> {
+) {
   if (supportsAddressBar() && tab.id) {
     const tabId = tab.id;
     browser.pageAction.setTitle({ tabId, title });
@@ -147,10 +174,7 @@ export async function showAddressBarIcon(
   }
 }
 
-export async function hideAddressBarIcon(
-  tab: Tabs.Tab,
-  title: string,
-): Promise<void> {
+export async function hideAddressBarIcon(tab: Tabs.Tab, title: string) {
   if (supportsAddressBar() && tab.id) {
     const tabId = tab.id;
     await Promise.all([
@@ -165,9 +189,7 @@ export function supportsContainers(): boolean {
   return !!browser.contextualIdentities;
 }
 
-export async function getAllContainers(): Promise<
-  ContextualIdentities.ContextualIdentity[]
-> {
+export async function getAllContainers() {
   if (supportsContainers()) {
     return browser.contextualIdentities.query({});
   } else {
