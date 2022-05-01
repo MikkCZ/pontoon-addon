@@ -1,43 +1,45 @@
 import URI from 'urijs';
-import type { ContentScripts } from 'webextension-polyfill';
+import type { ContentScripts, Tabs } from 'webextension-polyfill';
 
 import { browser } from '@commons/webExtensionsApi';
-
-import type { RemotePontoon } from './RemotePontoon';
+import { getOneOption, listenToOptionChange } from '@commons/options';
 
 export class PontoonAddonPromotion {
-  private readonly remotePontoon: RemotePontoon;
   private contentScript: ContentScripts.RegisteredContentScript | undefined;
 
-  constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
-    this.remotePontoon.subscribeToBaseUrlChange(() => {
-      this.registerContentScript();
+  constructor() {
+    listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
+      this.registerContentScript(pontoonBaseUrl);
     });
-    this.registerContentScript();
+    getOneOption('pontoon_base_url').then((pontoonBaseUrl) => {
+      this.registerContentScript(pontoonBaseUrl);
+    });
   }
 
-  private async registerContentScript(): Promise<void> {
+  private async registerContentScript(pontoonBaseUrl: string): Promise<void> {
     const contentScriptInfo = {
       file: 'content-scripts/pontoon-addon-promotion-content-script.js',
     };
     await this.contentScript?.unregister();
     this.contentScript = await browser.contentScripts.register({
       js: [contentScriptInfo],
-      matches: [`${URI(this.remotePontoon.getBaseUrl()).port('').valueOf()}*`],
+      matches: [`${URI(pontoonBaseUrl).port('').valueOf()}*`],
       runAt: 'document_end', // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
     });
-    (await browser.tabs.query({}))
-      .filter((tab) => this.isPontoonServer(tab.url))
-      .forEach((tab) => browser.tabs.executeScript(tab.id, contentScriptInfo));
+    const tabs = await browser.tabs.query({});
+    for (const tab of tabs) {
+      if (this.isPontoonServer(tab, pontoonBaseUrl)) {
+        browser.tabs.executeScript(tab.id, contentScriptInfo);
+      }
+    }
   }
 
-  private isPontoonServer(url: string | undefined): boolean {
-    if (url) {
-      return URI(url)
+  private isPontoonServer(tab: Tabs.Tab, pontoonBaseUrl: string): boolean {
+    if (tab.url) {
+      return URI(tab.url)
         .port('')
         .valueOf()
-        .startsWith(URI(this.remotePontoon.getBaseUrl()).port('').valueOf());
+        .startsWith(URI(pontoonBaseUrl).port('').valueOf());
     } else {
       return false;
     }

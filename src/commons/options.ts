@@ -50,7 +50,7 @@ export async function getOneOption<ID extends OptionId>(
   return ((await getOptions([optionId])) as OptionValues<ID>)[optionId];
 }
 
-export function subscribeToOptionChange<ID extends OptionId>(
+export function listenToOptionChange<ID extends OptionId>(
   optionId: ID,
   callback: (change: OptionChange<ID>) => void,
 ) {

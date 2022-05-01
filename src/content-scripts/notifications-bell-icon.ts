@@ -1,8 +1,5 @@
-import {
-  BackgroundPontoonClient,
-  NotificationsData,
-} from '@background/BackgroundPontoonClient';
-import { browser } from '@commons/webExtensionsApi';
+import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { browser, listenToStorageChange } from '@commons/webExtensionsApi';
 
 const unreadNotificationsIcon =
   document.querySelector('#notifications.unread .button .icon') ||
@@ -10,74 +7,48 @@ const unreadNotificationsIcon =
 const unreadDOMElement =
   document.querySelector('#notifications.unread') ||
   document.querySelector('header .user-notifications-menu.unread');
-const backgroundPontoonClient = new BackgroundPontoonClient();
 
-/**
- * Removes itself as a listener for further clicks and sends message via BackgroundPontoonClient to mark all notifications as read.
- */
-function unreadNotificationsIconClickListener() {
-  removeUnreadNotificationsIconClickListener();
-  backgroundPontoonClient.markAllNotificationsAsRead();
-}
+let listenersEnabled = false;
+let listenersRegistered = false;
 
-function addUnreadNotificationsIconClickListener() {
-  unreadNotificationsIcon?.addEventListener(
-    'click',
-    unreadNotificationsIconClickListener,
-  );
-}
-
-function removeUnreadNotificationsIconClickListener() {
-  unreadNotificationsIcon?.removeEventListener(
-    'click',
-    unreadNotificationsIconClickListener,
-  );
-}
-
-/**
- * Mark notifications in the tab as read (change the bell icon color) if they have been marked as read from the add-on.
- */
-function notificationsDataChangeListener(change: {
-  newValue: NotificationsData;
-}) {
-  const notificationsData = change.newValue;
-  const unreadNotifications = Object.values(notificationsData).filter(
-    (n) => n.unread,
-  ).length;
-  if (unreadNotifications === 0) {
-    removeUnreadNotificationsIconClickListener();
-    unreadDOMElement?.classList.remove('unread');
-  }
-}
-
-/**
- * Register listeners for unread icon click and notifications data updates.
- */
 function registerAllListeners() {
-  if (unreadNotificationsIcon !== null) {
-    addUnreadNotificationsIconClickListener();
-    backgroundPontoonClient.subscribeToNotificationsChange(
-      notificationsDataChangeListener,
+  if (unreadNotificationsIcon && !listenersRegistered) {
+    unreadNotificationsIcon.addEventListener('click', () => {
+      if (listenersEnabled) {
+        listenersEnabled = false;
+        new BackgroundPontoonClient().markAllNotificationsAsRead();
+        console.info('Pontoon Add-on: notified markAllNotificationsAsRead');
+      }
+    });
+    listenToStorageChange(
+      'notificationsData',
+      ({ newValue: notificationsData }) => {
+        if (notificationsData) {
+          const unreadNotifications = Object.values(notificationsData).filter(
+            ({ unread }) => unread,
+          ).length;
+          if (unreadNotifications === 0 && listenersEnabled) {
+            listenersEnabled = false;
+            unreadDOMElement?.classList.remove('unread');
+            console.info('Pontoon Add-on: unread mark hidden');
+          }
+        }
+      },
     );
+    listenersRegistered = true;
+    console.info('Pontoon Add-on: listeners registered');
   }
 }
 
-function deregisterAllListeners() {
-  if (unreadNotificationsIcon !== null) {
-    removeUnreadNotificationsIconClickListener();
-    backgroundPontoonClient.unsubscribeFromNotificationsChange(
-      notificationsDataChangeListener,
-    );
-  }
-}
-
-function backgroundMessageHandler(message: { type: string }) {
-  switch (message.type) {
+function backgroundMessageHandler({ type }: { type: string }) {
+  switch (type) {
     case 'enable-notifications-bell-script':
+      listenersEnabled = true;
       registerAllListeners();
       break;
     case 'disable-notifications-bell-script':
-      deregisterAllListeners();
+      listenersEnabled = false;
+      console.info('Pontoon Add-on: listeners disabled');
       break;
   }
 }

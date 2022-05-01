@@ -17,6 +17,4 @@ export class BackgroundPontoonClient {
   getPontoonProjectForTheCurrentTab = getPontoonProjectForTheCurrentTabMock;
   pageLoaded = jest.fn();
   markAllNotificationsAsRead = markAllNotificationsAsReadMock;
-  subscribeToNotificationsChange = jest.fn();
-  unsubscribeFromNotificationsChange = jest.fn();
 }

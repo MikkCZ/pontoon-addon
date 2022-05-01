@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { openNewTab } from '@commons/webExtensionsApi';
+import { listenToStorageChange, openNewTab } from '@commons/webExtensionsApi';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -31,9 +31,12 @@ export const NotificationsList: React.FC<Props> = ({
   const [notificationsData, setNotificationsData] = useState(
     props.notificationsData,
   );
-  backgroundPontoonClient.subscribeToNotificationsChange((change: any) => {
-    setNotificationsData(change.newValue);
-  });
+  listenToStorageChange(
+    'notificationsData',
+    ({ newValue: notificationsData }) => {
+      setNotificationsData(notificationsData);
+    },
+  );
 
   if (notificationsData) {
     const containsUnreadNotifications = Object.values(notificationsData).some(

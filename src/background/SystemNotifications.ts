@@ -5,6 +5,7 @@ import {
   saveToStorage,
   createNotification,
   closeNotification,
+  listenToStorageChange,
 } from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
@@ -60,19 +61,27 @@ export class SystemNotifications {
   }
 
   private watchStorageChanges(): void {
-    this.remotePontoon.subscribeToNotificationsChange(async (change) => {
-      const notificationsData = change.newValue;
-      const [newUnreadNotificationIds, showNotifications] = await Promise.all([
-        this.getNewUnreadNotifications(notificationsData),
-        getOneOption('show_notifications'),
-      ]);
-      if (showNotifications && newUnreadNotificationIds.length > 0) {
-        this.notifyAboutUnreadNotifications(
-          newUnreadNotificationIds,
-          notificationsData,
+    listenToStorageChange(
+      'notificationsData',
+      async ({ newValue: notificationsData }) => {
+        const [newUnreadNotificationIds, showNotifications] = await Promise.all(
+          [
+            this.getNewUnreadNotifications(notificationsData),
+            getOneOption('show_notifications'),
+          ],
         );
-      }
-    });
+        if (
+          showNotifications &&
+          notificationsData &&
+          newUnreadNotificationIds.length > 0
+        ) {
+          this.notifyAboutUnreadNotifications(
+            newUnreadNotificationIds,
+            notificationsData,
+          );
+        }
+      },
+    );
   }
 
   private async getNewUnreadNotifications(

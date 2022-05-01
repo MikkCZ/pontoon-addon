@@ -1,5 +1,10 @@
-import { getOneOption, subscribeToOptionChange } from '@commons/options';
-import { browser, openNewTab, getResourceUrl } from '@commons/webExtensionsApi';
+import { getOneOption, listenToOptionChange } from '@commons/options';
+import {
+  browser,
+  openNewTab,
+  getResourceUrl,
+  listenToStorageChange,
+} from '@commons/webExtensionsApi';
 import { pontoonTeam } from '@commons/webLinks';
 
 import type { RemotePontoon } from './RemotePontoon';
@@ -31,26 +36,30 @@ export class ToolbarButton {
   }
 
   private watchStorageChanges(): void {
-    this.remotePontoon.subscribeToNotificationsChange((change) => {
-      const notificationsData = change.newValue;
-      if (notificationsData) {
-        this.updateBadge(
-          `${Object.values(notificationsData).filter((n) => n.unread).length}`,
-        );
-      } else {
-        this.updateBadge('!');
-      }
-    });
+    listenToStorageChange(
+      'notificationsData',
+      ({ newValue: notificationsData }) => {
+        if (notificationsData) {
+          this.updateBadge(
+            `${
+              Object.values(notificationsData).filter((n) => n.unread).length
+            }`,
+          );
+        } else {
+          this.updateBadge('!');
+        }
+      },
+    );
   }
 
   private watchOptionsUpdates(): void {
-    subscribeToOptionChange(
+    listenToOptionChange(
       'toolbar_button_action',
       ({ newValue: buttonAction }) => {
         this.setButtonAction(buttonAction);
       },
     );
-    subscribeToOptionChange(
+    listenToOptionChange(
       'display_toolbar_button_badge',
       ({ newValue: displayBadge }) => {
         if (displayBadge) {

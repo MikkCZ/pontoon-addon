@@ -16,9 +16,10 @@ export const PontoonBaseUrlInput: React.FC = () => {
   }, []);
 
   const setPontoonBaseUrl = async (url: string) => {
-    await browser.permissions.request({ origins: [`${url}/*`] });
-    _setPontoonBaseUrlState(url);
-    await setOption('pontoon_base_url', url);
+    const baseUrl = url.replace(/\/+$/, '');
+    await browser.permissions.request({ origins: [`${baseUrl}/*`] });
+    _setPontoonBaseUrlState(baseUrl);
+    await setOption('pontoon_base_url', baseUrl);
   };
 
   return (

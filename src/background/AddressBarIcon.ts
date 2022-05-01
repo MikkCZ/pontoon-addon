@@ -4,6 +4,7 @@ import {
   showAddressBarIcon,
   browser,
   hideAddressBarIcon,
+  listenToStorageChange,
 } from '@commons/webExtensionsApi';
 
 import { RemotePontoon } from './RemotePontoon';
@@ -20,7 +21,7 @@ export class AddressBarIcon {
   }
 
   private watchStorageChanges(): void {
-    this.remotePontoon.subscribeToProjectsListChange((_change) =>
+    listenToStorageChange('projectsList', () =>
       this.refreshAllTabsPageActions(),
     );
   }

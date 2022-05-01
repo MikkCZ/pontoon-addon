@@ -17,7 +17,6 @@ jest.mock('@background/BackgroundPontoonClient', () => ({
   BackgroundPontoonClient: jest.fn(() => ({
     getNotificationsUrl: () => 'https://127.0.0.1/notifications',
     markAllNotificationsAsRead: markAllNotificationsAsReadMock,
-    subscribeToNotificationsChange: jest.fn(),
   })),
 }));
 

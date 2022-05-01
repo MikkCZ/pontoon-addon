@@ -1,7 +1,7 @@
 import type { Tabs } from 'webextension-polyfill';
 
 import { browser, supportsContainers } from '@commons/webExtensionsApi';
-import { getOneOption, subscribeToOptionChange } from '@commons/options';
+import { getOneOption, listenToOptionChange } from '@commons/options';
 
 import type { RemotePontoon } from './RemotePontoon';
 
@@ -40,13 +40,13 @@ export class DataRefresher {
   }
 
   private watchOptionsUpdates(): void {
-    subscribeToOptionChange(
+    listenToOptionChange(
       'data_update_interval',
       ({ newValue: intervalMinutes }) => {
         this.setupAlarmWithInterval(intervalMinutes);
       },
     );
-    subscribeToOptionChange(
+    listenToOptionChange(
       'contextual_identity',
       async ({ newValue: contextualIdentity }) => {
         const pontoonTabs = await browser.tabs.query({

@@ -4,6 +4,7 @@ import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import {
   browser,
   getOneFromStorage,
+  listenToStorageChange,
   openNewTab,
 } from '@commons/webExtensionsApi';
 import { getOneOption } from '@commons/options';
@@ -21,9 +22,9 @@ export class ContextButtons {
       this.listenToMessagesFromContentScript();
       this.watchTabsUpdates();
       this.refreshContextButtonsInAllTabs();
-      remotePontoon.subscribeToProjectsListChange((change) =>
-        this.initMozillaWebsitesList(change.newValue),
-      );
+      listenToStorageChange('projectsList', ({ newValue: newProjectsList }) => {
+        this.initMozillaWebsitesList(newProjectsList);
+      });
     });
   }
 

@@ -1,5 +1,3 @@
-import { Runtime } from 'webextension-polyfill';
-
 import {
   pontoonFxaSignIn,
   pontoonSettings,
@@ -18,28 +16,6 @@ export interface Project {
   translationUrl: string;
 }
 
-interface Notification {
-  id: number;
-  unread: boolean;
-  date_iso: string;
-  actor: {
-    anchor: string;
-    url: string;
-  } | null;
-  verb: string;
-  target: {
-    anchor: string;
-    url: string;
-  } | null;
-  message: string | undefined;
-  description: {
-    content: string | null;
-    is_comment: boolean;
-  };
-}
-
-export type NotificationsData = { [id: number]: Notification };
-
 interface Team {
   name: string;
 }
@@ -48,28 +24,7 @@ export interface TeamsList {
   [slug: string]: Team;
 }
 
-interface NotificationsChange {
-  newValue: NotificationsData;
-}
-
-type NotificationsChangeCallback = (update: NotificationsChange) => void;
-
-/**
- * Client to communicate with background/RemotePontoon.js. Should be used in all contexts outside of background itself.
- */
 export class BackgroundPontoonClient {
-  private readonly notificationsChangeCallbacks: Set<NotificationsChangeCallback>;
-  private readonly notificationsChangeListener: (
-    message: { type: string; data: unknown },
-    sender: Runtime.MessageSender,
-  ) => void;
-
-  constructor() {
-    this.notificationsChangeCallbacks = new Set();
-    this.notificationsChangeListener = (message, _sender) =>
-      this.backgroundMessage(message);
-  }
-
   async getBaseUrl(): Promise<string> {
     return await browser.runtime.sendMessage({
       type: BackgroundPontoonMessageType.TO_BACKGROUND.GET_BASE_URL,
@@ -148,36 +103,5 @@ export class BackgroundPontoonClient {
     browser.runtime.sendMessage({
       type: BackgroundPontoonMessageType.TO_BACKGROUND.NOTIFICATIONS_READ,
     });
-  }
-
-  subscribeToNotificationsChange(callback: NotificationsChangeCallback): void {
-    this.notificationsChangeCallbacks.add(callback);
-    if (
-      !browser.runtime.onMessage.hasListener(this.notificationsChangeListener)
-    ) {
-      browser.runtime.onMessage.addListener(this.notificationsChangeListener);
-    }
-  }
-
-  unsubscribeFromNotificationsChange(
-    callback: NotificationsChangeCallback,
-  ): void {
-    const deleted = this.notificationsChangeCallbacks.delete(callback);
-    if (deleted && this.notificationsChangeCallbacks.size === 0) {
-      browser.runtime.onMessage.removeListener(
-        this.notificationsChangeListener,
-      );
-    }
-  }
-
-  private backgroundMessage(message: { type: string; data: unknown }): void {
-    if (
-      message.type ===
-      BackgroundPontoonMessageType.FROM_BACKGROUND.NOTIFICATIONS_UPDATED
-    ) {
-      this.notificationsChangeCallbacks.forEach((callback) =>
-        callback(message.data as NotificationsChange),
-      );
-    }
   }
 }

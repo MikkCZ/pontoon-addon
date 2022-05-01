@@ -12,7 +12,7 @@ import {
   toPontoonTeamSpecificProjectUrl,
   pontoonTeamsList,
 } from '@commons/webLinks';
-import { subscribeToOptionChange } from '@commons/options';
+import { listenToOptionChange } from '@commons/options';
 
 import {
   AUTOMATION_UTM_SOURCE,
@@ -87,25 +87,26 @@ interface ProjectsListGqlResponse {
   projects: ProjectGqlReponse[];
 }
 
-const pontoonBaseUrlOptionKey = 'pontoon_base_url';
-const localeTeamOptionKey = 'locale_team';
-
 export class RemotePontoon {
   private baseUrl: string;
-  private baseUrlChangeListeners: Set<() => void>;
   private team: string;
   private readonly domParser: DOMParser;
   private readonly dataFetcher: DataFetcher;
 
   constructor(baseUrl: string, team: string) {
     this.baseUrl = baseUrl;
-    this.baseUrlChangeListeners = new Set();
     this.team = team;
     this.domParser = new DOMParser();
-    this.dataFetcher = new DataFetcher(this);
+    this.dataFetcher = new DataFetcher();
+
+    listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
+      this.baseUrl = pontoonBaseUrl;
+    });
+    listenToOptionChange('locale_team', ({ newValue: teamCode }) => {
+      this.team = teamCode;
+    });
 
     this.listenToMessagesFromClients();
-    this.watchOptionsUpdates();
   }
 
   public getBaseUrl(): string {
@@ -134,30 +135,6 @@ export class RemotePontoon {
         this.updateNotificationsData();
       }
     }
-  }
-
-  private subscribeToDataChange<T>(
-    dataKey: string,
-    callback: (update: { newValue: T }) => void,
-  ): void {
-    browser.storage.onChanged.addListener((changes, _areaName) => {
-      if (changes[dataKey] !== undefined) {
-        callback(changes[dataKey] as { newValue: T });
-      }
-    });
-  }
-
-  public subscribeToNotificationsChange(
-    callback: (update: { newValue: NotificationsData }) => void,
-  ): void {
-    this.subscribeToDataChange<NotificationsData>(
-      'notificationsData',
-      callback,
-    );
-  }
-
-  public subscribeToBaseUrlChange(callback: () => void): void {
-    this.baseUrlChangeListeners.add(callback);
   }
 
   public async updateNotificationsData(): Promise<void> {
@@ -251,12 +228,6 @@ export class RemotePontoon {
     return teamsListObj;
   }
 
-  public subscribeToProjectsListChange(
-    callback: (change: { newValue: ProjectsList }) => void,
-  ): void {
-    this.subscribeToDataChange<ProjectsList>('projectsList', callback);
-  }
-
   public async getPontoonProjectForPageUrl(pageUrl: string): Promise<
     | {
         name: string;
@@ -296,12 +267,6 @@ export class RemotePontoon {
     } else {
       return undefined;
     }
-  }
-
-  public subscribeToTeamsListChange(
-    callback: (update: { newValue: TeamsList }) => void,
-  ): void {
-    this.subscribeToDataChange<TeamsList>('teamsList', callback);
   }
 
   public async updateProjectsList(): Promise<{ [key: string]: any }> {
@@ -350,33 +315,6 @@ export class RemotePontoon {
             .query({ currentWindow: true, active: true })
             .then((tab) => this.getPontoonProjectForPageUrl(tab[0].url!));
       }
-    });
-    this.subscribeToNotificationsChange(async (change) => {
-      const message = {
-        type: BackgroundPontoonMessageType.FROM_BACKGROUND
-          .NOTIFICATIONS_UPDATED,
-        data: change,
-      };
-      browser.runtime.sendMessage(message);
-      const pontoonTabs = await browser.tabs.query({
-        url: `${this.getBaseUrl()}/*`,
-      });
-      for (const tab of pontoonTabs) {
-        browser.tabs.sendMessage(tab.id!, message);
-      }
-    });
-  }
-
-  private watchOptionsUpdates(): void {
-    subscribeToOptionChange(
-      pontoonBaseUrlOptionKey,
-      ({ newValue: pontoonBaseUrl }) => {
-        this.baseUrl = pontoonBaseUrl.replace(/\/$/, '');
-        this.baseUrlChangeListeners.forEach((callback) => callback());
-      },
-    );
-    subscribeToOptionChange(localeTeamOptionKey, ({ newValue: teamCode }) => {
-      this.team = teamCode;
     });
   }
 

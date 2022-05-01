@@ -6,8 +6,9 @@ import {
   getFromStorage,
   createContextMenu,
   removeContextMenu,
+  listenToStorageChange,
 } from '@commons/webExtensionsApi';
-import { getOneOption, subscribeToOptionChange } from '@commons/options';
+import { getOneOption, listenToOptionChange } from '@commons/options';
 
 import { ProjectsList, RemotePontoon, Team } from './RemotePontoon';
 
@@ -100,15 +101,9 @@ export class PageContextMenu {
   }
 
   private watchStorageChangesAndOptionsUpdates(): void {
-    this.remotePontoon.subscribeToProjectsListChange((_projectsList) =>
-      this.loadDataFromStorage(),
-    );
-    this.remotePontoon.subscribeToTeamsListChange((_teamsList) =>
-      this.loadDataFromStorage(),
-    );
-    subscribeToOptionChange('locale_team', (_change) =>
-      this.loadDataFromStorage(),
-    );
+    listenToStorageChange('projectsList', () => this.loadDataFromStorage());
+    listenToStorageChange('teamsList', () => this.loadDataFromStorage());
+    listenToOptionChange('locale_team', () => this.loadDataFromStorage());
   }
 
   private async loadDataFromStorage(): Promise<void> {

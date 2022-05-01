@@ -2,6 +2,7 @@ import type {
   Browser,
   Menus,
   Notifications,
+  Storage,
   Tabs,
 } from 'webextension-polyfill';
 
@@ -72,6 +73,12 @@ type StorageResult<K extends keyof StorageContent> = Partial<
   Pick<StorageContent, K>
 >;
 
+interface StorageChange<K extends keyof StorageContent>
+  extends Storage.StorageChange {
+  oldValue?: StorageResult<K>[K];
+  newValue?: StorageResult<K>[K];
+}
+
 export async function getFromStorage<K extends keyof StorageContent>(
   storageKeys: K[],
 ): Promise<StorageResult<K>> {
@@ -84,6 +91,17 @@ export async function getOneFromStorage<K extends keyof StorageContent>(
   return (await getFromStorage([storageKey]))[
     storageKey
   ] as StorageResult<K>[K];
+}
+
+export function listenToStorageChange<K extends keyof StorageContent>(
+  storageKey: K,
+  callback: (change: StorageChange<K>) => void,
+) {
+  return browser.storage.onChanged.addListener((changes, _areaName) => {
+    if (changes[storageKey]) {
+      callback(changes[storageKey] as StorageChange<K>);
+    }
+  });
 }
 
 export async function saveToStorage(toSave: Partial<StorageContent>) {

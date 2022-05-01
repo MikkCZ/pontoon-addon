@@ -2,47 +2,48 @@ import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
 
 import { browser } from '@commons/webExtensionsApi';
-import { getOneOption } from '@commons/options';
-
-import type { RemotePontoon } from './RemotePontoon';
+import {
+  getOneOption,
+  getOptions,
+  listenToOptionChange,
+} from '@commons/options';
 
 export class DataFetcher {
-  private readonly remotePontoon: RemotePontoon;
   private readonly pontoonRequestTokens: Set<string>;
   private readonly pontoonRequestsListener: (
     details: WebRequest.OnBeforeSendHeadersDetailsType,
   ) => WebRequest.BlockingResponseOrPromise;
 
-  constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
+  constructor() {
     this.pontoonRequestTokens = new Set();
-    this.pontoonRequestsListener = (details) =>
-      this.updatePontoonRequest(details);
+    this.pontoonRequestsListener = (details) => {
+      return this.updatePontoonRequest(details);
+    };
 
     const requiredPermissions = ['cookies', 'webRequest', 'webRequestBlocking'];
     browser.permissions
       .contains({ permissions: requiredPermissions })
-      .then((hasPermissions) => {
+      .then(async (hasPermissions) => {
         if (hasPermissions) {
-          this.watchOptionsUpdates();
-          this.watchPontoonRequests();
+          listenToOptionChange(
+            'pontoon_base_url',
+            ({ newValue: pontoonBaseUrl }) => {
+              this.watchPontoonRequests(pontoonBaseUrl);
+            },
+          );
+          const pontoonBaseUrl = await getOneOption('pontoon_base_url');
+          this.watchPontoonRequests(pontoonBaseUrl);
         }
       });
   }
 
-  private watchOptionsUpdates() {
-    this.remotePontoon.subscribeToBaseUrlChange(() =>
-      this.watchPontoonRequests(),
-    );
-  }
-
-  private watchPontoonRequests() {
+  private watchPontoonRequests(pontoonBaseUrl: string) {
     browser.webRequest.onBeforeSendHeaders.removeListener(
       this.pontoonRequestsListener,
     );
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.pontoonRequestsListener,
-      { urls: [`${this.remotePontoon.getBaseUrl()}/*`] },
+      { urls: [`${pontoonBaseUrl}/*`] },
       ['blocking', 'requestHeaders'],
     );
   }
@@ -97,14 +98,19 @@ export class DataFetcher {
       tokenHeaders.length > 0 &&
       tokenHeaders.every((header) => this.verifyToken(header?.value));
     if (isMarked) {
-      return getOneOption('contextual_identity')
-        .then((contextualIdentity) => {
-          return browser.cookies.get({
-            url: this.remotePontoon.getBaseUrl(),
-            name: 'sessionid',
-            storeId: contextualIdentity,
-          });
-        })
+      return getOptions(['contextual_identity', 'pontoon_base_url'])
+        .then(
+          ({
+            contextual_identity: contextualIdentity,
+            pontoon_base_url: pontoonBaseUrl,
+          }) => {
+            return browser.cookies.get({
+              url: pontoonBaseUrl,
+              name: 'sessionid',
+              storeId: contextualIdentity,
+            });
+          },
+        )
         .then((cookie) => {
           const finalHeaders = (details.requestHeaders ?? [])
             .filter((header) => header.name.toLowerCase() !== 'cookie')

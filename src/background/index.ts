@@ -48,7 +48,7 @@ async function init() {
   }
   const _systemNotifications = new SystemNotifications(remotePontoon);
   const _pageContextMenu = new PageContextMenu(remotePontoon);
-  const _pontoonAddonPromotion = new PontoonAddonPromotion(remotePontoon);
+  const _pontoonAddonPromotion = new PontoonAddonPromotion();
   const _contextButtons = new ContextButtons(remotePontoon);
   const dataRefresher = new DataRefresher(remotePontoon);
   const _toolbarButtonContextMenu = new ToolbarButtonContextMenu(
