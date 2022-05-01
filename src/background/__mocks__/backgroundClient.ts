@@ -23,3 +23,11 @@ export const getPontoonProjectForTheCurrentTab = jest.fn();
 export const pageLoaded = jest.fn();
 
 export const markAllNotificationsAsRead = jest.fn();
+
+export const searchTextInPontoon = jest.fn();
+
+export const reportTranslatedTextToBugzilla = jest.fn();
+
+export const notificationBellIconScriptLoaded = jest.fn();
+
+export const listenToMessages = jest.fn();

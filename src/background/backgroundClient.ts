@@ -95,3 +95,31 @@ export function markAllNotificationsAsRead(): void {
     type: BackgroundClientMessageType.NOTIFICATIONS_READ,
   });
 }
+
+export function searchTextInPontoon(text: string): void {
+  browser.runtime.sendMessage({
+    type: BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
+    text,
+  });
+}
+
+export function reportTranslatedTextToBugzilla(text: string): void {
+  browser.runtime.sendMessage({
+    type: BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA,
+    text,
+  });
+}
+
+export async function notificationBellIconScriptLoaded(): Promise<{
+  type: BackgroundClientMessageType;
+}> {
+  return browser.runtime.sendMessage({
+    type: BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED,
+  });
+}
+
+export function listenToMessages(
+  callback: (message: { type: BackgroundClientMessageType }) => void,
+) {
+  browser.runtime.onMessage.addListener(callback);
+}

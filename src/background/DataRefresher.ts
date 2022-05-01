@@ -4,6 +4,7 @@ import { browser, supportsContainers } from '@commons/webExtensionsApi';
 import { getOneOption, listenToOptionChange } from '@commons/options';
 
 import type { RemotePontoon } from './RemotePontoon';
+import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
 export class DataRefresher {
   private readonly remotePontoon: RemotePontoon;
@@ -55,7 +56,7 @@ export class DataRefresher {
         for (const tab of pontoonTabs) {
           if (contextualIdentity !== tab.cookieStoreId) {
             browser.tabs.sendMessage(tab.id!, {
-              type: 'disable-notifications-bell-script',
+              type: BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT,
             });
           }
         }
@@ -70,15 +71,19 @@ export class DataRefresher {
   }
 
   private listenToMessagesFromNotificationsBellContentScript(): void {
-    browser.runtime.onMessage.addListener((message, sender) => {
-      if (message.type === 'notifications-bell-script-loaded') {
+    browser.runtime.onMessage.addListener(({ type }, sender) => {
+      if (
+        type === BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED
+      ) {
         return getOneOption('contextual_identity').then(
           (contextualIdentity) => {
             if (
               contextualIdentity === sender.tab?.cookieStoreId ||
               !supportsContainers()
             ) {
-              return { type: 'enable-notifications-bell-script' };
+              return {
+                type: BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
+              };
             }
           },
         );

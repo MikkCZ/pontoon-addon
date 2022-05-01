@@ -10,6 +10,7 @@ import {
 import { getOneOption } from '@commons/options';
 
 import type { ProjectsList, RemotePontoon } from './RemotePontoon';
+import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
 export class ContextButtons {
   private readonly remotePontoon: RemotePontoon;
@@ -60,7 +61,7 @@ export class ContextButtons {
   private listenToMessagesFromContentScript(): void {
     browser.runtime.onMessage.addListener((request, sender) => {
       switch (request.type) {
-        case 'pontoon-search-context-button-clicked':
+        case BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON:
           openNewTab(
             pontoonSearchInProject(
               this.remotePontoon.getBaseUrl(),
@@ -70,7 +71,7 @@ export class ContextButtons {
             ),
           );
           break;
-        case 'bugzilla-report-context-button-clicked': {
+        case BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA: {
           Promise.all([
             getOneOption('locale_team'),
             getOneFromStorage('teamsList'),

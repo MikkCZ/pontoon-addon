@@ -1,5 +1,10 @@
-import { markAllNotificationsAsRead } from '@background/backgroundClient';
-import { browser, listenToStorageChange } from '@commons/webExtensionsApi';
+import {
+  listenToMessages,
+  markAllNotificationsAsRead,
+  notificationBellIconScriptLoaded,
+} from '@background/backgroundClient';
+import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
+import { listenToStorageChange } from '@commons/webExtensionsApi';
 
 const unreadNotificationsIcon =
   document.querySelector('#notifications.unread .button .icon') ||
@@ -40,13 +45,13 @@ function registerAllListeners() {
   }
 }
 
-function backgroundMessageHandler({ type }: { type: string }) {
+function backgroundMessageHandler(type: BackgroundClientMessageType) {
   switch (type) {
-    case 'enable-notifications-bell-script':
+    case BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT:
       listenersEnabled = true;
       registerAllListeners();
       break;
-    case 'disable-notifications-bell-script':
+    case BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT:
       listenersEnabled = false;
       console.info('Pontoon Add-on: listeners disabled');
       break;
@@ -54,13 +59,10 @@ function backgroundMessageHandler({ type }: { type: string }) {
 }
 
 async function init() {
-  browser.runtime.onMessage.addListener((request, _sender) =>
-    backgroundMessageHandler(request),
-  );
-  const response = await browser.runtime.sendMessage({
-    type: 'notifications-bell-script-loaded',
+  listenToMessages((message) => {
+    backgroundMessageHandler(message.type);
   });
-  backgroundMessageHandler(response);
+  backgroundMessageHandler((await notificationBellIconScriptLoaded()).type);
 }
 
 init();
