@@ -327,7 +327,9 @@ describe('webExtensionsApi', () => {
   it('executeScript', async () => {
     (
       mockBrowser.tabs.executeScript as unknown as MockzillaDeep<{
-        (tabId: number, details: ExtensionTypes.InjectDetails): Promise<unknown[]>;
+        (tabId: number, details: ExtensionTypes.InjectDetails): Promise<
+          unknown[]
+        >;
       }>
     )
       .expect(42, { file: 'foo/bar.js' })
