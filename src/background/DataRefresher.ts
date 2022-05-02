@@ -28,6 +28,13 @@ export class DataRefresher {
       this.refreshDataWithInterval(periodInMinutes),
     );
 
+    listenToOptionChange('contextual_identity', () => {
+      this.refreshData();
+    });
+    listenToOptionChange('pontoon_base_url', () => {
+      this.refreshData();
+    });
+
     this.registerLiveDataProvider();
   }
 

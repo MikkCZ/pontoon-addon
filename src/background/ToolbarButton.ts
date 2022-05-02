@@ -1,4 +1,5 @@
 import {
+  getOptions,
   getOneOption,
   listenToOptionChange,
   OptionValue,
@@ -9,19 +10,14 @@ import {
   getResourceUrl,
   listenToStorageChange,
   getOneFromStorage,
+  StorageContent,
 } from '@commons/webExtensionsApi';
 import { pontoonTeam } from '@commons/webLinks';
-
-import type { NotificationsData, RemotePontoon } from './RemotePontoon';
 
 const DEFAULT_TITLE = 'Pontoon notifications';
 
 export class ToolbarButton {
-  private readonly remotePontoon: RemotePontoon;
-
-  constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
-
+  constructor() {
     this.registerBadgeChanges();
     this.registerClickAction();
   }
@@ -44,20 +40,23 @@ export class ToolbarButton {
   }
 
   private async buttonClickHandler() {
-    const action = await getOneOption('toolbar_button_action');
+    const {
+      toolbar_button_action: action,
+      pontoon_base_url: pontoonBaseUrl,
+      locale_team: teamCode,
+    } = await getOptions([
+      'toolbar_button_action',
+      'pontoon_base_url',
+      'locale_team',
+    ]);
     switch (action) {
       case 'popup':
         break;
       case 'home-page':
-        openNewTab(this.remotePontoon.getBaseUrl());
+        openNewTab(await getOneOption('pontoon_base_url'));
         break;
       case 'team-page':
-        openNewTab(
-          pontoonTeam(
-            this.remotePontoon.getBaseUrl(),
-            this.remotePontoon.getTeam(),
-          ),
-        );
+        openNewTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
         break;
       default:
         throw new Error(`Unknown toolbar button action '${action}'.`);
@@ -91,7 +90,7 @@ export class ToolbarButton {
   }
 
   private async updateBadge(
-    notificationsData: NotificationsData | undefined,
+    notificationsData: Partial<StorageContent>['notificationsData'],
   ): Promise<void> {
     let text;
     if (typeof notificationsData !== 'undefined') {

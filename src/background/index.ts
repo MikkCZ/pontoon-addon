@@ -42,7 +42,7 @@ async function init() {
     await getOptions(['pontoon_base_url', 'locale_team']);
 
   const remotePontoon = new RemotePontoon(pontoonBaseUrl, teamCode);
-  const toolbarButton = new ToolbarButton(remotePontoon);
+  const toolbarButton = new ToolbarButton();
   if (supportsAddressBar()) {
     const _addressBarIcon = new AddressBarIcon(remotePontoon);
   }
