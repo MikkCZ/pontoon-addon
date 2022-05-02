@@ -84,28 +84,28 @@ export async function getPontoonProjectForTheCurrentTab(): Promise<Project> {
   });
 }
 
-export function pageLoaded(documentHTML: string): void {
-  browser.runtime.sendMessage({
+export async function pageLoaded(documentHTML: string) {
+  await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.PAGE_LOADED,
     documentHTML,
   });
 }
 
-export function markAllNotificationsAsRead(): void {
-  browser.runtime.sendMessage({
+export async function markAllNotificationsAsRead() {
+  await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.NOTIFICATIONS_READ,
   });
 }
 
-export function searchTextInPontoon(text: string): void {
-  browser.runtime.sendMessage({
+export async function searchTextInPontoon(text: string) {
+  await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
     text,
   });
 }
 
-export function reportTranslatedTextToBugzilla(text: string): void {
-  browser.runtime.sendMessage({
+export async function reportTranslatedTextToBugzilla(text: string) {
+  await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA,
     text,
   });
