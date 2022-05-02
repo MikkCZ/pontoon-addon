@@ -1,5 +1,3 @@
-import type { Runtime } from 'webextension-polyfill';
-
 import {
   browser,
   callDelayed,
@@ -17,15 +15,6 @@ import { RemotePontoon } from './RemotePontoon';
 import { SystemNotifications } from './SystemNotifications';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarButtonContextMenu } from './ToolbarButtonContextMenu';
-
-// Register capturing event listener in case onInstalled fires before all the async stuff below are ready.
-let onInstalledDetails: Runtime.OnInstalledDetailsType;
-let onInstallFunction = (details: Runtime.OnInstalledDetailsType): void => {
-  onInstalledDetails = details;
-};
-browser.runtime.onInstalled.addListener((details) => {
-  onInstallFunction(details);
-});
 
 browser.runtime.onInstalled.addListener((details) => {
   // For new installations or major updates, open the introduction tour.
@@ -57,19 +46,6 @@ async function init() {
     dataRefresher,
     toolbarButton,
   );
-
-  const refreshDataOnUpdate = (details: Runtime.OnInstalledDetailsType) => {
-    if (details.reason === 'update') {
-      dataRefresher.refreshData();
-    }
-  };
-
-  // If the onInstalled event has already fired, the details are stored by the function registered above.
-  if (onInstalledDetails) {
-    refreshDataOnUpdate(onInstalledDetails);
-  } else {
-    onInstallFunction = refreshDataOnUpdate;
-  }
 
   callDelayed({ delayInSeconds: 1 }, async () => {
     dataRefresher.refreshData();

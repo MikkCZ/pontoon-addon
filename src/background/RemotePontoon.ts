@@ -22,7 +22,7 @@ import {
   bugzillaTeamComponents,
 } from './apiEndpoints';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
-import { DataFetcher } from './DataFetcher';
+import { HttpClient } from './HttpClient';
 import { projectsListData } from './data/projectsListData';
 import { listenToMessages } from './backgroundClient';
 
@@ -92,13 +92,13 @@ export class RemotePontoon {
   private baseUrl: string;
   private team: string;
   private readonly domParser: DOMParser;
-  private readonly dataFetcher: DataFetcher;
+  private readonly httpClient: HttpClient;
 
   constructor(baseUrl: string, team: string) {
     this.baseUrl = baseUrl;
     this.team = team;
     this.domParser = new DOMParser();
-    this.dataFetcher = new DataFetcher();
+    this.httpClient = new HttpClient();
 
     listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
       this.baseUrl = pontoonBaseUrl;
@@ -140,7 +140,7 @@ export class RemotePontoon {
 
   public async updateNotificationsData(): Promise<void> {
     try {
-      const reponse = await this.dataFetcher.fetchFromPontoonSession(
+      const reponse = await this.httpClient.fetchFromPontoonSession(
         pontoonUserData(this.baseUrl),
       );
       const userData = (await reponse.json()) as UserDataApiResponse;
@@ -156,7 +156,7 @@ export class RemotePontoon {
   }
 
   public async updateLatestTeamActivity(): Promise<void> {
-    const reponse = await this.dataFetcher.fetch(
+    const reponse = await this.httpClient.fetch(
       pontoonTeamsList(this.baseUrl, AUTOMATION_UTM_SOURCE),
     );
     const allTeamsPageContent = await reponse.text();
@@ -190,13 +190,13 @@ export class RemotePontoon {
   public async updateTeamsList(): Promise<TeamsList> {
     const [pontoonDataResponse, bugzillaComponentsResponse] = await Promise.all(
       [
-        this.dataFetcher.fetch(
+        this.httpClient.fetch(
           pontoonGraphQL(
             this.baseUrl,
             '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
           ),
         ),
-        this.dataFetcher.fetch(bugzillaTeamComponents()),
+        this.httpClient.fetch(bugzillaTeamComponents()),
       ],
     );
     const pontoonData = (await pontoonDataResponse.json()) as {
@@ -271,7 +271,7 @@ export class RemotePontoon {
   }
 
   public async updateProjectsList(): Promise<{ [key: string]: any }> {
-    const pontoonDataResponse = await this.dataFetcher.fetch(
+    const pontoonDataResponse = await this.httpClient.fetch(
       pontoonGraphQL(this.baseUrl, '{projects{slug,name}}'),
     );
     const pontoonData = (await pontoonDataResponse.json()) as {
@@ -322,7 +322,7 @@ export class RemotePontoon {
 
   private async markAllNotificationsAsRead(): Promise<void> {
     const [response, notificationsData] = await Promise.all([
-      this.dataFetcher.fetchFromPontoonSession(
+      this.httpClient.fetchFromPontoonSession(
         markAllNotificationsAsRead(this.baseUrl),
       ),
       getOneFromStorage('notificationsData'),
@@ -334,7 +334,7 @@ export class RemotePontoon {
   }
 
   private async getTeamFromPontoon(): Promise<string | undefined> {
-    const response = await this.dataFetcher.fetchFromPontoonSession(
+    const response = await this.httpClient.fetchFromPontoonSession(
       pontoonSettings(this.baseUrl, AUTOMATION_UTM_SOURCE),
     );
     const text = await response.text();

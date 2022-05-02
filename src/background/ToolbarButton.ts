@@ -29,14 +29,14 @@ export class ToolbarButton {
         if (notificationsData) {
           this.updateBadge(notificationsData);
         } else {
-          this.updateBadge(undefined);
+          this.updateBadge();
         }
       },
     );
-    listenToOptionChange('display_toolbar_button_badge', async () => {
-      this.updateBadge(await getOneFromStorage('notificationsData'));
+    listenToOptionChange('display_toolbar_button_badge', () => {
+      this.updateBadge();
     });
-    this.updateBadge(await getOneFromStorage('notificationsData'));
+    this.updateBadge();
   }
 
   private async buttonClickHandler() {
@@ -90,29 +90,43 @@ export class ToolbarButton {
   }
 
   private async updateBadge(
-    notificationsData: Partial<StorageContent>['notificationsData'],
-  ): Promise<void> {
-    let text;
-    if (typeof notificationsData !== 'undefined') {
-      text = `${
-        Object.values(notificationsData).filter((n) => n.unread).length
-      }`;
-    } else {
-      text = '!';
+    notificationsData?: Partial<StorageContent>['notificationsData'],
+  ) {
+    if (typeof notificationsData === 'undefined') {
+      notificationsData = await getOneFromStorage('notificationsData');
     }
-    const displayBadge = await getOneOption('display_toolbar_button_badge');
-    if (displayBadge || text === '!') {
-      browser.browserAction.setBadgeText({ text });
-      browser.browserAction.setTitle({ title: `${DEFAULT_TITLE} (${text})` });
-      const color = text === '0' ? '#4d5967' : '#F36';
-      browser.browserAction.setBadgeBackgroundColor({ color });
+
+    if (typeof notificationsData !== 'undefined') {
+      if (await getOneOption('display_toolbar_button_badge')) {
+        const text = `${
+          Object.values(notificationsData).filter((n) => n.unread).length
+        }`;
+        const color = text === '0' ? '#4d5967' : '#F36';
+        await Promise.all([
+          browser.browserAction.setBadgeText({ text }),
+          browser.browserAction.setTitle({
+            title: `${DEFAULT_TITLE} (${text})`,
+          }),
+          browser.browserAction.setBadgeBackgroundColor({ color }),
+        ]);
+      } else {
+        this.hideBadge();
+      }
     } else {
-      this.hideBadge();
+      const text = '!';
+      const color = '#F36';
+      await Promise.all([
+        browser.browserAction.setBadgeText({ text }),
+        browser.browserAction.setTitle({ title: `${DEFAULT_TITLE} (${text})` }),
+        browser.browserAction.setBadgeBackgroundColor({ color }),
+      ]);
     }
   }
 
-  public hideBadge(): void {
-    browser.browserAction.setBadgeText({ text: '' });
-    browser.browserAction.setTitle({ title: DEFAULT_TITLE });
+  public async hideBadge() {
+    await Promise.all([
+      browser.browserAction.setBadgeText({ text: '' }),
+      browser.browserAction.setTitle({ title: DEFAULT_TITLE }),
+    ]);
   }
 }

@@ -44,8 +44,8 @@ export class ToolbarButtonContextMenu {
     createContextMenu({
       title: 'Reload notifications',
       contexts: ['browser_action'],
-      onclick: () => {
-        this.toolbarButton.hideBadge();
+      onclick: async () => {
+        await this.toolbarButton.hideBadge();
         this.dataRefresher.refreshData();
       },
     });

@@ -57,8 +57,6 @@ export const getAllContainers = jest.fn().mockReturnValue([]);
 
 export const requestPermissionForPontoon = jest.fn();
 
-export const hasPermissions = jest.fn();
-
 export const registerScriptForBaseUrl = jest.fn();
 
 export const executeScript = jest.fn();

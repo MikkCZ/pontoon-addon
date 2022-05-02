@@ -18,7 +18,6 @@ import {
   getOneFromStorage,
   getTabsWithBaseUrl,
   getResourceUrl,
-  hasPermissions,
   hideAddressBarIcon,
   openIntro,
   openNewTab,
@@ -297,17 +296,6 @@ describe('webExtensionsApi', () => {
     const granted = await requestPermissionForPontoon('https://localhost');
 
     expect(granted).toBe(true);
-    mockBrowserNode.verify();
-  });
-
-  it('hasPermissions', async () => {
-    mockBrowser.permissions.contains
-      .expect({ permissions: ['cookies', 'webRequest'] })
-      .andResolve(true);
-
-    const result = await hasPermissions('cookies', 'webRequest');
-
-    expect(result).toBe(true);
     mockBrowserNode.verify();
   });
 

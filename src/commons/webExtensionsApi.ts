@@ -1,6 +1,5 @@
 import type {
   Browser,
-  Manifest,
   Menus,
   Notifications,
   Storage,
@@ -243,10 +242,6 @@ export async function getAllContainers() {
 
 export async function requestPermissionForPontoon(pontoonBaseUrl: string) {
   return browser.permissions.request({ origins: [`${pontoonBaseUrl}/*`] });
-}
-
-export async function hasPermissions(...permissions: Manifest.Permission[]) {
-  return browser.permissions.contains({ permissions });
 }
 
 export async function registerScriptForBaseUrl(baseUrl: string, file: string) {
