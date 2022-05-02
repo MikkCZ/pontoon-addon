@@ -1,23 +1,21 @@
 import { Menus, Tabs } from 'webextension-polyfill';
 
-import { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
-
 import {
-  ProjectsListInStorage,
-  ProjectsList,
-  RemotePontoon,
-  TeamsListInStorage,
-  Team,
-} from './RemotePontoon';
+  openNewTab,
+  getFromStorage,
+  createContextMenu,
+  removeContextMenu,
+  listenToStorageChange,
+} from '@commons/webExtensionsApi';
+import { getOneOption, listenToOptionChange } from '@commons/options';
+
+import { ProjectsList, RemotePontoon, Team } from './RemotePontoon';
 
 export class PageContextMenu {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
 
     this.watchStorageChangesAndOptionsUpdates();
@@ -46,15 +44,14 @@ export class PageContextMenu {
       documentUrlPatterns: mozillaWebsitesUrlPatterns,
       contexts: ['selection'],
       parentId: mozillaPageContextMenuParent,
-      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) => {
-        browser.tabs.create({
-          url: newLocalizationBug({
+      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) =>
+        openNewTab(
+          newLocalizationBug({
             team,
             selectedText: info.selectionText ?? '',
             url: tab.url!,
           }),
-        });
-      },
+        ),
     });
     Object.values(projects).forEach((project) => {
       project.domains
@@ -66,14 +63,14 @@ export class PageContextMenu {
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
-              browser.tabs.create({
-                url: pontoonSearchInProject(
+              openNewTab(
+                pontoonSearchInProject(
                   this.remotePontoon.getBaseUrl(),
                   this.remotePontoon.getTeam(),
                   project,
                   info.selectionText,
                 ),
-              }),
+              ),
           } as Menus.CreateCreatePropertiesType,
           {
             id: `page-context-menu-search-all-${domain}`,
@@ -82,14 +79,14 @@ export class PageContextMenu {
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
             onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
-              browser.tabs.create({
-                url: pontoonSearchInProject(
+              openNewTab(
+                pontoonSearchInProject(
                   this.remotePontoon.getBaseUrl(),
                   this.remotePontoon.getTeam(),
                   { slug: 'all-projects' },
                   info.selectionText,
                 ),
-              }),
+              ),
           } as Menus.CreateCreatePropertiesType,
         ])
         .forEach(PageContextMenu.recreateContextMenu);
@@ -99,36 +96,23 @@ export class PageContextMenu {
   private static recreateContextMenu(
     contextMenuItem: Menus.CreateCreatePropertiesType,
   ): number | string {
-    browser.contextMenus.remove(contextMenuItem.id!);
-    return browser.contextMenus.create(contextMenuItem);
+    removeContextMenu(contextMenuItem.id!);
+    return createContextMenu(contextMenuItem);
   }
 
   private watchStorageChangesAndOptionsUpdates(): void {
-    this.remotePontoon.subscribeToProjectsListChange((_projectsList) =>
-      this.loadDataFromStorage(),
-    );
-    this.remotePontoon.subscribeToTeamsListChange((_teamsList) =>
-      this.loadDataFromStorage(),
-    );
-    this.options.subscribeToOptionChange('locale_team', (_teamOption) =>
-      this.loadDataFromStorage(),
-    );
+    listenToStorageChange('projectsList', () => this.loadDataFromStorage());
+    listenToStorageChange('teamsList', () => this.loadDataFromStorage());
+    listenToOptionChange('locale_team', () => this.loadDataFromStorage());
   }
 
-  private loadDataFromStorage(): void {
-    const localeTeamOptionKey = 'locale_team';
-    const teamsListDataKey = 'teamsList';
-    const projectsListDataKey = 'projectsList';
-    Promise.all([
-      this.options.get(localeTeamOptionKey) as Promise<any>,
-      browser.storage.local.get([teamsListDataKey, projectsListDataKey]),
-    ]).then(([optionsItems, storageItems]) => {
-      const team = optionsItems[localeTeamOptionKey] as string;
-      const projectsList = (storageItems as ProjectsListInStorage).projectsList;
-      const teamsList = (storageItems as TeamsListInStorage).teamsList;
-      if (projectsList && teamsList) {
-        this.createContextMenus(projectsList, teamsList[team]);
-      }
-    });
+  private async loadDataFromStorage(): Promise<void> {
+    const [teamCode, { projectsList, teamsList }] = await Promise.all([
+      getOneOption('locale_team'),
+      getFromStorage(['teamsList', 'projectsList']),
+    ]);
+    if (projectsList && teamsList) {
+      this.createContextMenus(projectsList, teamsList[teamCode]);
+    }
   }
 }

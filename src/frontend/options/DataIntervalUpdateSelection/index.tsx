@@ -1,39 +1,35 @@
 import React, { useEffect, useState } from 'react';
 
-import { Options } from '@commons/Options';
+import { getOneOption, setOption } from '@commons/options';
 
 const INTERVAL_OPTIONS_MINUTES = [5, 15, 30, 60, 120];
-const OPTION_KEY = 'data_update_interval';
 
-export const DataIntervalUpdateSelection: React.FC<{ options: Options }> = ({
-  options,
-}) => {
+export const DataIntervalUpdateSelection: React.FC = () => {
   const [intervalMinutes, _setIntervalMinutesState] = useState<
     number | undefined
   >();
 
   useEffect(() => {
     (async () => {
-      _setIntervalMinutesState(
-        (await options.get(OPTION_KEY))[OPTION_KEY] as number,
-      );
+      _setIntervalMinutesState(await getOneOption('data_update_interval'));
     })();
-  }, [options]);
+  }, []);
 
   const setIntervalMinutes = (intervalMin: number) => {
     _setIntervalMinutesState(intervalMin);
-    options.set(OPTION_KEY, intervalMin);
+    setOption('data_update_interval', intervalMin);
   };
 
   return (
     <div>
       <label
-        htmlFor={OPTION_KEY}
+        htmlFor="data_update_interval"
         title="How frequently Pontoon Add-on checks for new notifications and updates your team information"
       >
         Select how frequently data should be updated from Pontoon
       </label>
       <select
+        id="data_update_interval"
         value={intervalMinutes}
         onChange={(e) => setIntervalMinutes(parseInt(e.target.value, 10))}
       >

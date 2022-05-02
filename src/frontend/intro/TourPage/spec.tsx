@@ -1,26 +1,12 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
-
 import { CloseButton } from '../CloseButton';
 import { TourPageTile } from '../TourPageTile';
 
 import { TourPage, PrivacyPolicyLinkWrapper } from '.';
 
-beforeEach(() => {
-  mockBrowserNode.enable();
-  mockBrowser.runtime.getURL
-    .expect('frontend/privacy-policy.html')
-    .andReturn('moz-extension://foo-bar');
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
-});
+jest.mock('@commons/webExtensionsApi');
 
 describe('TourPage', () => {
   it('renders close button', () => {

@@ -3,9 +3,8 @@ import ReactDOM from 'react-dom';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 
-import { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import { getFromStorage } from '@commons/webExtensionsApi';
+import { getOptions } from '@commons/options';
 
 import { App as AddressBarApp } from './address-bar/App';
 import { App as IntroApp } from './intro/App';
@@ -16,37 +15,26 @@ import { App as ToolbarButtonApp } from './toolbar-button/App';
 
 async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
   TimeAgo.addLocale(en);
-  const options = new Options();
-  const backgroundPontoonClient = new BackgroundPontoonClient();
 
-  const hideReadNotificationsKey =
-    'toolbar_button_popup_always_hide_read_notifications';
-  const localeTeamOptionKey = 'locale_team';
-  const notificationsDataKey = 'notificationsData';
-  const teamsListKey = 'teamsList';
-  const latestTeamsActivityKey = 'latestTeamsActivity';
   const [
-    notificationsData,
-    hideReadNotifications,
-    teamData,
-    latestTeamActivity,
+    {
+      toolbar_button_popup_always_hide_read_notifications:
+        hideReadNotifications,
+      locale_team: teamCode,
+      pontoon_base_url: pontoonBaseUrl,
+    },
+    { notificationsData, teamsList, latestTeamsActivity },
   ] = await Promise.all([
-    options.get([hideReadNotificationsKey, localeTeamOptionKey]),
-    browser.storage.local.get([
-      notificationsDataKey,
-      teamsListKey,
-      latestTeamsActivityKey,
+    getOptions([
+      'toolbar_button_popup_always_hide_read_notifications',
+      'locale_team',
+      'pontoon_base_url',
     ]),
-  ]).then(([optionsItems, storageItems]) => [
-    storageItems[notificationsDataKey],
-    optionsItems[hideReadNotificationsKey],
-    storageItems[teamsListKey][optionsItems[localeTeamOptionKey] as string],
-    storageItems[latestTeamsActivityKey][
-      optionsItems[localeTeamOptionKey] as string
-    ],
+    getFromStorage(['notificationsData', 'teamsList', 'latestTeamsActivity']),
   ]);
+  const teamData = teamsList![teamCode];
+  const latestTeamActivity = latestTeamsActivity![teamCode];
 
-  const pontoonBaseUrl = await backgroundPontoonClient.getBaseUrl();
   const baseTag = document.createElement('base');
   baseTag.href = pontoonBaseUrl;
   document.getElementsByTagName('head')[0].appendChild(baseTag);
@@ -55,7 +43,6 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
     <ToolbarButtonApp
       notificationsData={notificationsData}
       hideReadNotifications={hideReadNotifications}
-      backgroundPontoonClient={backgroundPontoonClient}
       teamData={teamData}
       latestTeamActivity={latestTeamActivity}
     />,

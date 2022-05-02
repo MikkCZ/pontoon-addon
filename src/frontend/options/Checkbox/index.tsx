@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-import { Options, OptionId } from '@commons/Options';
+import { getOneOption, OptionId, setOption } from '@commons/options';
 
 interface Props {
-  options: Options;
   optionKey: OptionId;
 }
 
-export const Checkbox: React.FC<Props> = ({ options, optionKey, children }) => {
+export const Checkbox: React.FC<Props> = ({ optionKey, children }) => {
   const [checked, setChecked] = useState<boolean | undefined>();
 
   useEffect(() => {
     (async () => {
-      setChecked((await options.get(optionKey))[optionKey] as boolean);
+      setChecked((await getOneOption(optionKey)) as boolean);
     })();
-  }, [options, optionKey]);
+  }, [optionKey]);
 
   return (
     <label>
@@ -24,7 +23,7 @@ export const Checkbox: React.FC<Props> = ({ options, optionKey, children }) => {
         checked={checked}
         onChange={(e) => {
           setChecked(e.target.checked);
-          options.set(optionKey, e.target.checked);
+          setOption(optionKey, e.target.checked);
         }}
       />
       {children}

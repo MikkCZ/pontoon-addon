@@ -1,10 +1,10 @@
-import { browser } from '@commons/webExtensionsApi';
+import { getResourceUrl } from '@commons/webExtensionsApi';
 
 import { pontoonAddonInfo } from './commons';
 
 function injectScript(src: string) {
   const script = document.createElement('script');
-  script.src = browser.runtime.getURL(src);
+  script.src = getResourceUrl(src);
   document.head.prepend(script);
 }
 

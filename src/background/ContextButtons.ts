@@ -1,43 +1,36 @@
-import { Tabs } from 'webextension-polyfill';
-
-import type { Options } from '@commons/Options';
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
+import {
+  getOneFromStorage,
+  getAllTabs,
+  listenToStorageChange,
+  openNewTab,
+  executeScript,
+  listenToTabsCompletedLoading,
+} from '@commons/webExtensionsApi';
+import { getOneOption } from '@commons/options';
 
-import type {
-  ProjectsList,
-  ProjectsListInStorage,
-  RemotePontoon,
-  TeamsListInStorage,
-} from './RemotePontoon';
+import type { ProjectsList, RemotePontoon } from './RemotePontoon';
+import { BackgroundClientMessageType } from './BackgroundClientMessageType';
+import { listenToMessages } from './backgroundClient';
 
 export class ContextButtons {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
   private mozillaWebsites: string[] = [];
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
-    const projectsListDataKey = 'projectsList';
-    browser.storage.local
-      .get(projectsListDataKey)
-      .then((storageItem: unknown) =>
-        this.initMozillaWebsitesList(
-          (storageItem as ProjectsListInStorage).projectsList,
-        ),
-      )
-      .then(() => {
-        this.listenToMessagesFromContentScript();
-        this.watchTabsUpdates();
-        this.refreshContextButtonsInAllTabs();
-        remotePontoon.subscribeToProjectsListChange((change) =>
-          this.initMozillaWebsitesList(change.newValue),
-        );
+    getOneFromStorage('projectsList').then((projectsList) => {
+      this.initMozillaWebsitesList(projectsList);
+      this.listenToMessagesFromContentScript();
+      this.watchTabsUpdates();
+      this.refreshContextButtonsInAllTabs();
+      listenToStorageChange('projectsList', ({ newValue: newProjectsList }) => {
+        this.initMozillaWebsitesList(newProjectsList);
       });
+    });
   }
 
-  private initMozillaWebsitesList(projects: ProjectsList): void {
+  private initMozillaWebsitesList(projects?: ProjectsList): void {
     if (projects) {
       this.mozillaWebsites = [];
       Object.values(projects).forEach((project) =>
@@ -50,59 +43,57 @@ export class ContextButtons {
   }
 
   private watchTabsUpdates(): void {
-    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-      if (changeInfo.status === 'complete' && this.isSupportedPage(tab.url)) {
-        this.injectContextButtonsScript(tab);
+    listenToTabsCompletedLoading((tab) => {
+      if (this.isSupportedPage(tab.url)) {
+        this.injectContextButtonsScript(tab.id);
       }
     });
   }
 
-  private refreshContextButtonsInAllTabs(): void {
-    browser.tabs.query({}).then((tabs) =>
-      tabs.forEach((tab) => {
-        if (this.isSupportedPage(tab.url)) {
-          this.injectContextButtonsScript(tab);
-        }
-      }),
-    );
+  private async refreshContextButtonsInAllTabs(): Promise<void> {
+    for (const tab of await getAllTabs()) {
+      if (this.isSupportedPage(tab.url) && typeof tab.id !== 'undefined') {
+        this.injectContextButtonsScript(tab.id);
+      }
+    }
   }
 
   private listenToMessagesFromContentScript(): void {
-    browser.runtime.onMessage.addListener((request, sender) => {
-      switch (request.type) {
-        case 'pontoon-search-context-button-clicked':
-          browser.tabs.create({
-            url: pontoonSearchInProject(
-              this.remotePontoon.getBaseUrl(),
-              this.remotePontoon.getTeam(),
-              { slug: 'all-projects' },
-              request.text,
-            ),
-          });
-          break;
-        case 'bugzilla-report-context-button-clicked': {
-          const localeTeamOptionKey = 'locale_team';
-          const teamsListDataKey = 'teamsList';
-          Promise.all([
-            this.options.get(localeTeamOptionKey),
-            browser.storage.local.get(
-              teamsListDataKey,
-            ) as Promise<TeamsListInStorage>,
-          ]).then(([optionsItems, projectListInStorage]) => {
-            const teamCode = optionsItems[localeTeamOptionKey] as string;
-            const team = projectListInStorage.teamsList[teamCode];
-            browser.tabs.create({
-              url: newLocalizationBug({
-                team,
-                selectedText: request.text,
-                url: sender.url!,
-              }),
+    listenToMessages(
+      (
+        message: { type: BackgroundClientMessageType; text?: string },
+        { url: fromUrl },
+      ) => {
+        switch (message.type) {
+          case BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON:
+            openNewTab(
+              pontoonSearchInProject(
+                this.remotePontoon.getBaseUrl(),
+                this.remotePontoon.getTeam(),
+                { slug: 'all-projects' },
+                message.text!,
+              ),
+            );
+            break;
+          case BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA: {
+            Promise.all([
+              getOneOption('locale_team'),
+              getOneFromStorage('teamsList'),
+            ]).then(([teamCode, teamsList]) => {
+              const team = teamsList![teamCode];
+              openNewTab(
+                newLocalizationBug({
+                  team,
+                  selectedText: message.text!,
+                  url: fromUrl!,
+                }),
+              );
             });
-          });
-          break;
+            break;
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   private isSupportedPage(url: string | undefined): boolean {
@@ -113,9 +104,7 @@ export class ContextButtons {
     }
   }
 
-  private injectContextButtonsScript(tab: Tabs.Tab): void {
-    browser.tabs.executeScript(tab.id, {
-      file: 'content-scripts/context-buttons.js',
-    });
+  private injectContextButtonsScript(tabId: number): void {
+    executeScript(tabId, 'content-scripts/context-buttons.js');
   }
 }

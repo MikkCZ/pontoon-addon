@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { browser } from '@commons/webExtensionsApi';
+import {
+  openNewTab,
+  openIntro,
+  openPrivacyPolicy,
+} from '@commons/webExtensionsApi';
 import { pontoonAddonWiki } from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
 
@@ -38,37 +42,19 @@ export const Header: React.FC = () => {
       <nav>
         <ul>
           <Item>
-            <HeaderLink
-              onClick={() => {
-                browser.tabs.create({
-                  url: browser.runtime.getURL('frontend/intro.html'),
-                });
-              }}
-            >
-              Tour
-            </HeaderLink>
+            <HeaderLink onClick={() => openIntro()}>Tour</HeaderLink>
           </Item>
           <Item>
             <HeaderLink
               onClick={() => {
-                browser.tabs.create({
-                  url: pontoonAddonWiki(),
-                });
+                openNewTab(pontoonAddonWiki());
               }}
             >
               Wiki
             </HeaderLink>
           </Item>
           <Item>
-            <HeaderLink
-              onClick={() => {
-                browser.tabs.create({
-                  url: browser.runtime.getURL('frontend/privacy-policy.html'),
-                });
-              }}
-            >
-              Privacy
-            </HeaderLink>
+            <HeaderLink onClick={() => openPrivacyPolicy()}>Privacy</HeaderLink>
           </Item>
         </ul>
       </nav>

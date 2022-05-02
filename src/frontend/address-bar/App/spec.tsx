@@ -3,16 +3,19 @@ import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import type { Project } from '@background/BackgroundPontoonClient';
 import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+  getPontoonProjectForTheCurrentTab,
+  Project,
+} from '@background/backgroundClient';
+import { openNewTab } from '@commons/webExtensionsApi';
 
 import { PanelSection } from '../PanelSection';
 import { PanelListItem } from '../PanelListItem';
 
 import { App } from '.';
+
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/backgroundClient');
 
 const project: Project = {
   name: 'Some Project',
@@ -21,14 +24,12 @@ const project: Project = {
 };
 
 beforeEach(() => {
-  mockBrowserNode.enable();
-  mockBrowser.runtime.sendMessage
-    .expect(expect.anything())
-    .andResolve(project as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+  (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue(project);
 });
 
 afterEach(() => {
-  mockBrowserNode.verifyAndDisable();
+  (openNewTab as jest.Mock).mockReset();
+  (getPontoonProjectForTheCurrentTab as jest.Mock).mockReset();
 });
 
 describe('address-bar/App', () => {
@@ -56,14 +57,12 @@ describe('address-bar/App', () => {
       wrapper.update();
     });
 
-    mockBrowser.tabs.create
-      .expect({ url: project.pageUrl })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
     act(() => {
       wrapper.find(PanelListItem).at(0).simulate('click');
     });
+    await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(project.pageUrl);
   });
 
   it('handles click to open translation view', async () => {
@@ -73,13 +72,11 @@ describe('address-bar/App', () => {
       wrapper.update();
     });
 
-    mockBrowser.tabs.create
-      .expect({ url: project.translationUrl })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
     act(() => {
       wrapper.find(PanelListItem).at(1).simulate('click');
     });
+    await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith(project.translationUrl);
   });
 });

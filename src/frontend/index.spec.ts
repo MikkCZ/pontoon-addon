@@ -1,27 +1,25 @@
-/* eslint-disable testing-library/render-result-naming-convention */
+/* eslint-disable jest/expect-expect, testing-library/render-result-naming-convention */
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
+import { getFromStorage } from '@commons/webExtensionsApi';
+import { getOptions } from '@commons/options';
 import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
-import { Project } from '@background/BackgroundPontoonClient';
+  getPontoonProjectForTheCurrentTab,
+  Project,
+} from '@background/backgroundClient';
 
 import { render } from './index';
 
-jest.mock('@commons/Options');
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/options');
+jest.mock('@background/backgroundClient');
 
 const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
 
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
 afterEach(() => {
-  reactDomRender.mockClear();
-  mockBrowserNode.verifyAndDisable();
+  reactDomRender.mockReset();
   document.body.textContent = '';
 });
 
@@ -41,11 +39,15 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
 
 describe('address bar', () => {
   beforeEach(() => {
-    mockBrowser.runtime.sendMessage.expect(expect.anything()).andResolve({
+    (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue({
       name: 'Some project',
       pageUrl: 'https://127.0.0.1/',
       translationUrl: 'https://127.0.0.1/',
-    } as Project as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as Project);
+  });
+
+  afterEach(() => {
+    (getPontoonProjectForTheCurrentTab as jest.Mock).mockReset();
   });
 
   it('renders', async () => {
@@ -53,19 +55,19 @@ describe('address bar', () => {
   });
 });
 
-describe.skip('intro', () => {
+describe('intro', () => {
   it('renders', async () => {
     await expectRendersToRoot('intro-root');
   });
 });
 
-describe.skip('options', () => {
+describe('options', () => {
   it('renders', async () => {
     await expectRendersToRoot('options-root');
   });
 });
 
-describe.skip('privacy policy', () => {
+describe('privacy policy', () => {
   it('renders', async () => {
     await expectRendersToRoot('privacy-policy-root');
   });
@@ -77,14 +79,23 @@ describe('snake game', () => {
   });
 });
 
-describe.skip('toolbar button', () => {
+describe('toolbar button', () => {
   beforeEach(() => {
-    mockBrowser.storage.local.get.expect(expect.anything()).andResolve({
+    (getOptions as jest.Mock).mockImplementation(async () => ({
+      locale_team: 'cs',
+      toolbar_button_popup_always_hide_read_notifications: true,
+      pontoon_base_url: 'https://127.0.0.1',
+    }));
+    (getFromStorage as jest.Mock).mockImplementation(async () => ({
       notificationsData: {},
-    });
-    mockBrowser.runtime.onMessage.hasListener
-      .expect(expect.anything())
-      .andReturn(true);
+      teamsList: { cs: {} },
+      latestTeamsActivity: { cs: {} },
+    }));
+  });
+
+  afterEach(() => {
+    (getOptions as jest.Mock).mockReset();
+    (getFromStorage as jest.Mock).mockReset();
   });
 
   it('renders', async () => {

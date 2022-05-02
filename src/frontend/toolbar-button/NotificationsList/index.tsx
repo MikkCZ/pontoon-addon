@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
-import { browser } from '@commons/webExtensionsApi';
+import {
+  getNotificationsUrl,
+  markAllNotificationsAsRead,
+} from '@background/backgroundClient';
+import { listenToStorageChange, openNewTab } from '@commons/webExtensionsApi';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -19,21 +22,22 @@ const List = styled.ul`
 
 interface Props {
   notificationsData: any;
-  hideReadNotifications: boolean;
-  backgroundPontoonClient: BackgroundPontoonClient;
+  hideReadNotifications?: boolean;
 }
 
 export const NotificationsList: React.FC<Props> = ({
   hideReadNotifications,
-  backgroundPontoonClient,
   ...props
 }) => {
   const [notificationsData, setNotificationsData] = useState(
     props.notificationsData,
   );
-  backgroundPontoonClient.subscribeToNotificationsChange((change: any) => {
-    setNotificationsData(change.newValue);
-  });
+  listenToStorageChange(
+    'notificationsData',
+    ({ newValue: notificationsData }) => {
+      setNotificationsData(notificationsData);
+    },
+  );
 
   if (notificationsData) {
     const containsUnreadNotifications = Object.values(notificationsData).some(
@@ -53,7 +57,6 @@ export const NotificationsList: React.FC<Props> = ({
               <NotificationsListItem
                 unread={notification.unread}
                 key={notification.id}
-                backgroundPontoonClient={backgroundPontoonClient}
                 {...notification}
               />
             ))}
@@ -61,15 +64,13 @@ export const NotificationsList: React.FC<Props> = ({
         {containsUnreadNotifications ? (
           <BottomLink
             text="Mark all Notifications as read"
-            onClick={() => backgroundPontoonClient.markAllNotificationsAsRead()}
+            onClick={() => markAllNotificationsAsRead()}
           />
         ) : (
           <BottomLink
             text="See all Notifications"
             onClick={async () => {
-              const notificationsUrl =
-                await backgroundPontoonClient.getNotificationsUrl();
-              await browser.tabs.create({ url: notificationsUrl });
+              await openNewTab(await getNotificationsUrl());
               window.close();
             }}
           />
@@ -77,10 +78,6 @@ export const NotificationsList: React.FC<Props> = ({
       </section>
     );
   } else {
-    return (
-      <NotificationsListError
-        backgroundPontoonClient={backgroundPontoonClient}
-      />
-    );
+    return <NotificationsListError />;
   }
 };

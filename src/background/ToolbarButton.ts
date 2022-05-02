@@ -1,116 +1,132 @@
-import type { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import {
+  getOptions,
+  getOneOption,
+  listenToOptionChange,
+  OptionValue,
+} from '@commons/options';
+import {
+  browser,
+  openNewTab,
+  getResourceUrl,
+  listenToStorageChange,
+  getOneFromStorage,
+  StorageContent,
+} from '@commons/webExtensionsApi';
 import { pontoonTeam } from '@commons/webLinks';
 
-import type { RemotePontoon } from './RemotePontoon';
+const DEFAULT_TITLE = 'Pontoon notifications';
 
 export class ToolbarButton {
-  private readonly options: Options;
-  private readonly remotePontoon: RemotePontoon;
-  private readonly defaultTitle: string;
-  private badgeText: string;
-  private readonly openPontoonTeamPage: () => void;
-  private readonly openPontoonHomePage: () => void;
-
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
-    this.remotePontoon = remotePontoon;
-    this.defaultTitle = 'Pontoon notifications';
-    this.badgeText = '';
-
-    this.openPontoonTeamPage = () =>
-      browser.tabs.create({
-        url: pontoonTeam(
-          this.remotePontoon.getBaseUrl(),
-          this.remotePontoon.getTeam(),
-        ),
-      });
-    this.openPontoonHomePage = () =>
-      browser.tabs.create({ url: this.remotePontoon.getBaseUrl() });
-    this.addOnClickAction();
-    this.watchStorageChanges();
-    this.watchOptionsUpdates();
+  constructor() {
+    this.registerBadgeChanges();
+    this.registerClickAction();
   }
 
-  private watchStorageChanges(): void {
-    this.remotePontoon.subscribeToNotificationsChange((change) => {
-      const notificationsData = change.newValue;
-      if (notificationsData) {
-        this.updateBadge(
-          `${Object.values(notificationsData).filter((n) => n.unread).length}`,
-        );
-      } else {
-        this.updateBadge('!');
-      }
-    });
-  }
-
-  private watchOptionsUpdates(): void {
-    this.options.subscribeToOptionChange('toolbar_button_action', (change) => {
-      this.setButtonAction(change.newValue);
-    });
-    this.options.subscribeToOptionChange(
-      'display_toolbar_button_badge',
-      (change) => {
-        if (change.newValue) {
-          this.updateBadge(this.badgeText);
+  private async registerBadgeChanges() {
+    listenToStorageChange(
+      'notificationsData',
+      ({ newValue: notificationsData }) => {
+        if (notificationsData) {
+          this.updateBadge(notificationsData);
         } else {
-          this.hideBadge();
+          this.updateBadge();
         }
       },
     );
+    listenToOptionChange('display_toolbar_button_badge', () => {
+      this.updateBadge();
+    });
+    this.updateBadge();
   }
 
-  private setButtonAction(buttonAction: string): void {
-    browser.browserAction.setPopup({ popup: '' });
-    browser.browserAction.onClicked.removeListener(this.openPontoonTeamPage);
-    browser.browserAction.onClicked.removeListener(this.openPontoonHomePage);
-    switch (buttonAction) {
+  private async buttonClickHandler() {
+    const {
+      toolbar_button_action: action,
+      pontoon_base_url: pontoonBaseUrl,
+      locale_team: teamCode,
+    } = await getOptions([
+      'toolbar_button_action',
+      'pontoon_base_url',
+      'locale_team',
+    ]);
+    switch (action) {
       case 'popup':
-        browser.browserAction.setPopup({
-          popup: browser.runtime.getURL('frontend/toolbar-button.html'),
-        });
-        break;
-      case 'team-page':
-        browser.browserAction.onClicked.addListener(this.openPontoonTeamPage);
         break;
       case 'home-page':
-        browser.browserAction.onClicked.addListener(this.openPontoonHomePage);
+        openNewTab(await getOneOption('pontoon_base_url'));
         break;
+      case 'team-page':
+        openNewTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
+        break;
+      default:
+        throw new Error(`Unknown toolbar button action '${action}'.`);
     }
   }
 
-  private addOnClickAction(): void {
-    const buttonActionOption = 'toolbar_button_action';
-    this.options.get(buttonActionOption).then((item: any) => {
-      this.setButtonAction(item[buttonActionOption]);
+  private registerButtonPopup(action: OptionValue<'toolbar_button_action'>) {
+    let popup;
+    switch (action) {
+      case 'popup':
+        popup = getResourceUrl('frontend/toolbar-button.html');
+        break;
+      case 'home-page':
+      case 'team-page':
+        popup = '';
+        break;
+      default:
+        throw new Error(`Unknown toolbar button action '${action}'.`);
+    }
+    browser.browserAction.setPopup({ popup });
+  }
+
+  private async registerClickAction() {
+    browser.browserAction.onClicked.addListener(() =>
+      this.buttonClickHandler(),
+    );
+    listenToOptionChange('toolbar_button_action', ({ newValue: action }) => {
+      this.registerButtonPopup(action);
     });
+    this.registerButtonPopup(await getOneOption('toolbar_button_action'));
   }
 
-  private updateBadge(text: string): void {
-    if (text.trim().length > 0) {
-      this.badgeText = text;
+  private async updateBadge(
+    notificationsData?: Partial<StorageContent>['notificationsData'],
+  ) {
+    if (typeof notificationsData === 'undefined') {
+      notificationsData = await getOneFromStorage('notificationsData');
     }
-    const optionKey = 'display_toolbar_button_badge';
-    this.options.get(optionKey).then((item: any) => {
-      if (item[optionKey]) {
-        browser.browserAction.setBadgeText({ text: text });
-        browser.browserAction.setTitle({
-          title: `${this.defaultTitle} (${text})`,
-        });
-        if (text !== '0') {
-          browser.browserAction.setBadgeBackgroundColor({ color: '#F36' });
-        } else {
-          browser.browserAction.setBadgeBackgroundColor({ color: '#4d5967' });
-        }
+
+    if (typeof notificationsData !== 'undefined') {
+      if (await getOneOption('display_toolbar_button_badge')) {
+        const text = `${
+          Object.values(notificationsData).filter((n) => n.unread).length
+        }`;
+        const color = text === '0' ? '#4d5967' : '#F36';
+        await Promise.all([
+          browser.browserAction.setBadgeText({ text }),
+          browser.browserAction.setTitle({
+            title: `${DEFAULT_TITLE} (${text})`,
+          }),
+          browser.browserAction.setBadgeBackgroundColor({ color }),
+        ]);
       } else {
         this.hideBadge();
       }
-    });
+    } else {
+      const text = '!';
+      const color = '#F36';
+      await Promise.all([
+        browser.browserAction.setBadgeText({ text }),
+        browser.browserAction.setTitle({ title: `${DEFAULT_TITLE} (${text})` }),
+        browser.browserAction.setBadgeBackgroundColor({ color }),
+      ]);
+    }
   }
 
-  public hideBadge(): void {
-    browser.browserAction.setBadgeText({ text: '' });
-    browser.browserAction.setTitle({ title: this.defaultTitle });
+  public async hideBadge() {
+    await Promise.all([
+      browser.browserAction.setBadgeText({ text: '' }),
+      browser.browserAction.setTitle({ title: DEFAULT_TITLE }),
+    ]);
   }
 }

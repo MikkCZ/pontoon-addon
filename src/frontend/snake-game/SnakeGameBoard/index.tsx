@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import type { IOptions } from 'react-game-snake';
 import { SnakeGame } from 'react-game-snake';
 
-import { browser } from '@commons/webExtensionsApi';
+import {
+  browserFamily,
+  BrowserFamily,
+  openNewTab,
+} from '@commons/webExtensionsApi';
 import {
   pontoonAddonAmoPage,
   pontoonAddonChromeWebStorePage,
@@ -129,12 +133,13 @@ export const SnakeGameBoard: React.FC = () => {
           <div>
             <Link
               onClick={() => {
-                if (browser.runtime.getURL('/').startsWith('moz-extension:')) {
-                  browser.tabs.create({ url: pontoonAddonAmoPage() });
-                } else {
-                  browser.tabs.create({
-                    url: pontoonAddonChromeWebStorePage(),
-                  });
+                switch (browserFamily()) {
+                  case BrowserFamily.MOZILLA:
+                    openNewTab(pontoonAddonAmoPage());
+                    break;
+                  case BrowserFamily.CHROMIUM:
+                    openNewTab(pontoonAddonChromeWebStorePage());
+                    break;
                 }
               }}
             >

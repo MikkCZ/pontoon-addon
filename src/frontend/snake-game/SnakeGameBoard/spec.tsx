@@ -2,20 +2,12 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { SnakeGame } from 'react-game-snake';
 
-import { mockBrowserNode } from '@commons/test/mockWebExtensionsApi';
-
 import { mountWithSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';
 
 import { SnakeGameBoard } from '.';
 
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
-afterEach(() => {
-  mockBrowserNode.verifyAndDisable();
-});
+jest.mock('@commons/webExtensionsApi');
 
 describe('SnakeGameBoard', () => {
   it('shows start screen before first start', () => {

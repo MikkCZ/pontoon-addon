@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-import { browser } from '@commons/webExtensionsApi';
+import { openNewTab } from '@commons/webExtensionsApi';
 import {
-  BackgroundPontoonClient,
+  getPontoonProjectForTheCurrentTab,
   Project,
-} from '@background/BackgroundPontoonClient';
+} from '@background/backgroundClient';
 
 import { PanelSection } from '../PanelSection';
-
-const backgroundPontoonClient = new BackgroundPontoonClient();
 
 export const App: React.FC = () => {
   const [project, setProject] = useState<Project | undefined>();
 
   useEffect(() => {
     (async () => {
-      setProject(
-        await backgroundPontoonClient.getPontoonProjectForTheCurrentTab(),
-      );
+      setProject(await getPontoonProjectForTheCurrentTab());
     })();
   }, []);
 
@@ -26,11 +22,11 @@ export const App: React.FC = () => {
       items={[
         {
           text: `Open ${project.name} project page`,
-          onClick: () => browser.tabs.create({ url: project.pageUrl }),
+          onClick: () => openNewTab(project.pageUrl),
         },
         {
           text: `Open ${project.name} translation view`,
-          onClick: () => browser.tabs.create({ url: project.translationUrl }),
+          onClick: () => openNewTab(project.translationUrl),
         },
       ]}
     />

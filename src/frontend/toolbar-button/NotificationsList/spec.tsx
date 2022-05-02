@@ -3,11 +3,11 @@ import { shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import type { BackgroundPontoonClient } from '@background/BackgroundPontoonClient';
+import { openNewTab } from '@commons/webExtensionsApi';
 import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
+  getNotificationsUrl,
+  markAllNotificationsAsRead,
+} from '@background/backgroundClient';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -15,27 +15,22 @@ import { NotificationsListError } from '../NotificationsListError';
 
 import { NotificationsList } from '.';
 
+jest.mock('@commons/webExtensionsApi');
+jest.mock('@background/backgroundClient');
+
 const windowCloseSpy = jest.spyOn(window, 'close');
 
-afterEach(() => {
-  windowCloseSpy.mockReset();
-});
-
-const backgroundPontoonClientMock = {
-  getNotificationsUrl: async () => 'https://127.0.0.1/notifications',
-  markAllNotificationsAsRead: jest.fn(),
-  subscribeToNotificationsChange: jest.fn(),
-} as unknown as BackgroundPontoonClient;
-
 beforeEach(() => {
-  mockBrowserNode.enable();
+  (getNotificationsUrl as jest.Mock).mockReturnValue(
+    'https://127.0.0.1/notifications',
+  );
 });
 
 afterEach(() => {
-  mockBrowserNode.disable();
-  (
-    backgroundPontoonClientMock.markAllNotificationsAsRead as jest.Mock
-  ).mockReset();
+  (openNewTab as jest.Mock).mockReset();
+  (getNotificationsUrl as jest.Mock).mockReset();
+  (markAllNotificationsAsRead as jest.Mock).mockReset();
+  windowCloseSpy.mockReset();
 });
 
 describe('NotificationsList', () => {
@@ -46,7 +41,6 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
       />,
     );
 
@@ -64,7 +58,6 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
       />,
     );
 
@@ -82,7 +75,6 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={true}
-        backgroundPontoonClient={backgroundPontoonClientMock}
       />,
     );
 
@@ -95,7 +87,6 @@ describe('NotificationsList', () => {
       <NotificationsList
         notificationsData={undefined}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
       />,
     );
 
@@ -112,7 +103,6 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
       />,
     );
 
@@ -120,9 +110,7 @@ describe('NotificationsList', () => {
       wrapper.find(BottomLink).simulate('click');
     });
 
-    expect(
-      backgroundPontoonClientMock.markAllNotificationsAsRead,
-    ).toHaveBeenCalled();
+    expect(markAllNotificationsAsRead).toHaveBeenCalled();
   });
 
   it('bottom link shows all when all notifications are read', async () => {
@@ -133,19 +121,15 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: false },
         }}
         hideReadNotifications={false}
-        backgroundPontoonClient={backgroundPontoonClientMock}
       />,
     );
-
-    mockBrowser.tabs.create
-      .expect({ url: 'https://127.0.0.1/notifications' })
-      .andResolve({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     act(() => {
       wrapper.find(BottomLink).simulate('click');
     });
     await flushPromises();
 
-    mockBrowserNode.verify();
+    expect(openNewTab).toHaveBeenCalledWith('https://127.0.0.1/notifications');
+    expect(windowCloseSpy).toHaveBeenCalled();
   });
 });

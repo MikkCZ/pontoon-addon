@@ -1,41 +1,40 @@
 import React, { useEffect, useState } from 'react';
 
-import { Options } from '@commons/Options';
+import { getOneFromStorage } from '@commons/webExtensionsApi';
 import {
-  BackgroundPontoonClient,
+  updateTeamsList,
+  getTeamFromPontoon,
   TeamsList,
-} from '@background/BackgroundPontoonClient';
+} from '@background/backgroundClient';
+import { getOneOption, setOption } from '@commons/options';
 
-const backgroundPontoonClient = new BackgroundPontoonClient();
-const OPTION_KEY = 'locale_team';
-
-export const LocaleSelection: React.FC<{ options: Options }> = ({
-  options,
-}) => {
+export const LocaleSelection: React.FC = () => {
   const [teamsList, setTeamsList] = useState<TeamsList | undefined>();
   const [localeTeam, _setLocaleTeamState] = useState<string | undefined>();
 
   useEffect(() => {
     (async () => {
-      Promise.all([
-        backgroundPontoonClient.getTeamsList(),
-        options.get(OPTION_KEY) as Promise<{ [OPTION_KEY]: string }>,
-      ]).then(([teamsInPontoon, localeTeamFromOptions]) => {
-        _setLocaleTeamState(localeTeamFromOptions[OPTION_KEY]);
-        setTeamsList(teamsInPontoon);
-      });
+      const [teamsInPontoon, teamCode] = await Promise.all([
+        getOneFromStorage('teamsList'),
+        getOneOption('locale_team'),
+      ]);
+      _setLocaleTeamState(teamCode);
+      setTeamsList(teamsInPontoon);
     })();
-  }, [options]);
+  }, []);
 
   const setLocaleTeam = (selected?: string) => {
     _setLocaleTeamState(selected);
-    options.set(OPTION_KEY, selected);
+    if (selected) {
+      setOption('locale_team', selected);
+    }
   };
 
   return (
     <div>
-      <label htmlFor={OPTION_KEY}>Select your locale team</label>
+      <label htmlFor="locale_team">Select your locale team</label>
       <select
+        id="locale_team"
         value={localeTeam}
         onChange={(e) => setLocaleTeam(e.target.value)}
       >
@@ -53,21 +52,20 @@ export const LocaleSelection: React.FC<{ options: Options }> = ({
       <button
         className="pontoon-style"
         title="Sync with your Pontoon homepage preference"
-        onClick={() => {
+        onClick={async () => {
           const previousLocaleTeam = localeTeam;
           setLocaleTeam(undefined);
-          Promise.all([
-            backgroundPontoonClient.updateTeamsList(),
-            backgroundPontoonClient.getTeamFromPontoon(),
-          ])
-            .then(([teamsInPontoon, localeTeamFromPontoon]) => {
-              setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);
-              setTeamsList(teamsInPontoon);
-            })
-            .catch((error) => {
-              console.error(error);
-              setLocaleTeam(previousLocaleTeam);
-            });
+          try {
+            const [teamsInPontoon, localeTeamFromPontoon] = await Promise.all([
+              updateTeamsList(),
+              getTeamFromPontoon(),
+            ]);
+            setTeamsList(teamsInPontoon);
+            setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);
+          } catch (error) {
+            console.error(error);
+            setLocaleTeam(previousLocaleTeam);
+          }
         }}
       >
         Load from Pontoon

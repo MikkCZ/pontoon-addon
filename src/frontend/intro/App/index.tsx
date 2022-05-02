@@ -1,8 +1,14 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { browser } from '@commons/webExtensionsApi';
-import { Options } from '@commons/Options';
+import {
+  createNotification,
+  openNewTab,
+  openOptions,
+  openToolbarButtonPopup,
+  supportsAddressBar,
+} from '@commons/webExtensionsApi';
+import { setOption } from '@commons/options';
 import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
 import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
@@ -42,7 +48,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'See the Pontoon button',
-      onClick: () => browser.browserAction.openPopup(),
+      onClick: () => openToolbarButtonPopup(),
     },
   });
   tiles.push({
@@ -52,9 +58,8 @@ export const App: React.FC = () => {
     button: {
       text: 'Preview system notifications',
       onClick: () => {
-        const options = new Options();
-        options.set('show_notifications', true);
-        browser.notifications.create({
+        setOption('show_notifications', true);
+        createNotification({
           type: 'basic',
           iconUrl: pontoonLogo,
           title: 'Notification from Pontoon',
@@ -64,7 +69,7 @@ export const App: React.FC = () => {
       },
     },
   });
-  if (browser.pageAction) {
+  if (supportsAddressBar()) {
     tiles.push({
       title: 'Address bar button',
       imageSrc: pageActionImage,
@@ -77,7 +82,7 @@ export const App: React.FC = () => {
       ),
       button: {
         text: 'Try it on mozilla.org',
-        onClick: () => browser.tabs.create({ url: mozillaOrg() }),
+        onClick: () => openNewTab(mozillaOrg()),
       },
     });
   }
@@ -93,7 +98,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Try it on mozilla.org',
-      onClick: () => browser.tabs.create({ url: mozillaOrg() }),
+      onClick: () => openNewTab(mozillaOrg()),
     },
   });
   tiles.push({
@@ -107,7 +112,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Open Pontoon Add-on settings',
-      onClick: () => browser.runtime.openOptionsPage(),
+      onClick: () => openOptions(),
     },
   });
   tiles.push({
@@ -122,7 +127,7 @@ export const App: React.FC = () => {
     ),
     button: {
       text: 'Check the wiki',
-      onClick: () => browser.tabs.create({ url: pontoonAddonWiki() }),
+      onClick: () => openNewTab(pontoonAddonWiki()),
     },
   });
 

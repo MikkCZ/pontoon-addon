@@ -9,4 +9,4 @@ const [browser, mockBrowser, mockBrowserNode] = deepMock<Browser>(
 jest.mock('webextension-polyfill', () => ({ browser }));
 jest.mock('webextension-polyfill', () => browser);
 
-export { mockBrowser, mockBrowserNode };
+export { browser, mockBrowser, mockBrowserNode };

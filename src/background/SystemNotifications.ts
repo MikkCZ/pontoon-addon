@@ -1,78 +1,83 @@
-import { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import {
+  openNewTab,
+  getOneFromStorage,
+  saveToStorage,
+  createNotification,
+  closeNotification,
+  listenToStorageChange,
+} from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
+import { getOneOption } from '@commons/options';
 
-import { NotificationsData, RemotePontoon } from './RemotePontoon';
+import {
+  NotificationsData,
+  NotificationApiResponse as Notification,
+  RemotePontoon,
+} from './RemotePontoon';
 
 export class SystemNotifications {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
 
-    this.watchNotificationClicks();
     this.watchStorageChanges();
   }
 
-  private watchNotificationClicks(): void {
-    browser.notifications.onClicked.addListener((notificationId) =>
-      this.notificationClick(notificationId),
-    );
-  }
-
-  private async notificationClick(notificationId: string): Promise<void> {
-    const dataKey = 'notificationsData';
-    const item = await browser.storage.local.get(dataKey);
-    const notificationsData = item[dataKey];
-    const notification = notificationsData[notificationId];
-
+  private async handleNotificationClick(
+    id: string,
+    notification?: Notification,
+  ): Promise<void> {
     const isSuggestion =
       notification?.description?.content?.startsWith(
         'Unreviewed suggestions have been submitted',
       ) || notification?.verb === 'has reviewed suggestions';
 
-    if (isSuggestion || notification.target || !notification) {
-      browser.tabs.create({
-        url: pontoonTeam(
+    if (isSuggestion || notification?.target || !notification) {
+      openNewTab(
+        pontoonTeam(
           this.remotePontoon.getBaseUrl(),
           this.remotePontoon.getTeam(),
         ),
-      });
+      );
     } else {
-      browser.tabs.create({
-        url: toPontoonTeamSpecificProjectUrl(
+      openNewTab(
+        toPontoonTeamSpecificProjectUrl(
           this.remotePontoon.getBaseUrl(),
           this.remotePontoon.getTeam(),
-          notification.actor.url,
+          notification.actor!.url,
         ),
-      });
+      );
     }
-    browser.notifications.clear(notificationId);
+    closeNotification(id);
   }
 
   private watchStorageChanges(): void {
-    this.remotePontoon.subscribeToNotificationsChange((change) => {
-      const notificationsData = change.newValue;
-      Promise.all([
-        this.getNewUnreadNotifications(notificationsData),
-        this.options.get('show_notifications').then((option: any) => {
-          return option['show_notifications'];
-        }),
-      ]).then(([newUnreadNotificationIds, showNotifications]) => {
-        if (showNotifications && newUnreadNotificationIds.length > 0) {
+    listenToStorageChange(
+      'notificationsData',
+      async ({ newValue: notificationsData }) => {
+        const [newUnreadNotificationIds, showNotifications] = await Promise.all(
+          [
+            this.getNewUnreadNotifications(notificationsData),
+            getOneOption('show_notifications'),
+          ],
+        );
+        if (
+          showNotifications &&
+          notificationsData &&
+          newUnreadNotificationIds.length > 0
+        ) {
           this.notifyAboutUnreadNotifications(
             newUnreadNotificationIds,
             notificationsData,
           );
         }
-      });
-    });
+      },
+    );
   }
 
   private async getNewUnreadNotifications(
@@ -84,25 +89,24 @@ export class SystemNotifications {
         .filter((notification) => notification.unread)
         .map((notification) => notification.id);
     }
-    const dataKey = 'lastUnreadNotificationId';
-    const lastKnownUnreadNotificationId = await browser.storage.local
-      .get(dataKey)
-      .then((item) => item[dataKey] || 0);
+    const lastKnownUnreadNotificationId =
+      (await getOneFromStorage('lastUnreadNotificationId')) ?? 0;
     return unreadNotificationIds.filter(
       (id) => id > lastKnownUnreadNotificationId,
     );
   }
 
-  private notifyAboutUnreadNotifications(
+  private async notifyAboutUnreadNotifications(
     unreadNotificationIds: number[],
     notificationsData: NotificationsData,
-  ) {
+  ): Promise<void> {
     const notificationItems = unreadNotificationIds
       .sort()
       .reverse()
       .map((id) => notificationsData[id])
       .map((notification) => {
         const item = {
+          id: notification.id,
           title: '',
           message: '',
         };
@@ -135,23 +139,36 @@ export class SystemNotifications {
         }
         return item;
       });
-    const lastNotificationId = unreadNotificationIds.sort().reverse()[0];
+    const lastUnreadNotificationId = unreadNotificationIds.sort().reverse()[0];
     if (notificationItems.length === 1) {
-      browser.notifications.create(`${lastNotificationId}`, {
-        type: 'basic',
-        iconUrl: pontoonLogo,
-        title: notificationItems[0].title,
-        message: notificationItems[0].message,
-      });
+      await createNotification(
+        {
+          type: 'basic',
+          iconUrl: pontoonLogo,
+          title: notificationItems[0].title,
+          message: notificationItems[0].message,
+        },
+        (notificationId) => {
+          this.handleNotificationClick(
+            notificationId,
+            notificationsData[notificationItems[0].id],
+          );
+        },
+      );
     } else {
-      browser.notifications.create({
-        type: 'list',
-        iconUrl: pontoonLogo,
-        title: 'You have new unread notifications',
-        message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
-        items: notificationItems,
-      });
+      await createNotification(
+        {
+          type: 'list',
+          iconUrl: pontoonLogo,
+          title: 'You have new unread notifications',
+          message: `There are ${notificationItems.length} new unread notifications in Pontoon for you.`,
+          items: notificationItems,
+        },
+        (notificationId) => {
+          this.handleNotificationClick(notificationId);
+        },
+      );
     }
-    browser.storage.local.set({ lastUnreadNotificationId: lastNotificationId });
+    await saveToStorage({ lastUnreadNotificationId });
   }
 }

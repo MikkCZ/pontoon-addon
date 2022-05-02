@@ -1,6 +1,9 @@
-import { browser } from '@commons/webExtensionsApi';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import bugImage from '@assets/img/bug.svg';
+import {
+  reportTranslatedTextToBugzilla,
+  searchTextInPontoon,
+} from '@background/backgroundClient';
 
 const contextButtonWidth = 24;
 
@@ -24,31 +27,20 @@ function createButton(imageSrc: string): HTMLElement {
   imageButton.style.backgroundColor = 'white';
   return imageButton;
 }
-
-function clickListener(
-  messageType: string,
-  buttonsToRemove: HTMLElement[],
-): (e: MouseEvent) => void {
-  return (e: MouseEvent) => {
-    e.stopPropagation();
-    const selectedText = getSelectedText();
-    browser.runtime.sendMessage({ type: messageType, text: selectedText });
-    buttonsToRemove.forEach((button) => document.body.removeChild(button));
-  };
-}
-
 const pontoonSearchButton = createButton(pontoonLogo);
 const bugzillaReportButton = createButton(bugImage);
 const allContextButtons = [pontoonSearchButton, bugzillaReportButton];
 
-pontoonSearchButton.addEventListener(
-  'click',
-  clickListener('pontoon-search-context-button-clicked', allContextButtons),
-);
-bugzillaReportButton.addEventListener(
-  'click',
-  clickListener('bugzilla-report-context-button-clicked', allContextButtons),
-);
+pontoonSearchButton.addEventListener('click', (e: MouseEvent) => {
+  e.stopPropagation();
+  searchTextInPontoon(getSelectedText());
+  allContextButtons.forEach((button) => document.body.removeChild(button));
+});
+bugzillaReportButton.addEventListener('click', (e: MouseEvent) => {
+  e.stopPropagation();
+  reportTranslatedTextToBugzilla(getSelectedText());
+  allContextButtons.forEach((button) => document.body.removeChild(button));
+});
 
 document.addEventListener('mouseup', (e) => {
   const selectedText = getSelectedText();

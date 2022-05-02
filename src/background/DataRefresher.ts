@@ -1,30 +1,41 @@
-import type { Tabs } from 'webextension-polyfill';
-
-import type { Options } from '@commons/Options';
-import { browser } from '@commons/webExtensionsApi';
+import {
+  browser,
+  callWithInterval,
+  executeScript,
+  getTabsWithBaseUrl,
+  listenToTabsCompletedLoading,
+  supportsContainers,
+} from '@commons/webExtensionsApi';
+import { getOneOption, listenToOptionChange } from '@commons/options';
 
 import type { RemotePontoon } from './RemotePontoon';
+import { BackgroundClientMessageType } from './BackgroundClientMessageType';
+import { listenToMessages } from './backgroundClient';
 
 export class DataRefresher {
-  private readonly options: Options;
   private readonly remotePontoon: RemotePontoon;
-  private readonly alarmName: string;
 
-  constructor(options: Options, remotePontoon: RemotePontoon) {
-    this.options = options;
+  constructor(remotePontoon: RemotePontoon) {
     this.remotePontoon = remotePontoon;
-    this.alarmName = 'data-refresher-alarm';
 
-    this.watchOptionsUpdates();
-    this.watchTabsUpdates();
-    this.listenToMessagesFromNotificationsBellContentScript();
+    listenToOptionChange(
+      'data_update_interval',
+      ({ newValue: periodInMinutes }) => {
+        this.refreshDataWithInterval(periodInMinutes);
+      },
+    );
+    getOneOption('data_update_interval').then((periodInMinutes) =>
+      this.refreshDataWithInterval(periodInMinutes),
+    );
 
-    this.listenToAlarm();
-    this.setupAlarm();
-  }
+    listenToOptionChange('contextual_identity', () => {
+      this.refreshData();
+    });
+    listenToOptionChange('pontoon_base_url', () => {
+      this.refreshData();
+    });
 
-  public refreshDataOnInstallOrUpdate(): void {
-    this.remotePontoon.updateProjectsList();
+    this.registerLiveDataProvider();
   }
 
   public refreshData(): void {
@@ -33,93 +44,55 @@ export class DataRefresher {
     this.remotePontoon.updateTeamsList();
   }
 
-  private listenToAlarm(): void {
-    browser.alarms.onAlarm.addListener((alarm) => {
-      if (alarm.name === this.alarmName) {
-        this.refreshData();
-      }
-    });
-  }
-
-  private watchOptionsUpdates(): void {
-    this.options.subscribeToOptionChange('data_update_interval', (change) => {
-      const intervalMinutes = parseInt(change.newValue, 10);
-      this.setupAlarmWithInterval(intervalMinutes);
-    });
-    this.options.subscribeToOptionChange('contextual_identity', (change) => {
-      browser.tabs
-        .query({ url: `${this.remotePontoon.getBaseUrl()}/*` })
-        .then((pontoonTabs) => {
-          pontoonTabs
-            .filter((tab) => change.newValue !== tab.cookieStoreId)
-            .forEach((tab) => {
-              browser.tabs.sendMessage(tab.id!, {
-                type: 'disable-notifications-bell-script',
-              });
-            });
-        })
-        .then(() => this.refreshData());
-    });
-  }
-
-  private watchTabsUpdates(): void {
-    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) =>
-      this.addLiveDataProvider(tabId, changeInfo, tab),
+  private refreshDataWithInterval(periodInMinutes: number) {
+    callWithInterval('data-refresher-alarm', { periodInMinutes }, () =>
+      this.refreshData(),
     );
   }
 
-  private listenToMessagesFromNotificationsBellContentScript(): void {
-    browser.runtime.onMessage.addListener((message, sender) => {
-      if (message.type === 'notifications-bell-script-loaded') {
-        return this.options.get('contextual_identity').then((item: any) => {
-          if (
-            item['contextual_identity'] === sender.tab?.cookieStoreId ||
-            !this.supportsContainers()
-          ) {
-            return { type: 'enable-notifications-bell-script' };
-          }
-        });
+  private registerLiveDataProvider() {
+    listenToTabsCompletedLoading(async (tab) => {
+      if (tab.url?.startsWith(`${this.remotePontoon.getBaseUrl()}/`)) {
+        const contextualIdentity = await getOneOption('contextual_identity');
+        if (contextualIdentity === tab.cookieStoreId || !supportsContainers()) {
+          executeScript(tab.id, 'content-scripts/live-data-provider.js');
+        }
       }
     });
-  }
-
-  private addLiveDataProvider(
-    tabId: number,
-    changeInfo: Tabs.OnUpdatedChangeInfoType,
-    tab: Tabs.Tab,
-  ): void {
-    if (
-      changeInfo.status === 'complete' &&
-      tab.url?.startsWith(`${this.remotePontoon.getBaseUrl()}/`)
-    ) {
-      this.options.get('contextual_identity').then((item: any) => {
-        if (
-          item['contextual_identity'] === tab.cookieStoreId ||
-          !this.supportsContainers()
-        ) {
-          browser.tabs.executeScript(tabId, {
-            file: 'content-scripts/live-data-provider.js',
-          });
+    listenToMessages(({ type }, { tab: fromTab }) => {
+      if (
+        type === BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED
+      ) {
+        return getOneOption('contextual_identity').then(
+          (contextualIdentity) => {
+            if (
+              contextualIdentity === fromTab?.cookieStoreId ||
+              !supportsContainers()
+            ) {
+              return {
+                type: BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
+              };
+            }
+          },
+        );
+      }
+    });
+    listenToOptionChange(
+      'contextual_identity',
+      async ({ newValue: contextualIdentity }) => {
+        for (const tab of await getTabsWithBaseUrl(
+          this.remotePontoon.getBaseUrl(),
+        )) {
+          if (
+            contextualIdentity !== tab.cookieStoreId &&
+            typeof tab.id !== 'undefined'
+          ) {
+            browser.tabs.sendMessage(tab.id, {
+              type: BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT,
+            });
+          }
         }
-      });
-    }
-  }
-
-  private setupAlarm(): void {
-    const optionKey = 'data_update_interval';
-    this.options.get(optionKey).then((item: any) => {
-      const intervalMinutes = parseInt(item[optionKey], 10);
-      this.setupAlarmWithInterval(intervalMinutes);
-    });
-  }
-
-  private setupAlarmWithInterval(intervalMinutes: number) {
-    browser.alarms.create(this.alarmName, {
-      periodInMinutes: intervalMinutes,
-    });
-  }
-
-  private supportsContainers(): boolean {
-    return browser.contextualIdentities !== undefined;
+      },
+    );
   }
 }
