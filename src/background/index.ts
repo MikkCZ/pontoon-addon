@@ -2,6 +2,7 @@ import type { Runtime } from 'webextension-polyfill';
 
 import {
   browser,
+  callDelayed,
   openIntro,
   supportsAddressBar,
 } from '@commons/webExtensionsApi';
@@ -18,9 +19,9 @@ import { ToolbarButton } from './ToolbarButton';
 import { ToolbarButtonContextMenu } from './ToolbarButtonContextMenu';
 
 // Register capturing event listener in case onInstalled fires before all the async stuff below are ready.
-let newInstallationDetails: Runtime.OnInstalledDetailsType;
+let onInstalledDetails: Runtime.OnInstalledDetailsType;
 let onInstallFunction = (details: Runtime.OnInstalledDetailsType): void => {
-  newInstallationDetails = details;
+  onInstalledDetails = details;
 };
 browser.runtime.onInstalled.addListener((details) => {
   onInstallFunction(details);
@@ -57,13 +58,22 @@ async function init() {
     toolbarButton,
   );
 
+  const refreshDataOnUpdate = (details: Runtime.OnInstalledDetailsType) => {
+    if (details.reason === 'update') {
+      dataRefresher.refreshData();
+    }
+  };
+
   // If the onInstalled event has already fired, the details are stored by the function registered above.
-  onInstallFunction = (_details) => dataRefresher.refreshData();
-  if (newInstallationDetails) {
-    onInstallFunction(newInstallationDetails);
+  if (onInstalledDetails) {
+    refreshDataOnUpdate(onInstalledDetails);
+  } else {
+    onInstallFunction = refreshDataOnUpdate;
   }
 
-  setTimeout(() => dataRefresher.refreshData(), 1000);
+  callDelayed({ delayInSeconds: 1 }, async () => {
+    dataRefresher.refreshData();
+  });
 }
 
 init();

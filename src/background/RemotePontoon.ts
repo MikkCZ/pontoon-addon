@@ -327,8 +327,8 @@ export class RemotePontoon {
       ),
       getOneFromStorage('notificationsData'),
     ]);
-    if (response.ok) {
-      Object.values(notificationsData!).forEach((n) => (n.unread = false));
+    if (response.ok && typeof notificationsData !== 'undefined') {
+      Object.values(notificationsData).forEach((n) => (n.unread = false));
       await saveToStorage({ notificationsData });
     }
   }

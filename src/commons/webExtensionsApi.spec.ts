@@ -34,6 +34,7 @@ import {
   supportsContainers,
   registerScriptForBaseUrl,
   callWithInterval,
+  callDelayed,
 } from './webExtensionsApi';
 
 beforeEach(() => {
@@ -340,7 +341,7 @@ describe('webExtensionsApi', () => {
     mockBrowserNode.verify();
   });
 
-  it('callWithInterval', async () => {
+  it('callWithInterval', () => {
     (
       mockBrowser.alarms.create as unknown as MockzillaDeep<{
         (name: string, alarmInfo: Alarms.CreateAlarmInfoType): void;
@@ -353,6 +354,23 @@ describe('webExtensionsApi', () => {
       .andReturn();
 
     callWithInterval('name', { periodInMinutes: 42 }, jest.fn());
+
+    mockBrowserNode.verify();
+  });
+
+  it('callDelayed', () => {
+    (
+      mockBrowser.alarms.create as unknown as MockzillaDeep<{
+        (name: string, alarmInfo: Alarms.CreateAlarmInfoType): void;
+      }>
+    )
+      .expect(expect.anything(), { delayInMinutes: 0.5 })
+      .andReturn();
+    mockBrowser.alarms.onAlarm.addListener
+      .expect(expect.anything())
+      .andReturn();
+
+    callDelayed({ delayInSeconds: 30 }, jest.fn());
 
     mockBrowserNode.verify();
   });

@@ -62,3 +62,7 @@ export const hasPermissions = jest.fn();
 export const registerScriptForBaseUrl = jest.fn();
 
 export const executeScript = jest.fn();
+
+export const callWithInterval = jest.fn();
+
+export const callDelayed = jest.fn();

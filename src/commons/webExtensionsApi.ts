@@ -261,12 +261,25 @@ export async function executeScript(tabId: number, file: string) {
   return browser.tabs.executeScript(tabId, { file });
 }
 
-export async function callWithInterval(
+export function callWithInterval(
   name: string,
   interval: { periodInMinutes: number },
   action: () => void,
 ) {
   browser.alarms.create(name, interval);
+  browser.alarms.onAlarm.addListener(({ name: triggeredAlarmName }) => {
+    if (triggeredAlarmName === name) {
+      action();
+    }
+  });
+}
+
+export function callDelayed(
+  delay: { delayInSeconds: number },
+  action: () => void,
+) {
+  const name = Math.random().toString(16).substring(2);
+  browser.alarms.create(name, { delayInMinutes: delay.delayInSeconds / 60 });
   browser.alarms.onAlarm.addListener(({ name: triggeredAlarmName }) => {
     if (triggeredAlarmName === name) {
       action();
