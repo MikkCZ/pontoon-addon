@@ -1,4 +1,8 @@
-import { getOneOption, listenToOptionChange } from '@commons/options';
+import {
+  getOneOption,
+  listenToOptionChange,
+  OptionValue,
+} from '@commons/options';
 import {
   browser,
   openNewTab,
@@ -22,7 +26,7 @@ export class ToolbarButton {
     this.registerClickAction();
   }
 
-  private registerBadgeChanges(): void {
+  private async registerBadgeChanges() {
     listenToStorageChange(
       'notificationsData',
       ({ newValue: notificationsData }) => {
@@ -36,6 +40,7 @@ export class ToolbarButton {
     listenToOptionChange('display_toolbar_button_badge', async () => {
       this.updateBadge(await getOneFromStorage('notificationsData'));
     });
+    this.updateBadge(await getOneFromStorage('notificationsData'));
   }
 
   private async buttonClickHandler() {
@@ -59,25 +64,30 @@ export class ToolbarButton {
     }
   }
 
-  private registerClickAction() {
+  private registerButtonPopup(action: OptionValue<'toolbar_button_action'>) {
+    let popup;
+    switch (action) {
+      case 'popup':
+        popup = getResourceUrl('frontend/toolbar-button.html');
+        break;
+      case 'home-page':
+      case 'team-page':
+        popup = '';
+        break;
+      default:
+        throw new Error(`Unknown toolbar button action '${action}'.`);
+    }
+    browser.browserAction.setPopup({ popup });
+  }
+
+  private async registerClickAction() {
     browser.browserAction.onClicked.addListener(() =>
       this.buttonClickHandler(),
     );
     listenToOptionChange('toolbar_button_action', ({ newValue: action }) => {
-      let popup;
-      switch (action) {
-        case 'popup':
-          popup = getResourceUrl('frontend/toolbar-button.html');
-          break;
-        case 'home-page':
-        case 'team-page':
-          popup = '';
-          break;
-        default:
-          throw new Error(`Unknown toolbar button action '${action}'.`);
-      }
-      browser.browserAction.setPopup({ popup });
+      this.registerButtonPopup(action);
     });
+    this.registerButtonPopup(await getOneOption('toolbar_button_action'));
   }
 
   private async updateBadge(

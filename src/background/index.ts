@@ -58,8 +58,7 @@ async function init() {
   );
 
   // If the onInstalled event has already fired, the details are stored by the function registered above.
-  onInstallFunction = (_details) =>
-    dataRefresher.refreshDataOnInstallOrUpdate();
+  onInstallFunction = (_details) => dataRefresher.refreshData();
   if (newInstallationDetails) {
     onInstallFunction(newInstallationDetails);
   }

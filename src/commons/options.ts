@@ -7,7 +7,7 @@ export type OptionId = keyof OptionsContent;
 
 type OptionValues<ID extends OptionId> = Pick<OptionsContent, ID>;
 
-type OptionValue<ID extends OptionId> = OptionValues<ID>[ID];
+export type OptionValue<ID extends OptionId> = OptionValues<ID>[ID];
 
 interface OptionChange<ID extends OptionId> extends Storage.StorageChange {
   oldValue?: OptionValue<ID>;

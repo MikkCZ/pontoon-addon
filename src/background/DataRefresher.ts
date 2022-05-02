@@ -31,10 +31,6 @@ export class DataRefresher {
     this.registerLiveDataProvider();
   }
 
-  public refreshDataOnInstallOrUpdate(): void {
-    this.remotePontoon.updateProjectsList();
-  }
-
   public refreshData(): void {
     this.remotePontoon.updateNotificationsData();
     this.remotePontoon.updateLatestTeamActivity();
