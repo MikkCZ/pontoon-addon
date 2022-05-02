@@ -4,24 +4,16 @@ import { requestPermissionForPontoon } from '@commons/webExtensionsApi';
 import { getOneOption, setOption } from '@commons/options';
 
 export const PontoonBaseUrlInput: React.FC = () => {
-  const [pontoonBaseUrl, _setPontoonBaseUrlState] = useState<
+  const [pontoonBaseUrl, setPontoonBaseUrlState] = useState<
     string | undefined
   >();
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     (async () => {
-      _setPontoonBaseUrlState(await getOneOption('pontoon_base_url'));
+      setPontoonBaseUrlState(await getOneOption('pontoon_base_url'));
     })();
   }, []);
-
-  const setPontoonBaseUrl = async (url: string) => {
-    const baseUrl = url.replace(/\/+$/, '');
-    if (await requestPermissionForPontoon(baseUrl)) {
-      _setPontoonBaseUrlState(baseUrl);
-      await setOption('pontoon_base_url', baseUrl);
-    }
-  };
 
   return (
     <div>
@@ -31,7 +23,14 @@ export const PontoonBaseUrlInput: React.FC = () => {
         type="url"
         disabled={disabled}
         value={pontoonBaseUrl}
-        onChange={(e) => setPontoonBaseUrl(e.target.value)}
+        onChange={(e) => setPontoonBaseUrlState(e.target.value)}
+        onBlur={async (e) => {
+          const baseUrl = e.target.value.replace(/\/+$/, '');
+          if (await requestPermissionForPontoon(baseUrl)) {
+            setPontoonBaseUrlState(baseUrl);
+            await setOption('pontoon_base_url', baseUrl);
+          }
+        }}
       />{' '}
       <button
         className="pontoon-style"
