@@ -1,5 +1,3 @@
-import type { Tabs } from 'webextension-polyfill';
-
 import {
   pontoonFxaSignIn,
   pontoonSettings,
@@ -64,7 +62,7 @@ export async function updateTeamsList(): Promise<StorageContent['teamsList']> {
   });
 }
 
-export async function getTeamFromPontoon(): Promise<string | undefined> {
+export async function getUsersTeamFromPontoon(): Promise<string | undefined> {
   return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.GET_TEAM_FROM_PONTOON,
   });
@@ -111,13 +109,4 @@ export async function notificationBellIconScriptLoaded(): Promise<{
   return browser.runtime.sendMessage({
     type: BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED,
   });
-}
-
-export function listenToMessages(
-  listener: (
-    message: { type: BackgroundClientMessageType; [key: string]: unknown },
-    sender: { tab?: Tabs.Tab; url?: string },
-  ) => void,
-) {
-  browser.runtime.onMessage.addListener(listener);
 }

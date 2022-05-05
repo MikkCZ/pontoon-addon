@@ -4,6 +4,8 @@ import {
   deleteFromStorage,
   getActiveTab,
   getOneFromStorage,
+  listenToMessages,
+  listenToMessagesExclusively,
   saveToStorage,
   StorageContent,
 } from '@commons/webExtensionsApi';
@@ -16,40 +18,38 @@ import { getOneOption, getOptions } from '@commons/options';
 
 import {
   AUTOMATION_UTM_SOURCE,
-  markAllNotificationsAsRead,
+  markAllNotificationsAsRead as markAllNotificationsAsReadUrl,
   pontoonGraphQL,
   pontoonUserData,
   bugzillaTeamComponents,
 } from './apiEndpoints';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
-import { HttpClient } from './HttpClient';
+import { pontoonHttpClient, httpClient } from './httpClients';
 import { projectsListData } from './data/projectsListData';
-import { listenToMessages, ProjectForCurrentTab } from './backgroundClient';
-
-interface NotificationApiResponse {
-  id: number;
-  unread: boolean;
-  actor?: {
-    anchor: string;
-    url: string;
-  };
-  target?: {
-    anchor: string;
-    url: string;
-  };
-  verb?: string;
-  description?: {
-    safe: boolean;
-    content?: string;
-    is_comment?: boolean;
-  };
-  date_iso?: string;
-}
+import type { ProjectForCurrentTab } from './backgroundClient';
 
 interface UserDataApiResponse {
   notifications: {
     has_unread: boolean;
-    notifications: NotificationApiResponse[];
+    notifications: Array<{
+      id: number;
+      unread: boolean;
+      actor?: {
+        anchor: string;
+        url: string;
+      };
+      target?: {
+        anchor: string;
+        url: string;
+      };
+      verb?: string;
+      description?: {
+        safe: boolean;
+        content?: string;
+        is_comment?: boolean;
+      };
+      date_iso?: string;
+    }>;
   };
 }
 
@@ -67,11 +67,7 @@ interface TeamsListGqlResponse {
   }>;
 }
 
-type TeamsList = StorageContent['teamsList'];
-
-type ProjectsList = StorageContent['projectsList'];
-
-type Project = ProjectsList['slug'];
+type Project = StorageContent['projectsList']['slug'];
 
 interface ProjectGqlReponse {
   slug: string;
@@ -82,251 +78,248 @@ interface ProjectsListGqlResponse {
   projects: ProjectGqlReponse[];
 }
 
-type LatestActivity = StorageContent['latestTeamsActivity'][string];
+function parseDOM(pageContent: string) {
+  return new DOMParser().parseFromString(pageContent, 'text/html');
+}
 
-export class RemotePontoon {
-  private readonly domParser: DOMParser;
-  private readonly httpClient: HttpClient;
+export function listenToMessagesFromClients() {
+  listenToMessages(
+    BackgroundClientMessageType.PAGE_LOADED,
+    (message: { documentHTML?: string }) =>
+      updateNotificationsIfThereAreNew(message.documentHTML!),
+  );
+  listenToMessages(BackgroundClientMessageType.NOTIFICATIONS_READ, () =>
+    markAllNotificationsAsRead(),
+  );
+  listenToMessagesExclusively(
+    BackgroundClientMessageType.UPDATE_TEAMS_LIST,
+    async () => {
+      return updateTeamsList();
+    },
+  );
+  listenToMessagesExclusively(
+    BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,
+    async () => {
+      const activeTab = await getActiveTab();
+      return getPontoonProjectForPageUrl(activeTab.url!);
+    },
+  );
+  listenToMessagesExclusively(
+    BackgroundClientMessageType.GET_TEAM_FROM_PONTOON,
+    async () => {
+      return getUsersTeamFromPontoon();
+    },
+  );
+}
 
-  constructor() {
-    this.domParser = new DOMParser();
-    this.httpClient = new HttpClient();
+export async function refreshData() {
+  await Promise.all([
+    updateNotificationsData(),
+    updateLatestTeamActivity(),
+    updateTeamsList(),
+    updateProjectsList(),
+  ]);
+}
 
-    this.listenToMessagesFromClients();
+async function updateNotificationsIfThereAreNew(pageContent: string) {
+  const page = parseDOM(pageContent);
+  if (page.querySelector('header #notifications')) {
+    const [notificationsData, notificationsIdsFromPage] = await Promise.all([
+      getOneFromStorage('notificationsData'),
+      Array.from(page.querySelectorAll('header .notification-item')).map(
+        (n: any) => n.dataset.id,
+      ),
+    ]);
+    if (
+      !notificationsData ||
+      !notificationsIdsFromPage.every((id) => id in notificationsData)
+    ) {
+      updateNotificationsData();
+    }
   }
+}
 
-  private async updateNotificationsIfThereAreNew(
-    pageContent: string,
-  ): Promise<void> {
-    const page = this.domParser.parseFromString(pageContent, 'text/html');
-    if (page.querySelector('header #notifications')) {
-      const [notificationsData, notificationsIdsFromPage] = await Promise.all([
-        getOneFromStorage('notificationsData'),
-        Array.from(page.querySelectorAll('header .notification-item')).map(
-          (n: any) => n.dataset.id,
-        ),
-      ]);
-      if (
-        !notificationsData ||
-        !notificationsIdsFromPage.every((id) => id in notificationsData)
-      ) {
-        this.updateNotificationsData();
+async function updateNotificationsData() {
+  try {
+    const reponse = await pontoonHttpClient.fetchFromPontoonSession(
+      pontoonUserData(await getOneOption('pontoon_base_url')),
+    );
+    const userData = (await reponse.json()) as UserDataApiResponse;
+    const notificationsData: StorageContent['notificationsData'] = {};
+    for (const notification of userData.notifications.notifications) {
+      notificationsData[notification.id] = notification;
+    }
+    await saveToStorage({ notificationsData });
+  } catch (error) {
+    await deleteFromStorage('notificationsData');
+    console.error(error);
+  }
+}
+
+async function updateLatestTeamActivity() {
+  const reponse = await httpClient.fetch(
+    pontoonTeamsList(
+      await getOneOption('pontoon_base_url'),
+      AUTOMATION_UTM_SOURCE,
+    ),
+  );
+  const allTeamsPageContent = await reponse.text();
+  const latestActivityArray = Array.from(
+    parseDOM(allTeamsPageContent).querySelectorAll('.team-list tbody tr'),
+  ).map((row): StorageContent['latestTeamsActivity'][string] => {
+    const latestActivityTime = row.querySelector(
+      '.latest-activity time',
+    ) as any;
+    return {
+      team: row.querySelector('.code a')?.textContent || '',
+      user: latestActivityTime?.dataset?.userName || '',
+      date_iso: latestActivityTime?.attributes?.datetime?.value || undefined,
+    };
+  });
+  const latestTeamsActivity: StorageContent['latestTeamsActivity'] = {};
+  for (const latestTeamActivity of latestActivityArray) {
+    latestTeamsActivity[latestTeamActivity.team] = latestTeamActivity;
+  }
+  if (Object.keys(latestTeamsActivity).length > 0) {
+    await saveToStorage({ latestTeamsActivity });
+  } else {
+    await deleteFromStorage('latestTeamsActivity');
+  }
+}
+
+async function updateTeamsList(): Promise<StorageContent['teamsList']> {
+  const [pontoonDataResponse, bugzillaComponentsResponse] = await Promise.all([
+    httpClient.fetch(
+      pontoonGraphQL(
+        await getOneOption('pontoon_base_url'),
+        '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
+      ),
+    ),
+    httpClient.fetch(bugzillaTeamComponents()),
+  ]);
+  const pontoonData = (await pontoonDataResponse.json()) as {
+    data: TeamsListGqlResponse;
+  };
+  const bugzillaComponents = (await bugzillaComponentsResponse.json()) as {
+    [code: string]: string;
+  };
+  const sortedTeams = pontoonData.data.locales
+    .filter((team) => team.totalStrings > 0)
+    .sort((team1, team2) => team1.code.localeCompare(team2.code));
+  const teamsList: StorageContent['teamsList'] = {};
+  for (const team of sortedTeams) {
+    teamsList[team.code] = {
+      code: team.code,
+      name: team.name,
+      strings: {
+        approvedStrings: team.approvedStrings,
+        pretranslatedStrings: team.pretranslatedStrings,
+        stringsWithWarnings: team.stringsWithWarnings,
+        stringsWithErrors: team.stringsWithErrors,
+        missingStrings: team.missingStrings,
+        unreviewedStrings: team.unreviewedStrings,
+        totalStrings: team.totalStrings,
+      },
+      bz_component: bugzillaComponents[team.code],
+    };
+  }
+  await saveToStorage({ teamsList });
+  return teamsList;
+}
+
+async function updateProjectsList(): Promise<StorageContent['projectsList']> {
+  const pontoonDataResponse = await httpClient.fetch(
+    pontoonGraphQL(
+      await getOneOption('pontoon_base_url'),
+      '{projects{slug,name}}',
+    ),
+  );
+  const pontoonData = (await pontoonDataResponse.json()) as {
+    data: ProjectsListGqlResponse;
+  };
+  const partialProjectsMap = new Map<
+    ProjectGqlReponse['slug'],
+    ProjectGqlReponse
+  >();
+  for (const project of pontoonData.data.projects) {
+    partialProjectsMap.set(project.slug, project);
+  }
+  const projects = projectsListData.map((project) => ({
+    ...project,
+    ...partialProjectsMap.get(project.slug)!,
+  }));
+  const projectsList: StorageContent['projectsList'] = {};
+  for (const project of projects) {
+    projectsList[project.slug] = project;
+  }
+  await saveToStorage({ projectsList });
+  return projectsList;
+}
+
+export async function getPontoonProjectForPageUrl(
+  pageUrl: string,
+): Promise<ProjectForCurrentTab | undefined> {
+  const toProjectMap = new Map<Project['domains'][number], Project>();
+  const projectsList = await getOneFromStorage('projectsList');
+  if (projectsList) {
+    for (const project of Object.values(projectsList)) {
+      for (const domain of project.domains) {
+        toProjectMap.set(domain, project);
       }
     }
   }
-
-  public async updateNotificationsData(): Promise<void> {
-    try {
-      const reponse = await this.httpClient.fetchFromPontoonSession(
-        pontoonUserData(await getOneOption('pontoon_base_url')),
-      );
-      const userData = (await reponse.json()) as UserDataApiResponse;
-      const notificationsDataObj: StorageContent['notificationsData'] = {};
-      userData.notifications.notifications.forEach(
-        (n) => (notificationsDataObj[n.id] = n),
-      );
-      await saveToStorage({ notificationsData: notificationsDataObj });
-    } catch (error) {
-      await deleteFromStorage('notificationsData');
-      console.error(error);
-    }
-  }
-
-  public async updateLatestTeamActivity(): Promise<void> {
-    const reponse = await this.httpClient.fetch(
-      pontoonTeamsList(
-        await getOneOption('pontoon_base_url'),
-        AUTOMATION_UTM_SOURCE,
+  const { hostname } = URI.parse(pageUrl);
+  const projectData = hostname ? toProjectMap.get(hostname) : undefined;
+  if (projectData) {
+    const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
+      await getOptions(['pontoon_base_url', 'locale_team']);
+    return {
+      name: projectData.name,
+      pageUrl: toPontoonTeamSpecificProjectUrl(
+        pontoonBaseUrl,
+        { code: teamCode },
+        URI.joinPaths('/', 'projects', projectData.slug).toString(),
       ),
-    );
-    const allTeamsPageContent = await reponse.text();
-    const latestActivityObj: StorageContent['latestTeamsActivity'] = {};
-    const allTeamsPage = this.domParser.parseFromString(
-      allTeamsPageContent,
-      'text/html',
-    );
-    Array.from(allTeamsPage.querySelectorAll('.team-list tbody tr'))
-      .map((row): LatestActivity => {
-        const latestActivityTime = row.querySelector(
-          '.latest-activity time',
-        ) as any;
-        return {
-          team: row.querySelector('.code a')?.textContent || '',
-          user: latestActivityTime?.dataset?.userName || '',
-          date_iso:
-            latestActivityTime?.attributes?.datetime?.value || undefined,
-        };
-      })
-      .forEach((teamActivity) => {
-        latestActivityObj[teamActivity.team] = teamActivity;
-      });
-    if (Object.keys(latestActivityObj).length > 0) {
-      await saveToStorage({ latestTeamsActivity: latestActivityObj });
-    } else {
-      await deleteFromStorage('latestTeamsActivity');
-    }
-  }
-
-  public async updateTeamsList(): Promise<TeamsList> {
-    const [pontoonDataResponse, bugzillaComponentsResponse] = await Promise.all(
-      [
-        this.httpClient.fetch(
-          pontoonGraphQL(
-            await getOneOption('pontoon_base_url'),
-            '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
-          ),
-        ),
-        this.httpClient.fetch(bugzillaTeamComponents()),
-      ],
-    );
-    const pontoonData = (await pontoonDataResponse.json()) as {
-      data: TeamsListGqlResponse;
+      translationUrl: toPontoonTeamSpecificProjectUrl(
+        pontoonBaseUrl,
+        { code: teamCode },
+        URI.joinPaths(
+          '/',
+          'projects',
+          projectData.slug,
+          'all-resources',
+        ).toString(),
+      ),
     };
-    const bugzillaComponents = (await bugzillaComponentsResponse.json()) as {
-      [code: string]: string;
-    };
-    const teamsListObj: TeamsList = {};
-    pontoonData.data.locales
-      .filter((team) => team.totalStrings > 0)
-      .sort((team1, team2) => team1.code.localeCompare(team2.code))
-      .forEach((team) => {
-        teamsListObj[team.code] = {
-          code: team.code,
-          name: team.name,
-          strings: {
-            approvedStrings: team.approvedStrings,
-            pretranslatedStrings: team.pretranslatedStrings,
-            stringsWithWarnings: team.stringsWithWarnings,
-            stringsWithErrors: team.stringsWithErrors,
-            missingStrings: team.missingStrings,
-            unreviewedStrings: team.unreviewedStrings,
-            totalStrings: team.totalStrings,
-          },
-          bz_component: bugzillaComponents[team.code],
-        };
-      });
-    await saveToStorage({ teamsList: teamsListObj });
-    return teamsListObj;
+  } else {
+    return undefined;
   }
+}
 
-  public async getPontoonProjectForPageUrl(
-    pageUrl: string,
-  ): Promise<ProjectForCurrentTab | undefined> {
-    const toProjectMap = new Map<Project['domains'][number], Project>();
-    const projectsList = await getOneFromStorage('projectsList');
-    if (projectsList) {
-      Object.values(projectsList).forEach((project) =>
-        project.domains.forEach((domain) => toProjectMap.set(domain, project)),
-      );
+async function markAllNotificationsAsRead(): Promise<void> {
+  const [response, notificationsData] = await Promise.all([
+    pontoonHttpClient.fetchFromPontoonSession(
+      markAllNotificationsAsReadUrl(await getOneOption('pontoon_base_url')),
+    ),
+    getOneFromStorage('notificationsData'),
+  ]);
+  if (response.ok && typeof notificationsData !== 'undefined') {
+    for (const notification of Object.values(notificationsData)) {
+      notification.unread = false;
     }
-    const { hostname } = URI.parse(pageUrl);
-    const projectData = hostname ? toProjectMap.get(hostname) : undefined;
-    if (projectData) {
-      const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
-        await getOptions(['pontoon_base_url', 'locale_team']);
-      return {
-        name: projectData.name,
-        pageUrl: toPontoonTeamSpecificProjectUrl(
-          pontoonBaseUrl,
-          { code: teamCode },
-          URI.joinPaths('/', 'projects', projectData.slug).toString(),
-        ),
-        translationUrl: toPontoonTeamSpecificProjectUrl(
-          pontoonBaseUrl,
-          { code: teamCode },
-          URI.joinPaths(
-            '/',
-            'projects',
-            projectData.slug,
-            'all-resources',
-          ).toString(),
-        ),
-      };
-    } else {
-      return undefined;
-    }
+    await saveToStorage({ notificationsData });
   }
+}
 
-  public async updateProjectsList(): Promise<StorageContent['projectsList']> {
-    const pontoonDataResponse = await this.httpClient.fetch(
-      pontoonGraphQL(
-        await getOneOption('pontoon_base_url'),
-        '{projects{slug,name}}',
-      ),
-    );
-    const pontoonData = (await pontoonDataResponse.json()) as {
-      data: ProjectsListGqlResponse;
-    };
-    const partialProjectsMap = new Map<
-      ProjectGqlReponse['slug'],
-      ProjectGqlReponse
-    >();
-    pontoonData.data.projects.forEach((project) =>
-      partialProjectsMap.set(project.slug, project),
-    );
-    const projectsListObj: ProjectsList = {};
-    projectsListData
-      .map((project) => ({
-        ...project,
-        ...partialProjectsMap.get(project.slug)!,
-      }))
-      .forEach((project) => {
-        projectsListObj[project.slug] = project;
-      });
-    await saveToStorage({ projectsList: projectsListObj });
-    return projectsListObj;
-  }
-
-  private listenToMessagesFromClients(): void {
-    listenToMessages(
-      (message: {
-        type: BackgroundClientMessageType;
-        documentHTML?: string;
-      }) => {
-        switch (message.type) {
-          case BackgroundClientMessageType.PAGE_LOADED:
-            this.updateNotificationsIfThereAreNew(message.documentHTML!);
-            break;
-          case BackgroundClientMessageType.NOTIFICATIONS_READ:
-            this.markAllNotificationsAsRead();
-            break;
-          case BackgroundClientMessageType.UPDATE_TEAMS_LIST:
-            return this.updateTeamsList();
-          case BackgroundClientMessageType.GET_TEAM_FROM_PONTOON:
-            return this.getTeamFromPontoon();
-          case BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT:
-            return getActiveTab().then((tab) =>
-              this.getPontoonProjectForPageUrl(tab.url!),
-            );
-        }
-      },
-    );
-  }
-
-  private async markAllNotificationsAsRead(): Promise<void> {
-    const [response, notificationsData] = await Promise.all([
-      this.httpClient.fetchFromPontoonSession(
-        markAllNotificationsAsRead(await getOneOption('pontoon_base_url')),
-      ),
-      getOneFromStorage('notificationsData'),
-    ]);
-    if (response.ok && typeof notificationsData !== 'undefined') {
-      Object.values(notificationsData).forEach((n) => (n.unread = false));
-      await saveToStorage({ notificationsData });
-    }
-  }
-
-  private async getTeamFromPontoon(): Promise<string | undefined> {
-    const response = await this.httpClient.fetchFromPontoonSession(
-      pontoonSettings(
-        await getOneOption('pontoon_base_url'),
-        AUTOMATION_UTM_SOURCE,
-      ),
-    );
-    const text = await response.text();
-    const language: any = this.domParser
-      .parseFromString(text, 'text/html')
-      .querySelector('#homepage .language');
-    return language?.dataset['code'] || undefined;
-  }
+async function getUsersTeamFromPontoon(): Promise<string | undefined> {
+  const response = await pontoonHttpClient.fetchFromPontoonSession(
+    pontoonSettings(
+      await getOneOption('pontoon_base_url'),
+      AUTOMATION_UTM_SOURCE,
+    ),
+  );
+  const language: any = parseDOM(await response.text()).querySelector(
+    '#homepage .language',
+  );
+  return language?.dataset['code'] || undefined;
 }

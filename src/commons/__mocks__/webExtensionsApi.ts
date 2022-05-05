@@ -64,3 +64,7 @@ export const executeScript = jest.fn();
 export const callWithInterval = jest.fn();
 
 export const callDelayed = jest.fn();
+
+export const listenToMessages = jest.fn();
+
+export const listenToMessagesExclusively = jest.fn();

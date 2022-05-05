@@ -10,7 +10,6 @@ import {
 } from '@commons/webExtensionsApi';
 import { setOption } from '@commons/options';
 import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
-import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
@@ -19,6 +18,7 @@ import contextButtonsImage from '@assets/img/context-buttons.png';
 import settingsImage from '@assets/img/settings.png';
 import feedbackImage from '@assets/img/2-Lions.png';
 
+import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
 import type { Props as TileProps } from '../TourPageTile';
 import { TourPage } from '../TourPage';
 

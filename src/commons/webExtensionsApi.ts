@@ -6,6 +6,8 @@ import type {
   Tabs,
 } from 'webextension-polyfill';
 
+import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const browser = require('webextension-polyfill') as Browser;
 
@@ -278,6 +280,35 @@ export function callDelayed(
   browser.alarms.onAlarm.addListener(({ name: triggeredAlarmName }) => {
     if (triggeredAlarmName === name) {
       action();
+    }
+  });
+}
+
+export function listenToMessages<T extends BackgroundClientMessageType>(
+  type: T,
+  action: (message: any, sender: { tab?: Tabs.Tab; url?: string }) => void,
+) {
+  browser.runtime.onMessage.addListener((message, sender) => {
+    if (message.type === type) {
+      // no return to allow all listeners to react on the message
+      action(message, sender);
+    }
+  });
+}
+
+export function listenToMessagesExclusively<
+  T extends BackgroundClientMessageType,
+>(
+  type: T,
+  action: (
+    message: any,
+    sender: { tab?: Tabs.Tab; url?: string },
+  ) => Promise<unknown>,
+) {
+  browser.runtime.onMessage.addListener((message, sender) => {
+    if (message.type === type) {
+      // only one listener can send a response
+      return action(message, sender);
     }
   });
 }

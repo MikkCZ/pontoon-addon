@@ -1,10 +1,12 @@
 import {
-  listenToMessages,
   markAllNotificationsAsRead,
   notificationBellIconScriptLoaded,
 } from '@background/backgroundClient';
 import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
-import { listenToStorageChange } from '@commons/webExtensionsApi';
+import {
+  listenToMessages,
+  listenToStorageChange,
+} from '@commons/webExtensionsApi';
 
 const unreadNotificationsIcon =
   document.querySelector('#notifications.unread .button .icon') ||
@@ -45,8 +47,23 @@ function registerAllListeners() {
   }
 }
 
-function backgroundMessageHandler(type: BackgroundClientMessageType) {
-  switch (type) {
+async function init() {
+  listenToMessages(
+    BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
+    () => {
+      listenersEnabled = true;
+      registerAllListeners();
+    },
+  );
+  listenToMessages(
+    BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT,
+    () => {
+      listenersEnabled = false;
+      console.info('Pontoon Add-on: listeners disabled');
+    },
+  );
+  const { type: responseType } = await notificationBellIconScriptLoaded();
+  switch (responseType) {
     case BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT:
       listenersEnabled = true;
       registerAllListeners();
@@ -55,14 +72,9 @@ function backgroundMessageHandler(type: BackgroundClientMessageType) {
       listenersEnabled = false;
       console.info('Pontoon Add-on: listeners disabled');
       break;
+    default:
+      throw new Error(`Unexpected response type '${responseType}'.`);
   }
-}
-
-async function init() {
-  listenToMessages((message) => {
-    backgroundMessageHandler(message.type);
-  });
-  backgroundMessageHandler((await notificationBellIconScriptLoaded()).type);
 }
 
 init();

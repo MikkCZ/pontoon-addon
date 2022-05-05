@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getOneFromStorage, StorageContent } from '@commons/webExtensionsApi';
 import {
   updateTeamsList,
-  getTeamFromPontoon,
+  getUsersTeamFromPontoon,
 } from '@background/backgroundClient';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
@@ -62,7 +62,7 @@ export const LocaleSelection: React.FC = () => {
           try {
             const [teamsInPontoon, localeTeamFromPontoon] = await Promise.all([
               updateTeamsList(),
-              getTeamFromPontoon(),
+              getUsersTeamFromPontoon(),
             ]);
             setTeamsList(teamsInPontoon);
             setLocaleTeam(localeTeamFromPontoon || previousLocaleTeam);
