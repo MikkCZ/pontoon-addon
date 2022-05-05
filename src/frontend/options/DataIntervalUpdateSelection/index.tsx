@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { getOneOption, setOption } from '@commons/options';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 
 const INTERVAL_OPTIONS_MINUTES = [5, 15, 30, 60, 120];
 
 export const DataIntervalUpdateSelection: React.FC = () => {
   const [intervalMinutes, _setIntervalMinutesState] = useState<
-    number | undefined
+    OptionsContent['data_update_interval'] | undefined
   >();
 
   useEffect(() => {

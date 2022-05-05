@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
-import { getOneFromStorage } from '@commons/webExtensionsApi';
+import { getOneFromStorage, StorageContent } from '@commons/webExtensionsApi';
 import {
   updateTeamsList,
   getTeamFromPontoon,
-  TeamsList,
 } from '@background/backgroundClient';
 import { getOneOption, setOption } from '@commons/options';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 
 export const LocaleSelection: React.FC = () => {
-  const [teamsList, setTeamsList] = useState<TeamsList | undefined>();
-  const [localeTeam, _setLocaleTeamState] = useState<string | undefined>();
+  const [teamsList, setTeamsList] = useState<
+    StorageContent['teamsList'] | undefined
+  >();
+  const [localeTeam, _setLocaleTeamState] = useState<
+    OptionsContent['locale_team'] | undefined
+  >();
 
   useEffect(() => {
     (async () => {

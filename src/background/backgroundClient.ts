@@ -1,4 +1,4 @@
-import { Tabs } from 'webextension-polyfill';
+import type { Tabs } from 'webextension-polyfill';
 
 import {
   pontoonFxaSignIn,
@@ -8,23 +8,15 @@ import {
   pontoonSearchStringsWithStatus,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
+import { browser, StorageContent } from '@commons/webExtensionsApi';
 import { getOneOption } from '@commons/options';
 
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
-export interface Project {
+export interface ProjectForCurrentTab {
   name: string;
   pageUrl: string;
   translationUrl: string;
-}
-
-interface Team {
-  name: string;
-}
-
-export interface TeamsList {
-  [slug: string]: Team;
 }
 
 async function getTeam(): Promise<{ code: string }> {
@@ -66,19 +58,21 @@ export async function getSignInURL(): Promise<string> {
   return pontoonFxaSignIn(await getPontoonBaseUrl());
 }
 
-export async function updateTeamsList(): Promise<TeamsList> {
+export async function updateTeamsList(): Promise<StorageContent['teamsList']> {
   return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.UPDATE_TEAMS_LIST,
   });
 }
 
-export async function getTeamFromPontoon(): Promise<string> {
+export async function getTeamFromPontoon(): Promise<string | undefined> {
   return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.GET_TEAM_FROM_PONTOON,
   });
 }
 
-export async function getPontoonProjectForTheCurrentTab(): Promise<Project> {
+export async function getPontoonProjectForTheCurrentTab(): Promise<
+  ProjectForCurrentTab | undefined
+> {
   return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,
   });

@@ -12,7 +12,7 @@ import {
   toPontoonTeamSpecificProjectUrl,
   pontoonTeamsList,
 } from '@commons/webLinks';
-import { listenToOptionChange } from '@commons/options';
+import { getOneOption, getOptions } from '@commons/options';
 
 import {
   AUTOMATION_UTM_SOURCE,
@@ -24,9 +24,9 @@ import {
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import { HttpClient } from './HttpClient';
 import { projectsListData } from './data/projectsListData';
-import { listenToMessages } from './backgroundClient';
+import { listenToMessages, ProjectForCurrentTab } from './backgroundClient';
 
-export interface NotificationApiResponse {
+interface NotificationApiResponse {
   id: number;
   unread: boolean;
   actor?: {
@@ -53,10 +53,6 @@ interface UserDataApiResponse {
   };
 }
 
-export interface NotificationsData {
-  [id: number]: NotificationApiResponse;
-}
-
 interface TeamsListGqlResponse {
   locales: Array<{
     code: string;
@@ -73,9 +69,7 @@ interface TeamsListGqlResponse {
 
 type TeamsList = StorageContent['teamsList'];
 
-export type Team = TeamsList['code'];
-
-export type ProjectsList = StorageContent['projectsList'];
+type ProjectsList = StorageContent['projectsList'];
 
 type Project = ProjectsList['slug'];
 
@@ -88,34 +82,17 @@ interface ProjectsListGqlResponse {
   projects: ProjectGqlReponse[];
 }
 
+type LatestActivity = StorageContent['latestTeamsActivity'][string];
+
 export class RemotePontoon {
-  private baseUrl: string;
-  private team: string;
   private readonly domParser: DOMParser;
   private readonly httpClient: HttpClient;
 
-  constructor(baseUrl: string, team: string) {
-    this.baseUrl = baseUrl;
-    this.team = team;
+  constructor() {
     this.domParser = new DOMParser();
     this.httpClient = new HttpClient();
 
-    listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
-      this.baseUrl = pontoonBaseUrl;
-    });
-    listenToOptionChange('locale_team', ({ newValue: teamCode }) => {
-      this.team = teamCode;
-    });
-
     this.listenToMessagesFromClients();
-  }
-
-  public getBaseUrl(): string {
-    return this.baseUrl;
-  }
-
-  public getTeam(): { code: string } {
-    return { code: this.team };
   }
 
   private async updateNotificationsIfThereAreNew(
@@ -141,10 +118,10 @@ export class RemotePontoon {
   public async updateNotificationsData(): Promise<void> {
     try {
       const reponse = await this.httpClient.fetchFromPontoonSession(
-        pontoonUserData(this.baseUrl),
+        pontoonUserData(await getOneOption('pontoon_base_url')),
       );
       const userData = (await reponse.json()) as UserDataApiResponse;
-      const notificationsDataObj: NotificationsData = {};
+      const notificationsDataObj: StorageContent['notificationsData'] = {};
       userData.notifications.notifications.forEach(
         (n) => (notificationsDataObj[n.id] = n),
       );
@@ -157,16 +134,19 @@ export class RemotePontoon {
 
   public async updateLatestTeamActivity(): Promise<void> {
     const reponse = await this.httpClient.fetch(
-      pontoonTeamsList(this.baseUrl, AUTOMATION_UTM_SOURCE),
+      pontoonTeamsList(
+        await getOneOption('pontoon_base_url'),
+        AUTOMATION_UTM_SOURCE,
+      ),
     );
     const allTeamsPageContent = await reponse.text();
-    const latestActivityObj: { [key: string]: any } = {};
+    const latestActivityObj: StorageContent['latestTeamsActivity'] = {};
     const allTeamsPage = this.domParser.parseFromString(
       allTeamsPageContent,
       'text/html',
     );
     Array.from(allTeamsPage.querySelectorAll('.team-list tbody tr'))
-      .map((row) => {
+      .map((row): LatestActivity => {
         const latestActivityTime = row.querySelector(
           '.latest-activity time',
         ) as any;
@@ -192,7 +172,7 @@ export class RemotePontoon {
       [
         this.httpClient.fetch(
           pontoonGraphQL(
-            this.baseUrl,
+            await getOneOption('pontoon_base_url'),
             '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
           ),
         ),
@@ -229,15 +209,10 @@ export class RemotePontoon {
     return teamsListObj;
   }
 
-  public async getPontoonProjectForPageUrl(pageUrl: string): Promise<
-    | {
-        name: string;
-        pageUrl: string;
-        translationUrl: string;
-      }
-    | undefined
-  > {
-    const toProjectMap = new Map<string, Project>();
+  public async getPontoonProjectForPageUrl(
+    pageUrl: string,
+  ): Promise<ProjectForCurrentTab | undefined> {
+    const toProjectMap = new Map<Project['domains'][number], Project>();
     const projectsList = await getOneFromStorage('projectsList');
     if (projectsList) {
       Object.values(projectsList).forEach((project) =>
@@ -247,16 +222,18 @@ export class RemotePontoon {
     const { hostname } = URI.parse(pageUrl);
     const projectData = hostname ? toProjectMap.get(hostname) : undefined;
     if (projectData) {
+      const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
+        await getOptions(['pontoon_base_url', 'locale_team']);
       return {
         name: projectData.name,
         pageUrl: toPontoonTeamSpecificProjectUrl(
-          this.baseUrl,
-          { code: this.team },
+          pontoonBaseUrl,
+          { code: teamCode },
           URI.joinPaths('/', 'projects', projectData.slug).toString(),
         ),
         translationUrl: toPontoonTeamSpecificProjectUrl(
-          this.baseUrl,
-          { code: this.team },
+          pontoonBaseUrl,
+          { code: teamCode },
           URI.joinPaths(
             '/',
             'projects',
@@ -270,14 +247,20 @@ export class RemotePontoon {
     }
   }
 
-  public async updateProjectsList(): Promise<{ [key: string]: any }> {
+  public async updateProjectsList(): Promise<StorageContent['projectsList']> {
     const pontoonDataResponse = await this.httpClient.fetch(
-      pontoonGraphQL(this.baseUrl, '{projects{slug,name}}'),
+      pontoonGraphQL(
+        await getOneOption('pontoon_base_url'),
+        '{projects{slug,name}}',
+      ),
     );
     const pontoonData = (await pontoonDataResponse.json()) as {
       data: ProjectsListGqlResponse;
     };
-    const partialProjectsMap = new Map<string, ProjectGqlReponse>();
+    const partialProjectsMap = new Map<
+      ProjectGqlReponse['slug'],
+      ProjectGqlReponse
+    >();
     pontoonData.data.projects.forEach((project) =>
       partialProjectsMap.set(project.slug, project),
     );
@@ -323,7 +306,7 @@ export class RemotePontoon {
   private async markAllNotificationsAsRead(): Promise<void> {
     const [response, notificationsData] = await Promise.all([
       this.httpClient.fetchFromPontoonSession(
-        markAllNotificationsAsRead(this.baseUrl),
+        markAllNotificationsAsRead(await getOneOption('pontoon_base_url')),
       ),
       getOneFromStorage('notificationsData'),
     ]);
@@ -335,7 +318,10 @@ export class RemotePontoon {
 
   private async getTeamFromPontoon(): Promise<string | undefined> {
     const response = await this.httpClient.fetchFromPontoonSession(
-      pontoonSettings(this.baseUrl, AUTOMATION_UTM_SOURCE),
+      pontoonSettings(
+        await getOneOption('pontoon_base_url'),
+        AUTOMATION_UTM_SOURCE,
+      ),
     );
     const text = await response.text();
     const language: any = this.domParser

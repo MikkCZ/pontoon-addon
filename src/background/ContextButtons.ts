@@ -6,23 +6,21 @@ import {
   openNewTab,
   executeScript,
   listenToTabsCompletedLoading,
+  StorageContent,
 } from '@commons/webExtensionsApi';
-import { getOneOption } from '@commons/options';
+import { getOneOption, getOptions } from '@commons/options';
 
-import type { ProjectsList, RemotePontoon } from './RemotePontoon';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import { listenToMessages } from './backgroundClient';
 
 export class ContextButtons {
-  private readonly remotePontoon: RemotePontoon;
   private mozillaWebsites: string[] = [];
 
-  constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
+  constructor() {
     getOneFromStorage('projectsList').then((projectsList) => {
       this.initMozillaWebsitesList(projectsList);
       this.listenToMessagesFromContentScript();
-      this.watchTabsUpdates();
+      this.listenToTabsUpdates();
       this.refreshContextButtonsInAllTabs();
       listenToStorageChange('projectsList', ({ newValue: newProjectsList }) => {
         this.initMozillaWebsitesList(newProjectsList);
@@ -30,7 +28,9 @@ export class ContextButtons {
     });
   }
 
-  private initMozillaWebsitesList(projects?: ProjectsList): void {
+  private initMozillaWebsitesList(
+    projects?: StorageContent['projectsList'],
+  ): void {
     if (projects) {
       this.mozillaWebsites = [];
       Object.values(projects).forEach((project) =>
@@ -42,7 +42,7 @@ export class ContextButtons {
     }
   }
 
-  private watchTabsUpdates(): void {
+  private listenToTabsUpdates(): void {
     listenToTabsCompletedLoading((tab) => {
       if (this.isSupportedPage(tab.url)) {
         this.injectContextButtonsScript(tab.id);
@@ -66,13 +66,17 @@ export class ContextButtons {
       ) => {
         switch (message.type) {
           case BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON:
-            openNewTab(
-              pontoonSearchInProject(
-                this.remotePontoon.getBaseUrl(),
-                this.remotePontoon.getTeam(),
-                { slug: 'all-projects' },
-                message.text!,
-              ),
+            getOptions(['pontoon_base_url', 'locale_team']).then(
+              ({ pontoon_base_url: pontoonBaseUrl, locale_team: teamCode }) => {
+                openNewTab(
+                  pontoonSearchInProject(
+                    pontoonBaseUrl,
+                    { code: teamCode },
+                    { slug: 'all-projects' },
+                    message.text!,
+                  ),
+                );
+              },
             );
             break;
           case BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA: {

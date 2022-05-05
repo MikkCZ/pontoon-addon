@@ -139,7 +139,7 @@ describe('backgroundClient', () => {
 
     const project = await getPontoonProjectForTheCurrentTab();
 
-    expect(project.name).toBe('firefox');
+    expect(project!.name).toBe('firefox');
     mockBrowserNode.verify();
   });
 

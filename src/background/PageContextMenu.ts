@@ -1,4 +1,4 @@
-import { Menus, Tabs } from 'webextension-polyfill';
+import type { Menus, Tabs } from 'webextension-polyfill';
 
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import {
@@ -7,22 +7,26 @@ import {
   createContextMenu,
   removeContextMenu,
   listenToStorageChange,
+  StorageContent,
 } from '@commons/webExtensionsApi';
-import { getOneOption, listenToOptionChange } from '@commons/options';
-
-import { ProjectsList, RemotePontoon, Team } from './RemotePontoon';
+import {
+  getOneOption,
+  getOptions,
+  listenToOptionChange,
+} from '@commons/options';
 
 export class PageContextMenu {
-  private readonly remotePontoon: RemotePontoon;
-
-  constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
-
-    this.watchStorageChangesAndOptionsUpdates();
+  constructor() {
+    listenToStorageChange('projectsList', () => this.loadDataFromStorage());
+    listenToStorageChange('teamsList', () => this.loadDataFromStorage());
+    listenToOptionChange('locale_team', () => this.loadDataFromStorage());
     this.loadDataFromStorage();
   }
 
-  private createContextMenus(projects: ProjectsList, team: Team): void {
+  private createContextMenus(
+    projects: StorageContent['projectsList'],
+    team: StorageContent['teamsList'][string],
+  ): void {
     // Create website patterns for all projects in Pontoon.
     const mozillaWebsitesUrlPatterns: string[] = [];
     Object.values(projects).forEach((project) =>
@@ -62,15 +66,20 @@ export class PageContextMenu {
             documentUrlPatterns: [`https://${domain}/*`],
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
-            onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
+            onclick: async (info: Menus.OnClickData, _tab: Tabs.Tab) => {
+              const {
+                pontoon_base_url: pontoonBaseUrl,
+                locale_team: teamCode,
+              } = await getOptions(['pontoon_base_url', 'locale_team']);
               openNewTab(
                 pontoonSearchInProject(
-                  this.remotePontoon.getBaseUrl(),
-                  this.remotePontoon.getTeam(),
+                  pontoonBaseUrl,
+                  { code: teamCode },
                   project,
                   info.selectionText,
                 ),
-              ),
+              );
+            },
           } as Menus.CreateCreatePropertiesType,
           {
             id: `page-context-menu-search-all-${domain}`,
@@ -78,15 +87,20 @@ export class PageContextMenu {
             documentUrlPatterns: [`https://${domain}/*`],
             contexts: ['selection'],
             parentId: mozillaPageContextMenuParent,
-            onclick: (info: Menus.OnClickData, _tab: Tabs.Tab) =>
+            onclick: async (info: Menus.OnClickData, _tab: Tabs.Tab) => {
+              const {
+                pontoon_base_url: pontoonBaseUrl,
+                locale_team: teamCode,
+              } = await getOptions(['pontoon_base_url', 'locale_team']);
               openNewTab(
                 pontoonSearchInProject(
-                  this.remotePontoon.getBaseUrl(),
-                  this.remotePontoon.getTeam(),
+                  pontoonBaseUrl,
+                  { code: teamCode },
                   { slug: 'all-projects' },
                   info.selectionText,
                 ),
-              ),
+              );
+            },
           } as Menus.CreateCreatePropertiesType,
         ])
         .forEach(PageContextMenu.recreateContextMenu);
@@ -98,12 +112,6 @@ export class PageContextMenu {
   ): number | string {
     removeContextMenu(contextMenuItem.id!);
     return createContextMenu(contextMenuItem);
-  }
-
-  private watchStorageChangesAndOptionsUpdates(): void {
-    listenToStorageChange('projectsList', () => this.loadDataFromStorage());
-    listenToStorageChange('teamsList', () => this.loadDataFromStorage());
-    listenToOptionChange('locale_team', () => this.loadDataFromStorage());
   }
 
   private async loadDataFromStorage(): Promise<void> {
