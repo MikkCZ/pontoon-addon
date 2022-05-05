@@ -13,7 +13,7 @@ Pontoon Add-on is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) 
 
 ## How to install & use
 
-This add-on is a WebExtension and works both in Firefox and Chrome. Please read the [wiki](https://github.com/MikkCZ/pontoon-addon/wiki), how to install and use it.
+This add-on is a WebExtension and works in multiple browsers. It's primarily developed for Firefox, but should work at least to some extent also in Chromium, Chrome, Edge, Brave, Vivaldi, Opera or Waterfox. Please read the [wiki](https://github.com/MikkCZ/pontoon-addon/wiki), how to install and use it.
 
 ## Get involved
 
