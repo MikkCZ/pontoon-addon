@@ -164,6 +164,10 @@ export async function getTabsWithBaseUrl(baseUrl: string) {
   return browser.tabs.query({ url: `${baseUrl}/*` });
 }
 
+export async function getActiveTab(): Promise<Tabs.Tab> {
+  return (await browser.tabs.query({ currentWindow: true, active: true }))[0];
+}
+
 export async function listenToTabsCompletedLoading(
   listener: (tab: Tabs.Tab & { id: number }) => void,
 ) {

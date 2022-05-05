@@ -30,6 +30,8 @@ export const getAllTabs = jest.fn();
 
 export const getTabsWithBaseUrl = jest.fn();
 
+export const getActiveTab = jest.fn();
+
 export const { getURL: getResourceUrl, openOptionsPage: openOptions } = {
   getURL: jest.fn(),
   openOptionsPage: jest.fn(),

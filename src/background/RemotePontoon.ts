@@ -2,6 +2,7 @@ import URI from 'urijs';
 
 import {
   deleteFromStorage,
+  getActiveTab,
   getOneFromStorage,
   listenToMessages,
   listenToMessagesExclusively,
@@ -98,8 +99,9 @@ export function listenToMessagesFromClients() {
   );
   listenToMessagesExclusively(
     BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,
-    async (_message, { url: fromUrl }) => {
-      return getPontoonProjectForPageUrl(fromUrl!);
+    async () => {
+      const activeTab = await getActiveTab();
+      return getPontoonProjectForPageUrl(activeTab.url!);
     },
   );
   listenToMessagesExclusively(

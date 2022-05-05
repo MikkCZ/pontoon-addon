@@ -18,6 +18,7 @@ import {
   getFromStorage,
   getOneFromStorage,
   getTabsWithBaseUrl,
+  getActiveTab,
   getResourceUrl,
   hideAddressBarIcon,
   openIntro,
@@ -159,6 +160,24 @@ describe('webExtensionsApi', () => {
       .andResolve([]);
 
     await getTabsWithBaseUrl('https://localhost');
+
+    mockBrowserNode.verify();
+  });
+
+  it('getActiveTab', async () => {
+    mockBrowser.tabs.query
+      .expect({ currentWindow: true, active: true })
+      .andResolve([
+        {
+          index: 0,
+          highlighted: true,
+          active: true,
+          pinned: false,
+          incognito: false,
+        },
+      ]);
+
+    await getActiveTab();
 
     mockBrowserNode.verify();
   });
