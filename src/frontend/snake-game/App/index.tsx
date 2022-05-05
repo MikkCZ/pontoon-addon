@@ -1,8 +1,7 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
-import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
-
+import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
 import { SnakeGameContextProvider } from '../SnakeGameContext';
 import { SnakeGameBoard } from '../SnakeGameBoard';
 import { SnakeGameInfo } from '../SnakeGameInfo';

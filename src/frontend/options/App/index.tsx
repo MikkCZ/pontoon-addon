@@ -3,8 +3,8 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 import { openIntro, supportsContainers } from '@commons/webExtensionsApi';
 import { resetDefaultOptions } from '@commons/options';
-import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 
+import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
 import { Header } from '../Header';
 import { LocaleSelection } from '../LocaleSelection';
 import { DataIntervalUpdateSelection } from '../DataIntervalUpdateSelection';

@@ -1,8 +1,7 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
-
+import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
 import { NotificationsList } from '../NotificationsList';
 import { TeamInfo } from '../TeamInfo';
 

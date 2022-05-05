@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
-import { GlobalPontoonStyle } from '@commons/GlobalPontoonStyle';
 import privacyMdAsString from '@assets/PRIVACY.md';
 
+import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
 import { MarkdownContent } from '../MarkdownContent';
 
 const GlobalStyle = createGlobalStyle`
