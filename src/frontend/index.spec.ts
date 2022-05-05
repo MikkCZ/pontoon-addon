@@ -7,7 +7,7 @@ import { getFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import {
   getPontoonProjectForTheCurrentTab,
-  Project,
+  ProjectForCurrentTab,
 } from '@background/backgroundClient';
 
 import { render } from './index';
@@ -43,7 +43,7 @@ describe('address bar', () => {
       name: 'Some project',
       pageUrl: 'https://127.0.0.1/',
       translationUrl: 'https://127.0.0.1/',
-    } as Project);
+    } as ProjectForCurrentTab);
   });
 
   afterEach(() => {

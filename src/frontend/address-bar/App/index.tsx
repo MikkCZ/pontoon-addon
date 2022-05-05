@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { openNewTab } from '@commons/webExtensionsApi';
 import {
   getPontoonProjectForTheCurrentTab,
-  Project,
+  ProjectForCurrentTab,
 } from '@background/backgroundClient';
 
 import { PanelSection } from '../PanelSection';
 
 export const App: React.FC = () => {
-  const [project, setProject] = useState<Project | undefined>();
+  const [project, setProject] = useState<ProjectForCurrentTab | undefined>();
 
   useEffect(() => {
     (async () => {

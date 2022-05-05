@@ -5,58 +5,17 @@ import {
   createNotification,
   closeNotification,
   listenToStorageChange,
+  StorageContent,
 } from '@commons/webExtensionsApi';
 import {
   pontoonTeam,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
-import { getOneOption } from '@commons/options';
-
-import {
-  NotificationsData,
-  NotificationApiResponse as Notification,
-  RemotePontoon,
-} from './RemotePontoon';
+import { getOneOption, getOptions } from '@commons/options';
 
 export class SystemNotifications {
-  private readonly remotePontoon: RemotePontoon;
-
-  constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
-
-    this.watchStorageChanges();
-  }
-
-  private async handleNotificationClick(
-    id: string,
-    notification?: Notification,
-  ): Promise<void> {
-    const isSuggestion =
-      notification?.description?.content?.startsWith(
-        'Unreviewed suggestions have been submitted',
-      ) || notification?.verb === 'has reviewed suggestions';
-
-    if (isSuggestion || notification?.target || !notification) {
-      openNewTab(
-        pontoonTeam(
-          this.remotePontoon.getBaseUrl(),
-          this.remotePontoon.getTeam(),
-        ),
-      );
-    } else {
-      openNewTab(
-        toPontoonTeamSpecificProjectUrl(
-          this.remotePontoon.getBaseUrl(),
-          this.remotePontoon.getTeam(),
-          notification.actor!.url,
-        ),
-      );
-    }
-    closeNotification(id);
-  }
-
-  private watchStorageChanges(): void {
+  constructor() {
     listenToStorageChange(
       'notificationsData',
       async ({ newValue: notificationsData }) => {
@@ -80,8 +39,34 @@ export class SystemNotifications {
     );
   }
 
+  private async handleNotificationClick(
+    id: string,
+    notification?: StorageContent['notificationsData'][number],
+  ): Promise<void> {
+    const isSuggestion =
+      notification?.description?.content?.startsWith(
+        'Unreviewed suggestions have been submitted',
+      ) || notification?.verb === 'has reviewed suggestions';
+
+    const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
+      await getOptions(['pontoon_base_url', 'locale_team']);
+
+    if (isSuggestion || notification?.target || !notification) {
+      openNewTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
+    } else {
+      openNewTab(
+        toPontoonTeamSpecificProjectUrl(
+          pontoonBaseUrl,
+          { code: teamCode },
+          notification.actor!.url,
+        ),
+      );
+    }
+    closeNotification(id);
+  }
+
   private async getNewUnreadNotifications(
-    notificationsData: NotificationsData | undefined,
+    notificationsData: StorageContent['notificationsData'] | undefined,
   ): Promise<number[]> {
     let unreadNotificationIds: number[] = [0];
     if (notificationsData) {
@@ -98,7 +83,7 @@ export class SystemNotifications {
 
   private async notifyAboutUnreadNotifications(
     unreadNotificationIds: number[],
-    notificationsData: NotificationsData,
+    notificationsData: StorageContent['notificationsData'],
   ): Promise<void> {
     const notificationItems = unreadNotificationIds
       .sort()

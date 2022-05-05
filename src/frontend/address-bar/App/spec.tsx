@@ -5,7 +5,7 @@ import flushPromises from 'flush-promises';
 
 import {
   getPontoonProjectForTheCurrentTab,
-  Project,
+  ProjectForCurrentTab,
 } from '@background/backgroundClient';
 import { openNewTab } from '@commons/webExtensionsApi';
 
@@ -17,7 +17,7 @@ import { App } from '.';
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@background/backgroundClient');
 
-const project: Project = {
+const project: ProjectForCurrentTab = {
   name: 'Some Project',
   pageUrl: 'https://127.0.0.1/pageUrl',
   translationUrl: 'https://127.0.0.1/translationUrl',

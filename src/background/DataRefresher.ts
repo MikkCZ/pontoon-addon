@@ -6,7 +6,11 @@ import {
   listenToTabsCompletedLoading,
   supportsContainers,
 } from '@commons/webExtensionsApi';
-import { getOneOption, listenToOptionChange } from '@commons/options';
+import {
+  getOneOption,
+  getOptions,
+  listenToOptionChange,
+} from '@commons/options';
 
 import type { RemotePontoon } from './RemotePontoon';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
@@ -52,8 +56,11 @@ export class DataRefresher {
 
   private registerLiveDataProvider() {
     listenToTabsCompletedLoading(async (tab) => {
-      if (tab.url?.startsWith(`${this.remotePontoon.getBaseUrl()}/`)) {
-        const contextualIdentity = await getOneOption('contextual_identity');
+      const {
+        pontoon_base_url: pontoonBaseUrl,
+        contextual_identity: contextualIdentity,
+      } = await getOptions(['pontoon_base_url', 'contextual_identity']);
+      if (tab.url?.startsWith(`${pontoonBaseUrl}/`)) {
         if (contextualIdentity === tab.cookieStoreId || !supportsContainers()) {
           executeScript(tab.id, 'content-scripts/live-data-provider.js');
         }
@@ -80,9 +87,8 @@ export class DataRefresher {
     listenToOptionChange(
       'contextual_identity',
       async ({ newValue: contextualIdentity }) => {
-        for (const tab of await getTabsWithBaseUrl(
-          this.remotePontoon.getBaseUrl(),
-        )) {
+        const pontoonBaseUrl = await getOneOption('pontoon_base_url');
+        for (const tab of await getTabsWithBaseUrl(pontoonBaseUrl)) {
           if (
             contextualIdentity !== tab.cookieStoreId &&
             typeof tab.id !== 'undefined'

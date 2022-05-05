@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllContainers } from '@commons/webExtensionsApi';
 import { containersInfoPage } from '@commons/webLinks';
 import { getOneOption, setOption } from '@commons/options';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 
 interface ContainerInfo {
   name: string;
@@ -13,7 +14,9 @@ export const ContainerSelection: React.FC = () => {
   const [containersList, setContainersList] = useState<
     ContainerInfo[] | undefined
   >();
-  const [container, _setContainerState] = useState<string | undefined>();
+  const [container, _setContainerState] = useState<
+    OptionsContent['contextual_identity'] | undefined
+  >();
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {

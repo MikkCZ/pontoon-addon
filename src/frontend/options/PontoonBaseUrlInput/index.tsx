@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { requestPermissionForPontoon } from '@commons/webExtensionsApi';
 import { getOneOption, setOption } from '@commons/options';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 
 export const PontoonBaseUrlInput: React.FC = () => {
   const [pontoonBaseUrl, setPontoonBaseUrlState] = useState<
-    string | undefined
+    OptionsContent['pontoon_base_url'] | undefined
   >();
   const [disabled, setDisabled] = useState(true);
 

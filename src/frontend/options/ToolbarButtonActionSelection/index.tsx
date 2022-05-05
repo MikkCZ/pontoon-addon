@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { openNewTab } from '@commons/webExtensionsApi';
 import { getSettingsUrl } from '@background/backgroundClient';
 import { getOneOption, setOption } from '@commons/options';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 
 const Link = styled.button`
   appearance: none;
@@ -23,7 +24,9 @@ const Link = styled.button`
 `;
 
 export const ToolbarButtonActionSelection: React.FC = () => {
-  const [value, setValue] = useState<string | undefined>();
+  const [value, setValue] = useState<
+    OptionsContent['toolbar_button_action'] | undefined
+  >();
 
   useEffect(() => {
     (async () => {
@@ -32,8 +35,11 @@ export const ToolbarButtonActionSelection: React.FC = () => {
   }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    setOption('toolbar_button_action', e.target.value);
+    setValue(e.target.value as OptionsContent['toolbar_button_action']);
+    setOption(
+      'toolbar_button_action',
+      e.target.value as OptionsContent['toolbar_button_action'],
+    );
   };
 
   return (

@@ -1,4 +1,4 @@
-import { Tabs } from 'webextension-polyfill';
+import type { Tabs } from 'webextension-polyfill';
 
 import {
   showAddressBarIcon,
@@ -11,36 +11,29 @@ import {
 import { RemotePontoon } from './RemotePontoon';
 
 export class AddressBarIcon {
-  private readonly remotePontoon: RemotePontoon;
-
   constructor(remotePontoon: RemotePontoon) {
-    this.remotePontoon = remotePontoon;
-
-    this.watchStorageChanges();
-    this.watchTabsUpdates();
-    this.refreshAllTabsPageActions();
-  }
-
-  private watchStorageChanges(): void {
     listenToStorageChange('projectsList', () =>
-      this.refreshAllTabsPageActions(),
+      this.refreshAllTabsPageActions(remotePontoon),
     );
-  }
-
-  private watchTabsUpdates(): void {
     listenToTabsCompletedLoading((tab) => {
-      this.showPageActionForTab(tab);
+      this.showPageActionForTab(tab, remotePontoon);
     });
+    this.refreshAllTabsPageActions(remotePontoon);
   }
 
-  private async refreshAllTabsPageActions(): Promise<void> {
+  private async refreshAllTabsPageActions(
+    remotePontoon: RemotePontoon,
+  ): Promise<void> {
     for (const tab of await getAllTabs()) {
-      this.showPageActionForTab(tab);
+      this.showPageActionForTab(tab, remotePontoon);
     }
   }
 
-  private async showPageActionForTab(tab: Tabs.Tab): Promise<void> {
-    const projectData = await this.remotePontoon.getPontoonProjectForPageUrl(
+  private async showPageActionForTab(
+    tab: Tabs.Tab,
+    remotePontoon: RemotePontoon,
+  ): Promise<void> {
+    const projectData = await remotePontoon.getPontoonProjectForPageUrl(
       tab.url!,
     );
     if (projectData) {

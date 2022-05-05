@@ -1,6 +1,6 @@
 /* eslint-disable jest/expect-expect */
 import type { MockzillaDeep } from 'mockzilla';
-import { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
+import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 
 import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
 import {
