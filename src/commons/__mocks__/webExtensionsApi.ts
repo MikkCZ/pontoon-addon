@@ -30,8 +30,6 @@ export const getAllTabs = jest.fn();
 
 export const getTabsWithBaseUrl = jest.fn();
 
-export const getActiveTab = jest.fn();
-
 export const { getURL: getResourceUrl, openOptionsPage: openOptions } = {
   getURL: jest.fn(),
   openOptionsPage: jest.fn(),
@@ -64,3 +62,7 @@ export const executeScript = jest.fn();
 export const callWithInterval = jest.fn();
 
 export const callDelayed = jest.fn();
+
+export const listenToMessages = jest.fn();
+
+export const listenToMessagesExclusively = jest.fn();

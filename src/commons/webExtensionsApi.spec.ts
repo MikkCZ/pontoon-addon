@@ -2,6 +2,8 @@
 import type { MockzillaDeep } from 'mockzilla';
 import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 
+import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
+
 import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
 import {
   browser,
@@ -11,7 +13,6 @@ import {
   createNotification,
   deleteFromStorage,
   executeScript,
-  getActiveTab,
   getAllContainers,
   getAllTabs,
   getFromStorage,
@@ -34,6 +35,8 @@ import {
   registerScriptForBaseUrl,
   callWithInterval,
   callDelayed,
+  listenToMessages,
+  listenToMessagesExclusively,
 } from './webExtensionsApi';
 
 beforeEach(() => {
@@ -156,24 +159,6 @@ describe('webExtensionsApi', () => {
       .andResolve([]);
 
     await getTabsWithBaseUrl('https://localhost');
-
-    mockBrowserNode.verify();
-  });
-
-  it('getActiveTab', async () => {
-    mockBrowser.tabs.query
-      .expect({ currentWindow: true, active: true })
-      .andResolve([
-        {
-          index: 0,
-          highlighted: true,
-          active: true,
-          pinned: false,
-          incognito: false,
-        },
-      ]);
-
-    await getActiveTab();
 
     mockBrowserNode.verify();
   });
@@ -359,6 +344,32 @@ describe('webExtensionsApi', () => {
       .andReturn();
 
     callDelayed({ delayInSeconds: 30 }, jest.fn());
+
+    mockBrowserNode.verify();
+  });
+
+  it('listenToMessages', () => {
+    mockBrowser.runtime.onMessage.addListener
+      .expect(expect.anything())
+      .andReturn();
+
+    listenToMessages(
+      BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
+      jest.fn(),
+    );
+
+    mockBrowserNode.verify();
+  });
+
+  it('listenToMessagesExclusively', () => {
+    mockBrowser.runtime.onMessage.addListener
+      .expect(expect.anything())
+      .andReturn();
+
+    listenToMessagesExclusively(
+      BackgroundClientMessageType.PAGE_LOADED,
+      jest.fn(),
+    );
 
     mockBrowserNode.verify();
   });

@@ -8,7 +8,7 @@ import {
   listenToOptionChange,
 } from '@commons/options';
 
-export class HttpClient {
+class PontoonHttpClient {
   private readonly pontoonRequestTokens: Set<string>;
   private readonly requestsToPontoonListener: (
     details: WebRequest.OnBeforeSendHeadersDetailsType,
@@ -40,10 +40,6 @@ export class HttpClient {
         ['blocking', 'requestHeaders'],
       );
     }
-  }
-
-  public async fetch(url: string): Promise<Response> {
-    return fetch(url, { credentials: 'omit' });
   }
 
   public async fetchFromPontoonSession(url: string): Promise<Response> {
@@ -126,3 +122,11 @@ export class HttpClient {
     }
   }
 }
+
+export const pontoonHttpClient = new PontoonHttpClient();
+
+export const httpClient = {
+  fetch: async (url: string): Promise<Response> => {
+    return fetch(url, { credentials: 'omit' });
+  },
+};

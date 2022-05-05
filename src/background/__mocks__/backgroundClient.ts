@@ -16,7 +16,7 @@ export const getSignInURL = jest.fn();
 
 export const updateTeamsList = jest.fn();
 
-export const getTeamFromPontoon = jest.fn();
+export const getUsersTeamFromPontoon = jest.fn();
 
 export const getPontoonProjectForTheCurrentTab = jest.fn();
 
@@ -29,5 +29,3 @@ export const searchTextInPontoon = jest.fn();
 export const reportTranslatedTextToBugzilla = jest.fn();
 
 export const notificationBellIconScriptLoaded = jest.fn();
-
-export const listenToMessages = jest.fn();

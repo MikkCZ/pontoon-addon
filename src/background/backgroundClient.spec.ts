@@ -13,10 +13,9 @@ import {
   getSettingsUrl,
   getSignInURL,
   getStringsWithStatusSearchUrl,
-  getTeamFromPontoon,
+  getUsersTeamFromPontoon,
   getTeamPageUrl,
   getTeamProjectUrl,
-  listenToMessages,
   markAllNotificationsAsRead,
   notificationBellIconScriptLoaded,
   pageLoaded,
@@ -117,12 +116,12 @@ describe('backgroundClient', () => {
     mockBrowserNode.verify();
   });
 
-  it('getTeamFromPontoon', async () => {
+  it('getUsersTeamFromPontoon', async () => {
     mockBrowserSendMessage()
       .expect({ type: BackgroundClientMessageType.GET_TEAM_FROM_PONTOON })
       .andResolve('cs');
 
-    const team = await getTeamFromPontoon();
+    const team = await getUsersTeamFromPontoon();
 
     expect(team).toBe('cs');
     mockBrowserNode.verify();
@@ -206,15 +205,6 @@ describe('backgroundClient', () => {
     expect(response.type).toBe(
       BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
     );
-    mockBrowserNode.verify();
-  });
-
-  it('listenToMessages', () => {
-    const listener = jest.fn();
-    mockBrowser.runtime.onMessage.addListener.expect(listener).andReturn();
-
-    listenToMessages(listener);
-
     mockBrowserNode.verify();
   });
 });
