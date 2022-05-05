@@ -4,6 +4,7 @@ import path from 'path';
 import type { IPackageJson } from 'package-json-type';
 
 import { DEFAULT_PONTOON_BASE_URL } from './const';
+import { projectsListData } from './background/data/projectsListData';
 
 // ts-prune-ignore-next
 export enum BrowserFamily {
@@ -85,9 +86,12 @@ export function getManifestFor(
             'webRequestBlocking',
           ]
         : []),
-      '<all_urls>',
+      `${DEFAULT_PONTOON_BASE_URL}/*`,
+      ...projectsListData
+        .flatMap((project) => project.domains)
+        .map((domain) => `https://${domain}/*`),
     ],
-    optional_permissions: ['<all_urls>'],
+    optional_permissions: ['<all_urls>'], // when Pontoon server changes
     options_ui: {
       page: 'frontend/options.html',
       open_in_tab: true,
