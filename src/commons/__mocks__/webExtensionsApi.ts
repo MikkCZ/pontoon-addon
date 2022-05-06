@@ -1,7 +1,3 @@
-import { browser as mockedBrowser } from '@commons/test/mockWebExtensionsApi';
-
-export const browser = mockedBrowser;
-
 export const getFromStorage = jest.fn();
 
 export const getOneFromStorage = jest.fn();

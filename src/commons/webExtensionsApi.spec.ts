@@ -1,10 +1,10 @@
 /* eslint-disable jest/expect-expect */
 import type { MockzillaDeep } from 'mockzilla';
 import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
+import 'mockzilla-webextension';
 
 import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
 
-import { mockBrowser, mockBrowserNode } from './test/mockWebExtensionsApi';
 import {
   browser,
   browserFamily,
@@ -40,14 +40,6 @@ import {
   listenToMessagesExclusively,
 } from './webExtensionsApi';
 
-beforeEach(() => {
-  mockBrowserNode.enable();
-});
-
-afterEach(() => {
-  mockBrowserNode.disable();
-});
-
 describe('webExtensionsApi', () => {
   it('exports browser', () => {
     expect(browser).toBeTruthy();
@@ -57,32 +49,24 @@ describe('webExtensionsApi', () => {
     mockBrowser.storage.local.get.expect(['projectsList']).andResolve({});
 
     await getFromStorage(['projectsList']);
-
-    mockBrowserNode.verify();
   });
 
   it('getOneFromStorage', async () => {
     mockBrowser.storage.local.get.expect(['projectsList']).andResolve({});
 
     await getOneFromStorage('projectsList');
-
-    mockBrowserNode.verify();
   });
 
   it('saveToStorage', async () => {
     mockBrowser.storage.local.set.expect({ projectsList: {} }).andResolve();
 
     await saveToStorage({ projectsList: {} });
-
-    mockBrowserNode.verify();
   });
 
   it('deleteFromStorage', async () => {
     mockBrowser.storage.local.remove.expect(['projectsList']).andResolve();
 
     await deleteFromStorage('projectsList');
-
-    mockBrowserNode.verify();
   });
 
   it('createNotification', async () => {
@@ -94,32 +78,24 @@ describe('webExtensionsApi', () => {
       .andReturn();
 
     await createNotification({ type: 'basic', title: 'foo', message: 'bar' });
-
-    mockBrowserNode.verify();
   });
 
   it('closeNotification', async () => {
     mockBrowser.notifications.clear.expect('id').andResolve(true);
 
     await closeNotification('id');
-
-    mockBrowserNode.verify();
   });
 
   it('createContextMenu', () => {
     mockBrowser.contextMenus.create.expect({ title: 'foo' }).andReturn('id');
 
     createContextMenu({ title: 'foo' });
-
-    mockBrowserNode.verify();
   });
 
   it('removeContextMenu', async () => {
     mockBrowser.contextMenus.remove.expect('id').andResolve();
 
     await removeContextMenu('id');
-
-    mockBrowserNode.verify();
   });
 
   it('browserFamily', () => {
@@ -132,8 +108,6 @@ describe('webExtensionsApi', () => {
       .expect('/')
       .andReturn('chrome-extension://index.html');
     expect(browserFamily()).toBe('chromium');
-
-    mockBrowserNode.verify();
   });
 
   it('openNewTab', async () => {
@@ -142,16 +116,12 @@ describe('webExtensionsApi', () => {
       .andResolve({} as Tabs.Tab);
 
     await openNewTab('https://localhost');
-
-    mockBrowserNode.verify();
   });
 
   it('getAllTabs', async () => {
     mockBrowser.tabs.query.expect({}).andResolve([]);
 
     await getAllTabs();
-
-    mockBrowserNode.verify();
   });
 
   it('getTabsWithBaseUrl', async () => {
@@ -160,8 +130,6 @@ describe('webExtensionsApi', () => {
       .andResolve([]);
 
     await getTabsWithBaseUrl('https://localhost');
-
-    mockBrowserNode.verify();
   });
 
   it('getActiveTab', async () => {
@@ -178,24 +146,18 @@ describe('webExtensionsApi', () => {
       ]);
 
     await getActiveTab();
-
-    mockBrowserNode.verify();
   });
 
   it('getResourceUrl', () => {
     mockBrowser.runtime.getURL.expect('foo').andReturn('');
 
     getResourceUrl('foo');
-
-    mockBrowserNode.verify();
   });
 
   it('openOptions', async () => {
     mockBrowser.runtime.openOptionsPage.expect().andResolve();
 
     await openOptions();
-
-    mockBrowserNode.verify();
   });
 
   it('openIntro', async () => {
@@ -207,8 +169,6 @@ describe('webExtensionsApi', () => {
       .andResolve({} as Tabs.Tab);
 
     await openIntro();
-
-    mockBrowserNode.verify();
   });
 
   it('openPrivacyPolicy', async () => {
@@ -220,8 +180,6 @@ describe('webExtensionsApi', () => {
       .andResolve({} as Tabs.Tab);
 
     await openPrivacyPolicy();
-
-    mockBrowserNode.verify();
   });
 
   it('openSnakeGame', async () => {
@@ -233,16 +191,12 @@ describe('webExtensionsApi', () => {
       .andResolve({} as Tabs.Tab);
 
     await openSnakeGame();
-
-    mockBrowserNode.verify();
   });
 
   it('openToolbarButtonPopup', async () => {
     mockBrowser.browserAction.openPopup.expect().andResolve();
 
     await openToolbarButtonPopup();
-
-    mockBrowserNode.verify();
   });
 
   it('supportsAddressBar', () => {
@@ -263,8 +217,6 @@ describe('webExtensionsApi', () => {
       16: '16.svg',
       32: '32.svg',
     });
-
-    mockBrowserNode.verify();
   });
 
   it('hideAddressBarIcon', async () => {
@@ -275,8 +227,6 @@ describe('webExtensionsApi', () => {
     mockBrowser.pageAction.hide.expect(42).andResolve();
 
     await hideAddressBarIcon({ id: 42 } as Tabs.Tab, 'foo');
-
-    mockBrowserNode.verify();
   });
 
   it('supportsContainers', () => {
@@ -288,8 +238,6 @@ describe('webExtensionsApi', () => {
     mockBrowser.contextualIdentities.query.expect({}).andResolve([]);
 
     await getAllContainers();
-
-    mockBrowserNode.verify();
   });
 
   it('requestPermissionForPontoon', async () => {
@@ -300,7 +248,6 @@ describe('webExtensionsApi', () => {
     const granted = await requestPermissionForPontoon('https://localhost');
 
     expect(granted).toBe(true);
-    mockBrowserNode.verify();
   });
 
   it('registerScriptForBaseUrl', async () => {
@@ -313,8 +260,6 @@ describe('webExtensionsApi', () => {
       .andResolve({ unregister: jest.fn() });
 
     await registerScriptForBaseUrl('https://localhost', 'foo/bar.js');
-
-    mockBrowserNode.verify();
   });
 
   it('executeScript', async () => {
@@ -329,8 +274,6 @@ describe('webExtensionsApi', () => {
       .andResolve([]);
 
     executeScript(42, 'foo/bar.js');
-
-    mockBrowserNode.verify();
   });
 
   it('callWithInterval', () => {
@@ -346,8 +289,6 @@ describe('webExtensionsApi', () => {
       .andReturn();
 
     callWithInterval('name', { periodInMinutes: 42 }, jest.fn());
-
-    mockBrowserNode.verify();
   });
 
   it('callDelayed', () => {
@@ -363,8 +304,6 @@ describe('webExtensionsApi', () => {
       .andReturn();
 
     callDelayed({ delayInSeconds: 30 }, jest.fn());
-
-    mockBrowserNode.verify();
   });
 
   it('listenToMessages', () => {
@@ -376,8 +315,6 @@ describe('webExtensionsApi', () => {
       BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
       jest.fn(),
     );
-
-    mockBrowserNode.verify();
   });
 
   it('listenToMessagesExclusively', () => {
@@ -389,7 +326,5 @@ describe('webExtensionsApi', () => {
       BackgroundClientMessageType.PAGE_LOADED,
       jest.fn(),
     );
-
-    mockBrowserNode.verify();
   });
 });

@@ -1,10 +1,7 @@
 /* eslint-disable jest/expect-expect */
 import type { MockzillaDeep } from 'mockzilla';
+import 'mockzilla-webextension';
 
-import {
-  mockBrowser,
-  mockBrowserNode,
-} from '@commons/test/mockWebExtensionsApi';
 import { getOneOption } from '@commons/options';
 
 import {
@@ -28,7 +25,6 @@ import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 jest.mock('@commons/options');
 
 beforeEach(() => {
-  mockBrowserNode.enable();
   (getOneOption as jest.Mock).mockImplementation((key: string) => {
     switch (key) {
       case 'locale_team':
@@ -42,7 +38,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  mockBrowserNode.disable();
   (getOneOption as jest.Mock).mockReset();
 });
 
@@ -113,7 +108,6 @@ describe('backgroundClient', () => {
     const teams = await updateTeamsList();
 
     expect(teams).toStrictEqual({ cs: { name: 'Czech' } });
-    mockBrowserNode.verify();
   });
 
   it('getUsersTeamFromPontoon', async () => {
@@ -124,7 +118,6 @@ describe('backgroundClient', () => {
     const team = await getUsersTeamFromPontoon();
 
     expect(team).toBe('cs');
-    mockBrowserNode.verify();
   });
 
   it('getPontoonProjectForTheCurrentTab', async () => {
@@ -139,7 +132,6 @@ describe('backgroundClient', () => {
     const project = await getPontoonProjectForTheCurrentTab();
 
     expect(project!.name).toBe('firefox');
-    mockBrowserNode.verify();
   });
 
   it('pageLoaded', async () => {
@@ -151,8 +143,6 @@ describe('backgroundClient', () => {
       .andResolve();
 
     await pageLoaded('<html></html>');
-
-    mockBrowserNode.verify();
   });
 
   it('markAllNotificationsAsRead', async () => {
@@ -161,8 +151,6 @@ describe('backgroundClient', () => {
       .andResolve();
 
     await markAllNotificationsAsRead();
-
-    mockBrowserNode.verify();
   });
 
   it('searchTextInPontoon', async () => {
@@ -174,8 +162,6 @@ describe('backgroundClient', () => {
       .andResolve();
 
     await searchTextInPontoon('foo bar');
-
-    mockBrowserNode.verify();
   });
 
   it('reportTranslatedTextToBugzilla', async () => {
@@ -187,8 +173,6 @@ describe('backgroundClient', () => {
       .andResolve();
 
     await reportTranslatedTextToBugzilla('foo bar');
-
-    mockBrowserNode.verify();
   });
 
   it('notificationBellIconScriptLoaded', async () => {
@@ -205,6 +189,5 @@ describe('backgroundClient', () => {
     expect(response.type).toBe(
       BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
     );
-    mockBrowserNode.verify();
   });
 });
