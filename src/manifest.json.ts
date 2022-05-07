@@ -72,7 +72,6 @@ export function getManifestFor(
         : {}),
     },
     permissions: [
-      `${DEFAULT_PONTOON_BASE_URL}/*`,
       'storage',
       'contextMenus',
       'tabs',
