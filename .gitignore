@@ -13,3 +13,4 @@ scripts/jq
 .npmrc
 !scripts/.npmrc
 .yarnrc
+.pip

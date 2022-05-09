@@ -24,6 +24,10 @@ watch:
 codecov:
 	npm run codecov
 
+.PHONY: export_pontoon_graphql_schema
+export_pontoon_graphql_schema:
+	bash ./scripts/run-in-container.sh 'bash ./scripts/export-pontoon-graphql-schema.sh ./src/pontoon.graphql'
+
 .PHONY: all_in_container
 all_in_container:
 	bash ./scripts/run-in-container.sh make all
