@@ -1,0 +1,20 @@
+query getTeamsInfo {
+  locales {
+    code
+    name
+    approvedStrings
+    pretranslatedStrings
+    stringsWithWarnings
+    stringsWithErrors
+    missingStrings
+    unreviewedStrings
+    totalStrings
+  }
+}
+
+query getProjectsInto {
+  projects {
+    slug
+    name
+  }
+}

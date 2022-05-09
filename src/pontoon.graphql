@@ -90,7 +90,6 @@ type ProjectLocale {
 }
 
 type Query {
-  __debug: DjangoDebug
   projects(includeDisabled: Boolean = false, includeSystem: Boolean = false): [Project]
   project(slug: String): Project
   locales: [Locale]

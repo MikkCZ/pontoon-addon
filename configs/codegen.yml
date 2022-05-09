@@ -1,0 +1,10 @@
+overwrite: true
+schema: ./src/pontoon.graphql
+documents: ./src/**/*.graphql
+generates:
+  ./src/generated/pontoon.graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "@graphql-codegen/typescript-graphql-request"
+
