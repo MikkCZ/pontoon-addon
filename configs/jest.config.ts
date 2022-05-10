@@ -26,6 +26,7 @@ const config: Config.InitialOptions = {
     ...defaults.coveragePathIgnorePatterns,
     '/test/', // test utils
     '/__mocks__/',
+    '/generated/',
     '.+\\.d.ts$',
   ],
   preset: 'ts-jest',
