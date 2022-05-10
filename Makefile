@@ -52,7 +52,11 @@ watch_in_container:
 codecov_in_container:
 	bash ./scripts/run-in-container.sh make codecov
 
+.PHONY: graphql_generate_in_container
+graphql_generate_in_container:
+	bash ./scripts/run-in-container.sh make graphql_generate
+
 .PHONY: export_pontoon_graphql_schema
 export_pontoon_graphql_schema:
 	bash ./scripts/run-in-container.sh 'bash ./scripts/export-pontoon-graphql-schema.sh ./src/pontoon.graphql'
-	bash ./scripts/run-in-container.sh make graphql_generate
+	make graphql_generate_in_container

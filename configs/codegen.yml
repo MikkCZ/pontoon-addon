@@ -7,4 +7,3 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "@graphql-codegen/typescript-graphql-request"
-

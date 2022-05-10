@@ -23,7 +23,7 @@
     "tsc:check": "tsc --noEmit --project ./configs/tsconfig.json",
     "eslint:check": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx ./src",
     "eslint:fix": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx --fix ./src",
-    "ts-prune:check": "ts-prune --error --ignore '/__mocks__/' --project ./configs/tsconfig.json",
+    "ts-prune:check": "ts-prune --error --ignore '/(__mocks__|generated)/' --project ./configs/tsconfig.json",
     "stylelint:check": "stylelint --config ./configs/.stylelintrc.js './src/**/*.tsx'",
     "webpack:build:mozilla": "cross-env TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts",
     "webpack:build:chromium": "cross-env TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts",
