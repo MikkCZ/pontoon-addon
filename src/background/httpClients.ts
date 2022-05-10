@@ -10,7 +10,11 @@ import {
   listenToOptionChange,
 } from '@commons/options';
 
-import type { Query } from '../generated/pontoon.graphql';
+import {
+  GetProjectsInfoQuery,
+  getSdk,
+  GetTeamsInfoQuery,
+} from '../generated/pontoon.graphql';
 
 import { pontoonGraphQL } from './apiEndpoints';
 
@@ -141,26 +145,8 @@ type NonNullFields<T> = {
   [P in keyof T]: NonNullable<T[P]>;
 };
 
-const getProjectsInfoQuery = gql`
-  {
-    projects {
-      slug
-      name
-    }
-  }
-`;
-
-export type GetProjectsInfoProject = Pick<
-  NonNullFields<Required<NonNullFields<Query>>['projects']>[number],
-  'slug' | 'name'
->;
-
-type GetProjectsInfoResponse = {
-  projects: GetProjectsInfoProject[];
-};
-
-const getTeamsInfoQuery = gql`
-  {
+const _getTeamsInfoQuery = gql`
+  query getTeamsInfo {
     locales {
       code
       name
@@ -175,35 +161,34 @@ const getTeamsInfoQuery = gql`
   }
 `;
 
-type GetTeamsInfoTeam = Pick<
-  NonNullFields<Required<NonNullFields<Query>>['locales']>[number],
-  | 'code'
-  | 'name'
-  | 'approvedStrings'
-  | 'pretranslatedStrings'
-  | 'stringsWithWarnings'
-  | 'stringsWithErrors'
-  | 'missingStrings'
-  | 'unreviewedStrings'
-  | 'totalStrings'
->;
+interface GetTeamsInfoResponse {
+  locales: NonNullFields<Required<NonNullFields<GetTeamsInfoQuery>>['locales']>;
+}
 
-type GetTeamsInfoResponse = {
-  locales: GetTeamsInfoTeam[];
-};
+const _getProjectsInfoQuery = gql`
+  query getProjectsInfo {
+    projects {
+      slug
+      name
+    }
+  }
+`;
+
+export interface GetProjectsInfoResponse {
+  projects: NonNullFields<
+    Required<NonNullFields<GetProjectsInfoQuery>>['projects']
+  >;
+}
 
 export function graphqlClient(pontoonBaseUrl: string) {
-  const client = new GraphQLClient(pontoonGraphQL(pontoonBaseUrl), {
-    method: 'GET',
-  });
+  const client = getSdk(
+    new GraphQLClient(pontoonGraphQL(pontoonBaseUrl), {
+      method: 'GET',
+    }),
+  );
   return {
-    getTeamsInfo: async (): Promise<GetTeamsInfoResponse> => {
-      return await client.request<GetTeamsInfoResponse>(getTeamsInfoQuery);
-    },
-    getProjectsInfo: async (): Promise<GetProjectsInfoResponse> => {
-      return await client.request<GetProjectsInfoResponse>(
-        getProjectsInfoQuery,
-      );
-    },
+    getTeamsInfo: client.getTeamsInfo as () => Promise<GetTeamsInfoResponse>,
+    getProjectsInfo:
+      client.getProjectsInfo as () => Promise<GetProjectsInfoResponse>,
   };
 }

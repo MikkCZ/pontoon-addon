@@ -1,3 +1,6 @@
+import { GraphQLClient } from 'graphql-request';
+import * as Dom from 'graphql-request/dist/types.dom';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -139,3 +142,55 @@ export type Tag = {
   priority?: Maybe<Scalars['Int']>;
   slug: Scalars['String'];
 };
+
+export type GetTeamsInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTeamsInfoQuery = { __typename?: 'Query', locales?: Array<{ __typename?: 'Locale', code: string, name: string, approvedStrings: number, pretranslatedStrings: number, stringsWithWarnings: number, stringsWithErrors: number, missingStrings?: number | null, unreviewedStrings: number, totalStrings: number } | null> | null };
+
+export type GetProjectsInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsInfoQuery = { __typename?: 'Query', projects?: Array<{ __typename?: 'Project', slug: string, name: string } | null> | null };
+
+
+export const GetTeamsInfoDocument = gql`
+    query getTeamsInfo {
+  locales {
+    code
+    name
+    approvedStrings
+    pretranslatedStrings
+    stringsWithWarnings
+    stringsWithErrors
+    missingStrings
+    unreviewedStrings
+    totalStrings
+  }
+}
+    `;
+export const GetProjectsInfoDocument = gql`
+    query getProjectsInfo {
+  projects {
+    slug
+    name
+  }
+}
+    `;
+
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
+
+
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  return {
+    getTeamsInfo(variables?: GetTeamsInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTeamsInfoQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetTeamsInfoQuery>(GetTeamsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTeamsInfo', 'query');
+    },
+    getProjectsInfo(variables?: GetProjectsInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectsInfoQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectsInfoQuery>(GetProjectsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getProjectsInfo', 'query');
+    }
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;

@@ -27,10 +27,12 @@ import {
   pontoonHttpClient,
   httpClient,
   graphqlClient,
-  GetProjectsInfoProject,
+  GetProjectsInfoResponse,
 } from './httpClients';
 import { projectsListData } from './data/projectsListData';
 import type { ProjectForCurrentTab } from './backgroundClient';
+
+type GetProjectsInfoProject = GetProjectsInfoResponse['projects'][number];
 
 interface UserDataApiResponse {
   notifications: {

@@ -1,7 +1,9 @@
 overwrite: true
 schema: ./src/pontoon.graphql
+documents: ./src/**/*.ts
 generates:
   ./src/generated/pontoon.graphql.ts:
     plugins:
       - typescript
       - typescript-operations
+      - typescript-graphql-request
