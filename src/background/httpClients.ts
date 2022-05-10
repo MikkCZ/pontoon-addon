@@ -1,5 +1,7 @@
 import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
+import gql from 'graphql-tag';
+import { GraphQLClient } from 'graphql-request';
 
 import { browser } from '@commons/webExtensionsApi';
 import {
@@ -7,6 +9,10 @@ import {
   getOptions,
   listenToOptionChange,
 } from '@commons/options';
+
+import type { Query } from '../generated/pontoon.graphql';
+
+import { pontoonGraphQL } from './apiEndpoints';
 
 class PontoonHttpClient {
   private readonly pontoonRequestTokens: Set<string>;
@@ -130,3 +136,74 @@ export const httpClient = {
     return fetch(url, { credentials: 'omit' });
   },
 };
+
+type NonNullFields<T> = {
+  [P in keyof T]: NonNullable<T[P]>;
+};
+
+const getProjectsInfoQuery = gql`
+  {
+    projects {
+      slug
+      name
+    }
+  }
+`;
+
+export type GetProjectsInfoProject = Pick<
+  NonNullFields<Required<NonNullFields<Query>>['projects']>[number],
+  'slug' | 'name'
+>;
+
+type GetProjectsInfoResponse = {
+  projects: GetProjectsInfoProject[];
+};
+
+const getTeamsInfoQuery = gql`
+  {
+    locales {
+      code
+      name
+      approvedStrings
+      pretranslatedStrings
+      stringsWithWarnings
+      stringsWithErrors
+      missingStrings
+      unreviewedStrings
+      totalStrings
+    }
+  }
+`;
+
+type GetTeamsInfoTeam = Pick<
+  NonNullFields<Required<NonNullFields<Query>>['locales']>[number],
+  | 'code'
+  | 'name'
+  | 'approvedStrings'
+  | 'pretranslatedStrings'
+  | 'stringsWithWarnings'
+  | 'stringsWithErrors'
+  | 'missingStrings'
+  | 'unreviewedStrings'
+  | 'totalStrings'
+>;
+
+type GetTeamsInfoResponse = {
+  locales: GetTeamsInfoTeam[];
+};
+
+export function graphqlClient(pontoonBaseUrl: string) {
+  const client = new GraphQLClient(pontoonGraphQL(pontoonBaseUrl), {
+    method: 'GET',
+  });
+  return {
+    getTeamsInfo: async (): Promise<GetTeamsInfoResponse> => {
+      return await client.request<GetTeamsInfoResponse>(getTeamsInfoQuery);
+    },
+    getProjectsInfo: async (): Promise<GetProjectsInfoResponse> => {
+      return await client.request<GetProjectsInfoResponse>(
+        getProjectsInfoQuery,
+      );
+    },
+  };
+}
