@@ -134,6 +134,13 @@ export function getManifestFor(
         js: ['content-scripts/notifications-bell-icon.js'],
         run_at: 'document_end',
       },
+      {
+        matches: projectsListData
+          .flatMap((project) => project.domains)
+          .map((domain) => `https://${domain}/*`),
+        js: ['content-scripts/context-buttons.js'],
+        run_at: 'document_end',
+      },
     ],
     web_accessible_resources: [
       'content-scripts/pontoon-addon-promotion-in-page.js',

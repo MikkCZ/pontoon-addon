@@ -160,8 +160,12 @@ export async function getAllTabs() {
   return browser.tabs.query({});
 }
 
+export async function getTabsMatching(...patterns: string[]) {
+  return browser.tabs.query({ url: patterns });
+}
+
 export async function getTabsWithBaseUrl(baseUrl: string) {
-  return browser.tabs.query({ url: `${baseUrl}/*` });
+  return getTabsMatching(`${baseUrl}/*`);
 }
 
 export async function getActiveTab(): Promise<Tabs.Tab> {
