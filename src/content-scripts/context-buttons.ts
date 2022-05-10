@@ -25,6 +25,7 @@ function createButton(imageSrc: string): HTMLElement {
   imageButton.style.position = 'absolute';
   imageButton.style.zIndex = '9999';
   imageButton.style.backgroundColor = 'white';
+  imageButton.style.cursor = 'pointer';
   return imageButton;
 }
 const pontoonSearchButton = createButton(pontoonLogo);
@@ -40,6 +41,12 @@ bugzillaReportButton.addEventListener('click', (e: MouseEvent) => {
   e.stopPropagation();
   reportTranslatedTextToBugzilla(getSelectedText());
   allContextButtons.forEach((button) => document.body.removeChild(button));
+});
+
+allContextButtons.forEach((button) => {
+  button.addEventListener('mouseup', (e) => {
+    e.stopPropagation();
+  });
 });
 
 document.addEventListener('mouseup', (e) => {
