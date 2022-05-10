@@ -24,6 +24,8 @@ export const openNewTab = jest.fn();
 
 export const getAllTabs = jest.fn();
 
+export const getTabsMatching = jest.fn();
+
 export const getTabsWithBaseUrl = jest.fn();
 
 export const getActiveTab = jest.fn();

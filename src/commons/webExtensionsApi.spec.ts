@@ -38,6 +38,7 @@ import {
   callDelayed,
   listenToMessages,
   listenToMessagesExclusively,
+  getTabsMatching,
 } from './webExtensionsApi';
 
 describe('webExtensionsApi', () => {
@@ -122,6 +123,14 @@ describe('webExtensionsApi', () => {
     mockBrowser.tabs.query.expect({}).andResolve([]);
 
     await getAllTabs();
+  });
+
+  it('getTabsMatching', async () => {
+    mockBrowser.tabs.query
+      .expect({ url: ['https://localhost/*', 'https://127.0.0.1/*'] })
+      .andResolve([]);
+
+    await getTabsMatching('https://localhost/*', 'https://127.0.0.1/*');
   });
 
   it('getTabsWithBaseUrl', async () => {
