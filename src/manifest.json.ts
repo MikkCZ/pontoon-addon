@@ -49,6 +49,11 @@ export function getManifestFor(
           },
         }
       : {}),
+    ...(forChromium
+      ? {
+          minimum_chrome_version: '88',
+        }
+      : {}),
     manifest_version: 2,
     name: 'Pontoon Add-on',
     description: packageJson.description,
