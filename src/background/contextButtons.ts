@@ -1,37 +1,15 @@
 import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
 import {
-  getOneFromStorage,
-  getAllTabs,
-  openNewTab,
-  executeScript,
-  listenToTabsCompletedLoading,
-  StorageContent,
   listenToMessages,
+  openNewTab,
+  getOneFromStorage,
 } from '@commons/webExtensionsApi';
 import { getOneOption, getOptions } from '@commons/options';
 
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
-const CONTENT_SCRIPT = 'content-scripts/context-buttons.js';
-
 export function setupPageContextButtons() {
   listenToMessagesFromContentScript();
-  listenToTabsCompletedLoading(async (tab) => {
-    const projects = await getOneFromStorage('projectsList');
-    if (isSupportedPage(tab.url, projects)) {
-      executeScript(tab.id, CONTENT_SCRIPT);
-    }
-  });
-  getOneFromStorage('projectsList').then(async (projectsList) => {
-    for (const tab of await getAllTabs()) {
-      if (
-        isSupportedPage(tab.url, projectsList) &&
-        typeof tab.id !== 'undefined'
-      ) {
-        executeScript(tab.id, CONTENT_SCRIPT);
-      }
-    }
-  });
 }
 
 function listenToMessagesFromContentScript() {
@@ -67,17 +45,4 @@ function listenToMessagesFromContentScript() {
       );
     },
   );
-}
-
-function isSupportedPage(
-  url: string | undefined,
-  projects: StorageContent['projectsList'] | undefined,
-): boolean {
-  if (url && projects) {
-    return Object.values(projects)
-      .flatMap((project) => project.domains)
-      .some((domain) => url.startsWith(`https://${domain}`));
-  } else {
-    return false;
-  }
 }
