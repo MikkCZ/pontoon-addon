@@ -35,24 +35,23 @@ async function createContextMenuItems() {
       .flatMap((project) => project.domains)
       .map((domain) => `https://${domain}/*`);
 
-    const parentContextMenuId = recreateContextMenu({
+    const parentContextMenuId = await recreateContextMenu({
       id: 'page-context-menu-parent',
       title: 'Pontoon Add-on',
       documentUrlPatterns: mozillaWebsitesUrlPatterns,
       contexts: ['selection'],
     });
-    Object.values(projects)
-      .flatMap((project) =>
-        contextMenuItemsForProject(project, pontoonBaseUrl, team),
-      )
-      .forEach((item) =>
-        recreateContextMenu({
-          ...item,
-          contexts: ['selection'],
-          parentId: parentContextMenuId,
-        }),
-      );
-    recreateContextMenu({
+    const allProjectsMenuItems = Object.values(projects).flatMap((project) =>
+      contextMenuItemsForProject(project, pontoonBaseUrl, team),
+    );
+    for (const item of allProjectsMenuItems) {
+      await recreateContextMenu({
+        ...item,
+        contexts: ['selection'],
+        parentId: parentContextMenuId,
+      });
+    }
+    await recreateContextMenu({
       id: 'page-context-menu-report-l10n-bug',
       title: 'Report l10n bug for "%s"',
       documentUrlPatterns: mozillaWebsitesUrlPatterns,
@@ -114,9 +113,16 @@ function contextMenuItemsForProject(
     });
 }
 
-function recreateContextMenu(
+async function recreateContextMenu(
   contextMenuItem: Menus.CreateCreatePropertiesType,
-): number | string {
-  removeContextMenu(contextMenuItem.id!);
+): Promise<number | string> {
+  try {
+    await removeContextMenu(contextMenuItem.id!);
+  } catch (error) {
+    console.info(
+      `Could not remove context menu id='${contextMenuItem.id}' title='${contextMenuItem.title}'. Most likely it did not exist.`,
+      error,
+    );
+  }
   return createContextMenu(contextMenuItem);
 }
