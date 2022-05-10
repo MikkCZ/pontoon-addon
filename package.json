@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "dompurify": "^2.2.8",
-    "graphql": "^15.8.0",
+    "graphql": "^16.5.0",
     "graphql-request": "^4.2.0",
     "html-react-parser": "^1.2.4",
     "javascript-time-ago": "^2.3.9",
@@ -57,7 +57,7 @@
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/typescript": "^2.4.11",
     "@graphql-codegen/typescript-graphql-request": "^4.4.8",
-    "@graphql-codegen/typescript-operations": "2.4.0",
+    "@graphql-codegen/typescript-operations": "^2.4.0",
     "@stylelint/postcss-css-in-js": "^0.37.2",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^12.1.2",
