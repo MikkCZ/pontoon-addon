@@ -135,7 +135,7 @@ describe('webExtensionsApi', () => {
 
   it('getTabsWithBaseUrl', async () => {
     mockBrowser.tabs.query
-      .expect({ url: 'https://localhost/*' })
+      .expect({ url: ['https://localhost/*'] })
       .andResolve([]);
 
     await getTabsWithBaseUrl('https://localhost');
