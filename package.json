@@ -23,7 +23,7 @@
     "tsc:check": "tsc --noEmit --project ./configs/tsconfig.json",
     "eslint:check": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx ./src",
     "eslint:fix": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx --fix ./src",
-    "ts-prune:check": "ts-prune --error --ignore '/__mocks__/' --project ./configs/tsconfig.json",
+    "ts-prune:check": "ts-prune --error --ignore '/(__mocks__|generated)/' --project ./configs/tsconfig.json",
     "stylelint:check": "stylelint --config ./configs/.stylelintrc.js './src/**/*.tsx'",
     "webpack:build:mozilla": "cross-env TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts",
     "webpack:build:chromium": "cross-env TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts",
@@ -31,10 +31,13 @@
     "webpack:watch:chromium": "cross-env MODE=development TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts --watch",
     "jest:run": "jest --ci --config ./configs/jest.config.ts",
     "codecov": "codecov",
-    "watch": "npm-run-all build:clean --parallel webpack:watch:*"
+    "watch": "npm-run-all build:clean --parallel webpack:watch:*",
+    "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
   "dependencies": {
     "dompurify": "^2.2.8",
+    "graphql": "^16.5.0",
+    "graphql-request": "^4.2.0",
     "html-react-parser": "^1.2.4",
     "javascript-time-ago": "^2.3.9",
     "marked": "^4.0.14",
@@ -51,6 +54,10 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/typescript": "^2.4.11",
+    "@graphql-codegen/typescript-graphql-request": "^4.4.8",
+    "@graphql-codegen/typescript-operations": "^2.4.0",
     "@stylelint/postcss-css-in-js": "^0.37.2",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^12.1.2",

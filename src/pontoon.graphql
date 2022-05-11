@@ -1,0 +1,103 @@
+schema {
+  query: Query
+}
+
+scalar Date
+
+type DjangoDebug {
+  sql: [DjangoDebugSQL]
+}
+
+type DjangoDebugSQL {
+  vendor: String!
+  alias: String!
+  sql: String
+  duration: Float!
+  rawSql: String!
+  params: String!
+  startTime: Float!
+  stopTime: Float!
+  isSlow: Boolean!
+  isSelect: Boolean!
+  transId: String
+  transStatus: String
+  isoLevel: String
+  encoding: String
+}
+
+type Locale {
+  totalStrings: Int!
+  approvedStrings: Int!
+  pretranslatedStrings: Int!
+  stringsWithErrors: Int!
+  stringsWithWarnings: Int!
+  unreviewedStrings: Int!
+  code: String!
+  googleTranslateCode: String!
+  msTranslatorCode: String!
+  msTerminologyCode: String!
+  systranTranslateCode: String!
+  name: String!
+  pluralRule: String!
+  cldrPlurals: String!
+  script: String!
+  direction: LocaleDirection!
+  population: Int!
+  missingStrings: Int
+  complete: Boolean
+  localizations(includeDisabled: Boolean = false, includeSystem: Boolean = false): [ProjectLocale]
+}
+
+enum LocaleDirection {
+  LTR
+  RTL
+}
+
+type Project {
+  totalStrings: Int!
+  approvedStrings: Int!
+  pretranslatedStrings: Int!
+  stringsWithErrors: Int!
+  stringsWithWarnings: Int!
+  unreviewedStrings: Int!
+  name: String!
+  slug: String!
+  disabled: Boolean!
+  syncDisabled: Boolean!
+  systemProject: Boolean!
+  visibility: String!
+  info: String!
+  deadline: Date
+  priority: Int!
+  pretranslationEnabled: Boolean!
+  missingStrings: Int
+  complete: Boolean
+  localizations: [ProjectLocale]
+  tags: [Tag]
+}
+
+type ProjectLocale {
+  totalStrings: Int!
+  approvedStrings: Int!
+  pretranslatedStrings: Int!
+  stringsWithErrors: Int!
+  stringsWithWarnings: Int!
+  unreviewedStrings: Int!
+  project: Project!
+  locale: Locale!
+  missingStrings: Int
+  complete: Boolean
+}
+
+type Query {
+  projects(includeDisabled: Boolean = false, includeSystem: Boolean = false): [Project]
+  project(slug: String): Project
+  locales: [Locale]
+  locale(code: String): Locale
+}
+
+type Tag {
+  slug: String!
+  name: String!
+  priority: Int
+}

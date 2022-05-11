@@ -21,6 +21,9 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended', // must be the last one
   ],
+  ignorePatterns: [
+    '**/generated/**',
+  ],
   rules: {
     'import/order': [
       'error',

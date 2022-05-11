@@ -2,13 +2,11 @@ import URITemplate from 'urijs/src/URITemplate';
 
 export const AUTOMATION_UTM_SOURCE = 'pontoon-addon-automation';
 
-export function pontoonGraphQL(baseUrl: string, query: string): string {
-  // 'query' is not expanded as '?q*' to prevent escaping of curly braces
-  return URITemplate('{+baseUrl}{/path*}?query={+query}')
+export function pontoonGraphQL(baseUrl: string): string {
+  return URITemplate('{+baseUrl}{/path*}')
     .expand({
       baseUrl,
       path: ['graphql'],
-      query,
     })
     .toString();
 }

@@ -1,5 +1,7 @@
 import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
+import gql from 'graphql-tag';
+import { GraphQLClient } from 'graphql-request';
 
 import { browser } from '@commons/webExtensionsApi';
 import {
@@ -7,6 +9,14 @@ import {
   getOptions,
   listenToOptionChange,
 } from '@commons/options';
+
+import {
+  GetProjectsInfoQuery,
+  getSdk,
+  GetTeamsInfoQuery,
+} from '../generated/pontoon.graphql';
+
+import { pontoonGraphQL } from './apiEndpoints';
 
 class PontoonHttpClient {
   private readonly pontoonRequestTokens: Set<string>;
@@ -130,3 +140,55 @@ export const httpClient = {
     return fetch(url, { credentials: 'omit' });
   },
 };
+
+type NonNullFields<T> = {
+  [P in keyof T]: NonNullable<T[P]>;
+};
+
+const _getTeamsInfoQuery = gql`
+  query getTeamsInfo {
+    locales {
+      code
+      name
+      approvedStrings
+      pretranslatedStrings
+      stringsWithWarnings
+      stringsWithErrors
+      missingStrings
+      unreviewedStrings
+      totalStrings
+    }
+  }
+`;
+
+interface GetTeamsInfoResponse {
+  locales: NonNullFields<Required<NonNullFields<GetTeamsInfoQuery>>['locales']>;
+}
+
+const _getProjectsInfoQuery = gql`
+  query getProjectsInfo {
+    projects {
+      slug
+      name
+    }
+  }
+`;
+
+export interface GetProjectsInfoResponse {
+  projects: NonNullFields<
+    Required<NonNullFields<GetProjectsInfoQuery>>['projects']
+  >;
+}
+
+export function graphqlClient(pontoonBaseUrl: string) {
+  const client = getSdk(
+    new GraphQLClient(pontoonGraphQL(pontoonBaseUrl), {
+      method: 'GET',
+    }),
+  );
+  return {
+    getTeamsInfo: client.getTeamsInfo as () => Promise<GetTeamsInfoResponse>,
+    getProjectsInfo:
+      client.getProjectsInfo as () => Promise<GetProjectsInfoResponse>,
+  };
+}

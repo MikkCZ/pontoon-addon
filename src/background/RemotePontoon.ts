@@ -19,14 +19,20 @@ import { getOneOption, getOptions } from '@commons/options';
 import {
   AUTOMATION_UTM_SOURCE,
   markAllNotificationsAsRead as markAllNotificationsAsReadUrl,
-  pontoonGraphQL,
   pontoonUserData,
   bugzillaTeamComponents,
 } from './apiEndpoints';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
-import { pontoonHttpClient, httpClient } from './httpClients';
+import {
+  pontoonHttpClient,
+  httpClient,
+  graphqlClient,
+  GetProjectsInfoResponse,
+} from './httpClients';
 import { projectsListData } from './data/projectsListData';
 import type { ProjectForCurrentTab } from './backgroundClient';
+
+type GetProjectsInfoProject = GetProjectsInfoResponse['projects'][number];
 
 interface UserDataApiResponse {
   notifications: {
@@ -53,30 +59,7 @@ interface UserDataApiResponse {
   };
 }
 
-interface TeamsListGqlResponse {
-  locales: Array<{
-    code: string;
-    name: string;
-    approvedStrings: number;
-    pretranslatedStrings: number;
-    stringsWithWarnings: number;
-    stringsWithErrors: number;
-    missingStrings: number;
-    unreviewedStrings: number;
-    totalStrings: number;
-  }>;
-}
-
 type Project = StorageContent['projectsList']['slug'];
-
-interface ProjectGqlReponse {
-  slug: string;
-  name: string;
-}
-
-interface ProjectsListGqlResponse {
-  projects: ProjectGqlReponse[];
-}
 
 function parseDOM(pageContent: string) {
   return new DOMParser().parseFromString(pageContent, 'text/html');
@@ -188,22 +171,14 @@ async function updateLatestTeamActivity() {
 }
 
 async function updateTeamsList(): Promise<StorageContent['teamsList']> {
-  const [pontoonDataResponse, bugzillaComponentsResponse] = await Promise.all([
-    httpClient.fetch(
-      pontoonGraphQL(
-        await getOneOption('pontoon_base_url'),
-        '{locales{code,name,approvedStrings,pretranslatedStrings,stringsWithWarnings,stringsWithErrors,missingStrings,unreviewedStrings,totalStrings}}',
-      ),
-    ),
+  const [pontoonData, bugzillaComponentsResponse] = await Promise.all([
+    graphqlClient(await getOneOption('pontoon_base_url')).getTeamsInfo(),
     httpClient.fetch(bugzillaTeamComponents()),
   ]);
-  const pontoonData = (await pontoonDataResponse.json()) as {
-    data: TeamsListGqlResponse;
-  };
   const bugzillaComponents = (await bugzillaComponentsResponse.json()) as {
     [code: string]: string;
   };
-  const sortedTeams = pontoonData.data.locales
+  const sortedTeams = pontoonData.locales
     .filter((team) => team.totalStrings > 0)
     .sort((team1, team2) => team1.code.localeCompare(team2.code));
   const teamsList: StorageContent['teamsList'] = {};
@@ -216,7 +191,7 @@ async function updateTeamsList(): Promise<StorageContent['teamsList']> {
         pretranslatedStrings: team.pretranslatedStrings,
         stringsWithWarnings: team.stringsWithWarnings,
         stringsWithErrors: team.stringsWithErrors,
-        missingStrings: team.missingStrings,
+        missingStrings: team.missingStrings ?? 0,
         unreviewedStrings: team.unreviewedStrings,
         totalStrings: team.totalStrings,
       },
@@ -228,20 +203,14 @@ async function updateTeamsList(): Promise<StorageContent['teamsList']> {
 }
 
 async function updateProjectsList(): Promise<StorageContent['projectsList']> {
-  const pontoonDataResponse = await httpClient.fetch(
-    pontoonGraphQL(
-      await getOneOption('pontoon_base_url'),
-      '{projects{slug,name}}',
-    ),
-  );
-  const pontoonData = (await pontoonDataResponse.json()) as {
-    data: ProjectsListGqlResponse;
-  };
+  const pontoonData = await graphqlClient(
+    await getOneOption('pontoon_base_url'),
+  ).getProjectsInfo();
   const partialProjectsMap = new Map<
-    ProjectGqlReponse['slug'],
-    ProjectGqlReponse
+    GetProjectsInfoProject['slug'],
+    GetProjectsInfoProject
   >();
-  for (const project of pontoonData.data.projects) {
+  for (const project of pontoonData.projects) {
     partialProjectsMap.set(project.slug, project);
   }
   const projects = projectsListData.map((project) => ({
