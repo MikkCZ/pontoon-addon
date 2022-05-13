@@ -4,7 +4,7 @@
   "private": true,
   "description": "Tools for Pontoon and its integration into the browser.",
   "author": "Michal Stanke",
-  "license": "MPL-2.0",
+  "license": "BSD-3-Clause",
   "homepage": "https://github.com/MikkCZ/pontoon-addon#readme",
   "repository": {
     "type": "git",
