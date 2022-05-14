@@ -123,22 +123,19 @@ describe('webLinks', () => {
         'Mozilla Localizations',
       )}&component=${encodeURIComponent(
         'Czech L10N',
-      )}&status_whiteboard=${encodeURIComponent(
-        '[pontoon-addon-feedback]',
-      )}&bug_file_loc=${encodeURIComponent(
-        'https://localhost?foo=bar',
       )}&short_desc=${encodeURIComponent(
         '[cs] Translation update proposed for "report this" on https://localhost?foo=bar',
       )}&comment=${encodeURIComponent(
         'The translation:\nreport this\n\nShould be:\n',
-      )}`,
+      )}&status_whiteboard=${encodeURIComponent(
+        '[pontoon-addon-feedback]',
+      )}&bug_file_loc=${encodeURIComponent('https://localhost?foo=bar')}`,
     );
   });
 
-  it('newLocalizationBug without selected text', () => {
+  it('newLocalizationBug with minimal information', () => {
     const url = newLocalizationBug({
       team: { code: 'cs', bz_component: 'Czech L10N' },
-      url: 'https://localhost?foo=bar',
     });
 
     expect(url).toBe(
@@ -146,13 +143,9 @@ describe('webLinks', () => {
         'Mozilla Localizations',
       )}&component=${encodeURIComponent(
         'Czech L10N',
-      )}&status_whiteboard=${encodeURIComponent(
-        '[pontoon-addon-feedback]',
-      )}&bug_file_loc=${encodeURIComponent(
-        'https://localhost?foo=bar',
       )}&short_desc=${encodeURIComponent(
-        '[cs] Translation update proposed on https://localhost?foo=bar',
-      )}`,
+        '[cs] Translation update proposed',
+      )}&status_whiteboard=${encodeURIComponent('[pontoon-addon-feedback]')}`,
     );
   });
 });

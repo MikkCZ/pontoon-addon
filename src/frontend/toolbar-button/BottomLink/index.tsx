@@ -7,7 +7,6 @@ const Link = styled.button`
   width: 100%;
   background: transparent;
   border: none;
-  border-top: 1px solid #525a65;
   padding: 0.5em;
   text-align: center;
   font-size: 14px;

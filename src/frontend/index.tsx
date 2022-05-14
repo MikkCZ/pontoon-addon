@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 
-import { getFromStorage } from '@commons/webExtensionsApi';
+import { getOneFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 
 import { App as AddressBarApp } from './address-bar/App';
@@ -20,20 +20,16 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
     {
       toolbar_button_popup_always_hide_read_notifications:
         hideReadNotifications,
-      locale_team: teamCode,
       pontoon_base_url: pontoonBaseUrl,
     },
-    { notificationsData, teamsList, latestTeamsActivity },
+    notificationsData,
   ] = await Promise.all([
     getOptions([
       'toolbar_button_popup_always_hide_read_notifications',
-      'locale_team',
       'pontoon_base_url',
     ]),
-    getFromStorage(['notificationsData', 'teamsList', 'latestTeamsActivity']),
+    getOneFromStorage('notificationsData'),
   ]);
-  const teamData = teamsList![teamCode];
-  const latestTeamActivity = latestTeamsActivity![teamCode];
 
   const baseTag = document.createElement('base');
   baseTag.href = pontoonBaseUrl;
@@ -43,8 +39,6 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
     <ToolbarButtonApp
       notificationsData={notificationsData}
       hideReadNotifications={hideReadNotifications}
-      teamData={teamData}
-      latestTeamActivity={latestTeamActivity}
     />,
     rootElement,
   );

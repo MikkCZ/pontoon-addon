@@ -199,23 +199,28 @@ export function newLocalizationBug({
 }: {
   team: { code: string; bz_component: string };
   selectedText?: string;
-  url: string;
+  url?: string;
 }): string {
   return URITemplate('https://bugzilla.mozilla.org/enter_bug.cgi{?q*}')
     .expand({
       q: {
         product: 'Mozilla Localizations',
         component: team.bz_component,
-        status_whiteboard: '[pontoon-addon-feedback]',
-        bug_file_loc: url,
-        short_desc: selectedText
-          ? `[${
-              team.code
-            }] Translation update proposed for "${selectedText.trim()}" on ${url}`
-          : `[${team.code}] Translation update proposed on ${url}`,
+        short_desc:
+          selectedText && url
+            ? `[${
+                team.code
+              }] Translation update proposed for "${selectedText.trim()}" on ${url}`
+            : `[${team.code}] Translation update proposed`,
         ...(selectedText
           ? {
               comment: `The translation:\n${selectedText.trim()}\n\nShould be:\n`,
+            }
+          : {}),
+        status_whiteboard: '[pontoon-addon-feedback]',
+        ...(url
+          ? {
+              bug_file_loc: url,
             }
           : {}),
       },

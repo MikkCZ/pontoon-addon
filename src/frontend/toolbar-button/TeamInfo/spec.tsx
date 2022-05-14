@@ -1,10 +1,17 @@
 import React from 'react';
-import ReactTimeAgo from 'react-time-ago';
 import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
+import ReactTimeAgo from 'react-time-ago';
 
-import { openNewTab } from '@commons/webExtensionsApi';
 import {
+  getFromStorage,
+  openNewTab,
+  StorageContent,
+} from '@commons/webExtensionsApi';
+import { getOneOption } from '@commons/options';
+import {
+  getPontoonProjectForTheCurrentTab,
   getStringsWithStatusSearchUrl,
   getTeamPageUrl,
 } from '@background/backgroundClient';
@@ -15,11 +22,38 @@ import { TeamInfoListItem } from '../TeamInfoListItem';
 import { TeamInfo, Name, Code } from '.';
 
 jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
 
+const team: StorageContent['teamsList'][string] = {
+  code: 'cs',
+  name: 'Czech',
+  bz_component: 'L10N/CS',
+  strings: {
+    approvedStrings: 0,
+    pretranslatedStrings: 0,
+    stringsWithWarnings: 0,
+    stringsWithErrors: 0,
+    missingStrings: 0,
+    unreviewedStrings: 0,
+    totalStrings: 0,
+  },
+};
+
 beforeEach(() => {
+  (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(undefined);
+  (getFromStorage as jest.Mock).mockResolvedValue({
+    teamsList: { cs: team },
+    latestTeamsActivity: {
+      cs: {
+        user: 'USER',
+        date_iso: '1970-01-01T00:00:00Z',
+      },
+    },
+  });
+  (getOneOption as jest.Mock).mockResolvedValue('cs');
   (getTeamPageUrl as jest.Mock).mockReturnValue('https://127.0.0.1/team-page');
   (getStringsWithStatusSearchUrl as jest.Mock).mockImplementation(
     (status: string) => `https://127.0.0.1/${status}/`,
@@ -27,24 +61,17 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  (openNewTab as jest.Mock).mockReset();
   windowCloseSpy.mockReset();
-  (getTeamPageUrl as jest.Mock).mockReset();
-  (getStringsWithStatusSearchUrl as jest.Mock).mockReset();
+  jest.resetAllMocks();
 });
 
 describe('TeamInfo', () => {
-  it('renders', () => {
-    const wrapper = mount(
-      <TeamInfo
-        name="Czech"
-        code="cs"
-        latestActivity={{
-          user: 'USER',
-          date_iso: '1970-01-01T00:00:00Z',
-        }}
-      />,
-    );
+  it('renders', async () => {
+    const wrapper = mount(<TeamInfo />);
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.find(Name).text()).toBe('Czech');
     expect(wrapper.find(Code).text()).toBe('cs');
@@ -68,46 +95,37 @@ describe('TeamInfo', () => {
     );
   });
 
-  it('renders without activity', () => {
-    const wrapper = mount(
-      <TeamInfo
-        name="Czech"
-        code="cs"
-        latestActivity={{
+  it('renders without activity', async () => {
+    (getFromStorage as jest.Mock).mockResolvedValue({
+      teamsList: { cs: team },
+      latestTeamsActivity: {
+        cs: {
           user: '',
           date_iso: undefined,
-        }}
-      />,
-    );
+        },
+      },
+    });
+
+    const wrapper = mount(<TeamInfo />);
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
     expect(wrapper.find(TeamInfoListItem).at(0).prop('value')).toBe('―');
   });
 
   it('team page links work', async () => {
-    const wrapper = mount(
-      <TeamInfo
-        name="Czech"
-        code="cs"
-        stringsData={{
-          approvedStrings: 0,
-          pretranslatedStrings: 0,
-          stringsWithWarnings: 0,
-          stringsWithErrors: 0,
-          missingStrings: 0,
-          unreviewedStrings: 0,
-          totalStrings: 0,
-        }}
-        latestActivity={{
-          user: 'USER',
-          date_iso: '1970-01-01T00:00:00Z',
-        }}
-      />,
-    );
+    const wrapper = mount(<TeamInfo />);
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     wrapper.find(Name).simulate('click');
     wrapper.find(Code).simulate('click');
-    wrapper.find(BottomLink).simulate('click');
+    wrapper.find(BottomLink).at(0).simulate('click');
 
     await flushPromises();
 
@@ -116,25 +134,11 @@ describe('TeamInfo', () => {
   });
 
   it('string status links work', async () => {
-    const wrapper = mount(
-      <TeamInfo
-        name="Czech"
-        code="cs"
-        stringsData={{
-          approvedStrings: 0,
-          pretranslatedStrings: 0,
-          stringsWithWarnings: 0,
-          stringsWithErrors: 0,
-          missingStrings: 0,
-          unreviewedStrings: 0,
-          totalStrings: 0,
-        }}
-        latestActivity={{
-          user: 'USER',
-          date_iso: '1970-01-01T00:00:00Z',
-        }}
-      />,
-    );
+    const wrapper = mount(<TeamInfo />);
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     [
       'translated',

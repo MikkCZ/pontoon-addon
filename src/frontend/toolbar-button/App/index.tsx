@@ -21,23 +21,12 @@ const GlobalStyle = createGlobalStyle`
 interface Props {
   notificationsData: any;
   hideReadNotifications?: boolean;
-  teamData?: {
-    name?: string;
-    code?: string;
-    strings?: any;
-  };
-  latestTeamActivity?: {
-    user: string;
-    date_iso?: string;
-  };
 }
 
 export const App: React.FC<Props> = ({
   notificationsData,
   hideReadNotifications,
-  teamData,
-  latestTeamActivity,
-}) => {
+}: Props) => {
   return (
     <>
       <GlobalPontoonStyle />
@@ -46,12 +35,7 @@ export const App: React.FC<Props> = ({
         notificationsData={notificationsData}
         hideReadNotifications={hideReadNotifications}
       />
-      <TeamInfo
-        name={teamData?.name}
-        code={teamData?.code}
-        stringsData={teamData?.strings}
-        latestActivity={latestTeamActivity}
-      />
+      <TeamInfo />
     </>
   );
 };

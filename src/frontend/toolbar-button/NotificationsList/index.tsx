@@ -18,6 +18,7 @@ const List = styled.ul`
   overflow: auto;
   margin: 0;
   padding: 0;
+  border-bottom: 1px solid #525a65;
 `;
 
 interface Props {
