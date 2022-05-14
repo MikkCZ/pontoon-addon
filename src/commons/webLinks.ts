@@ -198,7 +198,7 @@ export function newLocalizationBug({
   url,
 }: {
   team: { code: string; bz_component: string };
-  selectedText: string;
+  selectedText?: string;
   url: string;
 }): string {
   return URITemplate('https://bugzilla.mozilla.org/enter_bug.cgi{?q*}')
@@ -208,10 +208,16 @@ export function newLocalizationBug({
         component: team.bz_component,
         status_whiteboard: '[pontoon-addon-feedback]',
         bug_file_loc: url,
-        short_desc: `[${
-          team.code
-        }] Translation update proposed for "${selectedText.trim()}" on ${url}`,
-        comment: `The translation:\n${selectedText.trim()}\n\nShould be:\n`,
+        short_desc: selectedText
+          ? `[${
+              team.code
+            }] Translation update proposed for "${selectedText.trim()}" on ${url}`
+          : `[${team.code}] Translation update proposed on ${url}`,
+        ...(selectedText
+          ? {
+              comment: `The translation:\n${selectedText.trim()}\n\nShould be:\n`,
+            }
+          : {}),
       },
     })
     .toString();

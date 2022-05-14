@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import { getFromStorage, getOneFromStorage } from '@commons/webExtensionsApi';
+import {
+  getActiveTab,
+  getFromStorage,
+  getOneFromStorage,
+} from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 
@@ -42,11 +46,14 @@ describe('address bar', () => {
       slug: 'some-project',
     });
     (getOneFromStorage as jest.Mock).mockResolvedValue({
-      cs: { name: 'Czech' },
+      cs: { name: 'Czech', bz_component: 'L10N/CS' },
     });
     (getOptions as jest.Mock).mockResolvedValue({
       locale_team: 'cs',
       pontoon_base_url: 'https://localhost',
+    });
+    (getActiveTab as jest.Mock).mockResolvedValue({
+      url: 'https://localhost/firefox',
     });
   });
 

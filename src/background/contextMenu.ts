@@ -16,13 +16,13 @@ import {
 import { getOptions, listenToOptionChange } from '@commons/options';
 import { OptionsContent } from '@commons/data/defaultOptions';
 
-const GENERIC_CONTEXTS: Menus.ContextType[] = [
+const NON_SELECTION_CONTEXTS: Menus.ContextType[] = [
   'page',
   'editable',
   'image',
   'video',
 ];
-const SELECTED_TEXT_CONTEXTS: Menus.ContextType[] = ['selection'];
+const SELECTION_CONTEXTS: Menus.ContextType[] = ['selection'];
 
 export function setupPageContextMenus() {
   listenToStorageChange('projectsList', () => createContextMenuItems());
@@ -43,64 +43,34 @@ async function createContextMenuItems() {
   if (projects && teamsList) {
     const team = teamsList[teamCode];
 
-    const mozillaWebsitesUrlPatterns = Object.values(projects)
-      .flatMap((project) => project.domains)
-      .map((domain) => `https://${domain}/*`);
-
     const parentContextMenuId = await recreateContextMenu({
       id: 'page-context-menu-parent',
       title: 'Pontoon Add-on',
-      documentUrlPatterns: mozillaWebsitesUrlPatterns,
-      contexts: [...GENERIC_CONTEXTS, ...SELECTED_TEXT_CONTEXTS],
+      documentUrlPatterns: Object.values(projects)
+        .flatMap((project) => project.domains)
+        .map((domain) => `https://${domain}/*`),
+      contexts: [...NON_SELECTION_CONTEXTS, ...SELECTION_CONTEXTS],
     });
-    const allProjectsMenuItems = Object.values(projects).flatMap((project) =>
-      contextMenuItemsForProject(project, pontoonBaseUrl, team),
-    );
-    for (const item of allProjectsMenuItems) {
-      await recreateContextMenu({
-        ...item,
-        parentId: parentContextMenuId,
-      });
+
+    for (const project of Object.values(projects)) {
+      for (const item of contextMenuItemsForProject(
+        project,
+        team,
+        pontoonBaseUrl,
+      )) {
+        await recreateContextMenu({
+          ...item,
+          parentId: parentContextMenuId,
+        });
+      }
     }
-    await recreateContextMenu({
-      id: `search-in-all-projects`,
-      title: `Search for "%s" in ${team.name} translations of all projects`,
-      documentUrlPatterns: mozillaWebsitesUrlPatterns,
-      contexts: SELECTED_TEXT_CONTEXTS,
-      parentId: parentContextMenuId,
-      onclick: (info: Menus.OnClickData) => {
-        openNewTab(
-          pontoonProjectTranslationView(
-            pontoonBaseUrl,
-            team,
-            { slug: 'all-projects' },
-            info.selectionText,
-          ),
-        );
-      },
-    });
-    await recreateContextMenu({
-      id: 'report-l10n-bug',
-      title: 'Report l10n bug for "%s"',
-      documentUrlPatterns: mozillaWebsitesUrlPatterns,
-      contexts: SELECTED_TEXT_CONTEXTS,
-      parentId: parentContextMenuId,
-      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) =>
-        openNewTab(
-          newLocalizationBug({
-            team,
-            selectedText: info.selectionText ?? '',
-            url: tab.url!,
-          }),
-        ),
-    });
   }
 }
 
 function contextMenuItemsForProject(
   project: StorageContent['projectsList'][string],
-  pontoonBaseUrl: OptionsContent['pontoon_base_url'],
   team: StorageContent['teamsList'][string],
+  pontoonBaseUrl: OptionsContent['pontoon_base_url'],
 ): Menus.CreateCreatePropertiesType[] {
   const documentUrlPatterns = project.domains.map(
     (domain) => `https://${domain}/*`,
@@ -110,7 +80,7 @@ function contextMenuItemsForProject(
       id: `open-project-dashboard-${project.slug}`,
       title: `Open ${project.name} dashboard for ${team.name}`,
       documentUrlPatterns,
-      contexts: [...GENERIC_CONTEXTS, ...SELECTED_TEXT_CONTEXTS],
+      contexts: [...NON_SELECTION_CONTEXTS, ...SELECTION_CONTEXTS],
       onclick: () => {
         openNewTab(pontoonTeamsProject(pontoonBaseUrl, team, project));
       },
@@ -119,7 +89,7 @@ function contextMenuItemsForProject(
       id: `open-translation-view-${project.slug}`,
       title: `Open ${project.name} translation view for ${team.name}`,
       documentUrlPatterns,
-      contexts: GENERIC_CONTEXTS,
+      contexts: NON_SELECTION_CONTEXTS,
       onclick: () => {
         openNewTab(
           pontoonProjectTranslationView(pontoonBaseUrl, team, project),
@@ -130,7 +100,7 @@ function contextMenuItemsForProject(
       id: `search-in-project-${project.slug}`,
       title: `Search for "%s" in ${team.name} translations of ${project.name}`,
       documentUrlPatterns,
-      contexts: SELECTED_TEXT_CONTEXTS,
+      contexts: SELECTION_CONTEXTS,
       onclick: (info: Menus.OnClickData) => {
         openNewTab(
           pontoonProjectTranslationView(
@@ -141,6 +111,49 @@ function contextMenuItemsForProject(
           ),
         );
       },
+    },
+    {
+      id: `search-in-all-projects-${project.slug}`,
+      title: `Search for "%s" in ${team.name} translations of all projects`,
+      documentUrlPatterns,
+      contexts: SELECTION_CONTEXTS,
+      onclick: (info: Menus.OnClickData) => {
+        openNewTab(
+          pontoonProjectTranslationView(
+            pontoonBaseUrl,
+            team,
+            { slug: 'all-projects' },
+            info.selectionText,
+          ),
+        );
+      },
+    },
+    {
+      id: `report-bug-for-localization-of-project-${project.slug}`,
+      title: `Report bug for localization of ${project.name} to ${team.name}`,
+      documentUrlPatterns,
+      contexts: NON_SELECTION_CONTEXTS,
+      onclick: (_info: Menus.OnClickData, tab: Tabs.Tab) =>
+        openNewTab(
+          newLocalizationBug({
+            team,
+            url: tab.url!,
+          }),
+        ),
+    },
+    {
+      id: `report-bug-for-localization-of-selected-text-${project.slug}`,
+      title: 'Report bug for localization of "%s"',
+      documentUrlPatterns,
+      contexts: SELECTION_CONTEXTS,
+      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) =>
+        openNewTab(
+          newLocalizationBug({
+            team,
+            selectedText: info.selectionText ?? '',
+            url: tab.url!,
+          }),
+        ),
     },
   ];
 }

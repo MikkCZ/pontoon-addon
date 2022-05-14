@@ -134,4 +134,25 @@ describe('webLinks', () => {
       )}`,
     );
   });
+
+  it('newLocalizationBug without selected text', () => {
+    const url = newLocalizationBug({
+      team: { code: 'cs', bz_component: 'Czech L10N' },
+      url: 'https://localhost?foo=bar',
+    });
+
+    expect(url).toBe(
+      `https://bugzilla.mozilla.org/enter_bug.cgi?product=${encodeURIComponent(
+        'Mozilla Localizations',
+      )}&component=${encodeURIComponent(
+        'Czech L10N',
+      )}&status_whiteboard=${encodeURIComponent(
+        '[pontoon-addon-feedback]',
+      )}&bug_file_loc=${encodeURIComponent(
+        'https://localhost?foo=bar',
+      )}&short_desc=${encodeURIComponent(
+        '[cs] Translation update proposed on https://localhost?foo=bar',
+      )}`,
+    );
+  });
 });

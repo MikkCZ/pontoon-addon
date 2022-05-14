@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import {
+  getActiveTab,
   getOneFromStorage,
   openNewTab,
   StorageContent,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import {
+  newLocalizationBug,
   pontoonProjectTranslationView,
   pontoonTeamsProject,
 } from '@commons/webLinks';
@@ -56,6 +58,16 @@ export const App: React.FC = () => {
           onClick: () =>
             openNewTab(
               pontoonProjectTranslationView(pontoonBaseUrl, team, project),
+            ),
+        },
+        {
+          text: `Report bug for localization of ${project.name} to ${team.name}`,
+          onClick: async () =>
+            openNewTab(
+              newLocalizationBug({
+                team,
+                url: (await getActiveTab()).url!,
+              }),
             ),
         },
       ]}

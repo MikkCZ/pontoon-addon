@@ -4,9 +4,14 @@ import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
-import { getOneFromStorage, openNewTab } from '@commons/webExtensionsApi';
+import {
+  getActiveTab,
+  getOneFromStorage,
+  openNewTab,
+} from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import {
+  newLocalizationBug,
   pontoonProjectTranslationView,
   pontoonTeamsProject,
 } from '@commons/webLinks';
@@ -28,6 +33,7 @@ const project = {
 const team = {
   code: 'cs',
   name: 'Czech',
+  bz_component: 'L10N/CS',
 };
 
 beforeEach(() => {
@@ -36,6 +42,9 @@ beforeEach(() => {
   (getOptions as jest.Mock).mockResolvedValue({
     locale_team: team.code,
     pontoon_base_url: 'https://localhost',
+  });
+  (getActiveTab as jest.Mock).mockResolvedValue({
+    url: 'https://localhost/firefox',
   });
 });
 
@@ -52,12 +61,15 @@ describe('address-bar/App', () => {
     });
 
     expect(wrapper.find(PanelSection)).toHaveLength(1);
-    expect(wrapper.find(PanelListItem)).toHaveLength(2);
+    expect(wrapper.find(PanelListItem)).toHaveLength(3);
     expect(wrapper.find(PanelListItem).at(0).text()).toBe(
       'Open Some Project dashboard for Czech',
     );
     expect(wrapper.find(PanelListItem).at(1).text()).toBe(
       'Open Some Project translation view for Czech',
+    );
+    expect(wrapper.find(PanelListItem).at(2).text()).toBe(
+      'Report bug for localization of Some Project to Czech',
     );
   });
 
@@ -96,6 +108,26 @@ describe('address-bar/App', () => {
         { code: 'cs' },
         project,
       ),
+    );
+  });
+
+  it('handles click to report bug', async () => {
+    const wrapper = mount(<App />);
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    act(() => {
+      wrapper.find(PanelListItem).at(2).simulate('click');
+    });
+    await flushPromises();
+
+    expect(openNewTab).toHaveBeenCalledWith(
+      newLocalizationBug({
+        team,
+        url: 'https://localhost/firefox',
+      }),
     );
   });
 });
