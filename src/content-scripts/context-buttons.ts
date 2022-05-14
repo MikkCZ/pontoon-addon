@@ -52,7 +52,7 @@ allContextButtons.forEach((button) => {
 document.addEventListener('mouseup', (e) => {
   const selectedText = getSelectedText();
   if (selectedText.length > 0) {
-    pontoonSearchButton.title = `Search for "${selectedText.trim()}" in Pontoon (all projects)`;
+    pontoonSearchButton.title = `Search for "${selectedText.trim()}" in translations of all projects`;
     bugzillaReportButton.title = `Report l10n bug for "${selectedText.trim()}"`;
 
     const yCoord = window.scrollY + e.screenY - 120;

@@ -11,12 +11,6 @@ import { getOneOption } from '@commons/options';
 
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
-export interface ProjectForCurrentTab {
-  name: string;
-  pageUrl: string;
-  translationUrl: string;
-}
-
 async function getTeam(): Promise<{ code: string }> {
   return {
     code: await getOneOption('locale_team'),
@@ -69,7 +63,7 @@ export async function getUsersTeamFromPontoon(): Promise<string | undefined> {
 }
 
 export async function getPontoonProjectForTheCurrentTab(): Promise<
-  ProjectForCurrentTab | undefined
+  StorageContent['projectsList'][string] | undefined
 > {
   return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,

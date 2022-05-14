@@ -3,11 +3,13 @@ import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
+import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { getOneFromStorage, openNewTab } from '@commons/webExtensionsApi';
+import { getOptions } from '@commons/options';
 import {
-  getPontoonProjectForTheCurrentTab,
-  ProjectForCurrentTab,
-} from '@background/backgroundClient';
-import { openNewTab } from '@commons/webExtensionsApi';
+  pontoonProjectTranslationView,
+  pontoonTeamsProject,
+} from '@commons/webLinks';
 
 import { PanelSection } from '../PanelSection';
 import { PanelListItem } from '../PanelListItem';
@@ -15,21 +17,30 @@ import { PanelListItem } from '../PanelListItem';
 import { App } from '.';
 
 jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const project: ProjectForCurrentTab = {
+const project = {
   name: 'Some Project',
-  pageUrl: 'https://127.0.0.1/pageUrl',
-  translationUrl: 'https://127.0.0.1/translationUrl',
+  slug: 'some-project',
+};
+
+const team = {
+  code: 'cs',
+  name: 'Czech',
 };
 
 beforeEach(() => {
-  (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue(project);
+  (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
+  (getOneFromStorage as jest.Mock).mockResolvedValue({ [team.code]: team });
+  (getOptions as jest.Mock).mockResolvedValue({
+    locale_team: team.code,
+    pontoon_base_url: 'https://localhost',
+  });
 });
 
 afterEach(() => {
-  (openNewTab as jest.Mock).mockReset();
-  (getPontoonProjectForTheCurrentTab as jest.Mock).mockReset();
+  jest.resetAllMocks();
 });
 
 describe('address-bar/App', () => {
@@ -43,10 +54,10 @@ describe('address-bar/App', () => {
     expect(wrapper.find(PanelSection)).toHaveLength(1);
     expect(wrapper.find(PanelListItem)).toHaveLength(2);
     expect(wrapper.find(PanelListItem).at(0).text()).toBe(
-      `Open ${project.name} project page`,
+      'Open Some Project dashboard for Czech',
     );
     expect(wrapper.find(PanelListItem).at(1).text()).toBe(
-      `Open ${project.name} translation view`,
+      'Open Some Project translation view for Czech',
     );
   });
 
@@ -62,7 +73,9 @@ describe('address-bar/App', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(project.pageUrl);
+    expect(openNewTab).toHaveBeenCalledWith(
+      pontoonTeamsProject('https://localhost', { code: 'cs' }, project),
+    );
   });
 
   it('handles click to open translation view', async () => {
@@ -77,6 +90,12 @@ describe('address-bar/App', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(project.translationUrl);
+    expect(openNewTab).toHaveBeenCalledWith(
+      pontoonProjectTranslationView(
+        'https://localhost',
+        { code: 'cs' },
+        project,
+      ),
+    );
   });
 });

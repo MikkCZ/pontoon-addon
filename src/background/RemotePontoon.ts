@@ -9,12 +9,8 @@ import {
   saveToStorage,
   StorageContent,
 } from '@commons/webExtensionsApi';
-import {
-  pontoonSettings,
-  toPontoonTeamSpecificProjectUrl,
-  pontoonTeamsList,
-} from '@commons/webLinks';
-import { getOneOption, getOptions } from '@commons/options';
+import { pontoonSettings, pontoonTeamsList } from '@commons/webLinks';
+import { getOneOption } from '@commons/options';
 
 import {
   AUTOMATION_UTM_SOURCE,
@@ -30,7 +26,6 @@ import {
   GetProjectsInfoResponse,
 } from './httpClients';
 import { projectsListData } from './data/projectsListData';
-import type { ProjectForCurrentTab } from './backgroundClient';
 
 type GetProjectsInfoProject = GetProjectsInfoResponse['projects'][number];
 
@@ -227,41 +222,17 @@ async function updateProjectsList(): Promise<StorageContent['projectsList']> {
 
 export async function getPontoonProjectForPageUrl(
   pageUrl: string,
-): Promise<ProjectForCurrentTab | undefined> {
-  const toProjectMap = new Map<Project['domains'][number], Project>();
-  const projectsList = await getOneFromStorage('projectsList');
-  if (projectsList) {
-    for (const project of Object.values(projectsList)) {
-      for (const domain of project.domains) {
-        toProjectMap.set(domain, project);
-      }
-    }
-  }
+): Promise<Project | null> {
   const { hostname } = URI.parse(pageUrl);
-  const projectData = hostname ? toProjectMap.get(hostname) : undefined;
-  if (projectData) {
-    const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
-      await getOptions(['pontoon_base_url', 'locale_team']);
-    return {
-      name: projectData.name,
-      pageUrl: toPontoonTeamSpecificProjectUrl(
-        pontoonBaseUrl,
-        { code: teamCode },
-        URI.joinPaths('/', 'projects', projectData.slug).toString(),
-      ),
-      translationUrl: toPontoonTeamSpecificProjectUrl(
-        pontoonBaseUrl,
-        { code: teamCode },
-        URI.joinPaths(
-          '/',
-          'projects',
-          projectData.slug,
-          'all-resources',
-        ).toString(),
-      ),
-    };
+  const projectsList = await getOneFromStorage('projectsList');
+  if (hostname && projectsList) {
+    return (
+      Object.values(projectsList).find((project) =>
+        project.domains.includes(hostname),
+      ) ?? null
+    );
   } else {
-    return undefined;
+    return null;
   }
 }
 

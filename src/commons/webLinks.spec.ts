@@ -2,13 +2,14 @@ import {
   newLocalizationBug,
   pontoonFxaSignIn,
   pontoonNotifications,
-  pontoonSearchInProject,
+  pontoonProjectTranslationView,
   pontoonSearchStringsWithStatus,
   pontoonSettings,
   pontoonTeam,
   pontoonTeamBugs,
   pontoonTeamInsights,
   pontoonTeamsList,
+  pontoonTeamsProject,
   toPontoonTeamSpecificProjectUrl,
 } from './webLinks';
 
@@ -54,8 +55,18 @@ describe('webLinks', () => {
     expect(url).toBe('https://localhost/cs/bugs');
   });
 
-  it('pontoonSearchInProject', () => {
-    const url = pontoonSearchInProject(
+  it('pontoonTeamsProject', () => {
+    const url = pontoonTeamsProject(
+      'https://localhost',
+      { code: 'cs' },
+      { slug: 'firefox' },
+    );
+
+    expect(url).toBe('https://localhost/cs/firefox?utm_source=pontoon-addon');
+  });
+
+  it('pontoonProjectTranslationView', () => {
+    const url = pontoonProjectTranslationView(
       'https://localhost',
       { code: 'cs' },
       { slug: 'firefox' },

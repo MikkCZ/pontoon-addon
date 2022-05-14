@@ -77,7 +77,23 @@ export function pontoonTeamBugs(
     .toString();
 }
 
-export function pontoonSearchInProject(
+export function pontoonTeamsProject(
+  baseUrl: string,
+  team: { code: string },
+  project: { slug: string },
+): string {
+  return URITemplate('{+baseUrl}{/path*}{?q*}')
+    .expand({
+      baseUrl,
+      path: [team.code, project.slug],
+      q: {
+        utm_source: LINK_UTM_SOURCE,
+      },
+    })
+    .toString();
+}
+
+export function pontoonProjectTranslationView(
   baseUrl: string,
   team: { code: string },
   project: { slug: string },

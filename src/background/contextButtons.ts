@@ -1,4 +1,7 @@
-import { pontoonSearchInProject, newLocalizationBug } from '@commons/webLinks';
+import {
+  pontoonProjectTranslationView,
+  newLocalizationBug,
+} from '@commons/webLinks';
 import {
   listenToMessages,
   openNewTab,
@@ -19,7 +22,7 @@ function listenToMessagesFromContentScript() {
       const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
         await getOptions(['pontoon_base_url', 'locale_team']);
       openNewTab(
-        pontoonSearchInProject(
+        pontoonProjectTranslationView(
           pontoonBaseUrl,
           { code: teamCode },
           { slug: 'all-projects' },

@@ -123,15 +123,11 @@ describe('backgroundClient', () => {
   it('getPontoonProjectForTheCurrentTab', async () => {
     mockBrowserSendMessage()
       .expect({ type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT })
-      .andResolve({
-        name: 'firefox',
-        pageUrl: '/pageUrl',
-        translationUrl: '/translationsUrl',
-      });
+      .andResolve({ slug: 'firefox' });
 
     const project = await getPontoonProjectForTheCurrentTab();
 
-    expect(project!.name).toBe('firefox');
+    expect(project!.slug).toBe('firefox');
   });
 
   it('pageLoaded', async () => {
