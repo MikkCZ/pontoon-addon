@@ -1,21 +1,13 @@
 import {
   pontoonFxaSignIn,
   pontoonSettings,
-  pontoonTeam,
   pontoonNotifications,
-  pontoonSearchStringsWithStatus,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
 import { browser, StorageContent } from '@commons/webExtensionsApi';
 import { getOneOption } from '@commons/options';
 
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
-
-export interface ProjectForCurrentTab {
-  name: string;
-  pageUrl: string;
-  translationUrl: string;
-}
 
 async function getTeam(): Promise<{ code: string }> {
   return {
@@ -35,21 +27,9 @@ export async function getSettingsUrl(): Promise<string> {
   return pontoonSettings(await getPontoonBaseUrl());
 }
 
-export async function getTeamPageUrl(): Promise<string> {
-  const [baseUrl, team] = await Promise.all([getPontoonBaseUrl(), getTeam()]);
-  return pontoonTeam(baseUrl, team);
-}
-
 export async function getTeamProjectUrl(projectUrl: string): Promise<string> {
   const [baseUrl, team] = await Promise.all([getPontoonBaseUrl(), getTeam()]);
   return toPontoonTeamSpecificProjectUrl(baseUrl, team, projectUrl);
-}
-
-export async function getStringsWithStatusSearchUrl(
-  status: string,
-): Promise<string> {
-  const [baseUrl, team] = await Promise.all([getPontoonBaseUrl(), getTeam()]);
-  return pontoonSearchStringsWithStatus(baseUrl, team, status);
 }
 
 export async function getSignInURL(): Promise<string> {
@@ -69,7 +49,7 @@ export async function getUsersTeamFromPontoon(): Promise<string | undefined> {
 }
 
 export async function getPontoonProjectForTheCurrentTab(): Promise<
-  ProjectForCurrentTab | undefined
+  StorageContent['projectsList'][string] | undefined
 > {
   return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,

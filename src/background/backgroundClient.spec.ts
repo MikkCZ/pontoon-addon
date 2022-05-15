@@ -9,9 +9,7 @@ import {
   getPontoonProjectForTheCurrentTab,
   getSettingsUrl,
   getSignInURL,
-  getStringsWithStatusSearchUrl,
   getUsersTeamFromPontoon,
-  getTeamPageUrl,
   getTeamProjectUrl,
   markAllNotificationsAsRead,
   notificationBellIconScriptLoaded,
@@ -74,24 +72,10 @@ describe('backgroundClient', () => {
     expect(url).toBe('https://localhost/settings/?utm_source=pontoon-addon');
   });
 
-  it('getTeamPageUrl', async () => {
-    const url = await getTeamPageUrl();
-
-    expect(url).toBe('https://localhost/cs?utm_source=pontoon-addon');
-  });
-
   it('getTeamProjectUrl', async () => {
     const url = await getTeamProjectUrl('/projects/firefox');
 
     expect(url).toBe('https://localhost/cs/firefox?utm_source=pontoon-addon');
-  });
-
-  it('getStringsWithStatusSearchUrl', async () => {
-    const url = await getStringsWithStatusSearchUrl('translated');
-
-    expect(url).toBe(
-      'https://localhost/cs/all-projects/all-resources?status=translated&utm_source=pontoon-addon',
-    );
   });
 
   it('getSignInURL', async () => {
@@ -123,15 +107,11 @@ describe('backgroundClient', () => {
   it('getPontoonProjectForTheCurrentTab', async () => {
     mockBrowserSendMessage()
       .expect({ type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT })
-      .andResolve({
-        name: 'firefox',
-        pageUrl: '/pageUrl',
-        translationUrl: '/translationsUrl',
-      });
+      .andResolve({ slug: 'firefox' });
 
     const project = await getPontoonProjectForTheCurrentTab();
 
-    expect(project!.name).toBe('firefox');
+    expect(project!.slug).toBe('firefox');
   });
 
   it('pageLoaded', async () => {

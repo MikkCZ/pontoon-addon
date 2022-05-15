@@ -77,7 +77,23 @@ export function pontoonTeamBugs(
     .toString();
 }
 
-export function pontoonSearchInProject(
+export function pontoonTeamsProject(
+  baseUrl: string,
+  team: { code: string },
+  project: { slug: string },
+): string {
+  return URITemplate('{+baseUrl}{/path*}{?q*}')
+    .expand({
+      baseUrl,
+      path: [team.code, project.slug],
+      q: {
+        utm_source: LINK_UTM_SOURCE,
+      },
+    })
+    .toString();
+}
+
+export function pontoonProjectTranslationView(
   baseUrl: string,
   team: { code: string },
   project: { slug: string },
@@ -182,20 +198,31 @@ export function newLocalizationBug({
   url,
 }: {
   team: { code: string; bz_component: string };
-  selectedText: string;
-  url: string;
+  selectedText?: string;
+  url?: string;
 }): string {
   return URITemplate('https://bugzilla.mozilla.org/enter_bug.cgi{?q*}')
     .expand({
       q: {
         product: 'Mozilla Localizations',
         component: team.bz_component,
+        short_desc:
+          selectedText && url
+            ? `[${
+                team.code
+              }] Translation update proposed for "${selectedText.trim()}" on ${url}`
+            : `[${team.code}] Translation update proposed`,
+        ...(selectedText
+          ? {
+              comment: `The translation:\n${selectedText.trim()}\n\nShould be:\n`,
+            }
+          : {}),
         status_whiteboard: '[pontoon-addon-feedback]',
-        bug_file_loc: url,
-        short_desc: `[${
-          team.code
-        }] Translation update proposed for "${selectedText.trim()}" on ${url}`,
-        comment: `The translation:\n${selectedText.trim()}\n\nShould be:\n`,
+        ...(url
+          ? {
+              bug_file_loc: url,
+            }
+          : {}),
       },
     })
     .toString();

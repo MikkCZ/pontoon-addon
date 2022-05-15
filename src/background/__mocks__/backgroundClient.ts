@@ -6,11 +6,7 @@ export const getNotificationsUrl = jest.fn();
 
 export const getSettingsUrl = jest.fn();
 
-export const getTeamPageUrl = jest.fn();
-
 export const getTeamProjectUrl = jest.fn();
-
-export const getStringsWithStatusSearchUrl = jest.fn();
 
 export const getSignInURL = jest.fn();
 

@@ -20,7 +20,7 @@ import {
   pontoonTeam,
   pontoonTeamInsights,
   pontoonTeamBugs,
-  pontoonSearchInProject,
+  pontoonProjectTranslationView,
   transvisionHome,
   mozillaL10nStyleGuide,
   mozillaWikiL10nTeamPage,
@@ -191,7 +191,7 @@ async function addContextMenu() {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
         openNewTab(
-          pontoonSearchInProject(
+          pontoonProjectTranslationView(
             pontoonBaseUrl,
             { code: teamCode },
             { slug: 'all-projects' },
@@ -219,7 +219,7 @@ async function addContextMenu() {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
         openNewTab(
-          pontoonSearchInProject(
+          pontoonProjectTranslationView(
             pontoonBaseUrl,
             { code: teamCode },
             { slug: 'all-projects' },

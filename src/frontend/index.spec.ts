@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import { getFromStorage } from '@commons/webExtensionsApi';
-import { getOptions } from '@commons/options';
 import {
-  getPontoonProjectForTheCurrentTab,
-  ProjectForCurrentTab,
-} from '@background/backgroundClient';
+  getActiveTab,
+  getFromStorage,
+  getOneFromStorage,
+} from '@commons/webExtensionsApi';
+import { getOptions } from '@commons/options';
+import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 
 import { render } from './index';
 
@@ -20,6 +21,7 @@ const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
 
 afterEach(() => {
   reactDomRender.mockReset();
+  jest.resetAllMocks();
   document.body.textContent = '';
 });
 
@@ -41,13 +43,18 @@ describe('address bar', () => {
   beforeEach(() => {
     (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue({
       name: 'Some project',
-      pageUrl: 'https://127.0.0.1/',
-      translationUrl: 'https://127.0.0.1/',
-    } as ProjectForCurrentTab);
-  });
-
-  afterEach(() => {
-    (getPontoonProjectForTheCurrentTab as jest.Mock).mockReset();
+      slug: 'some-project',
+    });
+    (getOneFromStorage as jest.Mock).mockResolvedValue({
+      cs: { name: 'Czech', bz_component: 'L10N/CS' },
+    });
+    (getOptions as jest.Mock).mockResolvedValue({
+      locale_team: 'cs',
+      pontoon_base_url: 'https://localhost',
+    });
+    (getActiveTab as jest.Mock).mockResolvedValue({
+      url: 'https://localhost/firefox',
+    });
   });
 
   it('renders', async () => {
@@ -91,11 +98,6 @@ describe('toolbar button', () => {
       teamsList: { cs: {} },
       latestTeamsActivity: { cs: {} },
     }));
-  });
-
-  afterEach(() => {
-    (getOptions as jest.Mock).mockReset();
-    (getFromStorage as jest.Mock).mockReset();
   });
 
   it('renders', async () => {

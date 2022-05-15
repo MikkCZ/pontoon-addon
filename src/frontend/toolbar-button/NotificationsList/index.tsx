@@ -14,10 +14,11 @@ import { NotificationsListError } from '../NotificationsListError';
 const List = styled.ul`
   list-style: none;
   text-align: center;
-  max-height: 280px;
+  max-height: 250px;
   overflow: auto;
   margin: 0;
   padding: 0;
+  border-bottom: 1px solid #525a65;
 `;
 
 interface Props {
@@ -62,18 +63,18 @@ export const NotificationsList: React.FC<Props> = ({
             ))}
         </List>
         {containsUnreadNotifications ? (
-          <BottomLink
-            text="Mark all Notifications as read"
-            onClick={() => markAllNotificationsAsRead()}
-          />
+          <BottomLink onClick={() => markAllNotificationsAsRead()}>
+            Mark all Notifications as read
+          </BottomLink>
         ) : (
           <BottomLink
-            text="See all Notifications"
             onClick={async () => {
               await openNewTab(await getNotificationsUrl());
               window.close();
             }}
-          />
+          >
+            See all Notifications
+          </BottomLink>
         )}
       </section>
     );

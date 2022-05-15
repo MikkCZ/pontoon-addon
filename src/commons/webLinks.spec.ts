@@ -2,13 +2,14 @@ import {
   newLocalizationBug,
   pontoonFxaSignIn,
   pontoonNotifications,
-  pontoonSearchInProject,
+  pontoonProjectTranslationView,
   pontoonSearchStringsWithStatus,
   pontoonSettings,
   pontoonTeam,
   pontoonTeamBugs,
   pontoonTeamInsights,
   pontoonTeamsList,
+  pontoonTeamsProject,
   toPontoonTeamSpecificProjectUrl,
 } from './webLinks';
 
@@ -54,8 +55,18 @@ describe('webLinks', () => {
     expect(url).toBe('https://localhost/cs/bugs');
   });
 
-  it('pontoonSearchInProject', () => {
-    const url = pontoonSearchInProject(
+  it('pontoonTeamsProject', () => {
+    const url = pontoonTeamsProject(
+      'https://localhost',
+      { code: 'cs' },
+      { slug: 'firefox' },
+    );
+
+    expect(url).toBe('https://localhost/cs/firefox?utm_source=pontoon-addon');
+  });
+
+  it('pontoonProjectTranslationView', () => {
+    const url = pontoonProjectTranslationView(
       'https://localhost',
       { code: 'cs' },
       { slug: 'firefox' },
@@ -112,15 +123,29 @@ describe('webLinks', () => {
         'Mozilla Localizations',
       )}&component=${encodeURIComponent(
         'Czech L10N',
-      )}&status_whiteboard=${encodeURIComponent(
-        '[pontoon-addon-feedback]',
-      )}&bug_file_loc=${encodeURIComponent(
-        'https://localhost?foo=bar',
       )}&short_desc=${encodeURIComponent(
         '[cs] Translation update proposed for "report this" on https://localhost?foo=bar',
       )}&comment=${encodeURIComponent(
         'The translation:\nreport this\n\nShould be:\n',
-      )}`,
+      )}&status_whiteboard=${encodeURIComponent(
+        '[pontoon-addon-feedback]',
+      )}&bug_file_loc=${encodeURIComponent('https://localhost?foo=bar')}`,
+    );
+  });
+
+  it('newLocalizationBug with minimal information', () => {
+    const url = newLocalizationBug({
+      team: { code: 'cs', bz_component: 'Czech L10N' },
+    });
+
+    expect(url).toBe(
+      `https://bugzilla.mozilla.org/enter_bug.cgi?product=${encodeURIComponent(
+        'Mozilla Localizations',
+      )}&component=${encodeURIComponent(
+        'Czech L10N',
+      )}&short_desc=${encodeURIComponent(
+        '[cs] Translation update proposed',
+      )}&status_whiteboard=${encodeURIComponent('[pontoon-addon-feedback]')}`,
     );
   });
 });
