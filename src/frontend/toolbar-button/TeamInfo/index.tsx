@@ -8,13 +8,16 @@ import {
   openNewTab,
   StorageContent,
 } from '@commons/webExtensionsApi';
-import { getOneOption } from '@commons/options';
-import { newLocalizationBug } from '@commons/webLinks';
+import { getOptions } from '@commons/options';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 import {
-  getTeamPageUrl,
-  getStringsWithStatusSearchUrl,
-  getPontoonProjectForTheCurrentTab,
-} from '@background/backgroundClient';
+  newLocalizationBug,
+  pontoonProjectTranslationView,
+  pontoonSearchStringsWithStatus,
+  pontoonTeam,
+  pontoonTeamsProject,
+} from '@commons/webLinks';
+import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 
 import { BottomLink } from '../BottomLink';
@@ -118,29 +121,35 @@ export const TeamInfo: React.FC = () => {
   const [teamActivity, setTeamActivity] = useState<
     StorageContent['latestTeamsActivity'][string] | undefined
   >();
+  const [pontoonBaseUrl, setPontoonBaseUrl] = useState<
+    OptionsContent['pontoon_base_url'] | undefined
+  >();
 
   useEffect(() => {
     (async () => {
       const [
         projectForCurrentTab,
         { teamsList, latestTeamsActivity },
-        teamCode,
+        { locale_team: teamCode, pontoon_base_url },
       ] = await Promise.all([
         getPontoonProjectForTheCurrentTab(),
         getFromStorage(['teamsList', 'latestTeamsActivity']),
-        getOneOption('locale_team'),
+        getOptions(['locale_team', 'pontoon_base_url']),
       ]);
       setProjectForCurrentTab(projectForCurrentTab);
       setTeam(teamsList![teamCode]);
       setTeamActivity(latestTeamsActivity![teamCode]);
+      setPontoonBaseUrl(pontoon_base_url);
     })();
   }, []);
 
-  return team ? (
+  return team && pontoonBaseUrl ? (
     <section>
       <Title>
         <TitleLink
-          onClick={async () => openNewTabAndClosePopup(await getTeamPageUrl())}
+          onClick={() =>
+            openNewTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
+          }
         >
           <Name>{team.name}</Name> <Code>{team.code}</Code>
         </TitleLink>
@@ -169,32 +178,65 @@ export const TeamInfo: React.FC = () => {
             squareStyle={category.labelBeforeStyle}
             label={category.label}
             value={team.strings[category.dataProperty]}
-            onClick={async () =>
+            onClick={() =>
               openNewTabAndClosePopup(
-                await getStringsWithStatusSearchUrl(category.status),
+                pontoonSearchStringsWithStatus(
+                  pontoonBaseUrl,
+                  team,
+                  category.status,
+                ),
               )
             }
           />
         ))}
       </List>
       <BottomLink
-        text="Open team page"
-        onClick={async () => openNewTabAndClosePopup(await getTeamPageUrl())}
-      />
+        onClick={() =>
+          openNewTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
+        }
+      >
+        Open {team.name} team page
+      </BottomLink>
       {projectForCurrentTab ? (
-        <BottomLink
-          text={`Report bug for localization of ${projectForCurrentTab.name} to ${team.name}`}
-          onClick={async () =>
-            openNewTabAndClosePopup(
-              newLocalizationBug({ team, url: (await getActiveTab()).url! }),
-            )
-          }
-        />
+        <>
+          <BottomLink
+            onClick={() =>
+              openNewTabAndClosePopup(
+                pontoonTeamsProject(pontoonBaseUrl, team, projectForCurrentTab),
+              )
+            }
+          >
+            Open {projectForCurrentTab.name} dashboard for {team.name}
+          </BottomLink>
+          <BottomLink
+            onClick={() =>
+              openNewTabAndClosePopup(
+                pontoonProjectTranslationView(
+                  pontoonBaseUrl,
+                  team,
+                  projectForCurrentTab,
+                ),
+              )
+            }
+          >
+            Open {projectForCurrentTab.name} translation view for {team.name}
+          </BottomLink>
+          <BottomLink
+            onClick={async () =>
+              openNewTabAndClosePopup(
+                newLocalizationBug({ team, url: (await getActiveTab()).url! }),
+              )
+            }
+          >
+            {`Report bug for localization of ${projectForCurrentTab.name} to ${team.name}`}
+          </BottomLink>
+        </>
       ) : (
         <BottomLink
-          text={`Report bug for ${team.name} localization`}
           onClick={() => openNewTabAndClosePopup(newLocalizationBug({ team }))}
-        />
+        >
+          Report bug for {team.name} localization
+        </BottomLink>
       )}
     </section>
   ) : (

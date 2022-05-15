@@ -20,10 +20,9 @@ const Link = styled.button`
 `;
 
 interface Props {
-  text: string;
   onClick: () => void;
 }
 
-export const BottomLink: React.FC<Props> = ({ text, onClick }) => {
-  return <Link onClick={onClick}>{text}</Link>;
+export const BottomLink: React.FC<Props> = ({ onClick, children }) => {
+  return <Link onClick={onClick}>{children}</Link>;
 };
