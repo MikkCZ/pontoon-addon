@@ -167,7 +167,10 @@ describe('TeamInfo', () => {
     expect(statusLinks).toHaveLength(statuses.length + 1);
 
     for (const [index, status] of statuses.entries()) {
-      statusLinks.at(index + 1).find('button').simulate('click');
+      statusLinks
+        .at(index + 1)
+        .find('button')
+        .simulate('click');
       await flushPromises();
       expect(openNewTab).toHaveBeenLastCalledWith(
         pontoonSearchStringsWithStatus('https://localhost', team, status),
