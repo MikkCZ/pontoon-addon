@@ -43,26 +43,9 @@ export const PrivacyPolicyLinkWrapper = styled.div`
   text-align: center;
 `;
 
-const Link = styled.button`
-  appearance: none;
-  display: inline-block;
-  background: transparent;
-  border: none;
-  margin: 0;
-  padding: 0;
-  font-size: inherit;
-  color: #7bc876;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    color: inherit;
-  }
-`;
-
 const EasterEggHint = styled.div<{ opacity?: number }>`
   ${({ opacity }) =>
-    opacity
+    typeof opacity !== 'undefined'
       ? css`
           opacity: ${opacity};
         `
@@ -91,18 +74,23 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
           <CloseButton
             title="Play a game"
             imageSrc={joystickImage}
-            style={{ width: '32px', height: '32px' }}
+            style={{
+              width: '32px',
+              height: '32px',
+              border: '1px solid #5e6475',
+              boxShadow: '0 0 16px #5e6475',
+            }}
             onClick={() => openSnakeGame()}
           />
         )}
       </CloseButtonWrapper>
       <Title>{title}</Title>
       {tilesToClick.size !== 0 ? (
-        <EasterEggHint opacity={1 - (tilesToClick.size + 2) / tiles.length}>
-          Click all green buttons.
+        <EasterEggHint opacity={1 - tilesToClick.size / tiles.length}>
+          It&apos;s?
         </EasterEggHint>
       ) : (
-        <EasterEggHint>See the top right corner.</EasterEggHint>
+        <EasterEggHint>Don&apos;t stand there gawping!</EasterEggHint>
       )}
       <TourPageTiles>
         {tiles.map((tile, index) => (
@@ -126,7 +114,9 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
         ))}
       </TourPageTiles>
       <PrivacyPolicyLinkWrapper>
-        <Link onClick={() => openPrivacyPolicy()}>Privacy policy</Link>
+        <button className="pontoon-style" onClick={() => openPrivacyPolicy()}>
+          Privacy policy
+        </button>
       </PrivacyPolicyLinkWrapper>
     </Wrapper>
   );
