@@ -31,7 +31,7 @@ const config: Config.InitialOptions = {
   ],
   preset: 'ts-jest',
   transform: {
-    '.+\\.jsx?$': ['babel-jest', { configFile: path.resolve(__dirname, 'babel.config.js') }],
+    '.+\\.jsx?$': ['babel-jest', { presets: [ '@babel/env' ] }],
     ...staticFilesTranform,
   },
   transformIgnorePatterns: [
