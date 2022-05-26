@@ -1,11 +1,13 @@
-import { MutableRefObject } from 'react';
-import { Context } from 'react-game-snake';
+import type { MutableRefObject } from 'react';
+import type { Context } from 'react-game-snake';
 
 import type { StateRef } from '@commons/react/useStateRef';
 import { setLocation } from '@commons/test/setLocation';
 
-import { State, GameState } from './SnakeGameContext';
-import { GameFunctions, buildGameFunctions } from './gameFunctions';
+import type { State } from './SnakeGameContext';
+import { GameState } from './SnakeGameContext';
+import type { GameFunctions } from './gameFunctions';
+import { buildGameFunctions } from './gameFunctions';
 
 const defaultState: State = {
   gameState: GameState.NOT_STARTED,

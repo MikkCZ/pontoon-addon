@@ -5,16 +5,16 @@ import {
   newLocalizationBug,
   pontoonTeamsProject,
 } from '@commons/webLinks';
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   openNewTab,
   getFromStorage,
   createContextMenu,
   removeContextMenu,
   listenToStorageChange,
-  StorageContent,
 } from '@commons/webExtensionsApi';
 import { getOptions, listenToOptionChange } from '@commons/options';
-import { OptionsContent } from '@commons/data/defaultOptions';
+import type { OptionsContent } from '@commons/data/defaultOptions';
 
 const NON_SELECTION_CONTEXTS: Menus.ContextType[] = [
   'page',

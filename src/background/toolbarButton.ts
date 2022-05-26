@@ -1,18 +1,18 @@
 import type { Menus } from 'webextension-polyfill';
 
+import type { OptionValue } from '@commons/options';
 import {
   getOptions,
   getOneOption,
   listenToOptionChange,
-  OptionValue,
 } from '@commons/options';
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   browser,
   openNewTab,
   getResourceUrl,
   listenToStorageChange,
   getOneFromStorage,
-  StorageContent,
   openIntro,
   createContextMenu,
 } from '@commons/webExtensionsApi';

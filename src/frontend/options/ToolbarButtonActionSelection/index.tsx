@@ -1,4 +1,5 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { openNewTab } from '@commons/webExtensionsApi';

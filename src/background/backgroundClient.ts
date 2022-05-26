@@ -4,7 +4,8 @@ import {
   pontoonNotifications,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
-import { browser, StorageContent } from '@commons/webExtensionsApi';
+import type { StorageContent } from '@commons/webExtensionsApi';
+import { browser } from '@commons/webExtensionsApi';
 import { getOneOption } from '@commons/options';
 
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';

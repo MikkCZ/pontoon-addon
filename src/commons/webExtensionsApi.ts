@@ -6,7 +6,7 @@ import type {
   Tabs,
 } from 'webextension-polyfill';
 
-import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
+import type { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const browser = require('webextension-polyfill') as Browser;

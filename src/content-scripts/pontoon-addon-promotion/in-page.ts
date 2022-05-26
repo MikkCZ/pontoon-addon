@@ -1,4 +1,5 @@
-import { Window, pontoonAddonInfo } from './commons';
+import type { Window } from './commons';
+import { pontoonAddonInfo } from './commons';
 
 function modifyWindow(window: Window): void {
   window.PontoonAddon = pontoonAddonInfo;

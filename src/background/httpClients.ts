@@ -10,11 +10,11 @@ import {
   listenToOptionChange,
 } from '@commons/options';
 
-import {
+import type {
   GetProjectsInfoQuery,
-  getSdk,
   GetTeamsInfoQuery,
 } from '../generated/pontoon.graphql';
+import { getSdk } from '../generated/pontoon.graphql';
 
 import { pontoonGraphQL } from './apiEndpoints';
 

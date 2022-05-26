@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { getOneFromStorage, StorageContent } from '@commons/webExtensionsApi';
+import type { StorageContent } from '@commons/webExtensionsApi';
+import { getOneFromStorage } from '@commons/webExtensionsApi';
 import {
   updateTeamsList,
   getUsersTeamFromPontoon,

@@ -1,12 +1,13 @@
-import React, { CSSProperties, useState, useEffect } from 'react';
+import type { CSSProperties } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 import styled from 'styled-components';
 
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getActiveTab,
   getFromStorage,
   openNewTab,
-  StorageContent,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';

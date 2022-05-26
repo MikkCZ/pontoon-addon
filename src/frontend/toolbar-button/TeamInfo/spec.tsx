@@ -4,11 +4,11 @@ import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 import ReactTimeAgo from 'react-time-ago';
 
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getActiveTab,
   getFromStorage,
   openNewTab,
-  StorageContent,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import {

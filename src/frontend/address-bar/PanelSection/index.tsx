@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { PanelListItem, Props as PanelListItemProps } from '../PanelListItem';
+import type { Props as PanelListItemProps } from '../PanelListItem';
+import { PanelListItem } from '../PanelListItem';
 
 interface Props {
   items: PanelListItemProps[];
