@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { marked, Renderer } from 'marked';
+import type { Renderer } from 'marked';
+import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
 function renderMarkdown(markdown: string) {

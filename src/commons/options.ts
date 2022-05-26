@@ -1,7 +1,8 @@
 import type { Storage } from 'webextension-polyfill';
 
 import { browser, browserFamily } from './webExtensionsApi';
-import { defaultOptionsFor, OptionsContent } from './data/defaultOptions';
+import type { OptionsContent } from './data/defaultOptions';
+import { defaultOptionsFor } from './data/defaultOptions';
 
 export type OptionId = keyof OptionsContent;
 

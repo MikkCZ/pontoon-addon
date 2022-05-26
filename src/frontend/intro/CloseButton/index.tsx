@@ -1,4 +1,5 @@
-import React, { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import closeIcon from '@assets/img/glyph-dismiss-16.svg';

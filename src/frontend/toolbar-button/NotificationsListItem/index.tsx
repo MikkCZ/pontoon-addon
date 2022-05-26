@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-static-element-interactions */
-import React, { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import ReactTimeAgo from 'react-time-ago';
 import DOMPurify from 'dompurify';

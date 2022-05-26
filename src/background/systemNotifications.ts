@@ -1,3 +1,4 @@
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   openNewTab,
   getOneFromStorage,
@@ -5,7 +6,6 @@ import {
   createNotification,
   closeNotification,
   listenToStorageChange,
-  StorageContent,
 } from '@commons/webExtensionsApi';
 import {
   pontoonTeam,

@@ -5,7 +5,8 @@ import { openPrivacyPolicy, openSnakeGame } from '@commons/webExtensionsApi';
 import joystickImage from '@assets/img/joystick.svg';
 
 import { CloseButton } from '../CloseButton';
-import { TourPageTile, Props as TileProps } from '../TourPageTile';
+import type { Props as TileProps } from '../TourPageTile';
+import { TourPageTile } from '../TourPageTile';
 
 const Wrapper = styled.div`
   position: relative;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { getOneOption, OptionId, setOption } from '@commons/options';
+import type { OptionId } from '@commons/options';
+import { getOneOption, setOption } from '@commons/options';
 
 interface Props {
   optionKey: OptionId;

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getActiveTab,
   getOneFromStorage,
   openNewTab,
-  StorageContent,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import {

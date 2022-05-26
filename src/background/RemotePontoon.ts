@@ -1,5 +1,6 @@
 import URI from 'urijs';
 
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   deleteFromStorage,
   getActiveTab,
@@ -7,7 +8,6 @@ import {
   listenToMessages,
   listenToMessagesExclusively,
   saveToStorage,
-  StorageContent,
 } from '@commons/webExtensionsApi';
 import { pontoonSettings, pontoonTeamsList } from '@commons/webLinks';
 import { getOneOption } from '@commons/options';
@@ -19,12 +19,8 @@ import {
   bugzillaTeamComponents,
 } from './apiEndpoints';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
-import {
-  pontoonHttpClient,
-  httpClient,
-  graphqlClient,
-  GetProjectsInfoResponse,
-} from './httpClients';
+import type { GetProjectsInfoResponse } from './httpClients';
+import { pontoonHttpClient, httpClient, graphqlClient } from './httpClients';
 import { projectsListData } from './data/projectsListData';
 
 type GetProjectsInfoProject = GetProjectsInfoResponse['projects'][number];

@@ -1,7 +1,9 @@
-import React, { PropsWithChildren } from 'react';
-import { mount, ReactWrapper } from 'enzyme';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
+import type { ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 
-import { GameFunctions } from '../gameFunctions';
+import type { GameFunctions } from '../gameFunctions';
 import { GameState, SnakeGameReactContext } from '../SnakeGameContext';
 
 interface MockProps {
