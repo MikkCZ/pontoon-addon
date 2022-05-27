@@ -182,7 +182,7 @@ async function updateTeamsList(): Promise<StorageContent['teamsList']> {
         pretranslatedStrings: team.pretranslatedStrings,
         stringsWithWarnings: team.stringsWithWarnings,
         stringsWithErrors: team.stringsWithErrors,
-        missingStrings: team.missingStrings ?? 0,
+        missingStrings: team.missingStrings,
         unreviewedStrings: team.unreviewedStrings,
         totalStrings: team.totalStrings,
       },

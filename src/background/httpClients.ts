@@ -141,9 +141,13 @@ export const httpClient = {
   },
 };
 
-type NonNullFields<T> = {
-  [P in keyof T]: NonNullable<T[P]>;
-};
+type DeepRequired<T> = Required<{
+  [P in keyof T]: DeepRequired<T[P]>;
+}>;
+
+type DeepNonNullable<T> = NonNullable<{
+  [P in keyof T]: DeepNonNullable<T[P]>;
+}>;
 
 const _getTeamsInfoQuery = gql`
   query getTeamsInfo {
@@ -162,7 +166,7 @@ const _getTeamsInfoQuery = gql`
 `;
 
 interface GetTeamsInfoResponse {
-  locales: NonNullFields<Required<NonNullFields<GetTeamsInfoQuery>>['locales']>;
+  locales: DeepRequired<DeepNonNullable<GetTeamsInfoQuery['locales']>>;
 }
 
 const _getProjectsInfoQuery = gql`
@@ -175,9 +179,7 @@ const _getProjectsInfoQuery = gql`
 `;
 
 export interface GetProjectsInfoResponse {
-  projects: NonNullFields<
-    Required<NonNullFields<GetProjectsInfoQuery>>['projects']
-  >;
+  projects: DeepRequired<DeepNonNullable<GetProjectsInfoQuery['projects']>>;
 }
 
 export function graphqlClient(pontoonBaseUrl: string) {
