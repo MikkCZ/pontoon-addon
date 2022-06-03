@@ -116,7 +116,7 @@
     "postcss-syntax": "^0.36.2",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "snyk": "^1.942.0",
+    "snyk": "^1.946.0",
     "striptags": "^3.2.0",
     "stylelint": "^14.8.5",
     "stylelint-config-recommended": "^7.0.0",
