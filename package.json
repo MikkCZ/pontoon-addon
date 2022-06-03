@@ -100,7 +100,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
-    "eslint-plugin-testing-library": "^4.12.4",
+    "eslint-plugin-testing-library": "^5.5.1",
     "flush-promises": "^1.0.2",
     "generate-json-webpack-plugin": "^2.0.0",
     "html-webpack-plugin": "^5.5.0",
