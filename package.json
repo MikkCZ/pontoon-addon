@@ -82,7 +82,7 @@
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "browserslist": "^4.20.2",
+    "browserslist": "^4.20.3",
     "caniuse-lite": "^1.0.30001346",
     "codecov": "^3.8.3",
     "copy-webpack-plugin": "^9.0.1",
