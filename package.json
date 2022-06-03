@@ -62,7 +62,7 @@
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^12.1.2",
-    "@testing-library/react-hooks": "^7.0.2",
+    "@testing-library/react-hooks": "^8.0.0",
     "@tsconfig/recommended": "^1.0.1",
     "@types/copy-webpack-plugin": "^8.0.1",
     "@types/dompurify": "^2.3.1",
