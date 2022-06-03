@@ -18,7 +18,6 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
     'prettier',
-    'prettier/@typescript-eslint',
     'plugin:prettier/recommended', // must be the last one
   ],
   ignorePatterns: [
