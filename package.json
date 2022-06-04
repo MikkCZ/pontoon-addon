@@ -30,7 +30,6 @@
     "webpack:watch:mozilla": "cross-env MODE=development TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts --watch",
     "webpack:watch:chromium": "cross-env MODE=development TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts --watch",
     "jest:run": "jest --ci --config ./configs/jest.config.ts",
-    "snyk": "snyk test",
     "watch": "npm-run-all build:clean --parallel webpack:watch:*",
     "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
@@ -113,7 +112,6 @@
     "postcss-syntax": "^0.36.2",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "snyk": "^1.946.0",
     "striptags": "^3.2.0",
     "stylelint": "^14.8.5",
     "stylelint-config-recommended": "^7.0.0",
