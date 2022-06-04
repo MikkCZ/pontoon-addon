@@ -30,7 +30,6 @@
     "webpack:watch:mozilla": "cross-env MODE=development TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts --watch",
     "webpack:watch:chromium": "cross-env MODE=development TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts --watch",
     "jest:run": "jest --ci --config ./configs/jest.config.ts",
-    "codecov": "codecov",
     "watch": "npm-run-all build:clean --parallel webpack:watch:*",
     "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
@@ -82,7 +81,6 @@
     "@typescript-eslint/parser": "^5.27.0",
     "browserslist": "^4.20.3",
     "caniuse-lite": "^1.0.30001346",
-    "codecov": "^3.8.3",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.4.0",
