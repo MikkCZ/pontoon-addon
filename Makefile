@@ -20,10 +20,6 @@ test:
 watch:
 	npm run watch
 
-.PHONY: codecov
-codecov:
-	npm run codecov
-
 .PHONY: graphql_generate
 graphql_generate:
 	npm run graphql:generate
@@ -47,10 +43,6 @@ test_in_container:
 .PHONY: watch_in_container
 watch_in_container:
 	bash ./scripts/run-in-container.sh make watch
-
-.PHONY: codecov_in_container
-codecov_in_container:
-	bash ./scripts/run-in-container.sh make codecov
 
 .PHONY: graphql_generate_in_container
 graphql_generate_in_container:

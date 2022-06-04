@@ -14,7 +14,6 @@ command -v podman > /dev/null 2>&1 || {
 
 ${CONTAINER_RUN} \
   -e MODE="${MODE}" \
-  -e CODECOV_TOKEN="${CODECOV_TOKEN}" \
   --workdir "${PWD}" \
   -v "${PWD}:${PWD}:Z" \
   -v "${PWD}/scripts/.npmrc:${PWD}/.npmrc:Z" \
