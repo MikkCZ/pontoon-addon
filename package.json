@@ -39,7 +39,7 @@
     "graphql-request": "^4.3.0",
     "html-react-parser": "^1.4.14",
     "javascript-time-ago": "^2.5.4",
-    "marked": "^4.0.16",
+    "marked": "^4.0.17",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-game-snake": "^1.0.4",
@@ -51,7 +51,7 @@
     "webextension-polyfill": "^0.8.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
+    "@babel/core": "^7.18.5",
     "@babel/preset-env": "^7.18.2",
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/typescript": "^2.4.11",
