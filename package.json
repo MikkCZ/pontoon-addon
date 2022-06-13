@@ -39,7 +39,7 @@
     "graphql-request": "^4.3.0",
     "html-react-parser": "^1.4.14",
     "javascript-time-ago": "^2.5.4",
-    "marked": "^4.0.16",
+    "marked": "^4.0.17",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-game-snake": "^1.0.4",
