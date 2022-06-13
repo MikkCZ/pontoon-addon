@@ -114,7 +114,7 @@
     "rimraf": "^3.0.2",
     "striptags": "^3.2.0",
     "stylelint": "^14.8.5",
-    "stylelint-config-recommended": "^7.0.0",
+    "stylelint-config-recommended": "^8.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-no-unsupported-browser-features": "^5.0.3",
     "stylelint-processor-styled-components": "^1.10.0",
