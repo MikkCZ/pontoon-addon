@@ -6,6 +6,10 @@ import type { IPackageJson } from 'package-json-type';
 import { DEFAULT_PONTOON_BASE_URL } from './const';
 import { projectsListData } from './background/data/projectsListData';
 
+interface PackageJson extends IPackageJson {
+  browserslist?: string[];
+}
+
 // ts-prune-ignore-next
 export enum BrowserFamily {
   MOZILLA = 'mozilla',
@@ -16,7 +20,41 @@ const packageJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../package.json'), {
     encoding: 'utf-8',
   }),
-) as IPackageJson;
+) as PackageJson;
+
+function getMinBrowserVersionFromPackageJson(
+  targetBrowser: BrowserFamily,
+): string {
+  let browserslistQueryBrowser: string;
+  switch (targetBrowser) {
+    case BrowserFamily.MOZILLA:
+      browserslistQueryBrowser = 'Firefox';
+      break;
+    case BrowserFamily.CHROMIUM:
+      browserslistQueryBrowser = 'Chrome';
+      break;
+    default:
+      throw new Error(
+        `No known browser specified to parse browserslist configuration. Was "${targetBrowser}", must be one of: ${Object.values(
+          BrowserFamily,
+        )}.`,
+      );
+  }
+  if (packageJson.browserslist) {
+    const browserslistVersionMatch = packageJson.browserslist
+      .find((it) => it.startsWith(browserslistQueryBrowser))
+      ?.match(/([\d.]+$)/g);
+    if (browserslistVersionMatch) {
+      return browserslistVersionMatch[0];
+    } else {
+      throw new Error(
+        `Could not find "${browserslistQueryBrowser}" and it's version in browserslist configuration "${packageJson.browserslist}".`,
+      );
+    }
+  } else {
+    throw new Error('Could not find browserslist configuration.');
+  }
+}
 
 const pontoonLogoSvg = 'assets/img/pontoon-logo.svg';
 const pontoonLogoGrayAlphaSvg = 'assets/img/pontoon-logo-gray-alpha.svg';
@@ -44,14 +82,18 @@ export function getManifestFor(
           browser_specific_settings: {
             gecko: {
               id: 'pontoon-tools@mikk.cz',
-              strict_min_version: '91.0',
+              strict_min_version: getMinBrowserVersionFromPackageJson(
+                BrowserFamily.MOZILLA,
+              ),
             },
           },
         }
       : {}),
     ...(forChromium
       ? {
-          minimum_chrome_version: '88',
+          minimum_chrome_version: getMinBrowserVersionFromPackageJson(
+            BrowserFamily.CHROMIUM,
+          ),
         }
       : {}),
     manifest_version: 2,
