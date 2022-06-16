@@ -143,6 +143,7 @@ async function configs(): Promise<Configuration[]> {
         new WebExtPlugin({
           runLint: true,
           buildPackage: true,
+          outputFilename: `${(extensionManifestJson.name as string).toLowerCase().replace(' ', '_')}-${extensionManifestJson.version}-${targetBrowser}.zip`,
           overwriteDest: true,
           sourceDir: commonConfiguration.output?.path!,
           artifactsDir: path.resolve(commonConfiguration.output?.path!, '../web-ext'),
@@ -164,7 +165,7 @@ async function configs(): Promise<Configuration[]> {
           plugins: [
             new HtmlWebpackPlugin({
               template: path.resolve(srcDir, 'privacy-policy.html.ejs'),
-              filename: 'privacy-policy.html',
+              filename: `privacy-policy-${extensionManifestJson.version}.html`,
               minify: false,
             }),
           ],

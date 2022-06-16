@@ -57,23 +57,16 @@ jobs:
         with:
           name: dist
           path: dist
-      - name: Get git information
-        id: git_info
-        run: echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
       - name: Prepare release packages
-        run: |
-          cp ./dist/mozilla/web-ext/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-mozilla.zip"
-          cp ./dist/chromium/web-ext/pontoon_add-on-*.zip "./pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chromium.zip"
-          cp ./dist/privacy-policy.html "./privacy-policy-${{ steps.git_info.outputs.SOURCE_TAG }}.html"
+        run: cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
       - name: Create GitHub release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-mozilla.zip
-            pontoon_add-on-${{ steps.git_info.outputs.SOURCE_TAG }}-chromium.zip
-            privacy-policy-${{ steps.git_info.outputs.SOURCE_TAG }}.html
+            pontoon_add-on-*.zip
+            privacy-policy-*.html
           fail_on_unmatched_files: true
           draft: false
           prerelease: false
