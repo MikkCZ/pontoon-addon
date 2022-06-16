@@ -6,7 +6,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import GenerateJsonPlugin from 'generate-json-webpack-plugin';
 
 import { srcDir, targetBrowser, commonConfiguration } from './webpack.common.config';
-import { getManifestFor } from '../src/manifest.json';
+import { getManifestFor, BrowserFamily } from '../src/manifest.json';
 
 const extensionManifestJson = getManifestFor(targetBrowser);
 
@@ -20,6 +20,17 @@ const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
 
 async function configs(): Promise<Configuration[]> {
   const { default: WebExtPlugin } = await import('web-ext-plugin');
+  type TargetType = 'firefox-desktop' | 'firefox-android' | 'chromium'; // copy from web-ext-plugin
+  let webExtRunTarget: TargetType | undefined;
+  switch (targetBrowser) {
+    case BrowserFamily.MOZILLA:
+      webExtRunTarget = 'firefox-desktop';
+      break;
+    case BrowserFamily.CHROMIUM:
+      webExtRunTarget = 'chromium';
+      break;
+  }
+
   return [
     {
       name: `${targetBrowser}/src/background`,
@@ -132,13 +143,15 @@ async function configs(): Promise<Configuration[]> {
         new WebExtPlugin({
           runLint: true,
           buildPackage: true,
+          outputFilename: `${(extensionManifestJson.name as string).toLowerCase().replace(' ', '_')}-${extensionManifestJson.version}-${targetBrowser}.zip`,
           overwriteDest: true,
           sourceDir: commonConfiguration.output?.path!,
           artifactsDir: path.resolve(commonConfiguration.output?.path!, '../web-ext'),
+          target: webExtRunTarget,
         }),
       ],
     },
-    ...(targetBrowser === 'mozilla' ? [
+    ...(targetBrowser === BrowserFamily.MOZILLA ? [
         {
           name: 'privacy-policy',
           ...commonConfiguration,
@@ -152,7 +165,7 @@ async function configs(): Promise<Configuration[]> {
           plugins: [
             new HtmlWebpackPlugin({
               template: path.resolve(srcDir, 'privacy-policy.html.ejs'),
-              filename: 'privacy-policy.html',
+              filename: `privacy-policy-${extensionManifestJson.version}.html`,
               minify: false,
             }),
           ],
