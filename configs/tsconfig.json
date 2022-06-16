@@ -18,6 +18,14 @@
     "resolveJsonModule": true,
     "outDir": "dist"
   },
+  "ts-node": {
+    // Tell ts-node CLI to install the --loader automatically, explained below
+    "esm": true,
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "NodeNext",
+    }
+  },
   "include": [
     "../src/"
   ],

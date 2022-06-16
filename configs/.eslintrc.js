@@ -76,7 +76,8 @@ module.exports = {
     },
     'import/resolver': {
       webpack: {
-        config: path.resolve(__dirname, 'webpack.config.ts'),
+        // eslint-import-resolver-webpack only works with synchronous Webpack configs
+        config: path.resolve(__dirname, 'webpack.common.config.ts'),
       },
     },
   },
