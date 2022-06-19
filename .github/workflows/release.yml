@@ -48,9 +48,11 @@ jobs:
     needs: prepare_release
     uses: ./.github/workflows/build.yml
     with:
-      checkout_ref: format('refs/tags/{0}', needs.prepare_release.outputs.release_tag)
+      checkout_ref: ${{ format('refs/tags/{0}', needs.prepare_release.outputs.release_tag) }}
   create_release:
-    needs: build
+    needs:
+      - prepare_release
+      - build
     runs-on: ubuntu-20.04
     steps:
       - name: Download built add-on for release
@@ -65,6 +67,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ needs.prepare_release.outputs.release_tag }}
           files: |
             pontoon_add-on-*.zip
             privacy-policy-*.html
