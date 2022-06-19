@@ -3,27 +3,33 @@ name: Release
 on:
   workflow_dispatch: # allows to be run manually
     inputs:
-      version_to_bump:
-        description: 'Version to bump'
+      version_component_to_bump:
+        description: 'Version component to bump'
         required: true
         type: choice
         options:
-          - '-'
+          - '[select]'
           - patch
           - minor
           - major
+        default: '[select]'
 
 jobs:
-  check_is_default_branch:
+  validate_input:
     runs-on: ubuntu-20.04
     steps:
       - name: Stop on non-default branch
         if: github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
         run: |
-          echo "It's only possible to prepare a release from the default branch (${{ github.event.repository.default_branch }})." 1>&2
+          echo "It's only possible to create a release from the default branch (${{ github.event.repository.default_branch }})." 1>&2
           exit 1
-  prepare_release:
-    needs: check_is_default_branch
+      - name: Stop on missing version component to bump
+        if: inputs.version_component_to_bump == '[select]'
+        run: |
+          echo "Please select a version component to bump." 1>&2
+          exit 1
+  bump_version_and_tag:
+    needs: validate_input
     runs-on: ubuntu-20.04
     steps:
       - name: Clone repository
@@ -33,7 +39,7 @@ jobs:
           git config --local user.email '${{ github.actor }}@users.noreply.github.com'
           git config --local user.name '${{ github.actor }}'
       - name: Bump version
-        run: make bump_${{ inputs.version_to_bump }}_version_in_container # also creates the commit and tag
+        run: make bump_${{ inputs.version_component_to_bump }}_version_in_container # also creates the commit and tag
       - name: Push release commit
         uses: ad-m/github-push-action@v0.6.0
         with:
@@ -46,13 +52,13 @@ jobs:
     outputs:
       release_tag: ${{ steps.output_release_tag.outputs.release_tag }}
   build:
-    needs: prepare_release
+    needs: bump_version_and_tag
     uses: ./.github/workflows/build.yml
     with:
-      checkout_ref: ${{ format('refs/tags/{0}', needs.prepare_release.outputs.release_tag) }}
+      checkout_ref: ${{ format('refs/tags/{0}', needs.bump_version_and_tag.outputs.release_tag) }}
   create_release:
     needs:
-      - prepare_release
+      - bump_version_and_tag
       - build
     runs-on: ubuntu-20.04
     steps:
@@ -68,7 +74,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ needs.prepare_release.outputs.release_tag }}
+          tag_name: ${{ needs.bump_version_and_tag.outputs.release_tag }}
           files: |
             pontoon_add-on-*.zip
             privacy-policy-*.html
