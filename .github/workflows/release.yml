@@ -16,7 +16,7 @@ on:
 
 jobs:
   validate_input:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Stop on non-default branch
         if: github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
@@ -30,7 +30,7 @@ jobs:
           exit 1
   bump_version_and_tag:
     needs: validate_input
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
@@ -60,7 +60,7 @@ jobs:
     needs:
       - bump_version_and_tag
       - build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Download built add-on for release
         uses: actions/download-artifact@v3
