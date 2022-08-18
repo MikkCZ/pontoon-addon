@@ -1,4 +1,4 @@
-name: Make sure generated code is consistent
+name: Generated code is consistent
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
         run: make prepare_in_container
       - name: Generate GraphQL code
         run: make graphql_generate
-      - name: Check changes in generated GraphQL code
+      - name: Check changes in generated code
         run: |
           git status
           git diff
