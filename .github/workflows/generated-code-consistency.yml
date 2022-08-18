@@ -31,8 +31,10 @@ jobs:
         run: make graphql_generate
       - name: Check changes in generated GraphQL code
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
+          git status
+          git diff
+          UNCOMMITTED_CHANGES="$(git status --porcelain)"
+          if [ -n "${UNCOMMITTED_CHANGES}" ]; then
             echo 'Found uncommitted changes' >&2
-            git diff
             exit 1
           fi
