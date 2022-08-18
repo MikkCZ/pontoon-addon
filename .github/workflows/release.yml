@@ -56,10 +56,15 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       checkout_ref: ${{ format('refs/tags/{0}', needs.bump_version_and_tag.outputs.release_tag) }}
+  generated_code_consistency:
+    needs: bump_version_and_tag
+    uses: ./.github/workflows/generated-code-consistency.yml
+    with:
+      checkout_ref: ${{ format('refs/tags/{0}', needs.bump_version_and_tag.outputs.release_tag) }}
   create_release:
     needs:
-      - bump_version_and_tag
       - build
+      - generated_code_consistency
     runs-on: ubuntu-latest
     steps:
       - name: Download built add-on for release
