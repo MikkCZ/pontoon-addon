@@ -19,6 +19,7 @@ jobs:
           path: dist
       - name: Prepare release packages
         run: |
+          echo "${{ needs.build }}"
           ls -alR .
           cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
           ls -alR .
