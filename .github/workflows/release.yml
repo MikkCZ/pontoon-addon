@@ -14,6 +14,10 @@ on:
           - major
         default: '[select]'
 
+# Allow one concurrent release
+concurrency:
+  group: "releases"
+
 jobs:
   validate_input:
     runs-on: ubuntu-latest
@@ -63,10 +67,13 @@ jobs:
       - name: Download built add-on for release
         uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.build.build.outputs.production_artifact_name }}
+          name: ${{ needs.build.outputs.production_artifact_name }}
           path: dist
       - name: Prepare release packages
-        run: cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
+        run: |
+          shopt -s globstar
+          cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
+          ls -l .
       - name: Create GitHub release
         id: create_release
         uses: softprops/action-gh-release@v1
