@@ -21,5 +21,6 @@ jobs:
         run: |
           echo "${{ toJSON(needs.build) }}"
           ls -alR .
+          ls -al ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html ./dist/*/web-ext/pontoon_add-on-*.zip ./dist/privacy-policy-*.html
           cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
           ls -alR .
