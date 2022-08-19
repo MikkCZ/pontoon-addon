@@ -14,6 +14,10 @@ on:
           - major
         default: '[select]'
 
+# Allow one concurrent release
+concurrency:
+  group: "releases"
+
 jobs:
   validate_input:
     runs-on: ubuntu-latest
