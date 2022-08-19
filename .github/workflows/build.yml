@@ -11,6 +11,9 @@ on:
       checkout_ref:
         required: true
         type: string
+    outputs:
+      production_artifact_name:
+        value: ${{ jobs.build.outputs.production_artifact_name }}
 
 env:
   PRODUCTION_ARTIFACT_NAME: dist
