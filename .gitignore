@@ -14,3 +14,5 @@ scripts/jq
 !scripts/.npmrc
 .yarnrc
 .pip
+
+.npm_in_container

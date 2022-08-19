@@ -13,11 +13,11 @@ command -v podman > /dev/null 2>&1 || {
 }
 
 ${CONTAINER_RUN} \
-  -e MODE="${MODE}" \
-  --workdir "${PWD}" \
-  -v "${PWD}:${PWD}:Z" \
-  -v "${PWD}/scripts/.npmrc:${PWD}/.npmrc:Z" \
   --pull=always \
   --rm=true \
+  -v "${PWD}:${PWD}:Z" \
+  --workdir "${PWD}" \
+  -e NPM_CONFIG_CACHE="${PWD}/.npm_in_container" \
+  -e MODE="${MODE}" \
   --entrypoint=/bin/bash \
   "${CONTAINER_IMAGE}" -c "${COMMAND}"
