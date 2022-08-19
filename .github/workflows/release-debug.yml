@@ -1,0 +1,24 @@
+name: Release - debug
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      checkout_ref: ${{ github.ref }}
+  create_release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built add-on for release
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build.build.outputs.production_artifact_name }}
+          path: dist
+      - name: Prepare release packages
+        run: |
+          ls -alR .
+          cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
+          ls -alR .
