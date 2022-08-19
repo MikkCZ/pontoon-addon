@@ -6,6 +6,9 @@ on:
       checkout_ref:
         required: true
         type: string
+    outputs:
+      production_artifact_name:
+        value: ${{ env.PRODUCTION_ARTIFACT_NAME }}
 
 env:
   PRODUCTION_ARTIFACT_NAME: dist
@@ -44,8 +47,6 @@ jobs:
           name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
           path: dist
           retention-days: 30
-    outputs:
-      production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
   generated_code_consistency:
     runs-on: ubuntu-latest
     steps:
