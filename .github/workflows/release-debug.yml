@@ -21,6 +21,7 @@ jobs:
         run: |
           echo "${{ toJSON(needs.build) }}"
           ls -alR .
+          shopt -s globstar
           ls -al ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html ./dist/*/web-ext/pontoon_add-on-*.zip ./dist/privacy-policy-*.html
           cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
           ls -alR .
