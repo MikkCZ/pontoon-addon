@@ -63,7 +63,7 @@ jobs:
       - name: Download built add-on for release
         uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.build.outputs.production_artifact_name }}
+          name: ${{ needs.build.build.outputs.production_artifact_name }}
           path: dist
       - name: Prepare release packages
         run: cp ./dist/**/pontoon_add-on-*.zip ./dist/**/privacy-policy-*.html .
