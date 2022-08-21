@@ -4,11 +4,11 @@
 [![codecov](https://codecov.io/gh/MikkCZ/pontoon-addon/branch/master/graph/badge.svg?token=wV84O1ujms)](https://codecov.io/gh/MikkCZ/pontoon-addon)
 [![Snyk](https://img.shields.io/snyk/vulnerabilities/github/MikkCZ/pontoon-addon)](https://snyk.io/test/github/MikkCZ/pontoon-addon)
 
-[![Mozilla Add-on](https://img.shields.io/amo/v/pontoon-tools.svg?label=Firefox)](https://addons.mozilla.org/firefox/addon/pontoon-tools/)
-[![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
+[![Mozilla Add-on](https://img.shields.io/amo/v/pontoon-tools.svg?label=Mozilla%20Add-ons&color=informational)](https://addons.mozilla.org/firefox/addon/pontoon-tools/)
+[![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg?label=users&color=informational)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
 
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=Chrome)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/users/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?text=users)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=Chrome%20Web%20Store&color=informational)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/users/gnbfbnpjncpghhjmmhklfhcglbopagbb.svg?label=users&color=informational)](https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb)
 
 Pontoon Add-on is an add-on integrating [Pontoon](https://pontoon.mozilla.org/) into your browser. The aim is to ease localization work and provide tools beyond what a web app can do.
 
