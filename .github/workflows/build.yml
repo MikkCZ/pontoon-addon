@@ -22,6 +22,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
@@ -66,6 +67,7 @@ jobs:
       production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
   generated_code_consistency:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
