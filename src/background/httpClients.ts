@@ -141,13 +141,17 @@ export const httpClient = {
   },
 };
 
-type DeepRequired<T> = Required<{
-  [P in keyof T]: DeepRequired<T[P]>;
-}>;
+type DeepRequired<T> = T extends object
+  ? Required<{
+      [P in keyof T]: DeepRequired<T[P]>;
+    }>
+  : Required<T>;
 
-type DeepNonNullable<T> = NonNullable<{
-  [P in keyof T]: DeepNonNullable<T[P]>;
-}>;
+type DeepNonNullable<T> = T extends object
+  ? NonNullable<{
+      [P in keyof T]: DeepNonNullable<T[P]>;
+    }>
+  : NonNullable<T>;
 
 const _getTeamsInfoQuery = gql`
   query getTeamsInfo {
