@@ -118,7 +118,7 @@
     "stylelint-no-unsupported-browser-features": "^5.0.3",
     "stylelint-processor-styled-components": "^1.10.0",
     "ts-jest": "^28.0.8",
-    "ts-loader": "^9.3.1",
+    "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
     "ts-prune": "^0.10.3",
     "typescript": "^4.8.3",
