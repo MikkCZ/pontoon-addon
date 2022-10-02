@@ -45,7 +45,7 @@
     "react-game-snake": "^1.0.4",
     "react-linkify": "^0.2.2",
     "react-time-ago": "^7.2.1",
-    "styled-components": "^5.3.5",
+    "styled-components": "^5.3.6",
     "urijs": "^1.19.11",
     "uuid": "^8.3.2",
     "webextension-polyfill": "^0.9.0"
