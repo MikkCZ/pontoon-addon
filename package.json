@@ -56,7 +56,7 @@
     "@graphql-codegen/cli": "^2.15.0",
     "@graphql-codegen/typescript": "^2.8.1",
     "@graphql-codegen/typescript-graphql-request": "^4.5.8",
-    "@graphql-codegen/typescript-operations": "^2.5.7",
+    "@graphql-codegen/typescript-operations": "^2.5.11",
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.2",
