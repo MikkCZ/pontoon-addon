@@ -81,7 +81,7 @@
     "@typescript-eslint/parser": "^5.45.0",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
-    "css-loader": "^6.7.2",
+    "css-loader": "^6.7.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.7",
     "eslint": "^8.28.0",
