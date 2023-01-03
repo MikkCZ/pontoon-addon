@@ -112,7 +112,7 @@
     "prettier": "^2.8.1",
     "rimraf": "^3.0.2",
     "striptags": "^3.2.0",
-    "stylelint": "^14.13.0",
+    "stylelint": "^14.16.1",
     "stylelint-config-recommended": "^8.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-no-unsupported-browser-features": "^6.0.1",
