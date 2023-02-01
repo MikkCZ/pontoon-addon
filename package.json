@@ -61,7 +61,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^8.0.1",
-    "@tsconfig/recommended": "^1.0.1",
+    "@tsconfig/recommended": "^1.0.2",
     "@types/dompurify": "^2.4.0",
     "@types/enzyme": "^3.10.0",
     "@types/enzyme-adapter-react-16": "^1.0.6",
