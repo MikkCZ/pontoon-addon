@@ -34,7 +34,7 @@
     "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
   "dependencies": {
-    "dompurify": "^2.4.3",
+    "dompurify": "^3.0.1",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",
     "html-react-parser": "^3.0.9",
