@@ -36,7 +36,7 @@
   "dependencies": {
     "dompurify": "^3.0.1",
     "graphql": "^16.6.0",
-    "graphql-request": "^5.1.0",
+    "graphql-request": "^5.2.0",
     "html-react-parser": "^3.0.9",
     "javascript-time-ago": "^2.5.9",
     "marked": "^4.2.12",
