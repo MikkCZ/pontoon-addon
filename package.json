@@ -51,7 +51,7 @@
     "webextension-polyfill": "^0.9.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
     "@graphql-codegen/cli": "^3.2.1",
     "@graphql-codegen/typescript": "^3.0.1",
