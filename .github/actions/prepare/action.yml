@@ -23,6 +23,7 @@ runs:
       id: prepare
       if: steps.restore-cache.outputs.cache-hit != 'true' # is 'false' if restored from the 'restore-keys' fallback, see https://github.com/actions/cache#inputs
       run: make prepare_in_container
+      shell: bash
     - name: Save cache
       uses: actions/cache/save@v3
       if: inputs.save-cache == 'true' && steps.prepare.outcome == 'success'
