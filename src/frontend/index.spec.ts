@@ -30,6 +30,7 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
   rootDiv.id = rootId;
   document.body.appendChild(rootDiv);
 
+  // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await render();
   });
