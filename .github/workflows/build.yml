@@ -118,3 +118,11 @@ jobs:
             echo 'Found uncommitted changes' >&2
             exit 1
           fi
+  required_pre_merge_status_checks:
+    name: Status checks required before merge
+    if: github.event_name == 'pull_request'
+    needs:
+      - build_dev
+      - build
+      - test
+      - generated_code_consistency
