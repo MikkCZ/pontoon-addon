@@ -21,24 +21,28 @@ env:
   DEVELOPMENT_ARTIFACT_NAME: dist-development
 
 jobs:
-  prepare_cache:
+  cache_prepare:
     # to populate the cache for the following jobs that have this one in 'needs'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone and prepare
-        uses: ./.github/actions/clone_and_prepare.yml
+      - name: Clone repository
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
   build_dev:
-    needs: prepare_cache
+    needs: cache_prepare
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone and prepare
-        uses: ./.github/actions/clone_and_prepare.yml
+      - name: Clone repository
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Build add-on (development version)
         run: make build_in_container
         env:
@@ -50,14 +54,16 @@ jobs:
           path: dist
           retention-days: 30
   build:
-    needs: prepare_cache
+    needs: cache_prepare
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone and prepare
-        uses: ./.github/actions/clone_and_prepare.yml
+      - name: Clone repository
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Build add-on
         run: make build_in_container
       - name: Save built add-on
@@ -69,27 +75,31 @@ jobs:
     outputs:
       production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
   test:
-    needs: prepare_cache
+    needs: cache_prepare
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone and prepare
-        uses: ./.github/actions/clone_and_prepare.yml
+      - name: Clone repository
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Run tests
         run: make test_in_container
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3
   generated_code_consistency:
-    needs: prepare_cache
+    needs: cache_prepare
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone and prepare
-        uses: ./.github/actions/clone_and_prepare.yml
+      - name: Clone repository
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Generate GraphQL code
         run: make graphql_generate
       - name: Check changes in generated code

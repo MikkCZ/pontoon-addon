@@ -1,0 +1,19 @@
+name: Prepare
+description: Prepares the project using a cache to speed up the process.
+
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies - cache
+      id: npm_dependencies_cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          node_modules
+          .npm_in_container
+        key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Makefile', '**/run-in-container.sh') }}-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Makefile', '**/run-in-container.sh') }}-
+    - name: Install dependencies
+      if: steps.npm_dependencies_cache.outputs.cache-hit != 'true' # is 'false' if restored from the 'restore-keys' fallback, see https://github.com/actions/cache#inputs
+      run: make prepare_in_container
