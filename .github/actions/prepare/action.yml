@@ -1,0 +1,34 @@
+name: Prepare
+description: Prepares the project using a cache to speed up the process.
+
+inputs:
+  save-cache:
+    default: false
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Restore cache
+      id: restore-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          node_modules
+          .npm_in_container
+        key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Makefile', '**/run-in-container.sh') }}-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Makefile', '**/run-in-container.sh') }}-
+    - name: Install dependencies
+      id: prepare
+      if: steps.restore-cache.outputs.cache-hit != 'true' # is 'false' if restored from the 'restore-keys' fallback, see https://github.com/actions/cache#inputs
+      run: make prepare_in_container
+      shell: bash
+    - name: Save cache
+      uses: actions/cache/save@v3
+      if: inputs.save-cache == 'true' && steps.prepare.outcome == 'success'
+      with:
+        path: |
+          node_modules
+          .npm_in_container
+        key: ${{ steps.restore-cache.outputs.cache-primary-key }}

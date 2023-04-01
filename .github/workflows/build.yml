@@ -16,31 +16,37 @@ on:
         value: ${{ jobs.build.outputs.production_artifact_name }}
 
 env:
+  PREPARED_NODE_MODULES_ARTIFACT_NAME: node_modules
   PRODUCTION_ARTIFACT_NAME: dist
   DEVELOPMENT_ARTIFACT_NAME: dist-development
 
 jobs:
-  build:
+  prepare_cache:
+    name: Prepare cache
+    # to populate the cache for the following jobs that have this one in 'needs'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Install dependencies - cache
-        id: npm_dependencies_cache
-        uses: actions/cache@v3
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
         with:
-          path: |
-            node_modules
-            .npm_in_container
-          key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/run-in-container.sh') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/run-in-container.sh') }}-
-      - name: Install dependencies
-        if: steps.npm_dependencies_cache.outputs.cache-hit != 'true' # is 'false' if restored from the 'restore-keys' fallback, see https://github.com/actions/cache#inputs
-        run: make prepare_in_container
+          save-cache: true
+  build_dev:
+    name: Build development version
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Build add-on (development version)
         run: make build_in_container
         env:
@@ -51,6 +57,18 @@ jobs:
           name: ${{ env.DEVELOPMENT_ARTIFACT_NAME }}
           path: dist
           retention-days: 30
+  build:
+    name: Build production version
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Build add-on
         run: make build_in_container
       - name: Save built add-on
@@ -59,13 +77,11 @@ jobs:
           name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
           path: dist
           retention-days: 30
-      - name: Run tests
-        run: make test_in_container
-      - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v3
     outputs:
       production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
-  generated_code_consistency:
+  test:
+    name: Run tests
+    needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -73,19 +89,24 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Install dependencies - cache
-        id: npm_dependencies_cache
-        uses: actions/cache@v3
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
+      - name: Run tests
+        run: make test_in_container
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v3
+  generated_code_consistency:
+    name: Verify generated code is consistent
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
         with:
-          path: |
-            node_modules
-            .npm_in_container
-          key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/run-in-container.sh') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/run-in-container.sh') }}-
-      - name: Install dependencies
-        if: steps.npm_dependencies_cache.outputs.cache-hit != 'true' # is 'false' if restored from the 'restore-keys' fallback, see https://github.com/actions/cache#inputs
-        run: make prepare_in_container
+          ref: ${{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
       - name: Generate GraphQL code
         run: make graphql_generate
       - name: Check changes in generated code
@@ -97,3 +118,15 @@ jobs:
             echo 'Found uncommitted changes' >&2
             exit 1
           fi
+  required_pre_merge_status_checks:
+    name: Status checks required before merge
+    if: github.event_name == 'pull_request'
+    needs:
+      - build_dev
+      - build
+      - test
+      - generated_code_consistency
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✅
+        run: echo "✅ The pull request passed required status checks."
