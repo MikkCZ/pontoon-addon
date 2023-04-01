@@ -1,4 +1,4 @@
-/* eslint-disable jest/expect-expect, testing-library/render-result-naming-convention */
+/* eslint-disable jest/expect-expect */
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
@@ -11,7 +11,7 @@ import {
 import { getOptions } from '@commons/options';
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 
-import { render } from './index';
+import { render as index } from './index';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
@@ -30,9 +30,8 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
   rootDiv.id = rootId;
   document.body.appendChild(rootDiv);
 
-  // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
-    await render();
+    await index();
   });
   await flushPromises();
 
