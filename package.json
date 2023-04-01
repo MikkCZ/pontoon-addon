@@ -55,7 +55,7 @@
     "@babel/preset-env": "^7.20.2",
     "@graphql-codegen/cli": "^3.2.1",
     "@graphql-codegen/typescript": "^3.0.1",
-    "@graphql-codegen/typescript-graphql-request": "^4.5.8",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.9",
     "@graphql-codegen/typescript-operations": "^3.0.1",
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@testing-library/jest-dom": "^5.16.5",
