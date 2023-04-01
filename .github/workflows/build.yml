@@ -127,4 +127,6 @@ jobs:
       - test
       - generated_code_consistency
     runs-on: ubuntu-latest
-    steps: []
+    steps:
+      - name: ✅
+        run: echo "✅ The pull request passed required status checks."
