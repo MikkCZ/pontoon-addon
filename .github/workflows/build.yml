@@ -22,6 +22,7 @@ env:
 
 jobs:
   prepare_cache:
+    name: Prepare cache
     # to populate the cache for the following jobs that have this one in 'needs'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -30,10 +31,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
-          save-cache: true
       - name: Prepare the project
         uses: ./.github/actions/prepare
+        with:
+          save-cache: true
   build_dev:
+    name: Build development version
     needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -55,6 +58,7 @@ jobs:
           path: dist
           retention-days: 30
   build:
+    name: Build production version
     needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -76,6 +80,7 @@ jobs:
     outputs:
       production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
   test:
+    name: Run tests
     needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -91,6 +96,7 @@ jobs:
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3
   generated_code_consistency:
+    name: Verify generated code is consistent
     needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
