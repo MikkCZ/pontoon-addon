@@ -126,3 +126,4 @@ jobs:
       - build
       - test
       - generated_code_consistency
+    runs-on: ubuntu-latest
