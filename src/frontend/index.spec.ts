@@ -1,5 +1,6 @@
 /* eslint-disable jest/expect-expect, testing-library/render-result-naming-convention */
 import ReactDOM from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
 import {
@@ -29,7 +30,9 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
   rootDiv.id = rootId;
   document.body.appendChild(rootDiv);
 
-  await render();
+  await act(async () => {
+    await render();
+  });
   await flushPromises();
 
   expect(reactDomRender).toHaveBeenCalledTimes(1);
