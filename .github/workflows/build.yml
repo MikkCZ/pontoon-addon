@@ -21,47 +21,24 @@ env:
   DEVELOPMENT_ARTIFACT_NAME: dist-development
 
 jobs:
-  prepare:
+  prepare_cache:
+    # to populate the cache for the following jobs that have this one in 'needs'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - name: Clone and prepare
+        uses: ./.github/actions/clone_and_prepare.yml
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Install dependencies - cache
-        id: npm_dependencies_cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            .npm_in_container
-          key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/run-in-container.sh') }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/run-in-container.sh') }}-
-      - name: Install dependencies
-        if: steps.npm_dependencies_cache.outputs.cache-hit != 'true' # is 'false' if restored from the 'restore-keys' fallback, see https://github.com/actions/cache#inputs
-        run: make prepare_in_container
-      - name: Save prepared node_modules
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PREPARED_NODE_MODULES_ARTIFACT_NAME }}
-          path: node_modules
-          retention-days: 1
   build_dev:
-    needs: prepare
+    needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - name: Clone and prepare
+        uses: ./.github/actions/clone_and_prepare.yml
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Download prepared node_modules
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.PREPARED_NODE_MODULES_ARTIFACT_NAME }}
-          path: node_modules
       - name: Build add-on (development version)
         run: make build_in_container
         env:
@@ -73,19 +50,14 @@ jobs:
           path: dist
           retention-days: 30
   build:
-    needs: prepare
+    needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - name: Clone and prepare
+        uses: ./.github/actions/clone_and_prepare.yml
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Download prepared node_modules
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.PREPARED_NODE_MODULES_ARTIFACT_NAME }}
-          path: node_modules
       - name: Build add-on
         run: make build_in_container
       - name: Save built add-on
@@ -97,37 +69,27 @@ jobs:
     outputs:
       production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
   test:
-    needs: prepare
+    needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - name: Clone and prepare
+        uses: ./.github/actions/clone_and_prepare.yml
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Download prepared node_modules
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.PREPARED_NODE_MODULES_ARTIFACT_NAME }}
-          path: node_modules
       - name: Run tests
         run: make test_in_container
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3
   generated_code_consistency:
-    needs: prepare
+    needs: prepare_cache
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - name: Clone and prepare
+        uses: ./.github/actions/clone_and_prepare.yml
         with:
           ref: ${{ inputs.checkout_ref }}
-      - name: Download prepared node_modules
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.PREPARED_NODE_MODULES_ARTIFACT_NAME }}
-          path: node_modules
       - name: Generate GraphQL code
         run: make graphql_generate
       - name: Check changes in generated code
