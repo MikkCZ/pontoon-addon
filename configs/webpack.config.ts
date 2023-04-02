@@ -33,8 +33,8 @@ async function configs(): Promise<Configuration[]> {
 
   return [
     {
-      name: `${targetBrowser}/src/background`,
       ...commonConfiguration,
+      name: `${targetBrowser}/src/background`,
       entry: path.resolve(srcDir, 'background/index.ts'),
       output: {
         ...commonConfiguration.output,
@@ -42,8 +42,8 @@ async function configs(): Promise<Configuration[]> {
       },
     },
     {
-      name: `${targetBrowser}/src/content-scripts`,
       ...commonConfiguration,
+      name: `${targetBrowser}/src/content-scripts`,
       entry: {
         'content-scripts/context-buttons': path.resolve(srcDir, 'content-scripts/context-buttons.ts'),
         'content-scripts/live-data-provider': path.resolve(srcDir, 'content-scripts/live-data-provider.ts'),
@@ -53,14 +53,15 @@ async function configs(): Promise<Configuration[]> {
       },
     },
     {
-      name: `${targetBrowser}/src/frontend`,
       ...commonConfiguration,
+      name: `${targetBrowser}/src/frontend`,
       entry: path.resolve(srcDir, 'frontend/index.tsx'),
       output: {
         ...commonConfiguration.output,
         filename: 'frontend/main.js',
       },
       plugins: [
+        ...(commonConfiguration.plugins ?? []),
         ...(extensionManifestJson.page_action
           ? [
             new HtmlWebpackPlugin({
@@ -107,8 +108,8 @@ async function configs(): Promise<Configuration[]> {
       ],
     },
     {
-      name: `${targetBrowser}/src/manifest.json`,
       ...commonConfiguration,
+      name: `${targetBrowser}/src/manifest.json`,
       entry: './package.json', // anything webpack can load by itself
       output: {
         ...commonConfiguration.output,
@@ -125,6 +126,7 @@ async function configs(): Promise<Configuration[]> {
       ],
     },
     {
+      ...commonConfiguration,
       name: `${targetBrowser}/web-ext`,
       dependencies: [
         `${targetBrowser}/src/background`,
@@ -132,7 +134,6 @@ async function configs(): Promise<Configuration[]> {
         `${targetBrowser}/src/frontend`,
         `${targetBrowser}/src/manifest.json`,
       ],
-      ...commonConfiguration,
       entry: './package.json', // anything webpack can load by itself
       output: {
         ...commonConfiguration.output,
@@ -153,8 +154,8 @@ async function configs(): Promise<Configuration[]> {
     },
     ...(targetBrowser === BrowserFamily.MOZILLA ? [
         {
-          name: 'privacy-policy',
           ...commonConfiguration,
+          name: 'privacy-policy',
           entry: './package.json', // anything webpack can load by itself
           output: {
             ...commonConfiguration.output,

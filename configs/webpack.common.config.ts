@@ -1,5 +1,6 @@
 import path from 'path';
 import type { Configuration, RuleSetUseItem } from 'webpack';
+import { ProvidePlugin } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 import { BrowserFamily } from '../src/manifest.json';
@@ -65,6 +66,12 @@ export const commonConfiguration: Configuration = {
       },
     ],
   },
+  plugins: [
+    ...(targetBrowser !== BrowserFamily.MOZILLA
+        ? [new ProvidePlugin({ browser: 'webextension-polyfill' })]
+        : []
+    ),
+  ],
   resolve: {
     modules: [ path.resolve(rootDir, 'node_modules') ],
     extensions: [ '.ts', '.tsx', '.js', '.jsx', '.css', '.json', '.png', '.svg', '.md' ],
