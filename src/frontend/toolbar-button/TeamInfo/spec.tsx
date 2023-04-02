@@ -1,3 +1,4 @@
+import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
@@ -18,6 +19,7 @@ import {
   pontoonTeam,
   pontoonTeamsProject,
 } from '@commons/webLinks';
+import * as UtilsApiModule from '@commons/utils';
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 
 import { BottomLink } from '../BottomLink';
@@ -30,6 +32,9 @@ jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+const openNewPontoonTabSpy = jest
+  .spyOn(UtilsApiModule, 'openNewPontoonTab')
+  .mockResolvedValue({} as Tabs.Tab);
 
 const team: StorageContent['teamsList'][string] = {
   code: 'cs',
@@ -128,19 +133,19 @@ describe('TeamInfo', () => {
 
     wrapper.find(Name).simulate('click');
     await flushPromises();
-    expect(openNewTab).toHaveBeenLastCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
     );
 
     wrapper.find(Code).simulate('click');
     await flushPromises();
-    expect(openNewTab).toHaveBeenLastCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
     );
 
     wrapper.find(BottomLink).at(0).simulate('click');
     await flushPromises();
-    expect(openNewTab).toHaveBeenLastCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
     );
   });
@@ -172,7 +177,7 @@ describe('TeamInfo', () => {
         .find('button')
         .simulate('click');
       await flushPromises();
-      expect(openNewTab).toHaveBeenLastCalledWith(
+      expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
         pontoonSearchStringsWithStatus('https://localhost', team, status),
       );
     }
@@ -195,7 +200,7 @@ describe('TeamInfo', () => {
     expect(openDashboadLink.text()).toBe('Open Firefox dashboard for Czech');
     openDashboadLink.simulate('click');
     await flushPromises();
-    expect(openNewTab).toHaveBeenLastCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeamsProject('https://localhost', team, project),
     );
 
@@ -205,7 +210,7 @@ describe('TeamInfo', () => {
     );
     translationViewLink.simulate('click');
     await flushPromises();
-    expect(openNewTab).toHaveBeenLastCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonProjectTranslationView('https://localhost', team, project),
     );
 

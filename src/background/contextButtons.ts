@@ -8,6 +8,7 @@ import {
   getOneFromStorage,
 } from '@commons/webExtensionsApi';
 import { getOneOption, getOptions } from '@commons/options';
+import { openNewPontoonTab } from '@commons/utils';
 
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
@@ -21,7 +22,7 @@ function listenToMessagesFromContentScript() {
     async (message: { text?: string }) => {
       const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
         await getOptions(['pontoon_base_url', 'locale_team']);
-      openNewTab(
+      openNewPontoonTab(
         pontoonProjectTranslationView(
           pontoonBaseUrl,
           { code: teamCode },

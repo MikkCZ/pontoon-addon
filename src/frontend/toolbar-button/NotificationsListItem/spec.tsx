@@ -1,10 +1,11 @@
+import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import ReactTimeAgo from 'react-time-ago';
 import flushPromises from 'flush-promises';
 
-import { openNewTab } from '@commons/webExtensionsApi';
+import * as UtilsApiModule from '@commons/utils';
 import { getTeamProjectUrl } from '@background/backgroundClient';
 
 import {
@@ -15,10 +16,14 @@ import {
   TimeAgo,
 } from '.';
 
-jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+const openNewPontoonTabSpy = jest
+  .spyOn(UtilsApiModule, 'openNewPontoonTab')
+  .mockResolvedValue({} as Tabs.Tab);
 
 beforeEach(() => {
   (getTeamProjectUrl as jest.Mock).mockImplementation(
@@ -28,7 +33,6 @@ beforeEach(() => {
 
 afterEach(() => {
   windowCloseSpy.mockReset();
-  (openNewTab as jest.Mock).mockReset();
   (getTeamProjectUrl as jest.Mock).mockReset();
 });
 
@@ -36,6 +40,7 @@ describe('NotificationsListItem', () => {
   it('renders', () => {
     const wrapper = mount(
       <NotificationsListItem
+        pontoonBaseUrl="https://127.0.0.1"
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
         verb="VERB"
@@ -56,6 +61,7 @@ describe('NotificationsListItem', () => {
   it('renders links and formatting tags in description', () => {
     const wrapper = mount(
       <NotificationsListItem
+        pontoonBaseUrl="https://127.0.0.1"
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
         verb="VERB"
@@ -77,6 +83,7 @@ describe('NotificationsListItem', () => {
   it('linkifies URL in unsafe description', () => {
     const wrapper = mount(
       <NotificationsListItem
+        pontoonBaseUrl="https://127.0.0.1"
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
         verb="VERB"
@@ -97,6 +104,7 @@ describe('NotificationsListItem', () => {
   it('prevents XSS in description', () => {
     const wrapper = mount(
       <NotificationsListItem
+        pontoonBaseUrl="https://127.0.0.1"
         unread={true}
         actor={{ anchor: 'ACTOR', url: '' }}
         verb="VERB"
@@ -120,6 +128,7 @@ describe('NotificationsListItem', () => {
     const targetUrl = 'https://127.0.0.1/target/';
     const wrapper = shallow(
       <NotificationsListItem
+        pontoonBaseUrl="https://127.0.0.1"
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
         target={{ url: targetUrl, anchor: 'TARGET' }}
@@ -140,14 +149,15 @@ describe('NotificationsListItem', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(actorUrl);
-    expect(openNewTab).toHaveBeenCalledWith(targetUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(actorUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(targetUrl);
   });
 
   it('whole item is clickable when only one link is present', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
     const wrapper = shallow(
       <NotificationsListItem
+        pontoonBaseUrl="https://127.0.0.1"
         unread={true}
         actor={{ url: actorUrl, anchor: 'ACTOR' }}
       />,
@@ -161,6 +171,6 @@ describe('NotificationsListItem', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(actorUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(actorUrl);
   });
 });

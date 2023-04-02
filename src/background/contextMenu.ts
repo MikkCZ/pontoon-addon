@@ -15,6 +15,7 @@ import {
 } from '@commons/webExtensionsApi';
 import { getOptions, listenToOptionChange } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { openNewPontoonTab } from '@commons/utils';
 
 const NON_SELECTION_CONTEXTS: Menus.ContextType[] = [
   'page',
@@ -82,7 +83,7 @@ function contextMenuItemsForProject(
       documentUrlPatterns,
       contexts: [...NON_SELECTION_CONTEXTS, ...SELECTION_CONTEXTS],
       onclick: () => {
-        openNewTab(pontoonTeamsProject(pontoonBaseUrl, team, project));
+        openNewPontoonTab(pontoonTeamsProject(pontoonBaseUrl, team, project));
       },
     },
     {
@@ -91,7 +92,7 @@ function contextMenuItemsForProject(
       documentUrlPatterns,
       contexts: NON_SELECTION_CONTEXTS,
       onclick: () => {
-        openNewTab(
+        openNewPontoonTab(
           pontoonProjectTranslationView(pontoonBaseUrl, team, project),
         );
       },
@@ -102,7 +103,7 @@ function contextMenuItemsForProject(
       documentUrlPatterns,
       contexts: SELECTION_CONTEXTS,
       onclick: (info: Menus.OnClickData) => {
-        openNewTab(
+        openNewPontoonTab(
           pontoonProjectTranslationView(
             pontoonBaseUrl,
             team,
@@ -118,7 +119,7 @@ function contextMenuItemsForProject(
       documentUrlPatterns,
       contexts: SELECTION_CONTEXTS,
       onclick: (info: Menus.OnClickData) => {
-        openNewTab(
+        openNewPontoonTab(
           pontoonProjectTranslationView(
             pontoonBaseUrl,
             team,

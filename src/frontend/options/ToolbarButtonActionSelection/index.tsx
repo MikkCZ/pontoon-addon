@@ -2,10 +2,10 @@ import type { ChangeEvent } from 'react';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { openNewTab } from '@commons/webExtensionsApi';
 import { getSettingsUrl } from '@background/backgroundClient';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { openNewPontoonTab } from '@commons/utils';
 
 const Link = styled.button`
   appearance: none;
@@ -80,7 +80,7 @@ export const ToolbarButtonActionSelection: React.FC = () => {
         You can set your Pontoon homepage in{' '}
         <Link
           onClick={async () => {
-            openNewTab(await getSettingsUrl());
+            openNewPontoonTab(await getSettingsUrl());
           }}
         >
           Pontoon Settings

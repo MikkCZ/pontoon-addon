@@ -21,11 +21,13 @@ const GlobalStyle = createGlobalStyle`
 interface Props {
   notificationsData: any;
   hideReadNotifications?: boolean;
+  pontoonBaseUrl: string;
 }
 
 export const App: React.FC<Props> = ({
   notificationsData,
   hideReadNotifications,
+  pontoonBaseUrl,
 }: Props) => {
   return (
     <>
@@ -34,6 +36,7 @@ export const App: React.FC<Props> = ({
       <NotificationsList
         notificationsData={notificationsData}
         hideReadNotifications={hideReadNotifications}
+        pontoonBaseUrl={pontoonBaseUrl}
       />
       <TeamInfo />
     </>

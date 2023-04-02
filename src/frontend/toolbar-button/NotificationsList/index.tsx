@@ -5,7 +5,8 @@ import {
   getNotificationsUrl,
   markAllNotificationsAsRead,
 } from '@background/backgroundClient';
-import { listenToStorageChange, openNewTab } from '@commons/webExtensionsApi';
+import { listenToStorageChange } from '@commons/webExtensionsApi';
+import { openNewPontoonTab } from '@commons/utils';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -24,10 +25,12 @@ const List = styled.ul`
 interface Props {
   notificationsData: any;
   hideReadNotifications?: boolean;
+  pontoonBaseUrl: string;
 }
 
 export const NotificationsList: React.FC<Props> = ({
   hideReadNotifications,
+  pontoonBaseUrl,
   ...props
 }) => {
   const [notificationsData, setNotificationsData] = useState(
@@ -56,8 +59,9 @@ export const NotificationsList: React.FC<Props> = ({
             )
             .map((notification: any) => (
               <NotificationsListItem
-                unread={notification.unread}
                 key={notification.id}
+                pontoonBaseUrl={pontoonBaseUrl}
+                unread={notification.unread}
                 {...notification}
               />
             ))}
@@ -69,7 +73,7 @@ export const NotificationsList: React.FC<Props> = ({
         ) : (
           <BottomLink
             onClick={async () => {
-              await openNewTab(await getNotificationsUrl());
+              await openNewPontoonTab(await getNotificationsUrl());
               window.close();
             }}
           >

@@ -1,3 +1,4 @@
+import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
@@ -15,6 +16,7 @@ import {
   pontoonProjectTranslationView,
   pontoonTeamsProject,
 } from '@commons/webLinks';
+import * as UtilsApiModule from '@commons/utils';
 
 import { PanelSection } from '../PanelSection';
 import { PanelListItem } from '../PanelListItem';
@@ -24,6 +26,10 @@ import { App } from '.';
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
+
+const openNewPontoonTabSpy = jest
+  .spyOn(UtilsApiModule, 'openNewPontoonTab')
+  .mockResolvedValue({} as Tabs.Tab);
 
 const project = {
   name: 'Some Project',
@@ -85,7 +91,7 @@ describe('address-bar/App', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
       pontoonTeamsProject('https://localhost', { code: 'cs' }, project),
     );
   });
@@ -102,7 +108,7 @@ describe('address-bar/App', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
       pontoonProjectTranslationView(
         'https://localhost',
         { code: 'cs' },

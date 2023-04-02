@@ -14,6 +14,7 @@ import {
   pontoonTeamsProject,
 } from '@commons/webLinks';
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { openNewPontoonTab } from '@commons/utils';
 
 import { PanelSection } from '../PanelSection';
 
@@ -51,12 +52,14 @@ export const App: React.FC = () => {
         {
           text: `Open ${project.name} dashboard for ${team.name}`,
           onClick: () =>
-            openNewTab(pontoonTeamsProject(pontoonBaseUrl, team, project)),
+            openNewPontoonTab(
+              pontoonTeamsProject(pontoonBaseUrl, team, project),
+            ),
         },
         {
           text: `Open ${project.name} translation view for ${team.name}`,
           onClick: () =>
-            openNewTab(
+            openNewPontoonTab(
               pontoonProjectTranslationView(pontoonBaseUrl, team, project),
             ),
         },
