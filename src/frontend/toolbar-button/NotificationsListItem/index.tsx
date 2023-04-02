@@ -7,7 +7,8 @@ import DOMPurify from 'dompurify';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Linkify from 'react-linkify';
-import parse from 'html-react-parser';
+import type { HTMLReactParserOptions, DOMNode } from 'html-react-parser';
+import parse, { domToReact, Element } from 'html-react-parser';
 
 import { getTeamProjectUrl } from '@background/backgroundClient';
 import { openNewPontoonTab } from '@commons/utils';
@@ -57,6 +58,7 @@ export const TimeAgo = styled.div`
 `;
 
 interface Props {
+  pontoonBaseUrl: string;
   unread: boolean;
   actor?: {
     anchor: string;
@@ -75,6 +77,42 @@ interface Props {
   date_iso?: string;
 }
 
+function wrapLinksToPontoon(
+  pontoonBaseUrl: string,
+): HTMLReactParserOptions['replace'] {
+  // eslint-disable-next-line react/display-name
+  return (domNode: DOMNode): JSX.Element | void => {
+    if (
+      domNode instanceof Element &&
+      domNode.name === 'a' &&
+      domNode.attribs?.href
+    ) {
+      const href = domNode.attribs.href;
+      let pontoonLinkUrl: string | undefined;
+      if (href.startsWith('/')) {
+        pontoonLinkUrl = `${pontoonBaseUrl}${href}`;
+      } else if (href.startsWith(pontoonBaseUrl)) {
+        pontoonLinkUrl = href;
+      }
+      if (pontoonLinkUrl) {
+        return (
+          <a
+            href={href}
+            onClick={(e) => {
+              if (pontoonLinkUrl) {
+                stopEvent(e);
+                openNewPontoonTab(pontoonLinkUrl);
+              }
+            }}
+          >
+            {domToReact(domNode.children)}
+          </a>
+        );
+      }
+    }
+  };
+}
+
 async function openTeamProject(projectUrl: string): Promise<void> {
   const teamProjectUrl = await getTeamProjectUrl(projectUrl);
   openNewPontoonTab(teamProjectUrl);
@@ -87,6 +125,7 @@ function stopEvent(e: MouseEvent): void {
 }
 
 export const NotificationsListItem: React.FC<Props> = ({
+  pontoonBaseUrl,
   unread,
   actor,
   target,
@@ -110,18 +149,18 @@ export const NotificationsListItem: React.FC<Props> = ({
         openTeamProject(linkUrls[0]);
       }
     : undefined;
+
   if (isSuggestion) {
     return (
       <Wrapper unread={unread} pointer={hasSingleLink} onClick={openSingleLink}>
         {description &&
           description.content &&
           (description.safe ? (
-            <div
-              onClick={openSingleLink}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(description.content),
-              }}
-            ></div>
+            <div onClick={openSingleLink}>
+              {parse(DOMPurify.sanitize(description.content), {
+                replace: wrapLinksToPontoon(pontoonBaseUrl),
+              })}
+            </div>
           ) : (
             <div onClick={openSingleLink}>
               <Linkify
@@ -131,7 +170,9 @@ export const NotificationsListItem: React.FC<Props> = ({
                   rel: 'noopener noreferrer',
                 }}
               >
-                {parse(description.content)}
+                {parse(description.content, {
+                  replace: wrapLinksToPontoon(pontoonBaseUrl),
+                })}
               </Linkify>
             </div>
           ))}
@@ -174,12 +215,11 @@ export const NotificationsListItem: React.FC<Props> = ({
         {description &&
           description.content &&
           (description.safe ? (
-            <Description
-              onClick={openSingleLink}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(description.content),
-              }}
-            ></Description>
+            <Description onClick={openSingleLink}>
+              {parse(DOMPurify.sanitize(description.content), {
+                replace: wrapLinksToPontoon(pontoonBaseUrl),
+              })}
+            </Description>
           ) : (
             <Description onClick={openSingleLink}>
               <Linkify
@@ -189,7 +229,9 @@ export const NotificationsListItem: React.FC<Props> = ({
                   rel: 'noopener noreferrer',
                 }}
               >
-                {parse(description.content)}
+                {parse(description.content, {
+                  replace: wrapLinksToPontoon(pontoonBaseUrl),
+                })}
               </Linkify>
             </Description>
           ))}

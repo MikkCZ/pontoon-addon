@@ -39,6 +39,7 @@ async function renderToolbarButtonApp(rootElement: HTMLElement): Promise<void> {
     <ToolbarButtonApp
       notificationsData={notificationsData}
       hideReadNotifications={hideReadNotifications}
+      pontoonBaseUrl={pontoonBaseUrl}
     />,
     rootElement,
   );

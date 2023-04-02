@@ -25,10 +25,12 @@ const List = styled.ul`
 interface Props {
   notificationsData: any;
   hideReadNotifications?: boolean;
+  pontoonBaseUrl: string;
 }
 
 export const NotificationsList: React.FC<Props> = ({
   hideReadNotifications,
+  pontoonBaseUrl,
   ...props
 }) => {
   const [notificationsData, setNotificationsData] = useState(
@@ -57,8 +59,9 @@ export const NotificationsList: React.FC<Props> = ({
             )
             .map((notification: any) => (
               <NotificationsListItem
-                unread={notification.unread}
                 key={notification.id}
+                pontoonBaseUrl={pontoonBaseUrl}
+                unread={notification.unread}
                 {...notification}
               />
             ))}

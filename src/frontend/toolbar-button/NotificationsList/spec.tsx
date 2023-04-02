@@ -46,6 +46,7 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
+        pontoonBaseUrl="https://127.0.0.1"
       />,
     );
 
@@ -63,6 +64,7 @@ describe('NotificationsList', () => {
           1: { id: 1, unread: false },
         }}
         hideReadNotifications={false}
+        pontoonBaseUrl="https://127.0.0.1"
       />,
     );
 
@@ -80,6 +82,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={true}
+        pontoonBaseUrl="https://127.0.0.1"
       />,
     );
 
@@ -92,6 +95,7 @@ describe('NotificationsList', () => {
       <NotificationsList
         notificationsData={undefined}
         hideReadNotifications={false}
+        pontoonBaseUrl="https://127.0.0.1"
       />,
     );
 
@@ -108,6 +112,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: true },
         }}
         hideReadNotifications={false}
+        pontoonBaseUrl="https://127.0.0.1"
       />,
     );
 
@@ -126,6 +131,7 @@ describe('NotificationsList', () => {
           2: { id: 2, unread: false },
         }}
         hideReadNotifications={false}
+        pontoonBaseUrl="https://127.0.0.1"
       />,
     );
 
