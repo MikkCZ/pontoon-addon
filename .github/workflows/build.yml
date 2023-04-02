@@ -131,7 +131,7 @@ jobs:
     steps:
       - name: Mark all required status checks were successful
         id: marker
-        run: echo "::set-output name=success::true"
+        run: echo "success=true" >> $GITHUB_OUTPUT
     outputs:
       success: ${{ steps.marker.outputs.success }}
   required_pre_merge_status_checks:
