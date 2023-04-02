@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createGlobalStyle } from 'styled-components';
 
 import {
@@ -154,7 +154,9 @@ const tiles: TileProps[] = [
 ];
 
 export const App: React.FC = () => {
-  document.title = pageTitle;
+  useEffect(() => {
+    document.title = pageTitle;
+  }, []);
 
   return (
     <>
