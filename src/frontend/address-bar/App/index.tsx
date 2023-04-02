@@ -19,15 +19,11 @@ import { openNewPontoonTab } from '@commons/utils';
 import { PanelSection } from '../PanelSection';
 
 export const App: React.FC = () => {
-  const [project, setProject] = useState<
-    StorageContent['projectsList'][string] | undefined
-  >();
-  const [team, setTeam] = useState<
-    StorageContent['teamsList'][string] | undefined
-  >();
-  const [pontoonBaseUrl, setPontoonBaseUrl] = useState<
-    OptionsContent['pontoon_base_url'] | undefined
-  >();
+  const [project, setProject] =
+    useState<StorageContent['projectsList'][string]>();
+  const [team, setTeam] = useState<StorageContent['teamsList'][string]>();
+  const [pontoonBaseUrl, setPontoonBaseUrl] =
+    useState<OptionsContent['pontoon_base_url']>();
 
   useEffect(() => {
     (async () => {
@@ -41,6 +37,7 @@ export const App: React.FC = () => {
         getOptions(['locale_team', 'pontoon_base_url']),
       ]);
       setProject(projectForCurrentTab);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeam(teamsList![teamCode]);
       setPontoonBaseUrl(pontoon_base_url);
     })();
@@ -69,7 +66,7 @@ export const App: React.FC = () => {
             openNewTab(
               newLocalizationBug({
                 team,
-                url: (await getActiveTab()).url!,
+                url: (await getActiveTab()).url,
               }),
             ),
         },

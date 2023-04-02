@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import type { Renderer } from 'marked';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -25,14 +25,7 @@ interface Props {
 }
 
 export const MarkdownContent: React.FC<Props> = ({ markdownText }) => {
-  const [markdownContent, setMarkdownContent] = useState<string>();
+  const innerHTML = useMemo(() => renderMarkdown(markdownText), [markdownText]);
 
-  useEffect(() => {
-    (async () => {
-      setMarkdownContent(markdownText);
-    })();
-  }, [markdownText]);
-
-  const html = markdownContent ? renderMarkdown(markdownContent) : '';
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  return <div dangerouslySetInnerHTML={{ __html: innerHTML }} />;
 };

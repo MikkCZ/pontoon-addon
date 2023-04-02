@@ -1,6 +1,6 @@
 import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 import { GraphQLClient } from 'graphql-request';
 
 import { browser } from '@commons/webExtensionsApi';

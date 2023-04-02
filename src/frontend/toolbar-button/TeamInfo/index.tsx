@@ -119,18 +119,13 @@ async function openNewPontoonTabAndClosePopup(url: string): Promise<void> {
 }
 
 export const TeamInfo: React.FC = () => {
-  const [projectForCurrentTab, setProjectForCurrentTab] = useState<
-    StorageContent['projectsList'][string] | undefined
-  >();
-  const [team, setTeam] = useState<
-    StorageContent['teamsList'][string] | undefined
-  >();
-  const [teamActivity, setTeamActivity] = useState<
-    StorageContent['latestTeamsActivity'][string] | undefined
-  >();
-  const [pontoonBaseUrl, setPontoonBaseUrl] = useState<
-    OptionsContent['pontoon_base_url'] | undefined
-  >();
+  const [projectForCurrentTab, setProjectForCurrentTab] =
+    useState<StorageContent['projectsList'][string]>();
+  const [team, setTeam] = useState<StorageContent['teamsList'][string]>();
+  const [teamActivity, setTeamActivity] =
+    useState<StorageContent['latestTeamsActivity'][string]>();
+  const [pontoonBaseUrl, setPontoonBaseUrl] =
+    useState<OptionsContent['pontoon_base_url']>();
 
   useEffect(() => {
     (async () => {
@@ -144,7 +139,9 @@ export const TeamInfo: React.FC = () => {
         getOptions(['locale_team', 'pontoon_base_url']),
       ]);
       setProjectForCurrentTab(projectForCurrentTab);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeam(teamsList![teamCode]);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeamActivity(latestTeamsActivity![teamCode]);
       setPontoonBaseUrl(pontoon_base_url);
     })();
@@ -231,7 +228,10 @@ export const TeamInfo: React.FC = () => {
           <BottomLink
             onClick={async () =>
               openNewTabAndClosePopup(
-                newLocalizationBug({ team, url: (await getActiveTab()).url! }),
+                newLocalizationBug({
+                  team,
+                  url: (await getActiveTab()).url,
+                }),
               )
             }
           >

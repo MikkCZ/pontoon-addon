@@ -16,26 +16,21 @@ import { NotificationsListError } from '../NotificationsListError';
 
 import { NotificationsList } from '.';
 
-jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const windowCloseSpy = jest.spyOn(window, 'close');
+const windowCloseSpy = jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest
   .spyOn(UtilsApiModule, 'openNewPontoonTab')
   .mockResolvedValue({} as Tabs.Tab);
 
-beforeEach(() => {
-  (getNotificationsUrl as jest.Mock).mockReturnValue(
-    'https://127.0.0.1/notifications',
-  );
-});
+(getNotificationsUrl as jest.Mock).mockReturnValue(
+  'https://127.0.0.1/notifications',
+);
 
 afterEach(() => {
-  (getNotificationsUrl as jest.Mock).mockReset();
-  (markAllNotificationsAsRead as jest.Mock).mockReset();
-  windowCloseSpy.mockReset();
+  jest.clearAllMocks();
 });
 
 describe('NotificationsList', () => {

@@ -4,17 +4,19 @@ import { act } from 'react-dom/test-utils';
 
 import { CloseButton } from '.';
 
-const windowCloseSpy = jest.spyOn(window, 'close');
+jest.spyOn(window, 'close').mockReturnValue(undefined);
 
 afterEach(() => {
-  windowCloseSpy.mockReset();
+  jest.resetAllMocks();
 });
 
 describe('CloseButton', () => {
   it('renders title', () => {
     const wrapper = mount(<CloseButton title="TITLE" />);
 
-    expect((wrapper.find('button').getDOMNode() as any).title).toBe('TITLE'); // eslint-disable-line @typescript-eslint/no-explicit-any
+    expect(wrapper.find('button').getDOMNode<HTMLElement>().title).toBe(
+      'TITLE',
+    );
   });
 
   it('closes intro page on click', async () => {

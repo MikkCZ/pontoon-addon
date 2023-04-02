@@ -25,6 +25,7 @@ export function setupAddressBarIcon() {
 
 async function updatePageActions(tabs: Tabs.Tab[]) {
   for (const tab of tabs) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const projectData = await getPontoonProjectForPageUrl(tab.url!);
     if (projectData) {
       showAddressBarIcon(tab, `Open ${projectData.name} in Pontoon`, {

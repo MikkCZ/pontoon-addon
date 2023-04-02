@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { getSettingsUrl } from '@background/backgroundClient';
@@ -25,9 +25,7 @@ const Link = styled.button`
 `;
 
 export const ToolbarButtonActionSelection: React.FC = () => {
-  const [value, setValue] = useState<
-    OptionsContent['toolbar_button_action'] | undefined
-  >();
+  const [value, setValue] = useState<OptionsContent['toolbar_button_action']>();
 
   useEffect(() => {
     (async () => {
@@ -35,13 +33,16 @@ export const ToolbarButtonActionSelection: React.FC = () => {
     })();
   }, []);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value as OptionsContent['toolbar_button_action']);
-    setOption(
-      'toolbar_button_action',
-      e.target.value as OptionsContent['toolbar_button_action'],
-    );
-  };
+  const handleChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value as OptionsContent['toolbar_button_action']);
+      await setOption(
+        'toolbar_button_action',
+        e.target.value as OptionsContent['toolbar_button_action'],
+      );
+    },
+    [setValue],
+  );
 
   return (
     <div>

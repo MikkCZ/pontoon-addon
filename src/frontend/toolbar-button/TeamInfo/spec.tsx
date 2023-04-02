@@ -31,7 +31,7 @@ jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const windowCloseSpy = jest.spyOn(window, 'close');
+jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest
   .spyOn(UtilsApiModule, 'openNewPontoonTab')
   .mockResolvedValue({} as Tabs.Tab);
@@ -51,26 +51,23 @@ const team: StorageContent['teamsList'][string] = {
   },
 };
 
-beforeEach(() => {
-  (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(undefined);
-  (getFromStorage as jest.Mock).mockResolvedValue({
-    teamsList: { cs: team },
-    latestTeamsActivity: {
-      cs: {
-        user: 'USER',
-        date_iso: '1970-01-01T00:00:00Z',
-      },
+(getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(undefined);
+(getFromStorage as jest.Mock).mockResolvedValue({
+  teamsList: { cs: team },
+  latestTeamsActivity: {
+    cs: {
+      user: 'USER',
+      date_iso: '1970-01-01T00:00:00Z',
     },
-  });
-  (getOptions as jest.Mock).mockResolvedValue({
-    locale_team: 'cs',
-    pontoon_base_url: 'https://localhost',
-  });
+  },
+});
+(getOptions as jest.Mock).mockResolvedValue({
+  locale_team: 'cs',
+  pontoon_base_url: 'https://localhost',
 });
 
 afterEach(() => {
-  windowCloseSpy.mockReset();
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
 
 describe('TeamInfo', () => {

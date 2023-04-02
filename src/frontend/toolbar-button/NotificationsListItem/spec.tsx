@@ -20,20 +20,17 @@ jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const windowCloseSpy = jest.spyOn(window, 'close');
+jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest
   .spyOn(UtilsApiModule, 'openNewPontoonTab')
   .mockResolvedValue({} as Tabs.Tab);
 
-beforeEach(() => {
-  (getTeamProjectUrl as jest.Mock).mockImplementation(
-    (projectUrl: string) => projectUrl,
-  );
-});
+(getTeamProjectUrl as jest.Mock).mockImplementation(
+  (projectUrl: string) => projectUrl,
+);
 
 afterEach(() => {
-  windowCloseSpy.mockReset();
-  (getTeamProjectUrl as jest.Mock).mockReset();
+  jest.clearAllMocks();
 });
 
 describe('NotificationsListItem', () => {

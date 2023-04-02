@@ -14,9 +14,11 @@ export const ControlsInfo = styled.div``;
 export const Score = styled.div``;
 
 export const SnakeGameInfo: React.FC = () => {
-  const context = useSnakeGameContext();
-  const { gameState, score } = context.stateRef.current;
-  const controlFunctions = context.gameFunctions.controlFunctions;
+  const {
+    stateRef,
+    gameFunctions: { controlFunctions },
+  } = useSnakeGameContext();
+  const { gameState, score } = stateRef.current;
 
   const gameInProgress =
     gameState === GameState.RUNNING || gameState === GameState.PAUSED;

@@ -118,7 +118,7 @@ async function handleNotificationClick(
       toPontoonTeamSpecificProjectUrl(
         pontoonBaseUrl,
         { code: teamCode },
-        notification.actor!.url,
+        notification.actor!.url, // eslint-disable-line @typescript-eslint/no-non-null-assertion
       ),
     );
   }

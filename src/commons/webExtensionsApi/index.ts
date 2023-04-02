@@ -1,6 +1,7 @@
 import type {
   Menus,
   Notifications,
+  Runtime,
   Storage,
   Tabs,
 } from 'webextension-polyfill';
@@ -290,7 +291,12 @@ export function callDelayed(
 
 export function listenToMessages<T extends BackgroundClientMessageType>(
   type: T,
-  action: (message: any, sender: { tab?: Tabs.Tab; url?: string }) => void,
+  action: (
+    message: Parameters<
+      Parameters<Runtime.Static['onMessage']['addListener']>[0]
+    >[0],
+    sender: Pick<Runtime.MessageSender, 'tab' | 'url'>,
+  ) => void,
 ) {
   browser.runtime.onMessage.addListener((message, sender) => {
     if (message.type === type) {
@@ -305,8 +311,10 @@ export function listenToMessagesExclusively<
 >(
   type: T,
   action: (
-    message: any,
-    sender: { tab?: Tabs.Tab; url?: string },
+    message: Parameters<
+      Parameters<Runtime.Static['onMessage']['addListener']>[0]
+    >[0],
+    sender: Pick<Runtime.MessageSender, 'tab' | 'url'>,
   ) => Promise<unknown>,
 ) {
   browser.runtime.onMessage.addListener((message, sender) => {

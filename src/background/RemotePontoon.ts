@@ -59,8 +59,8 @@ function parseDOM(pageContent: string) {
 export function listenToMessagesFromClients() {
   listenToMessages(
     BackgroundClientMessageType.PAGE_LOADED,
-    (message: { documentHTML?: string }) =>
-      updateNotificationsIfThereAreNew(message.documentHTML!),
+    (message: { documentHTML: string }) =>
+      updateNotificationsIfThereAreNew(message.documentHTML),
   );
   listenToMessages(BackgroundClientMessageType.NOTIFICATIONS_READ, () =>
     markAllNotificationsAsRead(),
@@ -75,6 +75,7 @@ export function listenToMessagesFromClients() {
     BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,
     async () => {
       const activeTab = await getActiveTab();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return getPontoonProjectForPageUrl(activeTab.url!);
     },
   );
@@ -100,9 +101,11 @@ async function updateNotificationsIfThereAreNew(pageContent: string) {
   if (page.querySelector('header #notifications')) {
     const [notificationsData, notificationsIdsFromPage] = await Promise.all([
       getOneFromStorage('notificationsData'),
-      Array.from(page.querySelectorAll('header .notification-item')).map(
-        (n: any) => n.dataset.id,
-      ),
+      Array.from(
+        page.querySelectorAll<HTMLElement>('header .notification-item'),
+      )
+        .map((n) => n.dataset['id'] ?? '')
+        .filter((id) => id !== ''),
     ]);
     if (
       !notificationsData ||
@@ -141,13 +144,13 @@ async function updateLatestTeamActivity() {
   const latestActivityArray = Array.from(
     parseDOM(allTeamsPageContent).querySelectorAll('.team-list tbody tr'),
   ).map((row): StorageContent['latestTeamsActivity'][string] => {
-    const latestActivityTime = row.querySelector(
+    const latestActivityTime = row.querySelector<HTMLElement>(
       '.latest-activity time',
-    ) as any;
+    );
     return {
-      team: row.querySelector('.code a')?.textContent || '',
-      user: latestActivityTime?.dataset?.userName || '',
-      date_iso: latestActivityTime?.attributes?.datetime?.value || undefined,
+      team: row.querySelector('.code a')?.textContent ?? '',
+      user: latestActivityTime?.dataset['userName'] ?? '',
+      date_iso: latestActivityTime?.attributes.getNamedItem('datetime')?.value,
     };
   });
   const latestTeamsActivity: StorageContent['latestTeamsActivity'] = {};
@@ -206,7 +209,7 @@ async function updateProjectsList(): Promise<StorageContent['projectsList']> {
   }
   const projects = projectsListData.map((project) => ({
     ...project,
-    ...partialProjectsMap.get(project.slug)!,
+    ...partialProjectsMap.get(project.slug)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
   }));
   const projectsList: StorageContent['projectsList'] = {};
   for (const project of projects) {
@@ -254,8 +257,8 @@ async function getUsersTeamFromPontoon(): Promise<string | undefined> {
       AUTOMATION_UTM_SOURCE,
     ),
   );
-  const language: any = parseDOM(await response.text()).querySelector(
+  const language = parseDOM(await response.text()).querySelector<HTMLElement>(
     '#homepage .language',
   );
-  return language?.dataset['code'] || undefined;
+  return language?.dataset['code'];
 }
