@@ -84,8 +84,8 @@ export const App: React.FC = () => {
       <GlobalStyle />
       <NotificationsList
         notificationsData={notificationsData}
-        hideReadNotifications={hideReadNotifications!}
-        pontoonBaseUrl={pontoonBaseUrl!}
+        hideReadNotifications={hideReadNotifications!} // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        pontoonBaseUrl={pontoonBaseUrl!} // eslint-disable-line @typescript-eslint/no-non-null-assertion
       />
       <TeamInfo />
     </>

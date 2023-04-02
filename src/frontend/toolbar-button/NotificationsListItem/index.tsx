@@ -123,8 +123,10 @@ export const NotificationsListItem: React.FC<Props> = ({
 }) => {
   const linkUrls = [actor, target]
     .filter((it) => it)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    .map((it) => it!.url);
+    .map(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (it) => it!.url,
+    );
   const isSuggestion =
     description?.content?.startsWith(
       'Unreviewed suggestions have been submitted',

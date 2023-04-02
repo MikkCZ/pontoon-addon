@@ -139,7 +139,9 @@ export const TeamInfo: React.FC = () => {
         getOptions(['locale_team', 'pontoon_base_url']),
       ]);
       setProjectForCurrentTab(projectForCurrentTab);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeam(teamsList![teamCode]);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeamActivity(latestTeamsActivity![teamCode]);
       setPontoonBaseUrl(pontoon_base_url);
     })();
@@ -226,7 +228,10 @@ export const TeamInfo: React.FC = () => {
           <BottomLink
             onClick={async () =>
               openNewTabAndClosePopup(
-                newLocalizationBug({ team, url: (await getActiveTab()).url! }),
+                newLocalizationBug({
+                  team,
+                  url: (await getActiveTab()).url,
+                }),
               )
             }
           >

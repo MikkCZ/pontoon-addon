@@ -19,7 +19,7 @@ export function setupPageContextButtons() {
 function listenToMessagesFromContentScript() {
   listenToMessages(
     BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
-    async (message: { text?: string }) => {
+    async (message: { text: string }) => {
       const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
         await getOptions(['pontoon_base_url', 'locale_team']);
       openNewPontoonTab(
@@ -27,24 +27,23 @@ function listenToMessagesFromContentScript() {
           pontoonBaseUrl,
           { code: teamCode },
           { slug: 'all-projects' },
-          message.text!,
+          message.text,
         ),
       );
     },
   );
   listenToMessages(
     BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA,
-    async (message: { text?: string }, { url: fromUrl }) => {
+    async (message: { text: string }, { url }) => {
       const [teamCode, teamsList] = await Promise.all([
         getOneOption('locale_team'),
         getOneFromStorage('teamsList'),
       ]);
-      const team = teamsList![teamCode];
       openNewTab(
         newLocalizationBug({
-          team,
-          selectedText: message.text!,
-          url: fromUrl!,
+          team: teamsList![teamCode], // eslint-disable-line @typescript-eslint/no-non-null-assertion
+          selectedText: message.text,
+          url,
         }),
       );
     },

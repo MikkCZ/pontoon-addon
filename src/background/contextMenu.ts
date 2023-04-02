@@ -17,6 +17,10 @@ import { getOptions, listenToOptionChange } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import { openNewPontoonTab } from '@commons/utils';
 
+interface ContextMenuItemProperties extends Menus.CreateCreatePropertiesType {
+  id: NonNullable<Menus.CreateCreatePropertiesType['id']>;
+}
+
 const NON_SELECTION_CONTEXTS: Menus.ContextType[] = [
   'page',
   'editable',
@@ -72,7 +76,7 @@ function contextMenuItemsForProject(
   project: StorageContent['projectsList'][string],
   team: StorageContent['teamsList'][string],
   pontoonBaseUrl: OptionsContent['pontoon_base_url'],
-): Menus.CreateCreatePropertiesType[] {
+): ContextMenuItemProperties[] {
   const documentUrlPatterns = project.domains.map(
     (domain) => `https://${domain}/*`,
   );
@@ -134,25 +138,20 @@ function contextMenuItemsForProject(
       title: `Report bug for localization of ${project.name} to ${team.name}`,
       documentUrlPatterns,
       contexts: NON_SELECTION_CONTEXTS,
-      onclick: (_info: Menus.OnClickData, tab: Tabs.Tab) =>
-        openNewTab(
-          newLocalizationBug({
-            team,
-            url: tab.url!,
-          }),
-        ),
+      onclick: (_info: Menus.OnClickData, { url }: Tabs.Tab) =>
+        openNewTab(newLocalizationBug({ team, url })),
     },
     {
       id: `report-bug-for-localization-of-selected-text-${project.slug}`,
       title: 'Report bug for localization of "%s"',
       documentUrlPatterns,
       contexts: SELECTION_CONTEXTS,
-      onclick: (info: Menus.OnClickData, tab: Tabs.Tab) =>
+      onclick: (info: Menus.OnClickData, { url }: Tabs.Tab) =>
         openNewTab(
           newLocalizationBug({
             team,
             selectedText: info.selectionText ?? '',
-            url: tab.url!,
+            url,
           }),
         ),
     },
@@ -160,10 +159,10 @@ function contextMenuItemsForProject(
 }
 
 async function recreateContextMenu(
-  contextMenuItem: Menus.CreateCreatePropertiesType,
+  contextMenuItem: ContextMenuItemProperties,
 ): Promise<number | string> {
   try {
-    await removeContextMenu(contextMenuItem.id!);
+    await removeContextMenu(contextMenuItem.id);
   } catch (error) {
     console.info(
       `Could not remove context menu id='${contextMenuItem.id}' title='${contextMenuItem.title}'. Most likely it did not exist.`,

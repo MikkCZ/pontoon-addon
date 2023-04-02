@@ -251,15 +251,15 @@ async function addContextMenu() {
     title: 'Other l10n sources',
     contexts: ['browser_action'],
   });
-  const localizationResourcesItems = [
+  const localizationResourcesItems: Menus.CreateCreatePropertiesType[] = [
     {
       title: `Mozilla Style Guide (${localeTeam})`,
       onclick: () => openNewTab(mozillaL10nStyleGuide(localeTeam)),
-    } as Menus.CreateCreatePropertiesType,
+    },
     {
       title: `L10n:Teams:${localeTeam} - MozillaWiki`,
       onclick: () => openNewTab(mozillaWikiL10nTeamPage(localeTeam)),
-    } as Menus.CreateCreatePropertiesType,
+    },
   ];
   for (const item of localizationResourcesItems) {
     createContextMenu({

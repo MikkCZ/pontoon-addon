@@ -112,6 +112,7 @@ describe('backgroundClient', () => {
 
     const project = await getPontoonProjectForTheCurrentTab();
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(project!.slug).toBe('firefox');
   });
 

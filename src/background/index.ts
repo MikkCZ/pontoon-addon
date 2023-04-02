@@ -45,6 +45,7 @@ browser.runtime.onInstalled.addListener(async (details) => {
     for (const { matches: urlPatterns, js: files } of contentScripts) {
       for (const matchingTab of await getTabsMatching(...urlPatterns)) {
         for (const file of files ?? []) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           executeScript(matchingTab.id!, file);
         }
       }
