@@ -142,8 +142,9 @@ jobs:
     timeout-minutes: 1
     steps:
       - name: Verify all required status checks passed
+        env:
+          requirements_passed: ${{ needs.required_pre_merge_status_checks_marker.outputs.success }}
         run: |
-          requirements_passed="${{ needs.required_pre_merge_status_checks_marker.outputs.success }}"
           if [[ $requirements_passed == "true" ]]; then
             echo "✅ The pull request passed all required status checks."
             exit 0
