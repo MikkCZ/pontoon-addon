@@ -16,7 +16,6 @@ import { NotificationsListError } from '../NotificationsListError';
 
 import { NotificationsList } from '.';
 
-jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');

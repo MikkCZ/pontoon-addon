@@ -5,9 +5,8 @@ import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 
 export const PontoonBaseUrlInput: React.FC = () => {
-  const [pontoonBaseUrl, setPontoonBaseUrlState] = useState<
-    OptionsContent['pontoon_base_url'] | undefined
-  >();
+  const [pontoonBaseUrl, setPontoonBaseUrlState] =
+    useState<OptionsContent['pontoon_base_url']>();
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {

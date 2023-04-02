@@ -19,15 +19,11 @@ import { openNewPontoonTab } from '@commons/utils';
 import { PanelSection } from '../PanelSection';
 
 export const App: React.FC = () => {
-  const [project, setProject] = useState<
-    StorageContent['projectsList'][string] | undefined
-  >();
-  const [team, setTeam] = useState<
-    StorageContent['teamsList'][string] | undefined
-  >();
-  const [pontoonBaseUrl, setPontoonBaseUrl] = useState<
-    OptionsContent['pontoon_base_url'] | undefined
-  >();
+  const [project, setProject] =
+    useState<StorageContent['projectsList'][string]>();
+  const [team, setTeam] = useState<StorageContent['teamsList'][string]>();
+  const [pontoonBaseUrl, setPontoonBaseUrl] =
+    useState<OptionsContent['pontoon_base_url']>();
 
   useEffect(() => {
     (async () => {

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
+import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getNotificationsUrl,
   markAllNotificationsAsRead,
 } from '@background/backgroundClient';
-import { listenToStorageChange } from '@commons/webExtensionsApi';
 import { openNewPontoonTab } from '@commons/utils';
 
 import { BottomLink } from '../BottomLink';
@@ -23,45 +23,33 @@ const List = styled.ul`
 `;
 
 interface Props {
-  notificationsData: any;
-  hideReadNotifications?: boolean;
+  notificationsData?: StorageContent['notificationsData'];
+  hideReadNotifications: boolean;
   pontoonBaseUrl: string;
 }
 
 export const NotificationsList: React.FC<Props> = ({
+  notificationsData,
   hideReadNotifications,
   pontoonBaseUrl,
-  ...props
 }) => {
-  const [notificationsData, setNotificationsData] = useState(
-    props.notificationsData,
-  );
-  listenToStorageChange(
-    'notificationsData',
-    ({ newValue: notificationsData }) => {
-      setNotificationsData(notificationsData);
-    },
-  );
-
   if (notificationsData) {
     const containsUnreadNotifications = Object.values(notificationsData).some(
-      (notification: any) => notification.unread,
+      (notification) => notification.unread,
     );
     return (
       <section>
         <List>
           {Object.values(notificationsData)
-            .sort((a: any, b: any) => a.id - b.id)
+            .sort((a, b) => a.id - b.id)
             .reverse()
             .filter(
-              (notification: any) =>
-                notification.unread || !hideReadNotifications,
+              (notification) => notification.unread || !hideReadNotifications,
             )
-            .map((notification: any) => (
+            .map((notification) => (
               <NotificationsListItem
                 key={notification.id}
                 pontoonBaseUrl={pontoonBaseUrl}
-                unread={notification.unread}
                 {...notification}
               />
             ))}

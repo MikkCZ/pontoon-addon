@@ -10,6 +10,7 @@ import Linkify from 'react-linkify';
 import type { HTMLReactParserOptions, DOMNode } from 'html-react-parser';
 import parse, { domToReact, Element } from 'html-react-parser';
 
+import type { StorageContent } from '@commons/webExtensionsApi';
 import { getTeamProjectUrl } from '@background/backgroundClient';
 import { openNewPontoonTab } from '@commons/utils';
 
@@ -57,25 +58,12 @@ export const TimeAgo = styled.div`
   text-align: right;
 `;
 
-interface Props {
+type Props = Pick<
+  StorageContent['notificationsData'][number],
+  'unread' | 'actor' | 'target' | 'verb' | 'description' | 'date_iso'
+> & {
   pontoonBaseUrl: string;
-  unread: boolean;
-  actor?: {
-    anchor: string;
-    url: string;
-  };
-  target?: {
-    anchor: string;
-    url: string;
-  };
-  verb?: string;
-  description?: {
-    safe: boolean;
-    content?: string;
-    is_comment?: boolean;
-  };
-  date_iso?: string;
-}
+};
 
 function wrapLinksToPontoon(
   pontoonBaseUrl: string,

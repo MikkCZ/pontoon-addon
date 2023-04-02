@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { getAllContainers } from '@commons/webExtensionsApi';
 import { containersInfoPage } from '@commons/webLinks';
@@ -11,12 +11,9 @@ interface ContainerInfo {
 }
 
 export const ContainerSelection: React.FC = () => {
-  const [containersList, setContainersList] = useState<
-    ContainerInfo[] | undefined
-  >();
-  const [container, _setContainerState] = useState<
-    OptionsContent['contextual_identity'] | undefined
-  >();
+  const [containersList, setContainersList] = useState<ContainerInfo[]>();
+  const [container, _setContainerState] =
+    useState<OptionsContent['contextual_identity']>();
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
@@ -29,10 +26,13 @@ export const ContainerSelection: React.FC = () => {
     })();
   }, []);
 
-  const setContainer = async (cookieStoreId: string) => {
-    _setContainerState(cookieStoreId);
-    await setOption('contextual_identity', cookieStoreId);
-  };
+  const setContainer = useCallback(
+    async (cookieStoreId: string) => {
+      _setContainerState(cookieStoreId);
+      await setOption('contextual_identity', cookieStoreId);
+    },
+    [_setContainerState],
+  );
 
   return (
     <div>

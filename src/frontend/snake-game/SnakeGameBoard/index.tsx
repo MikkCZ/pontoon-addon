@@ -78,10 +78,11 @@ function useBoardWith(eventListeners: EventListeners): JSX.Element {
 }
 
 export const SnakeGameBoard: React.FC = () => {
-  const context = useSnakeGameContext();
-  const { gameState, score } = context.stateRef.current;
-  const eventListeners = context.gameFunctions.eventListeners;
-  const controlFunctions = context.gameFunctions.controlFunctions;
+  const {
+    stateRef,
+    gameFunctions: { eventListeners, controlFunctions },
+  } = useSnakeGameContext();
+  const { gameState, score } = stateRef.current;
 
   const beforeFirstGameStarted = gameState === GameState.NOT_STARTED;
   const gameInProgress =

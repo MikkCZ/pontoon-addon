@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
@@ -6,9 +6,8 @@ import type { OptionsContent } from '@commons/data/defaultOptions';
 const INTERVAL_OPTIONS_MINUTES = [5, 15, 30, 60, 120];
 
 export const DataIntervalUpdateSelection: React.FC = () => {
-  const [intervalMinutes, _setIntervalMinutesState] = useState<
-    OptionsContent['data_update_interval'] | undefined
-  >();
+  const [intervalMinutes, _setIntervalMinutesState] =
+    useState<OptionsContent['data_update_interval']>();
 
   useEffect(() => {
     (async () => {
@@ -16,10 +15,13 @@ export const DataIntervalUpdateSelection: React.FC = () => {
     })();
   }, []);
 
-  const setIntervalMinutes = (intervalMin: number) => {
-    _setIntervalMinutesState(intervalMin);
-    setOption('data_update_interval', intervalMin);
-  };
+  const setIntervalMinutes = useCallback(
+    async (intervalMin: number) => {
+      _setIntervalMinutesState(intervalMin);
+      await setOption('data_update_interval', intervalMin);
+    },
+    [_setIntervalMinutesState],
+  );
 
   return (
     <div>

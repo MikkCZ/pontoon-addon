@@ -63,8 +63,9 @@ interface Props {
 }
 
 export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
-  const allTitles = tiles.map((tile) => tile.title);
-  const [tilesToClick, setTilesToClick] = useState(new Set(allTitles));
+  const [tilesToClick, setTilesToClick] = useState(
+    new Set(tiles.map((tile) => tile.title)),
+  );
 
   return (
     <Wrapper>

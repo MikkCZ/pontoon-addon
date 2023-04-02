@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import type { StorageContent } from '@commons/webExtensionsApi';
 import { getOneFromStorage } from '@commons/webExtensionsApi';
@@ -10,12 +10,9 @@ import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 
 export const LocaleSelection: React.FC = () => {
-  const [teamsList, setTeamsList] = useState<
-    StorageContent['teamsList'] | undefined
-  >();
-  const [localeTeam, _setLocaleTeamState] = useState<
-    OptionsContent['locale_team'] | undefined
-  >();
+  const [teamsList, setTeamsList] = useState<StorageContent['teamsList']>();
+  const [localeTeam, _setLocaleTeamState] =
+    useState<OptionsContent['locale_team']>();
 
   useEffect(() => {
     (async () => {
@@ -28,12 +25,15 @@ export const LocaleSelection: React.FC = () => {
     })();
   }, []);
 
-  const setLocaleTeam = (selected?: string) => {
-    _setLocaleTeamState(selected);
-    if (selected) {
-      setOption('locale_team', selected);
-    }
-  };
+  const setLocaleTeam = useCallback(
+    async (selected?: string) => {
+      _setLocaleTeamState(selected);
+      if (selected) {
+        await setOption('locale_team', selected);
+      }
+    },
+    [_setLocaleTeamState],
+  );
 
   return (
     <div>
