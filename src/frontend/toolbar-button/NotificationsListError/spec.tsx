@@ -13,14 +13,13 @@ jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const windowCloseSpy = jest.spyOn(window, 'close').mockImplementation(jest.fn());
+const windowCloseSpy = jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest
   .spyOn(UtilsApiModule, 'openNewPontoonTab')
   .mockResolvedValue({} as Tabs.Tab);
 
 afterEach(() => {
-  windowCloseSpy.mockReset();
-  (getSignInURL as jest.Mock).mockReset();
+  jest.clearAllMocks();
 });
 
 describe('NotificationsListError', () => {

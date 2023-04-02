@@ -17,10 +17,9 @@ jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const reactDomRender = jest.spyOn(ReactDOM, 'render') as jest.Mock;
+const reactDomRenderSpy = jest.spyOn(ReactDOM, 'render');
 
 afterEach(() => {
-  reactDomRender.mockReset();
   jest.resetAllMocks();
   document.body.textContent = '';
 });
@@ -35,8 +34,8 @@ async function expectRendersToRoot(rootId: string): Promise<void> {
   });
   await flushPromises();
 
-  expect(reactDomRender).toHaveBeenCalledTimes(1);
-  expect(reactDomRender.mock.calls[0][1]).toBe(rootDiv);
+  expect(reactDomRenderSpy).toHaveBeenCalledTimes(1);
+  expect(reactDomRenderSpy.mock.calls[0][1]).toBe(rootDiv);
 }
 
 describe('address bar', () => {
@@ -88,16 +87,16 @@ describe('snake game', () => {
 
 describe('toolbar button', () => {
   beforeEach(() => {
-    (getOptions as jest.Mock).mockImplementation(async () => ({
+    (getOptions as jest.Mock).mockResolvedValue({
       locale_team: 'cs',
       toolbar_button_popup_always_hide_read_notifications: true,
       pontoon_base_url: 'https://127.0.0.1',
-    }));
-    (getFromStorage as jest.Mock).mockImplementation(async () => ({
+    });
+    (getFromStorage as jest.Mock).mockResolvedValue({
       notificationsData: {},
       teamsList: { cs: {} },
       latestTeamsActivity: { cs: {} },
-    }));
+    });
   });
 
   it('renders', async () => {

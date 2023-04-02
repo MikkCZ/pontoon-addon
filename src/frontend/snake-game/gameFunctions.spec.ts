@@ -28,8 +28,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  patchStateRef.mockReset();
-  updateGame.mockReset();
+  jest.resetAllMocks();
 });
 
 describe('gameFunctions', () => {

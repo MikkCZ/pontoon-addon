@@ -4,10 +4,10 @@ import { act } from 'react-dom/test-utils';
 
 import { CloseButton } from '.';
 
-const windowCloseSpy = jest.spyOn(window, 'close');
+jest.spyOn(window, 'close').mockReturnValue(undefined);
 
 afterEach(() => {
-  windowCloseSpy.mockReset();
+  jest.resetAllMocks();
 });
 
 describe('CloseButton', () => {

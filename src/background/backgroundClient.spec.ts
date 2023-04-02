@@ -23,21 +23,19 @@ import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 
-beforeEach(() => {
-  (getOneOption as jest.Mock).mockImplementation((key: string) => {
-    switch (key) {
-      case 'locale_team':
-        return 'cs';
-      case 'pontoon_base_url':
-        return 'https://localhost';
-      default:
-        throw new Error(`Missing mock value for option '${key}'.`);
-    }
-  });
+(getOneOption as jest.Mock).mockImplementation((key: string) => {
+  switch (key) {
+    case 'locale_team':
+      return 'cs';
+    case 'pontoon_base_url':
+      return 'https://localhost';
+    default:
+      throw new Error(`Missing mock value for option '${key}'.`);
+  }
 });
 
 afterEach(() => {
-  (getOneOption as jest.Mock).mockReset();
+  jest.clearAllMocks();
 });
 
 function mockBrowserSendMessage() {
