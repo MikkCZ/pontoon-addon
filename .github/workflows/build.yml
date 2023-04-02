@@ -95,8 +95,6 @@ jobs:
         run: make test_in_container
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3
-      - name: Simulate test failure
-        run: exit 1
   generated_code_consistency:
     name: Verify generated code is consistent
     needs: prepare_cache
