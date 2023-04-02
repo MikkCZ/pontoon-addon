@@ -37,7 +37,7 @@ export const ContainerSelection: React.FC = () => {
   return (
     <div>
       <label htmlFor="contextual_identity">
-        Select container to use for data updates
+        Select container to use for opening Pontoon pages and accessing data
       </label>
       <select
         id="contextual_identity"
@@ -70,7 +70,7 @@ export const ContainerSelection: React.FC = () => {
         Edit
       </button>
       <aside>
-        If you use a specific{' '}
+        If you want to use a specific{' '}
         <a href={containersInfoPage()} target="_blank" rel="noreferrer">
           container
         </a>{' '}

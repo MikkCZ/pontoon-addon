@@ -5,7 +5,8 @@ import {
   getNotificationsUrl,
   markAllNotificationsAsRead,
 } from '@background/backgroundClient';
-import { listenToStorageChange, openNewTab } from '@commons/webExtensionsApi';
+import { listenToStorageChange } from '@commons/webExtensionsApi';
+import { openNewPontoonTab } from '@commons/utils';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
@@ -69,7 +70,7 @@ export const NotificationsList: React.FC<Props> = ({
         ) : (
           <BottomLink
             onClick={async () => {
-              await openNewTab(await getNotificationsUrl());
+              await openNewPontoonTab(await getNotificationsUrl());
               window.close();
             }}
           >

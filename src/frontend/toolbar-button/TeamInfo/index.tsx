@@ -20,6 +20,7 @@ import {
 } from '@commons/webLinks';
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 import lightbulbImage from '@assets/img/lightbulb-blue.svg';
+import { openNewPontoonTab } from '@commons/utils';
 
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
@@ -112,6 +113,11 @@ async function openNewTabAndClosePopup(url: string): Promise<void> {
   window.close();
 }
 
+async function openNewPontoonTabAndClosePopup(url: string): Promise<void> {
+  await openNewPontoonTab(url);
+  window.close();
+}
+
 export const TeamInfo: React.FC = () => {
   const [projectForCurrentTab, setProjectForCurrentTab] = useState<
     StorageContent['projectsList'][string] | undefined
@@ -149,7 +155,7 @@ export const TeamInfo: React.FC = () => {
       <Title>
         <TitleLink
           onClick={() =>
-            openNewTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
+            openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
           }
         >
           <Name>{team.name}</Name> <Code>{team.code}</Code>
@@ -180,7 +186,7 @@ export const TeamInfo: React.FC = () => {
             label={category.label}
             value={team.strings[category.dataProperty]}
             onClick={() =>
-              openNewTabAndClosePopup(
+              openNewPontoonTabAndClosePopup(
                 pontoonSearchStringsWithStatus(
                   pontoonBaseUrl,
                   team,
@@ -193,7 +199,7 @@ export const TeamInfo: React.FC = () => {
       </List>
       <BottomLink
         onClick={() =>
-          openNewTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
+          openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
         }
       >
         Open {team.name} team page
@@ -202,7 +208,7 @@ export const TeamInfo: React.FC = () => {
         <>
           <BottomLink
             onClick={() =>
-              openNewTabAndClosePopup(
+              openNewPontoonTabAndClosePopup(
                 pontoonTeamsProject(pontoonBaseUrl, team, projectForCurrentTab),
               )
             }
@@ -211,7 +217,7 @@ export const TeamInfo: React.FC = () => {
           </BottomLink>
           <BottomLink
             onClick={() =>
-              openNewTabAndClosePopup(
+              openNewPontoonTabAndClosePopup(
                 pontoonProjectTranslationView(
                   pontoonBaseUrl,
                   team,

@@ -10,7 +10,7 @@ import Linkify from 'react-linkify';
 import parse from 'html-react-parser';
 
 import { getTeamProjectUrl } from '@background/backgroundClient';
-import { openNewTab } from '@commons/webExtensionsApi';
+import { openNewPontoonTab } from '@commons/utils';
 
 export const Wrapper = styled.li<{ unread: boolean; pointer?: boolean }>`
   ${({ unread }) =>
@@ -77,7 +77,7 @@ interface Props {
 
 async function openTeamProject(projectUrl: string): Promise<void> {
   const teamProjectUrl = await getTeamProjectUrl(projectUrl);
-  openNewTab(teamProjectUrl);
+  openNewPontoonTab(teamProjectUrl);
   window.close();
 }
 

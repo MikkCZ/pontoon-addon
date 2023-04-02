@@ -27,6 +27,7 @@ import {
   microsoftTerminologySearch,
   pontoonAddonWiki,
 } from '@commons/webLinks';
+import { openNewPontoonTab } from '@commons/utils';
 
 import { refreshData } from './RemotePontoon';
 
@@ -78,10 +79,10 @@ async function buttonClickHandler() {
     case 'popup':
       break;
     case 'home-page':
-      await openNewTab(await getOneOption('pontoon_base_url'));
+      await openNewPontoonTab(await getOneOption('pontoon_base_url'));
       break;
     case 'team-page':
-      await openNewTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
+      await openNewPontoonTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
       break;
     default:
       throw new Error(`Unknown toolbar button action '${action}'.`);
@@ -166,7 +167,7 @@ async function addContextMenu() {
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
-        openNewTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
+        openNewPontoonTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
       },
     },
     {
@@ -174,7 +175,9 @@ async function addContextMenu() {
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
-        openNewTab(pontoonTeamInsights(pontoonBaseUrl, { code: teamCode }));
+        openNewPontoonTab(
+          pontoonTeamInsights(pontoonBaseUrl, { code: teamCode }),
+        );
       },
     },
     {
@@ -182,7 +185,7 @@ async function addContextMenu() {
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
-        openNewTab(pontoonTeamBugs(pontoonBaseUrl, { code: teamCode }));
+        openNewPontoonTab(pontoonTeamBugs(pontoonBaseUrl, { code: teamCode }));
       },
     },
     {
@@ -190,7 +193,7 @@ async function addContextMenu() {
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
-        openNewTab(
+        openNewPontoonTab(
           pontoonProjectTranslationView(
             pontoonBaseUrl,
             { code: teamCode },
@@ -218,7 +221,7 @@ async function addContextMenu() {
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
-        openNewTab(
+        openNewPontoonTab(
           pontoonProjectTranslationView(
             pontoonBaseUrl,
             { code: teamCode },

@@ -1,9 +1,10 @@
+import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
-import { openNewTab } from '@commons/webExtensionsApi';
+import * as UtilsApiModule from '@commons/utils';
 import {
   getNotificationsUrl,
   markAllNotificationsAsRead,
@@ -16,9 +17,14 @@ import { NotificationsListError } from '../NotificationsListError';
 import { NotificationsList } from '.';
 
 jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+const openNewPontoonTabSpy = jest
+  .spyOn(UtilsApiModule, 'openNewPontoonTab')
+  .mockResolvedValue({} as Tabs.Tab);
 
 beforeEach(() => {
   (getNotificationsUrl as jest.Mock).mockReturnValue(
@@ -27,7 +33,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  (openNewTab as jest.Mock).mockReset();
   (getNotificationsUrl as jest.Mock).mockReset();
   (markAllNotificationsAsRead as jest.Mock).mockReset();
   windowCloseSpy.mockReset();
@@ -129,7 +134,9 @@ describe('NotificationsList', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith('https://127.0.0.1/notifications');
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
+      'https://127.0.0.1/notifications',
+    );
     expect(windowCloseSpy).toHaveBeenCalled();
   });
 });

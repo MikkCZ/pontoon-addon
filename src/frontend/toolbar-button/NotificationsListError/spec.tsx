@@ -1,21 +1,25 @@
+import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
+import * as UtilsApiModule from '@commons/utils';
 import { getSignInURL } from '@background/backgroundClient';
-import { openNewTab } from '@commons/webExtensionsApi';
 
 import { NotificationsListError, SignInLink } from '.';
 
-jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+const openNewPontoonTabSpy = jest
+  .spyOn(UtilsApiModule, 'openNewPontoonTab')
+  .mockResolvedValue({} as Tabs.Tab);
 
 afterEach(() => {
   windowCloseSpy.mockReset();
-  (openNewTab as jest.Mock).mockReset();
   (getSignInURL as jest.Mock).mockReset();
 });
 
@@ -30,6 +34,6 @@ describe.skip('NotificationsListError', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(signInUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(signInUrl);
   });
 });

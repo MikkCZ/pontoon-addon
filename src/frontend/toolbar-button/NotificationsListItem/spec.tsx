@@ -1,10 +1,11 @@
+import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import ReactTimeAgo from 'react-time-ago';
 import flushPromises from 'flush-promises';
 
-import { openNewTab } from '@commons/webExtensionsApi';
+import * as UtilsApiModule from '@commons/utils';
 import { getTeamProjectUrl } from '@background/backgroundClient';
 
 import {
@@ -15,10 +16,14 @@ import {
   TimeAgo,
 } from '.';
 
-jest.mock('@commons/webExtensionsApi');
+jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
 const windowCloseSpy = jest.spyOn(window, 'close');
+const openNewPontoonTabSpy = jest
+  .spyOn(UtilsApiModule, 'openNewPontoonTab')
+  .mockResolvedValue({} as Tabs.Tab);
 
 beforeEach(() => {
   (getTeamProjectUrl as jest.Mock).mockImplementation(
@@ -28,7 +33,6 @@ beforeEach(() => {
 
 afterEach(() => {
   windowCloseSpy.mockReset();
-  (openNewTab as jest.Mock).mockReset();
   (getTeamProjectUrl as jest.Mock).mockReset();
 });
 
@@ -140,8 +144,8 @@ describe('NotificationsListItem', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(actorUrl);
-    expect(openNewTab).toHaveBeenCalledWith(targetUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(actorUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(targetUrl);
   });
 
   it('whole item is clickable when only one link is present', async () => {
@@ -161,6 +165,6 @@ describe('NotificationsListItem', () => {
     });
     await flushPromises();
 
-    expect(openNewTab).toHaveBeenCalledWith(actorUrl);
+    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(actorUrl);
   });
 });

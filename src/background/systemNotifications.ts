@@ -1,6 +1,5 @@
 import type { StorageContent } from '@commons/webExtensionsApi';
 import {
-  openNewTab,
   getOneFromStorage,
   saveToStorage,
   createNotification,
@@ -13,6 +12,7 @@ import {
 } from '@commons/webLinks';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import { getOneOption, getOptions } from '@commons/options';
+import { openNewPontoonTab } from '@commons/utils';
 
 export function setupSystemNotifications() {
   listenToStorageChange(
@@ -112,9 +112,9 @@ async function handleNotificationClick(
     await getOptions(['pontoon_base_url', 'locale_team']);
 
   if (isSuggestion || notification.target) {
-    openNewTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
+    openNewPontoonTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
   } else {
-    openNewTab(
+    openNewPontoonTab(
       toPontoonTeamSpecificProjectUrl(
         pontoonBaseUrl,
         { code: teamCode },
