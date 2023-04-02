@@ -13,7 +13,7 @@ jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const windowCloseSpy = jest.spyOn(window, 'close');
+const windowCloseSpy = jest.spyOn(window, 'close').mockImplementation(jest.fn());
 const openNewPontoonTabSpy = jest
   .spyOn(UtilsApiModule, 'openNewPontoonTab')
   .mockResolvedValue({} as Tabs.Tab);
@@ -23,7 +23,7 @@ afterEach(() => {
   (getSignInURL as jest.Mock).mockReset();
 });
 
-describe.skip('NotificationsListError', () => {
+describe('NotificationsListError', () => {
   it('opens sign-in page on click', async () => {
     const signInUrl = 'https://127.0.0.1/';
     (getSignInURL as jest.Mock).mockReturnValue(signInUrl);
@@ -35,5 +35,6 @@ describe.skip('NotificationsListError', () => {
     await flushPromises();
 
     expect(openNewPontoonTabSpy).toHaveBeenCalledWith(signInUrl);
+    expect(windowCloseSpy).toHaveBeenCalled();
   });
 });
