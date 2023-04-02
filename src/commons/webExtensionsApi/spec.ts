@@ -39,7 +39,9 @@ import {
   listenToMessages,
   listenToMessagesExclusively,
   getTabsMatching,
-} from './webExtensionsApi';
+} from '.';
+
+jest.mock('@commons/webExtensionsApi/browser');
 
 describe('webExtensionsApi', () => {
   it('exports browser', () => {

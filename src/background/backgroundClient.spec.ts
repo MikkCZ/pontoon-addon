@@ -20,6 +20,7 @@ import {
 } from './backgroundClient';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
+jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 
 beforeEach(() => {

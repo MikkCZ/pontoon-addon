@@ -8,6 +8,8 @@ import {
   setOption,
 } from './options';
 
+jest.mock('@commons/webExtensionsApi/browser');
+
 jest.mock('./data/defaultOptions', () => ({
   defaultOptionsFor: () => ({
     locale_team: 'en',

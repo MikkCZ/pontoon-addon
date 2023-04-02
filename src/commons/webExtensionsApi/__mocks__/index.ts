@@ -1,3 +1,7 @@
+import { default as browserObj } from './browser';
+
+export const browser = browserObj;
+
 export const getFromStorage = jest.fn();
 
 export const getOneFromStorage = jest.fn();
