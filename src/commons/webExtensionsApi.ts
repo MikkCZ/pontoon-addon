@@ -1,5 +1,4 @@
 import type {
-  Browser,
   Menus,
   Notifications,
   Storage,
@@ -8,8 +7,9 @@ import type {
 
 import type { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-export const browser = require('webextension-polyfill') as Browser;
+import { default as browserObj } from './browser';
+
+export const browser = browserObj;
 
 export enum BrowserFamily {
   MOZILLA = 'mozilla',

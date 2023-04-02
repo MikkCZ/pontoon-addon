@@ -121,10 +121,16 @@ class PontoonHttpClient {
       const requestHeaders = (details.requestHeaders ?? [])
         .filter((header) => header.name.toLowerCase() !== 'pontoon-addon-token')
         .filter((header) => header.name.toLowerCase() !== 'cookie')
-        .concat({
-          name: 'Cookie',
-          value: `${cookie.name}=${cookie.value}`,
-        });
+        .concat(
+          ...(cookie
+            ? [
+                {
+                  name: 'Cookie',
+                  value: `${cookie.name}=${cookie.value}`,
+                },
+              ]
+            : []),
+        );
       return {
         ...details,
         requestHeaders,
