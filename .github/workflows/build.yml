@@ -118,37 +118,3 @@ jobs:
             echo 'Found uncommitted changes' >&2
             exit 1
           fi
-  required_pre_merge_status_checks_marker:
-    name: Status checks required before merge (marker)
-    needs:
-      - build_dev
-      - build
-      - test
-      - generated_code_consistency
-    if: github.event_name == 'pull_request' && success()
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    steps:
-      - name: Mark all required status checks were successful
-        id: marker
-        run: echo "success=true" >> $GITHUB_OUTPUT
-    outputs:
-      success: ${{ steps.marker.outputs.success }}
-  required_pre_merge_status_checks:
-    name: Status checks required before merge
-    needs: required_pre_merge_status_checks_marker
-    if: github.event_name == 'pull_request' && always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    steps:
-      - name: Verify all required status checks passed
-        env:
-          requirements_passed: ${{ needs.required_pre_merge_status_checks_marker.outputs.success }}
-        run: |
-          if [[ $requirements_passed == "true" ]]; then
-            echo "✅ The pull request passed all required status checks."
-            exit 0
-          else
-            echo "❗ Some of the required status checks failed or did not run."
-            exit 1
-          fi
