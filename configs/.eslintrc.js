@@ -1,9 +1,3 @@
-require('ts-node/register');
+const { loadTypeChecked } = require('./utils/configLoader.js');
 
-const path = require('path');
-
-const { default: config } = require(path.resolve(__dirname, '.eslintrc.ts'));
-
-module.exports = {
-  ...config
-};
+module.exports = loadTypeChecked({ file: '.eslintrc.ts' });

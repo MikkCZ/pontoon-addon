@@ -11,11 +11,11 @@ const Wrapper = styled.section`
   display: grid;
   grid-template-rows: 15% 30% 40% 15%;
 
-  @media screen and (max-width: 1024px) and (min-width: 640px) {
+  @media screen and (640px <= width <= 1024px) {
     width: 48%;
   }
 
-  @media screen and (max-width: 640px) {
+  @media screen and (width <= 640px) {
     width: 100%;
   }
 `;
@@ -33,8 +33,7 @@ const Text = styled.p`
 
 const Row = styled.div<{ order: number }>`
   ${({ order }) => css`
-    grid-row-start: ${order};
-    grid-row-end: ${order};
+    grid-row: ${order} ${order};
   `}
   margin: 0;
   padding: 0;

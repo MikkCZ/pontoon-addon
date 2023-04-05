@@ -31,7 +31,9 @@ export const Wrapper = styled.li<{ unread: boolean; pointer?: boolean }>`
       ? css`
           cursor: pointer;
         `
-      : css``}
+      : css`
+          /* default cursor */
+        `}
   padding: 0.5em 1em;
 
   &:hover {

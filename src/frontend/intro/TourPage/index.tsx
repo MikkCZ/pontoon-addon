@@ -20,7 +20,7 @@ const CloseButtonWrapper = styled.div`
   position: absolute;
   right: 2em;
 
-  @media screen and (max-width: 640px) {
+  @media screen and (width <= 640px) {
     display: none;
   }
 `;
@@ -34,7 +34,7 @@ const TourPageTiles = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (width <= 1024px) {
     width: 100%;
     margin: 0;
   }
@@ -50,7 +50,9 @@ const EasterEggHint = styled.div<{ opacity?: number }>`
       ? css`
           opacity: ${opacity};
         `
-      : css``}
+      : css`
+          /* fully visible */
+        `}
   text-align: center;
   font-size: 0.8em;
   position: relative;

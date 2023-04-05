@@ -9,9 +9,13 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const ControlsInfo = styled.div``;
+export const ControlsInfo = styled.div`
+  /* just a named div */
+`;
 
-export const Score = styled.div``;
+export const Score = styled.div`
+  /* just a named div */
+`;
 
 export const SnakeGameInfo: React.FC = () => {
   const {
