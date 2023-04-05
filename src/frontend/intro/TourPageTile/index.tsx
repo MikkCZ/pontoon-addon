@@ -9,7 +9,7 @@ const Wrapper = styled.section`
   border: 1px solid #5e6475;
   text-align: center;
   display: grid;
-  grid-template-rows: 15% 30% 40% 15%;
+  grid-template-rows: [title] 15% [image] 30% [text] 40% [button] 15%;
 
   @media screen and (640px <= width <= 1024px) {
     width: 48%;
@@ -31,9 +31,9 @@ const Text = styled.p`
   padding: 2em;
 `;
 
-const Row = styled.div<{ order: number }>`
-  ${({ order }) => css`
-    grid-row: ${order} ${order};
+const Row = styled.div<{ rowName: string }>`
+  ${({ rowName }) => css`
+    grid-row: ${rowName};
   `}
   margin: 0;
   padding: 0;
@@ -59,14 +59,18 @@ export const TourPageTile: React.FC<Props> = ({
 }) => {
   return (
     <Wrapper>
-      <Row order={1}>
+      <Row rowName="title">
         <h3>{title}</h3>
       </Row>
-      <Row order={2}>{imageSrc && <Image src={imageSrc} alt="" />}</Row>
-      <Row order={3}>
+      {imageSrc && (
+        <Row rowName="image">
+          <Image src={imageSrc} alt="" />
+        </Row>
+      )}
+      <Row rowName="text">
         <Text>{text}</Text>
       </Row>
-      <Row order={4}>
+      <Row rowName="button">
         <button className="pontoon-style" onClick={button.onClick}>
           {button.text}
         </button>
