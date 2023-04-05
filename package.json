@@ -64,6 +64,7 @@
     "@types/dompurify": "^3.0.0",
     "@types/enzyme": "^3.10.0",
     "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/eslint": "^8.37.0",
     "@types/generate-json-webpack-plugin": "^0.3.4",
     "@types/javascript-time-ago": "^2.0.3",
     "@types/jest": "^28.1.8",
