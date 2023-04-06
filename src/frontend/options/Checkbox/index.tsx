@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import type { OptionId } from '@commons/options';
 import { getOneOption, setOption } from '@commons/options';
+import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
+import { CheckboxInput } from '@frontend/commons/components/pontoon/CheckboxInput';
 
 interface Props {
   optionKey: OptionId;
@@ -17,9 +19,8 @@ export const Checkbox: React.FC<Props> = ({ optionKey, children }) => {
   }, [optionKey]);
 
   return (
-    <label>
-      <input
-        type="checkbox"
+    <InputLabel>
+      <CheckboxInput
         name={optionKey}
         checked={checked}
         onChange={(e) => {
@@ -28,6 +29,6 @@ export const Checkbox: React.FC<Props> = ({ optionKey, children }) => {
         }}
       />
       {children}
-    </label>
+    </InputLabel>
   );
 };

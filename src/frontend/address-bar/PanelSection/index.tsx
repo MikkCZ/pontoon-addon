@@ -1,10 +1,9 @@
 import React from 'react';
 
-import type { Props as PanelListItemProps } from '../PanelListItem';
 import { PanelListItem } from '../PanelListItem';
 
 interface Props {
-  items: PanelListItemProps[];
+  items: React.ComponentProps<typeof PanelListItem>[];
 }
 
 export const PanelSection: React.FC<Props> = ({ items }) => {

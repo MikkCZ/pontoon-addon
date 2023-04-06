@@ -1,7 +1,7 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import type { MouseEvent } from 'react';
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { css } from '@emotion/react';
 import ReactTimeAgo from 'react-time-ago';
 import DOMPurify from 'dompurify';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -13,63 +13,88 @@ import parse, { domToReact, Element } from 'html-react-parser';
 import type { StorageContent } from '@commons/webExtensionsApi';
 import { getTeamProjectUrl } from '@background/backgroundClient';
 import { openNewPontoonTab } from '@commons/utils';
+import { Link } from '@frontend/commons/components/pontoon/Link';
+import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
+import { colors } from '@frontend/commons/const';
 
-export const Wrapper = styled.li<{ unread: boolean; pointer?: boolean }>`
-  ${({ unread }) =>
-    unread
-      ? css`
-          background-color: #333941;
-          border-bottom: 1px solid transparent;
-        `
-      : css`
-          &:not(:last-child) {
-            border-bottom: 1px solid #333941;
+export const Wrapper: React.FC<
+  React.ComponentProps<'li'> & {
+    unread: boolean;
+    hasSingleLink: boolean;
+  }
+> = ({ unread, hasSingleLink, ...props }) => (
+  <li
+    css={css([
+      {
+        padding: '0.5em 1em',
+      },
+      unread
+        ? {
+            backgroundColor: colors.background.light,
+            borderBottom: '1px solid transparent',
           }
-        `}
-  ${({ pointer }) =>
-    pointer
-      ? css`
-          cursor: pointer;
-        `
-      : css`
-          /* default cursor */
-        `}
-  padding: 0.5em 1em;
+        : {
+            ':not(:last-child)': {
+              borderBottom: `1px solid ${colors.background.light}`,
+            },
+          },
+      hasSingleLink ? { cursor: 'pointer' } : {},
+      {
+        ':hover': {
+          backgroundColor: colors.background.toolbarButtonItemHover,
+        },
+      },
+    ])}
+    {...props}
+  />
+);
 
-  &:hover {
-    background-color: #3f4752;
-  }
-`;
+export const ActorTargetLink: React.FC<React.ComponentProps<typeof Link>> = (
+  props,
+) => (
+  <Link
+    css={css([
+      {
+        color: colors.interactive.red,
+      },
+      {
+        ':hover': {
+          color: colors.interactive.red,
+        },
+      },
+    ])}
+    {...props}
+  />
+);
 
-export const ActorTargetLink = styled.button.attrs({ className: 'link' })`
-  && {
-    color: #f36;
+export const Description: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css({
+      color: colors.font.veryLight,
+    })}
+    {...props}
+  />
+);
 
-    &:hover {
-      color: #f36;
-    }
-  }
-`;
+export const TimeAgo: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css({
+      color: colors.font.veryLight,
+      textAlign: 'right',
+    })}
+    {...props}
+  />
+);
 
-export const Description = styled.div`
-  color: #888;
-`;
-
-export const TimeAgo = styled.div`
-  color: #888;
-  text-align: right;
-`;
-
-type Props = Pick<
-  StorageContent['notificationsData'][number],
-  'unread' | 'actor' | 'target' | 'verb' | 'description' | 'date_iso'
-> & {
+interface Props
+  extends Pick<
+    StorageContent['notificationsData'][number],
+    'unread' | 'actor' | 'target' | 'verb' | 'description' | 'date_iso'
+  > {
   pontoonBaseUrl: string;
-};
+}
 
-function wrapLinksToPontoon(
-  pontoonBaseUrl: string,
-): HTMLReactParserOptions['replace'] {
+function wrapLinks(pontoonBaseUrl: string): HTMLReactParserOptions['replace'] {
   // eslint-disable-next-line react/display-name
   return (domNode: DOMNode): JSX.Element | void => {
     if (
@@ -86,7 +111,7 @@ function wrapLinksToPontoon(
       }
       if (pontoonLinkUrl) {
         return (
-          <a
+          <NativeLink
             href={href}
             onClick={(e) => {
               if (pontoonLinkUrl) {
@@ -96,7 +121,13 @@ function wrapLinksToPontoon(
             }}
           >
             {domToReact(domNode.children)}
-          </a>
+          </NativeLink>
+        );
+      } else {
+        return (
+          <NativeLink href={href} target="_blank" rel="noopener noreferrer">
+            {domToReact(domNode.children)}
+          </NativeLink>
         );
       }
     }
@@ -144,26 +175,30 @@ export const NotificationsListItem: React.FC<Props> = ({
 
   if (isSuggestion) {
     return (
-      <Wrapper unread={unread} pointer={hasSingleLink} onClick={openSingleLink}>
+      <Wrapper
+        unread={unread}
+        hasSingleLink={hasSingleLink}
+        onClick={openSingleLink}
+      >
         {description &&
           description.content &&
           (description.safe ? (
             <div onClick={openSingleLink}>
               {parse(DOMPurify.sanitize(description.content), {
-                replace: wrapLinksToPontoon(pontoonBaseUrl),
+                replace: wrapLinks(pontoonBaseUrl),
               })}
             </div>
           ) : (
             <div onClick={openSingleLink}>
               <Linkify
+                component={NativeLink}
                 properties={{
-                  className: 'link',
                   target: '_blank',
                   rel: 'noopener noreferrer',
                 }}
               >
                 {parse(description.content, {
-                  replace: wrapLinksToPontoon(pontoonBaseUrl),
+                  replace: wrapLinks(pontoonBaseUrl),
                 })}
               </Linkify>
             </div>
@@ -177,7 +212,11 @@ export const NotificationsListItem: React.FC<Props> = ({
     );
   } else {
     return (
-      <Wrapper unread={unread} pointer={hasSingleLink} onClick={openSingleLink}>
+      <Wrapper
+        unread={unread}
+        hasSingleLink={hasSingleLink}
+        onClick={openSingleLink}
+      >
         {actor && !isSuggestion && (
           <ActorTargetLink
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
@@ -209,20 +248,20 @@ export const NotificationsListItem: React.FC<Props> = ({
           (description.safe ? (
             <Description onClick={openSingleLink}>
               {parse(DOMPurify.sanitize(description.content), {
-                replace: wrapLinksToPontoon(pontoonBaseUrl),
+                replace: wrapLinks(pontoonBaseUrl),
               })}
             </Description>
           ) : (
             <Description onClick={openSingleLink}>
               <Linkify
+                component={NativeLink}
                 properties={{
-                  className: 'link',
                   target: '_blank',
                   rel: 'noopener noreferrer',
                 }}
               >
                 {parse(description.content, {
-                  replace: wrapLinksToPontoon(pontoonBaseUrl),
+                  replace: wrapLinks(pontoonBaseUrl),
                 })}
               </Linkify>
             </Description>

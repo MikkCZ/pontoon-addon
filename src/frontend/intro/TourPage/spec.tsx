@@ -1,22 +1,21 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 
-import { CloseButton } from '../CloseButton';
 import { TourPageTile } from '../TourPageTile';
 
-import { TourPage, PrivacyPolicyLinkWrapper } from '.';
+import { TourPage, CloseIcon, PrivacyPolicyLinkWrapper } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 
 describe('TourPage', () => {
   it('renders close button', () => {
-    const wrapper = shallow(<TourPage />);
+    const wrapper = shallow(<TourPage title="TITLE" tiles={[]} />);
 
-    expect(wrapper.find(CloseButton)).toHaveLength(1);
+    expect(wrapper.find(CloseIcon)).toHaveLength(1);
   });
 
   it('renders title', () => {
-    const wrapper = mount(<TourPage title="TITLE" />);
+    const wrapper = mount(<TourPage title="TITLE" tiles={[]} />);
 
     expect(wrapper.find('h2').text()).toBe('TITLE');
   });
@@ -24,6 +23,7 @@ describe('TourPage', () => {
   it('renders content', () => {
     const wrapper = shallow(
       <TourPage
+        title="TITLE"
         tiles={[
           {
             title: '',
@@ -41,7 +41,7 @@ describe('TourPage', () => {
   });
 
   it('renders privacy policy link', () => {
-    const wrapper = mount(<TourPage />);
+    const wrapper = mount(<TourPage title="TITLE" tiles={[]} />);
 
     expect(wrapper.find(PrivacyPolicyLinkWrapper).text()).toBe(
       'Privacy policy',

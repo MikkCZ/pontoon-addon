@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { createGlobalStyle } from 'styled-components';
 
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import { getOptions } from '@commons/options';
@@ -9,22 +8,9 @@ import {
   getOneFromStorage,
 } from '@commons/webExtensionsApi';
 
-import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
+import { GlobalBodyStyle } from '../../GlobalBodyStyle';
 import { NotificationsList } from '../NotificationsList';
 import { TeamInfo } from '../TeamInfo';
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    width: fit-content;
-    min-width: 350px;
-    font: caption;
-    font-size: 14px;
-  }
-
-  body * {
-    text-align: left;
-  }
-`;
 
 export const App: React.FC = () => {
   const [notificationsData, setNotificationsData] =
@@ -80,8 +66,16 @@ export const App: React.FC = () => {
 
   return loaded ? (
     <>
-      <GlobalPontoonStyle />
-      <GlobalStyle />
+      <GlobalBodyStyle
+        extra={{
+          width: 'fit-content',
+          minWidth: '350px',
+
+          '*': {
+            textAlign: 'left',
+          },
+        }}
+      />
       <NotificationsList
         notificationsData={notificationsData}
         hideReadNotifications={hideReadNotifications!} // eslint-disable-line @typescript-eslint/no-non-null-assertion

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { createGlobalStyle } from 'styled-components';
 
 import {
   createNotification,
@@ -19,21 +18,12 @@ import contextButtonsImage from '@assets/img/context-buttons.png';
 import settingsImage from '@assets/img/settings.svg';
 import feedbackImage from '@assets/img/2-Lions.png';
 
-import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
-import type { Props as TileProps } from '../TourPageTile';
+import type { TourPageTile } from '../TourPageTile';
 import { TourPage } from '../TourPage';
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    background: #333941;
-    font-family: sans-serif;
-    font-size: 14px;
-  }
-`;
 
 const pageTitle = 'Welcome to Pontoon Add-on';
 
-const addressBarTile: TileProps = {
+const addressBarTile: React.ComponentProps<typeof TourPageTile> = {
   title: 'Address bar button',
   imageSrc: addressBarImage,
   text: (
@@ -49,7 +39,7 @@ const addressBarTile: TileProps = {
   },
 };
 
-const contextButtonsTile: TileProps = {
+const contextButtonsTile: React.ComponentProps<typeof TourPageTile> = {
   title: 'Context buttons',
   imageSrc: contextButtonsImage,
   text: (
@@ -65,7 +55,7 @@ const contextButtonsTile: TileProps = {
   },
 };
 
-const contextMenuTile: TileProps = {
+const contextMenuTile: React.ComponentProps<typeof TourPageTile> = {
   title: 'Context menu',
   imageSrc: contextMenuImage,
   text: (
@@ -80,7 +70,7 @@ const contextMenuTile: TileProps = {
   },
 };
 
-const tiles: TileProps[] = [
+const tiles: React.ComponentProps<typeof TourPageTile>[] = [
   {
     title: 'Pontoon button',
     imageSrc: toolbarButtonImage,
@@ -158,11 +148,5 @@ export const App: React.FC = () => {
     document.title = pageTitle;
   }, []);
 
-  return (
-    <>
-      <GlobalPontoonStyle />
-      <GlobalStyle />
-      <TourPage title={pageTitle} tiles={tiles} />
-    </>
-  );
+  return <TourPage title={pageTitle} tiles={tiles} />;
 };

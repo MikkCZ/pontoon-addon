@@ -1,50 +1,54 @@
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import { css } from '@emotion/react';
 
-import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
+import { colors } from '@frontend/commons/const';
+import { Heading2 } from '@frontend/commons/components/pontoon/Heading2';
+import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+import { Page } from '@frontend/commons/components/pontoon/Page';
+
 import { SnakeGameContextProvider } from '../SnakeGameContext';
 import { SnakeGameBoard } from '../SnakeGameBoard';
 import { SnakeGameInfo } from '../SnakeGameInfo';
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    background: #333941;
-    font-family: sans-serif;
-    font-size: 14px;
-  }
-`;
+const Wrapper: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css({
+      textAlign: 'center',
+      padding: '1em 0',
+    })}
+    {...props}
+  />
+);
 
-const Wrapper = styled.div`
-  text-align: center;
-`;
-
-const Title = styled.h2`
-  text-align: center;
-`;
-
-const SubTitle = styled.h3`
-  text-align: center;
-`;
-
-const Board = styled(SnakeGameBoard)`
-  margin: 0 auto;
-  border: 3px solid #7bc876;
-  display: inline-block;
-`;
+const Board: React.FC<React.ComponentProps<typeof SnakeGameBoard>> = (
+  props,
+) => (
+  <SnakeGameBoard
+    css={css({
+      margin: '0 auto',
+      border: `3px solid ${colors.interactive.green}`,
+      display: 'inline-block',
+    })}
+    {...props}
+  />
+);
 
 export const App: React.FC = () => {
   return (
-    <>
-      <GlobalPontoonStyle />
-      <GlobalStyle />
+    <Page
+      heading={
+        <>
+          <Heading2>Thank you for using Pontoon Add-on.</Heading2>
+          <Heading3>Enjoy the game.</Heading3>
+        </>
+      }
+    >
       <Wrapper>
-        <Title>Thank you for using Pontoon Add-on.</Title>
-        <SubTitle>Enjoy the game.</SubTitle>
         <SnakeGameContextProvider>
           <Board />
           <SnakeGameInfo />
         </SnakeGameContextProvider>
       </Wrapper>
-    </>
+    </Page>
   );
 };

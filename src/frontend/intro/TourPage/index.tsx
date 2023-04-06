@@ -1,67 +1,106 @@
 import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import { css } from '@emotion/react';
 
 import { openPrivacyPolicy, openSnakeGame } from '@commons/webExtensionsApi';
+import { sizes } from '@frontend/commons/const';
+import { Page } from '@frontend/commons/components/pontoon/Page';
+import { Heading1 } from '@frontend/commons/components/pontoon/Heading1';
+import { Button } from '@frontend/commons/components/pontoon/Button';
+import closeIcon from '@assets/img/glyph-dismiss-16.svg';
 import joystickImage from '@assets/img/joystick.svg';
 
-import { CloseButton } from '../CloseButton';
-import type { Props as TileProps } from '../TourPageTile';
 import { TourPageTile } from '../TourPageTile';
 
-const Wrapper = styled.div`
-  position: relative;
-`;
+const Wrapper: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css({
+      position: 'relative',
+    })}
+    {...props}
+  />
+);
 
-const Title = styled.h2`
-  text-align: center;
-`;
+const TourPageTiles: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css([
+      {
+        width: '90vw',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      {
+        '@media screen and (width <= 1024px)': {
+          width: '100%',
+          margin: '0',
+        },
+      },
+    ])}
+    {...props}
+  />
+);
 
-const CloseButtonWrapper = styled.div`
-  position: absolute;
-  right: 2em;
+export const PrivacyPolicyLinkWrapper: React.FC<React.ComponentProps<'div'>> = (
+  props,
+) => (
+  <div
+    css={css({
+      textAlign: 'center',
+    })}
+    {...props}
+  />
+);
 
-  @media screen and (width <= 640px) {
-    display: none;
-  }
-`;
+export const CloseIcon: React.FC<React.ComponentProps<'span'>> = (props) => (
+  <span
+    css={css({
+      display: 'inline-block',
+      width: '16px',
+      height: '16px',
+      padding: '0.1em',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'contain',
+      backgroundImage: `url(${closeIcon})`,
+    })}
+    {...props}
+  />
+);
 
-const TourPageTiles = styled.div`
-  width: 90vw;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+const EasterEggIcon: React.FC<React.ComponentProps<'span'>> = (props) => (
+  <span
+    css={css({
+      display: 'inline-block',
+      width: '30px',
+      height: '30px',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'contain',
+      backgroundImage: `url(${joystickImage})`,
+    })}
+    {...props}
+  />
+);
 
-  @media screen and (width <= 1024px) {
-    width: 100%;
-    margin: 0;
-  }
-`;
-
-export const PrivacyPolicyLinkWrapper = styled.div`
-  text-align: center;
-`;
-
-const EasterEggHint = styled.div<{ opacity?: number }>`
-  ${({ opacity }) =>
-    typeof opacity !== 'undefined'
-      ? css`
-          opacity: ${opacity};
-        `
-      : css`
-          /* fully visible */
-        `}
-  text-align: center;
-  font-size: 0.8em;
-  position: relative;
-  top: -16px;
-`;
+const EasterEggHint: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css({
+      position: 'absolute',
+      bottom: '-18px',
+      width: '100%',
+      textAlign: 'center',
+      fontSize: sizes.font.xSmall,
+    })}
+    {...props}
+  />
+);
 
 interface Props {
-  title?: string;
-  tiles?: TileProps[];
+  title: React.ComponentProps<typeof Heading1>['children'];
+  tiles: React.ComponentProps<typeof TourPageTile>[];
 }
 
 export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
@@ -70,58 +109,70 @@ export const TourPage: React.FC<Props> = ({ title = '', tiles = [] }) => {
   );
 
   return (
-    <Wrapper>
-      <CloseButtonWrapper>
-        {tilesToClick.size !== 0 ? (
-          <CloseButton title="Close the tour" />
-        ) : (
-          <CloseButton
-            title="Play a game"
-            imageSrc={joystickImage}
-            style={{
-              width: '32px',
-              height: '32px',
-              border: '1px solid #5e6475',
-              boxShadow: '0 0 16px #5e6475',
-            }}
-            onClick={() => openSnakeGame()}
-          />
-        )}
-      </CloseButtonWrapper>
-      <Title>{title}</Title>
-      {tilesToClick.size !== 0 ? (
-        <EasterEggHint opacity={1 - tilesToClick.size / tiles.length}>
-          It&apos;s?
-        </EasterEggHint>
-      ) : (
-        <EasterEggHint>Don&apos;t stand there gawping!</EasterEggHint>
-      )}
-      <TourPageTiles>
-        {tiles.map((tile, index) => (
-          <TourPageTile
-            key={`tile-${index}`}
-            {...{
-              ...tile,
-              button: {
-                ...tile.button,
-                onClick: () => {
-                  if (tilesToClick.has(tile.title)) {
-                    const tilesToClickCopy = new Set(tilesToClick);
-                    tilesToClickCopy.delete(tile.title);
-                    setTilesToClick(tilesToClickCopy);
-                  }
-                  tile.button?.onClick();
-                },
+    <Page
+      bodyBackgroundColor="light"
+      headerLinks={
+        tilesToClick.size !== 0
+          ? [
+              {
+                text: <CloseIcon title="Close the tour" />,
+                onClick: () => window.close(),
               },
-            }}
-          />
-        ))}
-      </TourPageTiles>
-      <PrivacyPolicyLinkWrapper>
-        <button className="pontoon-style" onClick={() => openPrivacyPolicy()}>
-          Privacy policy
-        </button>
-      </PrivacyPolicyLinkWrapper>
-    </Wrapper>
+            ]
+          : [
+              {
+                text: <EasterEggIcon title="Play a game" />,
+                onClick: () => openSnakeGame(),
+              },
+            ]
+      }
+      heading={
+        <div
+          css={css({
+            position: 'relative',
+          })}
+        >
+          <Heading1>{title}</Heading1>
+          {tilesToClick.size !== 0 ? (
+            <EasterEggHint
+              css={css({
+                opacity: `${1 - tilesToClick.size / tiles.length}`,
+              })}
+            >
+              It&apos;s?
+            </EasterEggHint>
+          ) : (
+            <EasterEggHint>Don&apos;t stand there gawping!</EasterEggHint>
+          )}
+        </div>
+      }
+    >
+      <Wrapper>
+        <TourPageTiles>
+          {tiles.map((tile, index) => (
+            <TourPageTile
+              key={index}
+              {...{
+                ...tile,
+                button: {
+                  ...tile.button,
+                  onClick: () => {
+                    if (tilesToClick.has(tile.title)) {
+                      const tilesToClickCopy = new Set(tilesToClick);
+                      tilesToClickCopy.delete(tile.title);
+                      setTilesToClick(tilesToClickCopy);
+                    }
+                    tile.button?.onClick();
+                  },
+                },
+              }}
+            />
+          ))}
+        </TourPageTiles>
+        <PrivacyPolicyLinkWrapper>
+          <Button onClick={() => openPrivacyPolicy()}>Privacy policy</Button>
+        </PrivacyPolicyLinkWrapper>
+      </Wrapper>
+    </Page>
   );
 };

@@ -24,8 +24,6 @@
     "eslint:check": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx ./src",
     "eslint:fix": "eslint --config ./configs/.eslintrc.js --ext .ts --ext .tsx --fix ./src",
     "ts-prune:check": "ts-prune --error --ignore '/(__mocks__|generated)/' --project ./configs/tsconfig.json",
-    "stylelint:check": "stylelint --config ./configs/.stylelintrc.js './src/**/*.tsx'",
-    "stylelint:fix": "stylelint --config ./configs/.stylelintrc.js --fix './src/**/*.tsx'",
     "webpack:build:mozilla": "cross-env TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts",
     "webpack:build:chromium": "cross-env TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts",
     "webpack:watch:mozilla": "cross-env MODE=development TARGET_BROWSER=mozilla webpack --config ./configs/webpack.config.ts --watch",
@@ -35,6 +33,7 @@
     "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
     "dompurify": "^3.0.1",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",
@@ -46,7 +45,6 @@
     "react-game-snake": "^1.0.4",
     "react-linkify": "^0.2.2",
     "react-time-ago": "^7.2.1",
-    "styled-components": "^5.3.9",
     "urijs": "^1.19.11",
     "uuid": "^9.0.0",
     "webextension-polyfill": "^0.10.0"
@@ -54,6 +52,7 @@
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
+    "@emotion/eslint-plugin": "^11.10.0",
     "@graphql-codegen/cli": "^3.2.2",
     "@graphql-codegen/typescript-graphql-request": "^4.5.9",
     "@graphql-codegen/typescript-operations": "^3.0.2",
@@ -72,7 +71,6 @@
     "@types/node": "^18.11.18",
     "@types/react": "^16.14.32",
     "@types/react-dom": "^16.9.17",
-    "@types/styled-components": "^5.1.26",
     "@types/urijs": "^1.19.19",
     "@types/uuid": "^9.0.1",
     "@types/webextension-polyfill": "^0.10.0",
@@ -112,9 +110,6 @@
     "prettier": "^2.8.7",
     "rimraf": "^4.4.1",
     "striptags": "^3.2.0",
-    "stylelint": "^15.4.0",
-    "stylelint-config-standard": "^32.0.0",
-    "stylelint-no-unsupported-browser-features": "^6.1.0",
     "ts-jest": "^28.0.8",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",

@@ -1,28 +1,29 @@
 import React from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 
-const Link = styled.button`
-  appearance: none;
-  display: block;
-  width: 100%;
-  background: transparent;
-  border: none;
-  padding: 0.5em;
-  text-align: center;
-  font-size: 14px;
-  color: #aaa;
-  cursor: pointer;
+import { Link } from '@frontend/commons/components/pontoon/Link';
+import { colors } from '@frontend/commons/const';
 
-  &:hover {
-    background-color: #3f4752;
-    color: #fff;
-  }
-`;
-
-interface Props {
-  onClick: () => void;
-}
-
-export const BottomLink: React.FC<Props> = ({ onClick, children }) => {
-  return <Link onClick={onClick}>{children}</Link>;
-};
+export const BottomLink: React.FC<React.ComponentProps<typeof Link>> = (
+  props,
+) => (
+  <Link
+    css={css([
+      {
+        display: 'block',
+        width: '100%',
+        padding: '0.5em',
+        textAlign: 'center',
+        fontSize: '14px',
+        color: colors.font.ultraLight,
+      },
+      {
+        ':hover': {
+          backgroundColor: colors.background.toolbarButtonItemHover,
+          color: colors.font.white,
+        },
+      },
+    ])}
+    {...props}
+  />
+);

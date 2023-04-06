@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 
 import type { StorageContent } from '@commons/webExtensionsApi';
 import {
@@ -7,20 +7,26 @@ import {
   markAllNotificationsAsRead,
 } from '@background/backgroundClient';
 import { openNewPontoonTab } from '@commons/utils';
+import { colors } from '@frontend/commons/const';
 
 import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
 import { NotificationsListError } from '../NotificationsListError';
 
-const List = styled.ul`
-  list-style: none;
-  text-align: center;
-  max-height: 250px;
-  overflow: auto;
-  margin: 0;
-  padding: 0;
-  border-bottom: 1px solid #525a65;
-`;
+const List: React.FC<React.ComponentProps<'ul'>> = (props) => (
+  <ul
+    css={css({
+      listStyle: 'none',
+      textAlign: 'center',
+      maxHeight: '250px',
+      overflow: 'auto',
+      margin: '0',
+      padding: '0',
+      borderBottom: `1px solid ${colors.border.gray2}`,
+    })}
+    {...props}
+  />
+);
 
 interface Props {
   notificationsData?: StorageContent['notificationsData'];
