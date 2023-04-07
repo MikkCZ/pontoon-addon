@@ -1,9 +1,8 @@
 import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen, within } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
-import ReactTimeAgo from 'react-time-ago';
 
 import type { StorageContent } from '@commons/webExtensionsApi';
 import {
@@ -22,10 +21,7 @@ import {
 import * as UtilsApiModule from '@commons/utils';
 import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
 
-import { BottomLink } from '../BottomLink';
-import { TeamInfoListItem } from '../TeamInfoListItem';
-
-import { TeamInfo, TitleLink, Name, Code } from '.';
+import { TeamInfo } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
@@ -72,30 +68,37 @@ afterEach(() => {
 
 describe('TeamInfo', () => {
   it('renders', async () => {
-    const wrapper = mount(<TeamInfo />);
+    render(<TeamInfo />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    expect(wrapper.find(Name).text()).toBe('Czech');
-    expect(wrapper.find(Code).text()).toBe('cs');
-    expect(wrapper.find(TeamInfoListItem)).toHaveLength(8);
-    expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
-    expect(wrapper.find(ReactTimeAgo)).toHaveLength(1);
-    expect(wrapper.find(TeamInfoListItem).at(1).prop('label')).toBe(
+    expect(
+      within(screen.getByRole('heading', { level: 3 })).getByTestId(
+        'team-name',
+      ),
+    ).toHaveTextContent('Czech');
+    expect(
+      within(screen.getByRole('heading', { level: 3 })).getByTestId(
+        'team-code',
+      ),
+    ).toHaveTextContent('cs');
+    const items = screen.getAllByRole('listitem');
+    expect(items).toHaveLength(8);
+    expect(within(items[0]).getByTestId('label')).toHaveTextContent('Activity');
+    expect(within(items[1]).getByTestId('label')).toHaveTextContent(
       'translated',
     );
-    expect(wrapper.find(TeamInfoListItem).at(2).prop('label')).toBe(
+    expect(within(items[2]).getByTestId('label')).toHaveTextContent(
       'pretranslated',
     );
-    expect(wrapper.find(TeamInfoListItem).at(3).prop('label')).toBe('warnings');
-    expect(wrapper.find(TeamInfoListItem).at(4).prop('label')).toBe('errors');
-    expect(wrapper.find(TeamInfoListItem).at(5).prop('label')).toBe('missing');
-    expect(wrapper.find(TeamInfoListItem).at(6).prop('label')).toBe(
+    expect(within(items[3]).getByTestId('label')).toHaveTextContent('warnings');
+    expect(within(items[4]).getByTestId('label')).toHaveTextContent('errors');
+    expect(within(items[5]).getByTestId('label')).toHaveTextContent('missing');
+    expect(within(items[6]).getByTestId('label')).toHaveTextContent(
       'unreviewed',
     );
-    expect(wrapper.find(TeamInfoListItem).at(7).prop('label')).toBe(
+    expect(within(items[7]).getByTestId('label')).toHaveTextContent(
       'all strings',
     );
   });
@@ -111,48 +114,57 @@ describe('TeamInfo', () => {
       },
     });
 
-    const wrapper = mount(<TeamInfo />);
+    render(<TeamInfo />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    expect(wrapper.find(TeamInfoListItem).at(0).prop('label')).toBe('Activity');
-    expect(wrapper.find(TeamInfoListItem).at(0).prop('value')).toBe('―');
+    expect(
+      within(screen.getAllByRole('listitem')[0]).getByTestId('label'),
+    ).toHaveTextContent('Activity');
+    expect(
+      within(screen.getAllByRole('listitem')[0]).getByTestId('value'),
+    ).toHaveTextContent('―');
   });
 
   it('team page links work', async () => {
-    const wrapper = mount(<TeamInfo />);
+    render(<TeamInfo />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    wrapper.find(TitleLink).find('button').simulate('click');
-    await flushPromises();
+    await act(async () => {
+      within(screen.getByRole('heading', { level: 3 }))
+        .getByRole('link')
+        .click();
+      await flushPromises();
+    });
+
+    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(1);
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
     );
-    expect(wrapper.find(TitleLink).find(Name)).toHaveLength(1);
-    expect(wrapper.find(TitleLink).find(Code)).toHaveLength(1);
 
-    wrapper.find(BottomLink).at(0).find('button').simulate('click');
-    await flushPromises();
+    await act(async () => {
+      screen.getByText('Open Czech team page').click();
+      await flushPromises();
+    });
+
+    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(2);
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
     );
   });
 
   it('string status links work', async () => {
-    const wrapper = mount(<TeamInfo />);
+    render(<TeamInfo />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    const statusLinks = wrapper.find(TeamInfoListItem);
+    const statusLinks = screen.getAllByRole('listitem');
 
-    const statuses = [
+    const expectedStatuses = [
       // Activity
       'translated',
       'pretranslated',
@@ -162,14 +174,15 @@ describe('TeamInfo', () => {
       'unreviewed',
       'all',
     ];
-    expect(statusLinks).toHaveLength(statuses.length + 1);
+    expect(statusLinks).toHaveLength(expectedStatuses.length + 1);
 
-    for (const [index, status] of statuses.entries()) {
-      statusLinks
-        .at(index + 1)
-        .find('button')
-        .simulate('click');
-      await flushPromises();
+    for (const [index, status] of expectedStatuses.entries()) {
+      await act(async () => {
+        within(statusLinks[index + 1])
+          .getByRole('link')
+          .click();
+        await flushPromises();
+      });
       expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
         pontoonSearchStringsWithStatus('https://localhost', team, status),
       );
@@ -183,36 +196,36 @@ describe('TeamInfo', () => {
       url: 'https://firefox.com',
     });
 
-    const wrapper = mount(<TeamInfo />);
+    render(<TeamInfo />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    const openDashboadLink = wrapper.find(BottomLink).at(1);
-    expect(openDashboadLink.text()).toBe('Open Firefox dashboard for Czech');
-    openDashboadLink.find('button').simulate('click');
-    await flushPromises();
+    await act(async () => {
+      screen.getByText('Open Firefox dashboard for Czech').click();
+      await flushPromises();
+    });
+    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(1);
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeamsProject('https://localhost', team, project),
     );
 
-    const translationViewLink = wrapper.find(BottomLink).at(2);
-    expect(translationViewLink.text()).toBe(
-      'Open Firefox translation view for Czech',
-    );
-    translationViewLink.find('button').simulate('click');
-    await flushPromises();
+    await act(async () => {
+      screen.getByText('Open Firefox translation view for Czech').click();
+      await flushPromises();
+    });
+    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(2);
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonProjectTranslationView('https://localhost', team, project),
     );
 
-    const reportBugLink = wrapper.find(BottomLink).at(3);
-    expect(reportBugLink.text()).toBe(
-      'Report bug for localization of Firefox to Czech',
-    );
-    reportBugLink.find('button').simulate('click');
-    await flushPromises();
+    await act(async () => {
+      screen
+        .getByText('Report bug for localization of Firefox to Czech')
+        .click();
+      await flushPromises();
+    });
+    expect(openNewTab).toHaveBeenCalledTimes(1);
     expect(openNewTab).toHaveBeenLastCalledWith(
       newLocalizationBug({ team, url: 'https://firefox.com' }),
     );

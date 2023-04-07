@@ -34,7 +34,7 @@ describe('SnakeGameBoard', () => {
     expect(
       within(wrapper()).getByRole('heading', { level: 3 }),
     ).toHaveTextContent('Snake');
-    expect(within(wrapper()).getByTestId('button')).toHaveTextContent(
+    expect(within(wrapper()).getByRole('button')).toHaveTextContent(
       'START GAME',
     );
     expect(
@@ -71,7 +71,7 @@ describe('SnakeGameBoard', () => {
     expect(
       within(wrapper()).getByRole('heading', { level: 4 }),
     ).toHaveTextContent(`You scored ${score} points.`);
-    expect(within(wrapper()).getByTestId('button')).toHaveTextContent(
+    expect(within(wrapper()).getByRole('button')).toHaveTextContent(
       'TRY AGAIN',
     );
     expect(

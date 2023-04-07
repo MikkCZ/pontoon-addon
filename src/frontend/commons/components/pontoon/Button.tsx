@@ -5,7 +5,6 @@ import { border, colors } from '@frontend/commons/const';
 
 export const Button: React.FC<React.ComponentProps<'button'>> = (props) => (
   <button
-    data-testid="button"
     css={css([
       {
         cursor: 'pointer',

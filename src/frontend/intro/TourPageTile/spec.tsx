@@ -48,7 +48,7 @@ describe('TourPageTile', () => {
     ).toHaveTextContent('TITLE');
     expect(within(wrapper()).getByRole('img')).toBeInTheDocument();
     expect(within(wrapper()).getByText('Lorem Ipsum')).toBeInTheDocument();
-    expect(within(wrapper()).getByTestId('button')).toHaveTextContent(
+    expect(within(wrapper()).getByRole('button')).toHaveTextContent(
       'Lipsum...',
     );
   });

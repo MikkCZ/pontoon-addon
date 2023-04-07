@@ -39,20 +39,18 @@ const team = {
   bz_component: 'L10N/CS',
 };
 
-beforeEach(() => {
-  (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
-  (getOneFromStorage as jest.Mock).mockResolvedValue({ [team.code]: team });
-  (getOptions as jest.Mock).mockResolvedValue({
-    locale_team: team.code,
-    pontoon_base_url: 'https://localhost',
-  });
-  (getActiveTab as jest.Mock).mockResolvedValue({
-    url: 'https://localhost/firefox',
-  });
+(getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
+(getOneFromStorage as jest.Mock).mockResolvedValue({ [team.code]: team });
+(getOptions as jest.Mock).mockResolvedValue({
+  locale_team: team.code,
+  pontoon_base_url: 'https://localhost',
+});
+(getActiveTab as jest.Mock).mockResolvedValue({
+  url: 'https://localhost/firefox',
 });
 
 afterEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
 
 describe('address-bar/App', () => {

@@ -1,20 +1,13 @@
 import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { render, screen, within } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import ReactTimeAgo from 'react-time-ago';
 import flushPromises from 'flush-promises';
 
 import * as UtilsApiModule from '@commons/utils';
 import { getTeamProjectUrl } from '@background/backgroundClient';
 
-import {
-  NotificationsListItem,
-  Wrapper,
-  ActorTargetLink,
-  Description,
-  TimeAgo,
-} from '.';
+import { NotificationsListItem } from '.';
 
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
@@ -35,7 +28,7 @@ afterEach(() => {
 
 describe('NotificationsListItem', () => {
   it('renders', () => {
-    const wrapper = mount(
+    render(
       <NotificationsListItem
         pontoonBaseUrl="https://127.0.0.1"
         unread={true}
@@ -47,16 +40,15 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(ActorTargetLink)).toHaveLength(2);
-    expect(wrapper.find(ActorTargetLink).first().text()).toBe('ACTOR');
-    expect(wrapper.find(ActorTargetLink).last().text()).toBe('TARGET');
-    expect(wrapper.find('span').text()).toBe(' VERB ');
-    expect(wrapper.find(TimeAgo).find(ReactTimeAgo)).toHaveLength(1);
-    expect(wrapper.find(Description).text()).toBe('DESCRIPTION');
+    expect(screen.getByTestId('actor')).toHaveTextContent('ACTOR');
+    expect(screen.getByTestId('target')).toHaveTextContent('TARGET');
+    expect(screen.getByTestId('verb')).toHaveTextContent('VERB');
+    expect(screen.getByTestId('timeago')).toBeInTheDocument();
+    expect(screen.getByTestId('description')).toHaveTextContent('DESCRIPTION');
   });
 
   it('renders links and formatting tags in description', () => {
-    const wrapper = mount(
+    render(
       <NotificationsListItem
         pontoonBaseUrl="https://127.0.0.1"
         unread={true}
@@ -72,13 +64,17 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(Description).html()).toMatch(
-      /DESCRIPTION <em>WITH A<\/em> <a data-testid="native-link" href="https:\/\/example\.com\/" target="_blank" rel="noopener noreferrer" class="(.+)-NativeLink">LINK<\/a>/,
+    const description = screen.getByTestId('description');
+    expect(description).toContainHTML('<em>WITH A</em>');
+    expect(within(description).getByRole('link')).toHaveTextContent('LINK');
+    expect(within(description).getByRole('link')).toHaveAttribute(
+      'href',
+      'https://example.com/',
     );
   });
 
   it('linkifies URL in unsafe description', () => {
-    const wrapper = mount(
+    render(
       <NotificationsListItem
         pontoonBaseUrl="https://127.0.0.1"
         unread={true}
@@ -93,13 +89,18 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(Description).html()).toMatch(
-      /<span class="Linkify">DESCRIPTION WITH A LINK TO <a data-testid="native-link" href="https:\/\/example\.com\/" target="_blank" rel="noopener noreferrer" class="(.+)-NativeLink">https:\/\/example\.com\/<\/a><\/span>/,
+    const description = screen.getByTestId('description');
+    expect(within(description).getByRole('link')).toHaveTextContent(
+      'https://example.com/',
+    );
+    expect(within(description).getByRole('link')).toHaveAttribute(
+      'href',
+      'https://example.com/',
     );
   });
 
   it('prevents XSS in description', () => {
-    const wrapper = mount(
+    render(
       <NotificationsListItem
         pontoonBaseUrl="https://127.0.0.1"
         unread={true}
@@ -115,7 +116,10 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(Description).html()).toContain(
+    const description = screen.getByTestId('description');
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(description.getElementsByTagName('script')).toHaveLength(0);
+    expect(description.innerHTML).toBe(
       'DESCRIPTION WITH(OUT) <a>XSS ATTEMPTS</a> ',
     );
   });
@@ -123,7 +127,7 @@ describe('NotificationsListItem', () => {
   it('actor and target links work', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
     const targetUrl = 'https://127.0.0.1/target/';
-    const wrapper = shallow(
+    render(
       <NotificationsListItem
         pontoonBaseUrl="https://127.0.0.1"
         unread={true}
@@ -132,27 +136,24 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(ActorTargetLink)).toHaveLength(2);
-
-    act(() => {
-      wrapper.find(ActorTargetLink).first().simulate('click', {
-        preventDefault: jest.fn(),
-        stopPropagation: jest.fn(),
-      });
-      wrapper.find(ActorTargetLink).last().simulate('click', {
-        preventDefault: jest.fn(),
-        stopPropagation: jest.fn(),
-      });
+    await act(async () => {
+      screen.getByTestId('actor').click();
+      await flushPromises();
     });
-    await flushPromises();
+    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(1);
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(actorUrl);
 
-    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(actorUrl);
-    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(targetUrl);
+    await act(async () => {
+      screen.getByTestId('target').click();
+      await flushPromises();
+    });
+    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(2);
+    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(targetUrl);
   });
 
   it('whole item is clickable when only one link is present', async () => {
     const actorUrl = 'https://127.0.0.1/actor/';
-    const wrapper = shallow(
+    render(
       <NotificationsListItem
         pontoonBaseUrl="https://127.0.0.1"
         unread={true}
@@ -160,13 +161,10 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    act(() => {
-      wrapper.find(Wrapper).simulate('click', {
-        preventDefault: jest.fn(),
-        stopPropagation: jest.fn(),
-      });
+    await act(async () => {
+      screen.getByRole('listitem').click();
+      await flushPromises();
     });
-    await flushPromises();
 
     expect(openNewPontoonTabSpy).toHaveBeenCalledWith(actorUrl);
   });

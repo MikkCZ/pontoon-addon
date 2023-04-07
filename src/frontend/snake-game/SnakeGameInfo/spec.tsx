@@ -37,7 +37,7 @@ describe('SnakeGameInfo', () => {
     expect(within(wrapper()).getByTestId('score')).toHaveTextContent(
       `Your score: ${score}`,
     );
-    expect(within(wrapper()).getByTestId('button')).toHaveTextContent('PAUSE');
+    expect(within(wrapper()).getByRole('button')).toHaveTextContent('PAUSE');
   });
 
   it('pause button pauses the game', () => {
@@ -69,7 +69,7 @@ describe('SnakeGameInfo', () => {
     expect(within(wrapper()).getByTestId('score')).toHaveTextContent(
       `Your score: ${score}`,
     );
-    expect(within(wrapper()).getByTestId('button')).toHaveTextContent('RESUME');
+    expect(within(wrapper()).getByRole('button')).toHaveTextContent('RESUME');
   });
 
   it('resume button resumes the game', () => {
@@ -97,7 +97,7 @@ describe('SnakeGameInfo', () => {
       'Controls: arrows or WASD',
     );
     expect(within(wrapper()).queryByTestId('score')).not.toBeInTheDocument();
-    expect(within(wrapper()).queryByTestId('button')).not.toBeInTheDocument();
+    expect(within(wrapper()).queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('renders nothing when the game is lost', () => {
@@ -110,6 +110,6 @@ describe('SnakeGameInfo', () => {
       within(wrapper()).queryByTestId('controls-info'),
     ).not.toBeInTheDocument();
     expect(within(wrapper()).queryByTestId('score')).not.toBeInTheDocument();
-    expect(within(wrapper()).queryByTestId('button')).not.toBeInTheDocument();
+    expect(within(wrapper()).queryByRole('button')).not.toBeInTheDocument();
   });
 });

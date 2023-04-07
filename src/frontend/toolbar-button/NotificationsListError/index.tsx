@@ -43,9 +43,7 @@ const Description: React.FC<React.ComponentProps<'p'>> = (props) => (
   />
 );
 
-export const SignInLink: React.FC<React.ComponentProps<typeof Link>> = (
-  props,
-) => (
+const SignInLink: React.FC<React.ComponentProps<typeof Link>> = (props) => (
   <Link
     css={css([
       {
@@ -63,7 +61,7 @@ export const SignInLink: React.FC<React.ComponentProps<typeof Link>> = (
 
 export const NotificationsListError: React.FC = () => {
   return (
-    <Wrapper>
+    <Wrapper data-testid="notifications-list-error">
       <Title>Error</Title>
       <Description>
         There was an error fetching data from Pontoon. Please check, if you are{' '}

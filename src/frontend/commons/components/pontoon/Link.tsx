@@ -5,7 +5,7 @@ import { colors } from '@frontend/commons/const';
 
 export const Link: React.FC<React.ComponentProps<'button'>> = (props) => (
   <button
-    data-testid="link"
+    role="link"
     css={css([
       {
         color: colors.interactive.green,

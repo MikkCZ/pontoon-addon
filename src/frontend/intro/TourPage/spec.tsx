@@ -48,7 +48,7 @@ describe('TourPage', () => {
       />,
     );
 
-    const headerLink = within(pageHeader()).getByTestId('link');
+    const headerLink = within(pageHeader()).getByRole('link');
     expect(headerLink).toBeInTheDocument();
     expect(within(headerLink).getByTestId('close-icon')).toBeInTheDocument();
 
@@ -90,7 +90,7 @@ describe('TourPage', () => {
   it('renders privacy policy link', () => {
     render(<TourPage title="TITLE" tiles={[]} />);
 
-    expect(within(pageContent()).getByTestId('button')).toHaveTextContent(
+    expect(within(pageContent()).getByRole('button')).toHaveTextContent(
       'Privacy policy',
     );
   });
