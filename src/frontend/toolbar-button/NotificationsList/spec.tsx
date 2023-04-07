@@ -1,6 +1,6 @@
 import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
@@ -100,7 +100,7 @@ describe('NotificationsList', () => {
   });
 
   it('bottom link marks all as read when unread notifications are present', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <NotificationsList
         notificationsData={{
           1: { id: 1, unread: false },
@@ -112,14 +112,14 @@ describe('NotificationsList', () => {
     );
 
     act(() => {
-      wrapper.find(BottomLink).simulate('click');
+      wrapper.find(BottomLink).find('button').simulate('click');
     });
 
     expect(markAllNotificationsAsRead).toHaveBeenCalled();
   });
 
   it('bottom link shows all when all notifications are read', async () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <NotificationsList
         notificationsData={{
           1: { id: 1, unread: false },
@@ -131,7 +131,7 @@ describe('NotificationsList', () => {
     );
 
     act(() => {
-      wrapper.find(BottomLink).simulate('click');
+      wrapper.find(BottomLink).find('button').simulate('click');
     });
     await flushPromises();
 

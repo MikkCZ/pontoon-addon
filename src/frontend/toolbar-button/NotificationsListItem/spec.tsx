@@ -72,8 +72,8 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(Description).html()).toContain(
-      'DESCRIPTION <em>WITH A</em> <a href="https://example.com/">LINK</a>',
+    expect(wrapper.find(Description).html()).toMatch(
+      /DESCRIPTION <em>WITH A<\/em> <a href="https:\/\/example\.com\/" target="_blank" rel="noopener noreferrer" class="(.+)-NativeLink">LINK<\/a>/,
     );
   });
 
@@ -93,8 +93,8 @@ describe('NotificationsListItem', () => {
       />,
     );
 
-    expect(wrapper.find(Description).html()).toContain(
-      '<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https://example.com/" class="link" target="_blank" rel="noopener noreferrer">https://example.com/</a></span>',
+    expect(wrapper.find(Description).html()).toMatch(
+      /<span class="Linkify">DESCRIPTION WITH A LINK TO <a href="https:\/\/example\.com\/" target="_blank" rel="noopener noreferrer" class="(.+)-NativeLink">https:\/\/example\.com\/<\/a><\/span>/,
     );
   });
 

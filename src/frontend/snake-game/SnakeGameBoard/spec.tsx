@@ -2,6 +2,8 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { SnakeGame } from 'react-game-snake';
 
+import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+
 import { mountWithSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';
 
@@ -16,7 +18,7 @@ describe('SnakeGameBoard', () => {
       gameState: GameState.NOT_STARTED,
     });
 
-    expect(wrapper.find('h3').text()).toBe('Snake');
+    expect(wrapper.find(Heading3).text()).toBe('Snake');
     expect(wrapper.find('button').text()).toBe('START GAME');
     expect(wrapper.find(SnakeGame)).toHaveLength(0);
   });
@@ -44,7 +46,7 @@ describe('SnakeGameBoard', () => {
       score,
     });
 
-    expect(wrapper.find('h3').text()).toBe('GAMEOVER'); // <br> in the middle
+    expect(wrapper.find(Heading3).text()).toBe('GAMEOVER'); // <br> in the middle
     expect(wrapper.find('h4').text()).toBe(`You scored ${score} points.`);
     expect(wrapper.find('button').first().text()).toBe('TRY AGAIN');
     expect(wrapper.find(SnakeGame)).toHaveLength(0);

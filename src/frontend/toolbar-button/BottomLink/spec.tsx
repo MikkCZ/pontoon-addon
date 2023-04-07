@@ -6,7 +6,7 @@ import { BottomLink } from '.';
 
 describe('BottomLink', () => {
   it('renders text', () => {
-    const wrapper = mount(<BottomLink onClick={jest.fn()}>TEXT</BottomLink>);
+    const wrapper = mount(<BottomLink>TEXT</BottomLink>);
 
     expect(wrapper.find(BottomLink).text()).toBe('TEXT');
   });
@@ -16,7 +16,7 @@ describe('BottomLink', () => {
     const wrapper = mount(<BottomLink onClick={onClick} />);
 
     act(() => {
-      wrapper.find(BottomLink).simulate('click');
+      wrapper.find(BottomLink).find('button').simulate('click');
     });
 
     expect(onClick).toHaveBeenCalled();

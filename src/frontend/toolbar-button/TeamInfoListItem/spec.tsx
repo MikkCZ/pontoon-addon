@@ -8,25 +8,16 @@ describe('TeamInfoListItem', () => {
   it('renders', () => {
     const onClick = jest.fn();
     const wrapper = mount(
-      <TeamInfoListItem
-        squareStyle={{ backgroundColor: 'black' }}
-        label="LABEL"
-        value="VALUE"
-        onClick={onClick}
-      />,
+      <TeamInfoListItem label="LABEL" value="VALUE" onClick={onClick} />,
     );
 
-    expect(wrapper.find(Square).getDOMNode()).toHaveStyle(
-      'background-color: black',
-    );
-    expect(wrapper.find(Label).text()).toBe('LABEL');
-    expect(wrapper.find(Value).text()).toBe('VALUE');
+    expect(wrapper.find(ItemLink).find(Square)).toHaveLength(1);
+    expect(wrapper.find(ItemLink).find(Label).text()).toBe('LABEL');
+    expect(wrapper.find(ItemLink).find(Value).text()).toBe('VALUE');
     act(() => {
-      [Square, Label, Value].forEach((query) =>
-        wrapper.find(query).simulate('click'),
-      );
+      wrapper.find(ItemLink).find('button').simulate('click');
     });
-    expect(onClick).toHaveBeenCalledTimes(3);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 
   it('does not render any link if no onClick action is provided', () => {

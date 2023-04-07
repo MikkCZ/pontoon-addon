@@ -42,7 +42,9 @@ const Title: React.FC<React.ComponentProps<typeof Heading3>> = ({
   </Heading3>
 );
 
-const TitleLink: React.FC<React.ComponentProps<typeof Link>> = (props) => (
+export const TitleLink: React.FC<React.ComponentProps<typeof Link>> = (
+  props,
+) => (
   <Link
     css={css([
       {
