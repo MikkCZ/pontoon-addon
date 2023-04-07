@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import type { IOptions } from 'react-game-snake';
 import { SnakeGame } from 'react-game-snake';
 
@@ -12,49 +12,44 @@ import {
   pontoonAddonAmoPage,
   pontoonAddonChromeWebStorePage,
 } from '@commons/webLinks';
+import { colors } from '@frontend/commons/const';
+import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+import { Button } from '@frontend/commons/components/pontoon/Button';
+import { Link } from '@frontend/commons/components/pontoon/Link';
 
 import type { EventListeners } from '../gameFunctions';
 import { useSnakeGameContext, GameState } from '../SnakeGameContext';
 
-const Wrapper = styled.div`
-  position: relative;
-  margin: 0 auto;
-  border: 3px solid #7bc876;
-  display: inline-block;
-
-  & > * {
-    position: relative;
-    margin: 0;
-    width: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-`;
-
-const Link = styled.button`
-  appearance: none;
-  display: inline-block;
-  background: transparent;
-  border: none;
-  margin: 0;
-  padding: 0;
-  font-size: inherit;
-  color: #7bc876;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    color: inherit;
-  }
-`;
+const Wrapper: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css([
+      {
+        position: 'relative',
+        margin: '0 auto',
+        border: `3px solid ${colors.interactive.green}`,
+        display: 'inline-block',
+      },
+      {
+        '& > *': {
+          position: 'relative',
+          margin: '0',
+          width: '100%',
+          top: '50%',
+          transform: 'translateY(-50%)',
+        },
+      },
+    ])}
+    {...props}
+  />
+);
 
 const gameSpeed = 7;
 
 const gameOptions: IOptions = {
   colors: {
-    field: '#333941',
-    snake: '#7bc876',
-    food: '#7bc876',
+    field: colors.background.light,
+    snake: colors.interactive.green,
+    food: colors.interactive.green,
   },
   countOfHorizontalFields: 40, // board width
   countOfVerticalFields: 30, // board height
@@ -77,7 +72,9 @@ function useBoardWith(eventListeners: EventListeners): JSX.Element {
   );
 }
 
-export const SnakeGameBoard: React.FC = () => {
+export const SnakeGameBoard: React.FC<React.ComponentProps<typeof Wrapper>> = (
+  props,
+) => {
   const {
     stateRef,
     gameFunctions: { eventListeners, controlFunctions },
@@ -93,30 +90,26 @@ export const SnakeGameBoard: React.FC = () => {
 
   return (
     <Wrapper
-      style={{
-        width: finalBoardWidth,
-        height: finalBoardHeight,
-      }}
+      css={css({
+        width: `${finalBoardWidth}px`,
+        height: `${finalBoardHeight}px`,
+      })}
+      {...props}
     >
       {beforeFirstGameStarted && (
         <div>
-          <h3>Snake</h3>
-          <button
-            className="pontoon-style"
-            onClick={controlFunctions.startGame}
-          >
-            START GAME
-          </button>
+          <Heading3>Snake</Heading3>
+          <Button onClick={controlFunctions.startGame}>START GAME</Button>
         </div>
       )}
       {gameInProgress && <>{boardWithListeners}</>}
       {gameOver && (
         <div>
-          <h3>
+          <Heading3>
             GAME
             <br />
             OVER
-          </h3>
+          </Heading3>
           <h4>
             {score === 1 ? (
               <>You scored one point.</>
@@ -124,12 +117,7 @@ export const SnakeGameBoard: React.FC = () => {
               <>You scored {score} points.</>
             )}
           </h4>
-          <button
-            className="pontoon-style"
-            onClick={controlFunctions.restartGame}
-          >
-            TRY AGAIN
-          </button>
+          <Button onClick={controlFunctions.restartGame}>TRY AGAIN</Button>
           <div>or</div>
           <div>
             <Link

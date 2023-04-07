@@ -1,11 +1,20 @@
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import { css } from '@emotion/react';
 
-import { openIntro, supportsContainers } from '@commons/webExtensionsApi';
+import {
+  openIntro,
+  openNewTab,
+  openPrivacyPolicy,
+  supportsContainers,
+} from '@commons/webExtensionsApi';
 import { resetDefaultOptions } from '@commons/options';
+import { pontoonAddonWiki } from '@commons/webLinks';
+import { colors } from '@frontend/commons/const';
+import { Page } from '@frontend/commons/components/pontoon/Page';
+import { Heading1 } from '@frontend/commons/components/pontoon/Heading1';
+import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+import { Link } from '@frontend/commons/components/pontoon/Link';
 
-import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
-import { Header } from '../Header';
 import { LocaleSelection } from '../LocaleSelection';
 import { DataIntervalUpdateSelection } from '../DataIntervalUpdateSelection';
 import { Checkbox } from '../Checkbox';
@@ -13,75 +22,64 @@ import { ToolbarButtonActionSelection } from '../ToolbarButtonActionSelection';
 import { ContainerSelection } from '../ContainerSelection';
 import { PontoonBaseUrlInput } from '../PontoonBaseUrlInput';
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    font-family: sans-serif;
-    font-size: 14px;
-    font-weight: 300;
-  }
-`;
+const Content: React.FC<React.ComponentProps<'div'>> = (props) => (
+  <div
+    css={css({
+      maxWidth: '37.5em',
+      margin: '0 auto',
+      lineHeight: '1.5em',
+    })}
+    {...props}
+  />
+);
 
-const Content = styled.main`
-  max-width: 37.5em;
-  margin: 0 auto;
-  line-height: 1.5em;
-`;
-
-const Heading = styled.section`
-  padding: 2em;
-  background-color: #333941;
-  text-align: center;
-`;
-
-const Section = styled.section`
-  margin-bottom: 5em;
-
-  & > div {
-    margin-top: 1em;
-  }
-
-  & aside {
-    margin: 0.3em 0 0 0.3em;
-    font-style: italic;
-    color: #888;
-  }
-`;
-
-const Link = styled.button`
-  appearance: none;
-  display: inline-block;
-  background: transparent;
-  border: none;
-  margin: 0;
-  padding: 0;
-  font-size: inherit;
-  color: #7bc876;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    color: inherit;
-  }
-`;
+const Section: React.FC<React.ComponentProps<'section'>> = (props) => (
+  <section
+    css={css([
+      {
+        marginBottom: '5em',
+      },
+      {
+        '& > div': {
+          marginTop: '1em',
+        },
+      },
+      {
+        '& aside': {
+          margin: '0.3em 0 0 0.3em',
+          fontStyle: 'italic',
+          color: colors.font.veryLight,
+        },
+      },
+    ])}
+    {...props}
+  />
+);
 
 export const App: React.FC = () => {
   return (
-    <>
-      <GlobalPontoonStyle />
-      <GlobalStyle />
-      <Header />
-      <Heading>
-        <h2>Pontoon Add-on</h2>
-        <h2>Settings</h2>
-      </Heading>
+    <Page
+      headerLinks={[
+        { text: 'Tour', onClick: () => openIntro() },
+        { text: 'Wiki', onClick: () => openNewTab(pontoonAddonWiki()) },
+        { text: 'Privacy', onClick: () => openPrivacyPolicy() },
+      ]}
+      heading={
+        <Heading1>
+          Pontoon Add-on
+          <br />
+          Settings
+        </Heading1>
+      }
+    >
       <Content>
         <Section>
-          <h3>General</h3>
+          <Heading3>General</Heading3>
           <LocaleSelection />
           <DataIntervalUpdateSelection />
         </Section>
         <Section>
-          <h3>Toolbar button</h3>
+          <Heading3>Toolbar button</Heading3>
           <div>
             <Checkbox optionKey="display_toolbar_button_badge">
               Show the number of unread notifications in the toolbar button
@@ -99,7 +97,7 @@ export const App: React.FC = () => {
           </div>
         </Section>
         <Section>
-          <h3>System notifications</h3>
+          <Heading3>System notifications</Heading3>
           <div>
             <Checkbox optionKey="show_notifications">
               Use system notifications to show what&apos;s new in Pontoon
@@ -111,7 +109,7 @@ export const App: React.FC = () => {
           </div>
         </Section>
         <Section>
-          <h3>Advanced</h3>
+          <Heading3>Advanced</Heading3>
           {supportsContainers() && <ContainerSelection />}
           <PontoonBaseUrlInput />
           <div>
@@ -132,6 +130,6 @@ export const App: React.FC = () => {
           </div>
         </Section>
       </Content>
-    </>
+    </Page>
   );
 };

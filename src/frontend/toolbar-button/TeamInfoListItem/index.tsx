@@ -1,42 +1,67 @@
-import type { CSSProperties } from 'react';
 import React from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 
-export const Square = styled.span`
-  display: inline-block;
-  content: '';
-  width: 0.9em;
-  height: 0.9em;
-  margin-right: 0.5em;
-  border-radius: 0.1em;
-`;
+import { border, colors } from '@frontend/commons/const';
+import { Link } from '@frontend/commons/components/pontoon/Link';
 
-export const Label = styled.span`
-  margin-right: 1em;
-  text-transform: uppercase;
-`;
+export const Square: React.FC<React.ComponentProps<'span'>> = (props) => (
+  <span
+    css={css({
+      display: 'inline-block',
+      content: '""',
+      width: '0.9em',
+      height: '0.9em',
+      marginRight: '0.5em',
+      borderRadius: border.radius.inlineItem,
+    })}
+    {...props}
+  />
+);
 
-export const Value = styled.span`
-  float: right;
-`;
+export const Label: React.FC<React.ComponentProps<'span'>> = (props) => (
+  <span
+    css={css({
+      marginRight: '1em',
+      textTransform: 'uppercase',
+    })}
+    {...props}
+  />
+);
 
-export const ItemLink = styled.button.attrs({ className: 'link' })`
-  && {
-    display: inline-block;
-    width: 100%;
-    color: #ebebeb;
+export const Value: React.FC<React.ComponentProps<'span'>> = (props) => (
+  <span
+    css={css({
+      float: 'right',
+    })}
+    {...props}
+  />
+);
 
-    &:hover {
-      color: #7bc876;
-    }
-  }
-`;
+export const ItemLink: React.FC<React.ComponentProps<typeof Link>> = (
+  props,
+) => (
+  <Link
+    css={css([
+      {
+        display: 'inline-block',
+        width: '100%',
+        color: colors.font.default,
+      },
+      {
+        ':hover': {
+          color: colors.interactive.green,
+        },
+      },
+    ])}
+    {...props}
+  />
+);
 
 interface Props {
-  squareStyle?: CSSProperties;
-  label: string;
-  value: React.ReactNode | string;
-  onClick?: () => void;
+  squareStyle?: Parameters<typeof css>[1];
+  label: React.ComponentProps<typeof Label>['children'];
+  value: React.ComponentProps<typeof Value>['children'];
+  onClick?: React.ComponentProps<typeof ItemLink>['onClick'];
 }
 
 export const TeamInfoListItem: React.FC<Props> = ({
@@ -47,7 +72,7 @@ export const TeamInfoListItem: React.FC<Props> = ({
 }) => {
   const children = (
     <>
-      <Square style={squareStyle} />
+      <Square css={css(squareStyle)} />
       <Label>{label}</Label>
       <Value>{value}</Value>
     </>

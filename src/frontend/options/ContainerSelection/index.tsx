@@ -4,6 +4,10 @@ import { getAllContainers } from '@commons/webExtensionsApi';
 import { containersInfoPage } from '@commons/webLinks';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { Button } from '@frontend/commons/components/pontoon/Button';
+import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
+import { SelectInput } from '@frontend/commons/components/pontoon/SelectInput';
+import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
 
 interface ContainerInfo {
   name: string;
@@ -36,10 +40,10 @@ export const ContainerSelection: React.FC = () => {
 
   return (
     <div>
-      <label htmlFor="contextual_identity">
+      <InputLabel htmlFor="contextual_identity">
         Select container to use for opening Pontoon pages and accessing data
-      </label>
-      <select
+      </InputLabel>
+      <SelectInput
         id="contextual_identity"
         disabled={disabled}
         value={container}
@@ -54,9 +58,8 @@ export const ContainerSelection: React.FC = () => {
               {containerInfo.name}
             </option>
           ))}
-      </select>{' '}
-      <button
-        className="pontoon-style"
+      </SelectInput>{' '}
+      <Button
         onClick={() => {
           if (
             window.confirm(
@@ -68,12 +71,16 @@ export const ContainerSelection: React.FC = () => {
         }}
       >
         Edit
-      </button>
+      </Button>
       <aside>
         If you want to use a specific{' '}
-        <a href={containersInfoPage()} target="_blank" rel="noreferrer">
+        <NativeLink
+          href={containersInfoPage()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           container
-        </a>{' '}
+        </NativeLink>{' '}
         for Pontoon, select it here.
       </aside>
     </div>

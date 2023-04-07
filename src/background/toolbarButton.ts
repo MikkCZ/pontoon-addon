@@ -28,6 +28,7 @@ import {
   pontoonAddonWiki,
 } from '@commons/webLinks';
 import { openNewPontoonTab } from '@commons/utils';
+import { colors } from '@frontend/commons/const';
 
 import { refreshData } from './RemotePontoon';
 
@@ -117,7 +118,8 @@ async function updateBadge(
       const text = `${
         Object.values(notificationsData).filter((n) => n.unread).length
       }`;
-      const color = text === '0' ? '#4d5967' : '#F36';
+      const color =
+        text === '0' ? colors.interactive.gray : colors.interactive.red;
       await Promise.all([
         browser.browserAction.setBadgeText({ text }),
         browser.browserAction.setTitle({
@@ -130,7 +132,7 @@ async function updateBadge(
     }
   } else {
     const text = '!';
-    const color = '#F36';
+    const color = colors.interactive.red;
     await Promise.all([
       browser.browserAction.setBadgeText({ text }),
       browser.browserAction.setTitle({ title: `${DEFAULT_TITLE} (${text})` }),

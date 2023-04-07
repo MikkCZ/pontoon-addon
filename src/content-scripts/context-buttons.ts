@@ -4,6 +4,7 @@ import {
   reportTranslatedTextToBugzilla,
   searchTextInPontoon,
 } from '@background/backgroundClient';
+import { colors } from '@frontend/commons/const';
 
 const contextButtonWidth = 24;
 
@@ -24,7 +25,7 @@ function createButton(imageSrc: string): HTMLElement {
   imageButton.style.width = `${contextButtonWidth}px`;
   imageButton.style.position = 'absolute';
   imageButton.style.zIndex = '9999';
-  imageButton.style.backgroundColor = 'white';
+  imageButton.style.backgroundColor = colors.background.white;
   imageButton.style.cursor = 'pointer';
   return imageButton;
 }

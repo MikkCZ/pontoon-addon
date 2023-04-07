@@ -1,52 +1,83 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { css } from '@emotion/react';
 
-const Wrapper = styled.section`
-  width: 32%;
-  height: 22em;
-  margin-bottom: 2em;
-  background: #272a2f;
-  border: 1px solid #5e6475;
-  text-align: center;
-  display: grid;
-  grid-template-rows: [title] 15% [image] 30% [text] 40% [button] 15%;
+import { colors } from '@frontend/commons/const';
+import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+import { Button } from '@frontend/commons/components/pontoon/Button';
 
-  @media screen and (640px <= width <= 1024px) {
-    width: 48%;
+const Wrapper: React.FC<React.ComponentProps<'section'>> = (props) => (
+  <section
+    css={css([
+      {
+        width: '32%',
+        height: '22em',
+        marginBottom: '2em',
+        background: colors.background.default,
+        border: `1px solid ${colors.border.gray}`,
+        textAlign: 'center',
+        display: 'grid',
+        gridTemplateRows: '[title] 15% [image] 30% [text] 40% [button] 15%',
+      },
+      {
+        '@media screen and (640px <= width <= 1024px)': {
+          width: '48%',
+        },
+      },
+      {
+        '@media screen and (width <= 640px)': {
+          width: '100%',
+        },
+      },
+    ])}
+    {...props}
+  />
+);
+
+const Image: React.FC<React.ComponentProps<'img'>> = ({ alt, ...props }) => (
+  <img
+    css={css({
+      margin: '1em auto',
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+    })}
+    alt={alt}
+    {...props}
+  />
+);
+
+const Text: React.FC<React.ComponentProps<'p'>> = (props) => (
+  <p
+    css={css({
+      padding: '2em',
+    })}
+    {...props}
+  />
+);
+
+const Row: React.FC<
+  React.ComponentProps<'div'> & {
+    rowName: 'title' | 'image' | 'text' | 'button';
   }
+> = ({ rowName, ...props }) => (
+  <div
+    css={css({
+      gridRow: rowName,
+      margin: '0',
+      padding: '0',
+      display: 'table-cell',
+      verticalAlign: 'middle',
+    })}
+    {...props}
+  />
+);
 
-  @media screen and (width <= 640px) {
-    width: 100%;
-  }
-`;
-
-const Image = styled.img`
-  margin: 1em auto;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-`;
-
-const Text = styled.p`
-  padding: 2em;
-`;
-
-const Row = styled.div<{ rowName: string }>`
-  ${({ rowName }) => css`
-    grid-row: ${rowName};
-  `}
-  margin: 0;
-  padding: 0;
-  display: table-cell;
-  vertical-align: middle;
-`;
-
-export interface Props {
-  title: string;
-  imageSrc?: string;
-  text: React.ReactNode | string;
+interface Props {
+  title: React.ComponentProps<'h3'>['children'];
+  imageSrc?: React.ComponentProps<typeof Image>['src'];
+  text: React.ComponentProps<typeof Text>['children'];
   button: {
-    text: string;
+    text: React.ComponentProps<typeof Button>['children'];
     onClick: () => void;
   };
 }
@@ -60,7 +91,7 @@ export const TourPageTile: React.FC<Props> = ({
   return (
     <Wrapper>
       <Row rowName="title">
-        <h3>{title}</h3>
+        <Heading3>{title}</Heading3>
       </Row>
       {imageSrc && (
         <Row rowName="image">
@@ -71,9 +102,7 @@ export const TourPageTile: React.FC<Props> = ({
         <Text>{text}</Text>
       </Row>
       <Row rowName="button">
-        <button className="pontoon-style" onClick={button.onClick}>
-          {button.text}
-        </button>
+        <Button onClick={button.onClick}>{button.text}</Button>
       </Row>
     </Wrapper>
   );

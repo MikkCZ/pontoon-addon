@@ -25,7 +25,7 @@ import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient'
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 
-import { TeamInfo, Name, Code } from '.';
+import { TeamInfo, TitleLink, Name, Code } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
@@ -128,19 +128,15 @@ describe('TeamInfo', () => {
       wrapper.update();
     });
 
-    wrapper.find(Name).simulate('click');
+    wrapper.find(TitleLink).find('button').simulate('click');
     await flushPromises();
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
     );
+    expect(wrapper.find(TitleLink).find(Name)).toHaveLength(1);
+    expect(wrapper.find(TitleLink).find(Code)).toHaveLength(1);
 
-    wrapper.find(Code).simulate('click');
-    await flushPromises();
-    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
-      pontoonTeam('https://localhost', team),
-    );
-
-    wrapper.find(BottomLink).at(0).simulate('click');
+    wrapper.find(BottomLink).at(0).find('button').simulate('click');
     await flushPromises();
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeam('https://localhost', team),
@@ -195,7 +191,7 @@ describe('TeamInfo', () => {
 
     const openDashboadLink = wrapper.find(BottomLink).at(1);
     expect(openDashboadLink.text()).toBe('Open Firefox dashboard for Czech');
-    openDashboadLink.simulate('click');
+    openDashboadLink.find('button').simulate('click');
     await flushPromises();
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonTeamsProject('https://localhost', team, project),
@@ -205,7 +201,7 @@ describe('TeamInfo', () => {
     expect(translationViewLink.text()).toBe(
       'Open Firefox translation view for Czech',
     );
-    translationViewLink.simulate('click');
+    translationViewLink.find('button').simulate('click');
     await flushPromises();
     expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
       pontoonProjectTranslationView('https://localhost', team, project),
@@ -215,7 +211,7 @@ describe('TeamInfo', () => {
     expect(reportBugLink.text()).toBe(
       'Report bug for localization of Firefox to Czech',
     );
-    reportBugLink.simulate('click');
+    reportBugLink.find('button').simulate('click');
     await flushPromises();
     expect(openNewTab).toHaveBeenLastCalledWith(
       newLocalizationBug({ team, url: 'https://firefox.com' }),

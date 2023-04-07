@@ -1,7 +1,7 @@
 import React from 'react';
 
-export interface Props {
-  text: string;
+interface Props {
+  text: React.ComponentProps<'li'>['children'];
   onClick: () => void;
 }
 

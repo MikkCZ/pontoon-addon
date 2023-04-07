@@ -1,6 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
+import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+
 import { TourPageTile } from '.';
 
 describe('TourPageTile', () => {
@@ -19,7 +21,7 @@ describe('TourPageTile', () => {
       />,
     );
 
-    expect(wrapper.find('h3').text()).toBe('TITLE');
+    expect(wrapper.find(Heading3).text()).toBe('TITLE');
     expect(wrapper.find('img')).toHaveLength(1);
     expect(wrapper.find('p').text()).toBe('Lorem Ipsum');
     expect(wrapper.find('button').text()).toBe('Lipsum...');

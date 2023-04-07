@@ -19,6 +19,9 @@ const config: ESLint.ConfigData = {
     'prettier',
     'plugin:prettier/recommended', // must be the last one
   ],
+  plugins: [
+    "@emotion",
+  ],
   ignorePatterns: [
     '**/generated/**',
   ],
@@ -58,6 +61,15 @@ const config: ESLint.ConfigData = {
       },
     ],
     'react/prop-types': 'off',
+    'react/no-unknown-property': [
+      'error',
+      {
+        ignore: ['css'],
+      },
+    ],
+    '@emotion/no-vanilla': 'error',
+    '@emotion/import-from-emotion': 'error',
+    '@emotion/styled-import': 'error',
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {

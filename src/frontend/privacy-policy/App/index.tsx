@@ -1,37 +1,31 @@
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import { css } from '@emotion/react';
 
 import privacyMdAsString from '@assets/PRIVACY.md';
+import { Page } from '@frontend/commons/components/pontoon/Page';
+import { Heading1 } from '@frontend/commons/components/pontoon/Heading1';
+import { openIntro, openNewTab, openOptions } from '@commons/webExtensionsApi';
+import { pontoonAddonWiki } from '@commons/webLinks';
 
-import { GlobalPontoonStyle } from '../../GlobalPontoonStyle';
 import { MarkdownContent } from '../MarkdownContent';
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    background: #333941;
-    font-family: sans-serif;
-    font-size: 14px;
-  }
-`;
-
-const Wrapper = styled.div`
-  max-width: 960px;
-  margin: 0 auto;
-
-  h1 {
-    text-align: center;
-  }
-`;
 
 export const App: React.FC = () => {
   return (
-    <>
-      <GlobalPontoonStyle />
-      <GlobalStyle />
-      <Wrapper>
-        <h1>Privacy policy</h1>
-        <MarkdownContent markdownText={privacyMdAsString} />
-      </Wrapper>
-    </>
+    <Page
+      headerLinks={[
+        { text: 'Tour', onClick: () => openIntro() },
+        { text: 'Wiki', onClick: () => openNewTab(pontoonAddonWiki()) },
+        { text: 'Settings', onClick: () => openOptions() },
+      ]}
+      heading={<Heading1>Privacy policy</Heading1>}
+    >
+      <MarkdownContent
+        css={css({
+          maxWidth: '960px',
+          margin: '0 auto',
+        })}
+        markdownText={privacyMdAsString}
+      />
+    </Page>
   );
 };
