@@ -103,7 +103,7 @@ export const Page: React.FC<Props> = ({
         extra={bodyExtra}
       />
       {withHeader && (
-        <Header>
+        <Header data-testid="page-header">
           <img
             css={css({
               height: '32px',
@@ -124,8 +124,10 @@ export const Page: React.FC<Props> = ({
           )}
         </Header>
       )}
-      {heading && <HeadingSection>{heading}</HeadingSection>}
-      <main>{children}</main>
+      {heading && (
+        <HeadingSection data-testid="page-heading">{heading}</HeadingSection>
+      )}
+      <main data-testid="page-content">{children}</main>
     </>
   );
 };

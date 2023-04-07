@@ -42,9 +42,7 @@ const Title: React.FC<React.ComponentProps<typeof Heading3>> = ({
   </Heading3>
 );
 
-export const TitleLink: React.FC<React.ComponentProps<typeof Link>> = (
-  props,
-) => (
+const TitleLink: React.FC<React.ComponentProps<typeof Link>> = (props) => (
   <Link
     css={css([
       {
@@ -75,8 +73,9 @@ const List: React.FC<React.ComponentProps<'ul'>> = (props) => (
   />
 );
 
-export const Name: React.FC<React.ComponentProps<'span'>> = (props) => (
+const Name: React.FC<React.ComponentProps<'span'>> = (props) => (
   <span
+    data-testid="team-name"
     css={css({
       fontWeight: 'bold',
       color: colors.font.default,
@@ -85,8 +84,9 @@ export const Name: React.FC<React.ComponentProps<'span'>> = (props) => (
   />
 );
 
-export const Code: React.FC<React.ComponentProps<'span'>> = (props) => (
+const Code: React.FC<React.ComponentProps<'span'>> = (props) => (
   <span
+    data-testid="team-code"
     css={css({
       fontWeight: 'normal',
       color: colors.interactive.green,

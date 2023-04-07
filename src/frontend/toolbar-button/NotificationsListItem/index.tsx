@@ -17,7 +17,7 @@ import { Link } from '@frontend/commons/components/pontoon/Link';
 import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
 import { colors } from '@frontend/commons/const';
 
-export const Wrapper: React.FC<
+const Wrapper: React.FC<
   React.ComponentProps<'li'> & {
     unread: boolean;
     hasSingleLink: boolean;
@@ -49,7 +49,7 @@ export const Wrapper: React.FC<
   />
 );
 
-export const ActorTargetLink: React.FC<React.ComponentProps<typeof Link>> = (
+const ActorTargetLink: React.FC<React.ComponentProps<typeof Link>> = (
   props,
 ) => (
   <Link
@@ -67,8 +67,9 @@ export const ActorTargetLink: React.FC<React.ComponentProps<typeof Link>> = (
   />
 );
 
-export const Description: React.FC<React.ComponentProps<'div'>> = (props) => (
+const Description: React.FC<React.ComponentProps<'div'>> = (props) => (
   <div
+    data-testid="description"
     css={css({
       color: colors.font.veryLight,
     })}
@@ -76,8 +77,9 @@ export const Description: React.FC<React.ComponentProps<'div'>> = (props) => (
   />
 );
 
-export const TimeAgo: React.FC<React.ComponentProps<'div'>> = (props) => (
+const TimeAgo: React.FC<React.ComponentProps<'div'>> = (props) => (
   <div
+    data-testid="timeago"
     css={css({
       color: colors.font.veryLight,
       textAlign: 'right',
@@ -219,6 +221,7 @@ export const NotificationsListItem: React.FC<Props> = ({
       >
         {actor && !isSuggestion && (
           <ActorTargetLink
+            data-testid="actor"
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
               stopEvent(e);
               openTeamProject(actor.url);
@@ -227,9 +230,15 @@ export const NotificationsListItem: React.FC<Props> = ({
             {actor.anchor}
           </ActorTargetLink>
         )}
-        {verb && <span onClick={openSingleLink}> {verb} </span>}
+        {verb && (
+          <span data-testid="verb" onClick={openSingleLink}>
+            {' '}
+            {verb}{' '}
+          </span>
+        )}
         {target && (
           <ActorTargetLink
+            data-testid="target"
             onClick={(e: MouseEvent<HTMLButtonElement>) => {
               stopEvent(e);
               openTeamProject(target.url);

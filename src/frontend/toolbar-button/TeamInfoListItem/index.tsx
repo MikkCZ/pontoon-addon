@@ -4,8 +4,9 @@ import { css } from '@emotion/react';
 import { border, colors } from '@frontend/commons/const';
 import { Link } from '@frontend/commons/components/pontoon/Link';
 
-export const Square: React.FC<React.ComponentProps<'span'>> = (props) => (
+const Square: React.FC<React.ComponentProps<'span'>> = (props) => (
   <span
+    data-testid="square"
     css={css({
       display: 'inline-block',
       content: '""',
@@ -18,8 +19,9 @@ export const Square: React.FC<React.ComponentProps<'span'>> = (props) => (
   />
 );
 
-export const Label: React.FC<React.ComponentProps<'span'>> = (props) => (
+const Label: React.FC<React.ComponentProps<'span'>> = (props) => (
   <span
+    data-testid="label"
     css={css({
       marginRight: '1em',
       textTransform: 'uppercase',
@@ -28,8 +30,9 @@ export const Label: React.FC<React.ComponentProps<'span'>> = (props) => (
   />
 );
 
-export const Value: React.FC<React.ComponentProps<'span'>> = (props) => (
+const Value: React.FC<React.ComponentProps<'span'>> = (props) => (
   <span
+    data-testid="value"
     css={css({
       float: 'right',
     })}
@@ -37,9 +40,7 @@ export const Value: React.FC<React.ComponentProps<'span'>> = (props) => (
   />
 );
 
-export const ItemLink: React.FC<React.ComponentProps<typeof Link>> = (
-  props,
-) => (
+const ItemLink: React.FC<React.ComponentProps<typeof Link>> = (props) => (
   <Link
     css={css([
       {

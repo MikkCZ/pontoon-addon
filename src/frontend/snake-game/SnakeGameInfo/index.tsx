@@ -5,7 +5,7 @@ import { Button } from '@frontend/commons/components/pontoon/Button';
 
 import { useSnakeGameContext, GameState } from '../SnakeGameContext';
 
-export const Wrapper: React.FC<React.ComponentProps<'div'>> = (props) => (
+const Wrapper: React.FC<React.ComponentProps<'div'>> = (props) => (
   <div
     css={css([
       {
@@ -16,14 +16,6 @@ export const Wrapper: React.FC<React.ComponentProps<'div'>> = (props) => (
     ])}
     {...props}
   />
-);
-
-export const ControlsInfo: React.FC<React.ComponentProps<'div'>> = (props) => (
-  <div {...props} />
-);
-
-export const Score: React.FC<React.ComponentProps<'div'>> = (props) => (
-  <div {...props} />
 );
 
 export const SnakeGameInfo: React.FC = () => {
@@ -37,11 +29,11 @@ export const SnakeGameInfo: React.FC = () => {
     gameState === GameState.RUNNING || gameState === GameState.PAUSED;
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="snake-game-info">
       {gameState !== GameState.LOST && (
-        <ControlsInfo>Controls: arrows or WASD</ControlsInfo>
+        <div data-testid="controls-info">Controls: arrows or WASD</div>
       )}
-      {gameInProgress && <Score>Your score: {score}</Score>}
+      {gameInProgress && <div data-testid="score">Your score: {score}</div>}
       {gameState === GameState.RUNNING && (
         <Button onClick={controlFunctions.pauseGame}>PAUSE</Button>
       )}

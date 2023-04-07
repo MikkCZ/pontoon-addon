@@ -1,13 +1,17 @@
 import React from 'react';
-import { mount } from 'enzyme';
-
-import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
+import { render, screen, within } from '@testing-library/react';
 
 import { TourPageTile } from '.';
 
+const WRAPPER_TEST_ID = 'tour-page-tile';
+
+function wrapper() {
+  return screen.getByTestId(WRAPPER_TEST_ID);
+}
+
 describe('TourPageTile', () => {
-  it('renders full tile', () => {
-    const wrapper = mount(
+  it('renders with test id', () => {
+    render(
       <TourPageTile
         {...{
           title: 'TITLE',
@@ -21,14 +25,36 @@ describe('TourPageTile', () => {
       />,
     );
 
-    expect(wrapper.find(Heading3).text()).toBe('TITLE');
-    expect(wrapper.find('img')).toHaveLength(1);
-    expect(wrapper.find('p').text()).toBe('Lorem Ipsum');
-    expect(wrapper.find('button').text()).toBe('Lipsum...');
+    expect(wrapper()).toBeInTheDocument();
+  });
+
+  it('renders full tile', () => {
+    render(
+      <TourPageTile
+        {...{
+          title: 'TITLE',
+          imageSrc: 'mock.jpg',
+          text: 'Lorem Ipsum',
+          button: {
+            text: 'Lipsum...',
+            onClick: jest.fn(),
+          },
+        }}
+      />,
+    );
+
+    expect(
+      within(wrapper()).getByRole('heading', { level: 3 }),
+    ).toHaveTextContent('TITLE');
+    expect(within(wrapper()).getByRole('img')).toBeInTheDocument();
+    expect(within(wrapper()).getByText('Lorem Ipsum')).toBeInTheDocument();
+    expect(within(wrapper()).getByRole('button')).toHaveTextContent(
+      'Lipsum...',
+    );
   });
 
   it('renders tile without image', () => {
-    const wrapper = mount(
+    render(
       <TourPageTile
         {...{
           title: 'TITLE',
@@ -41,6 +67,6 @@ describe('TourPageTile', () => {
       />,
     );
 
-    expect(wrapper.find('img')).toHaveLength(0);
+    expect(within(wrapper()).queryByRole('img')).not.toBeInTheDocument();
   });
 });

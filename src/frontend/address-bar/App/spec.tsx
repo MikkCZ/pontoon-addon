@@ -1,6 +1,6 @@
 import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import flushPromises from 'flush-promises';
 
@@ -17,9 +17,6 @@ import {
   pontoonTeamsProject,
 } from '@commons/webLinks';
 import * as UtilsApiModule from '@commons/utils';
-
-import { PanelSection } from '../PanelSection';
-import { PanelListItem } from '../PanelListItem';
 
 import { App } from '.';
 
@@ -42,71 +39,69 @@ const team = {
   bz_component: 'L10N/CS',
 };
 
-beforeEach(() => {
-  (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
-  (getOneFromStorage as jest.Mock).mockResolvedValue({ [team.code]: team });
-  (getOptions as jest.Mock).mockResolvedValue({
-    locale_team: team.code,
-    pontoon_base_url: 'https://localhost',
-  });
-  (getActiveTab as jest.Mock).mockResolvedValue({
-    url: 'https://localhost/firefox',
-  });
+(getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
+(getOneFromStorage as jest.Mock).mockResolvedValue({ [team.code]: team });
+(getOptions as jest.Mock).mockResolvedValue({
+  locale_team: team.code,
+  pontoon_base_url: 'https://localhost',
+});
+(getActiveTab as jest.Mock).mockResolvedValue({
+  url: 'https://localhost/firefox',
 });
 
 afterEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
 
 describe('address-bar/App', () => {
   it('renders items for the project', async () => {
-    const wrapper = mount(<App />);
+    render(<App />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    expect(wrapper.find(PanelSection)).toHaveLength(1);
-    expect(wrapper.find(PanelListItem)).toHaveLength(3);
-    expect(wrapper.find(PanelListItem).at(0).text()).toBe(
+    const expectedItems = [
       'Open Some Project dashboard for Czech',
-    );
-    expect(wrapper.find(PanelListItem).at(1).text()).toBe(
       'Open Some Project translation view for Czech',
-    );
-    expect(wrapper.find(PanelListItem).at(2).text()).toBe(
       'Report bug for localization of Some Project to Czech',
-    );
+    ];
+
+    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(screen.getByRole('list')).toHaveClass('panel-section');
+    expect(screen.getAllByRole('listitem')).toHaveLength(expectedItems.length);
+    for (const [i, expectedText] of expectedItems.entries()) {
+      expect(screen.getAllByRole('listitem')[i]).toHaveTextContent(
+        expectedText,
+      );
+    }
   });
 
-  it('handles click to open project page', async () => {
-    const wrapper = mount(<App />);
+  it('item opens project dashboard page', async () => {
+    render(<App />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    act(() => {
-      wrapper.find(PanelListItem).at(0).simulate('click');
+    await act(async () => {
+      screen.getByText('Open Some Project dashboard for Czech').click();
+      await flushPromises();
     });
-    await flushPromises();
 
     expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
       pontoonTeamsProject('https://localhost', { code: 'cs' }, project),
     );
   });
 
-  it('handles click to open translation view', async () => {
-    const wrapper = mount(<App />);
+  it('items opens project translation view', async () => {
+    render(<App />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    act(() => {
-      wrapper.find(PanelListItem).at(1).simulate('click');
+    await act(async () => {
+      screen.getByText('Open Some Project translation view for Czech').click();
+      await flushPromises();
     });
-    await flushPromises();
 
     expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
       pontoonProjectTranslationView(
@@ -117,17 +112,18 @@ describe('address-bar/App', () => {
     );
   });
 
-  it('handles click to report bug', async () => {
-    const wrapper = mount(<App />);
+  it('items opens link to report a bug', async () => {
+    render(<App />);
     await act(async () => {
       await flushPromises();
-      wrapper.update();
     });
 
-    act(() => {
-      wrapper.find(PanelListItem).at(2).simulate('click');
+    await act(async () => {
+      screen
+        .getByText('Report bug for localization of Some Project to Czech')
+        .click();
+      await flushPromises();
     });
-    await flushPromises();
 
     expect(openNewTab).toHaveBeenCalledWith(
       newLocalizationBug({

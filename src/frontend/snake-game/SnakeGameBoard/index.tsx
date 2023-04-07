@@ -90,6 +90,7 @@ export const SnakeGameBoard: React.FC<React.ComponentProps<typeof Wrapper>> = (
 
   return (
     <Wrapper
+      data-testid="snake-game-board"
       css={css({
         width: `${finalBoardWidth}px`,
         height: `${finalBoardHeight}px`,

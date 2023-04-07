@@ -1,18 +1,24 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount, shallow } from 'enzyme';
+import { render, screen, within } from '@testing-library/react';
 
-import { Page } from '@frontend/commons/components/pontoon/Page';
-import { Heading1 } from '@frontend/commons/components/pontoon/Heading1';
-import { Link } from '@frontend/commons/components/pontoon/Link';
-
-import { TourPageTile } from '../TourPageTile';
-
-import { TourPage, CloseIcon, PrivacyPolicyLinkWrapper } from '.';
+import { TourPage } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 
 const windowCloseSpy = jest.spyOn(window, 'close').mockReturnValue(undefined);
+
+function pageHeader() {
+  return screen.getByTestId('page-header');
+}
+
+function pageHeading() {
+  return screen.getByTestId('page-heading');
+}
+
+function pageContent() {
+  return screen.getByTestId('page-content');
+}
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -20,13 +26,13 @@ afterEach(() => {
 
 describe('TourPage', () => {
   it('renders Page component', () => {
-    const wrapper = mount(<TourPage title="TITLE" tiles={[]} />);
+    render(<TourPage title="TITLE" tiles={[]} />);
 
-    expect(wrapper.find(Page)).toHaveLength(1);
+    expect(pageContent()).toBeInTheDocument();
   });
 
   it('renders close button', () => {
-    const wrapper = mount(
+    render(
       <TourPage
         title="TITLE"
         tiles={[
@@ -42,24 +48,27 @@ describe('TourPage', () => {
       />,
     );
 
-    expect(wrapper.find('header').find(Link)).toHaveLength(1);
-    expect(wrapper.find('header').find(Link).find(CloseIcon)).toHaveLength(1);
+    const headerLink = within(pageHeader()).getByRole('link');
+    expect(headerLink).toBeInTheDocument();
+    expect(within(headerLink).getByTestId('close-icon')).toBeInTheDocument();
 
     act(() => {
-      wrapper.find('header').find(Link).find('button').simulate('click');
+      headerLink.click();
     });
 
     expect(windowCloseSpy).toHaveBeenCalled();
   });
 
   it('renders title', () => {
-    const wrapper = mount(<TourPage title="TITLE" tiles={[]} />);
+    render(<TourPage title="TITLE" tiles={[]} />);
 
-    expect(wrapper.find(Heading1).text()).toBe('TITLE');
+    expect(
+      within(pageHeading()).getByRole('heading', { level: 1 }),
+    ).toHaveTextContent('TITLE');
   });
 
   it('renders content', () => {
-    const wrapper = shallow(
+    render(
       <TourPage
         title="TITLE"
         tiles={[
@@ -75,13 +84,13 @@ describe('TourPage', () => {
       />,
     );
 
-    expect(wrapper.find(TourPageTile)).toHaveLength(1);
+    expect(screen.getByTestId('tour-page-tile')).toBeInTheDocument();
   });
 
   it('renders privacy policy link', () => {
-    const wrapper = mount(<TourPage title="TITLE" tiles={[]} />);
+    render(<TourPage title="TITLE" tiles={[]} />);
 
-    expect(wrapper.find(PrivacyPolicyLinkWrapper).text()).toBe(
+    expect(within(pageContent()).getByRole('button')).toHaveTextContent(
       'Privacy policy',
     );
   });
