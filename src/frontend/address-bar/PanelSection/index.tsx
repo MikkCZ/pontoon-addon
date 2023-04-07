@@ -4,8 +4,8 @@ import { PanelListItem } from '../PanelListItem';
 
 interface Props {
   items: Array<
-    React.ComponentProps<typeof PanelListItem> & {
-      text: React.ComponentProps<'li'>['children'];
+    Omit<React.ComponentProps<typeof PanelListItem>, 'children'> & {
+      text: React.ComponentProps<typeof PanelListItem>['children'];
     }
   >;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 
@@ -10,9 +10,15 @@ import { App as PrivacyPolicyApp } from './privacy-policy/App';
 import { App as SnakeGameApp } from './snake-game/App';
 import { App as ToolbarButtonApp } from './toolbar-button/App';
 
+function renderRoot(rootElement: HTMLElement, children: React.ReactNode) {
+  createRoot(rootElement).render(
+    <React.StrictMode>{children}</React.StrictMode>,
+  );
+}
+
 function renderToolbarButtonApp(rootElement: HTMLElement) {
   TimeAgo.addLocale(en);
-  ReactDOM.render(<ToolbarButtonApp />, rootElement);
+  renderRoot(rootElement, <ToolbarButtonApp />);
 }
 
 export async function render(): Promise<void> {
@@ -23,11 +29,11 @@ export async function render(): Promise<void> {
   const snakeGameRoot = document.getElementById('snake-game-root');
   const toolbarButtonRoot = document.getElementById('toolbar-button-root');
 
-  addressBarRoot && ReactDOM.render(<AddressBarApp />, addressBarRoot);
-  introRoot && ReactDOM.render(<IntroApp />, introRoot);
-  optionsRoot && ReactDOM.render(<OptionsApp />, optionsRoot);
-  privacyPolicyRoot && ReactDOM.render(<PrivacyPolicyApp />, privacyPolicyRoot);
-  snakeGameRoot && ReactDOM.render(<SnakeGameApp />, snakeGameRoot);
+  addressBarRoot && renderRoot(addressBarRoot, <AddressBarApp />);
+  introRoot && renderRoot(introRoot, <IntroApp />);
+  optionsRoot && renderRoot(optionsRoot, <OptionsApp />);
+  privacyPolicyRoot && renderRoot(privacyPolicyRoot, <PrivacyPolicyApp />);
+  snakeGameRoot && renderRoot(snakeGameRoot, <SnakeGameApp />);
   toolbarButtonRoot && renderToolbarButtonApp(toolbarButtonRoot);
 }
 

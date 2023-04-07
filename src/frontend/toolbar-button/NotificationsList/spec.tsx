@@ -1,7 +1,6 @@
 import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { render, screen, act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
 import * as UtilsApiModule from '@commons/utils';

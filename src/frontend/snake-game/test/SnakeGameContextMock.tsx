@@ -6,7 +6,11 @@ import { render } from '@testing-library/react';
 import type { GameFunctions } from '../gameFunctions';
 import { GameState, SnakeGameReactContext } from '../SnakeGameContext';
 
-interface MockProps {
+interface MockProps
+  extends Pick<
+    React.ComponentProps<typeof SnakeGameReactContext.Provider>,
+    'children'
+  > {
   gameState?: GameState;
   score?: number;
   startGame?: () => void;

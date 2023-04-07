@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import {
   snakeGameContextDefaultMockValue,
@@ -6,6 +6,12 @@ import {
 } from '../test/SnakeGameContextMock';
 
 import { SnakeGameContextProvider, useSnakeGameContext } from '.';
+
+const consoleErrorSpy = jest.spyOn(console, 'error');
+
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
 describe('SnakeGameContextProvider', () => {
   it('provides a value', () => {
@@ -19,9 +25,12 @@ describe('SnakeGameContextProvider', () => {
 
 describe('useSnakeGameContext', () => {
   it('throws error when used outside of the provider', () => {
-    const { result } = renderHook(() => useSnakeGameContext());
-
-    expect(() => result.current).toThrow();
+    consoleErrorSpy.mockReturnValue(undefined);
+    expect(() => {
+      renderHook(() => useSnakeGameContext());
+    }).toThrow(
+      '"useSnakeGameContext" hook may only be used inside "SnakeGameContextProvider".',
+    );
   });
 
   it('returns value from provider', () => {

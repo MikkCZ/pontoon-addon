@@ -5,7 +5,8 @@ import { getOneOption, setOption } from '@commons/options';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { CheckboxInput } from '@frontend/commons/components/pontoon/CheckboxInput';
 
-interface Props {
+interface Props
+  extends Pick<React.ComponentProps<typeof InputLabel>, 'children'> {
   optionKey: OptionId;
 }
 
