@@ -8,6 +8,7 @@ export const NativeLink: React.FC<React.ComponentProps<'a'>> = ({
   ...props
 }) => (
   <a
+    data-testid="native-link"
     css={css([
       {
         color: colors.interactive.green,

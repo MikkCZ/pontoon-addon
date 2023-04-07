@@ -1,36 +1,55 @@
 import React from 'react';
+import { screen, within } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
-import { mountWithSnakeGameContext } from '../test/SnakeGameContextMock';
+import { renderInSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';
 
-import { SnakeGameInfo, Wrapper, ControlsInfo, Score } from '.';
+import { SnakeGameInfo } from '.';
+
+const WRAPPER_TEST_ID = 'snake-game-info';
+
+function wrapper() {
+  return screen.getByTestId(WRAPPER_TEST_ID);
+}
 
 describe('SnakeGameInfo', () => {
+  it('renders with test id', () => {
+    renderInSnakeGameContext({
+      children: <SnakeGameInfo />,
+      gameState: GameState.RUNNING,
+    });
+
+    expect(wrapper()).toBeInTheDocument();
+  });
+
   it('renders score and pause button when the game is running', () => {
     const score = 42;
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameInfo />,
       gameState: GameState.RUNNING,
       score,
     });
 
-    expect(wrapper.find(ControlsInfo).text()).toBe('Controls: arrows or WASD');
-    expect(wrapper.find(Score).text()).toBe(`Your score: ${score}`);
-    expect(wrapper.find('button')).toHaveLength(1);
-    expect(wrapper.find('button').text()).toBe('PAUSE');
+    expect(within(wrapper()).getByTestId('controls-info')).toHaveTextContent(
+      'Controls: arrows or WASD',
+    );
+    expect(within(wrapper()).getByTestId('score')).toHaveTextContent(
+      `Your score: ${score}`,
+    );
+    expect(within(wrapper()).getByTestId('button')).toHaveTextContent('PAUSE');
   });
 
   it('pause button pauses the game', () => {
     const pauseGame = jest.fn();
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameInfo />,
       gameState: GameState.RUNNING,
       pauseGame,
     });
 
     act(() => {
-      wrapper.find('button').simulate('click');
+      within(wrapper()).getByText('PAUSE').click();
     });
 
     expect(pauseGame).toHaveBeenCalled();
@@ -38,50 +57,59 @@ describe('SnakeGameInfo', () => {
 
   it('renders score and resume button when the game is paused', () => {
     const score = 42;
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameInfo />,
       gameState: GameState.PAUSED,
       score,
     });
 
-    expect(wrapper.find(ControlsInfo).text()).toBe('Controls: arrows or WASD');
-    expect(wrapper.find(Score).text()).toBe(`Your score: ${score}`);
-    expect(wrapper.find('button')).toHaveLength(1);
-    expect(wrapper.find('button').text()).toBe('RESUME');
+    expect(within(wrapper()).getByTestId('controls-info')).toHaveTextContent(
+      'Controls: arrows or WASD',
+    );
+    expect(within(wrapper()).getByTestId('score')).toHaveTextContent(
+      `Your score: ${score}`,
+    );
+    expect(within(wrapper()).getByTestId('button')).toHaveTextContent('RESUME');
   });
 
   it('resume button resumes the game', () => {
     const resumeGame = jest.fn();
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameInfo />,
       gameState: GameState.PAUSED,
       resumeGame,
     });
 
     act(() => {
-      wrapper.find('button').simulate('click');
+      within(wrapper()).getByText('RESUME').click();
     });
 
     expect(resumeGame).toHaveBeenCalled();
   });
 
   it('renders controls info before the game starts', () => {
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameInfo />,
       gameState: GameState.NOT_STARTED,
     });
 
-    expect(wrapper.find(ControlsInfo).text()).toBe('Controls: arrows or WASD');
-    expect(wrapper.find(Score)).toHaveLength(0);
-    expect(wrapper.find('button')).toHaveLength(0);
+    expect(within(wrapper()).getByTestId('controls-info')).toHaveTextContent(
+      'Controls: arrows or WASD',
+    );
+    expect(within(wrapper()).queryByTestId('score')).not.toBeInTheDocument();
+    expect(within(wrapper()).queryByTestId('button')).not.toBeInTheDocument();
   });
 
   it('renders nothing when the game is lost', () => {
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameInfo />,
       gameState: GameState.LOST,
     });
 
-    expect(wrapper.find(Wrapper).text()).toBe('');
+    expect(
+      within(wrapper()).queryByTestId('controls-info'),
+    ).not.toBeInTheDocument();
+    expect(within(wrapper()).queryByTestId('score')).not.toBeInTheDocument();
+    expect(within(wrapper()).queryByTestId('button')).not.toBeInTheDocument();
   });
 });

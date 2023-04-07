@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
-import type { ReactWrapper } from 'enzyme';
-import { mount } from 'enzyme';
+import type { RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import type { GameFunctions } from '../gameFunctions';
 import { GameState, SnakeGameReactContext } from '../SnakeGameContext';
@@ -46,13 +46,11 @@ export const SnakeGameContextProviderMock: React.FC<MockProps> = ({
   );
 };
 
-export function mountWithSnakeGameContext({
+export function renderInSnakeGameContext({
   children,
   ...mockProps
-}: SnakeGameContextMockValues): ReactWrapper<
-  typeof SnakeGameReactContext.Provider
-> {
-  return mount(
+}: SnakeGameContextMockValues): RenderResult {
+  return render(
     <SnakeGameContextProviderMock {...mockProps}>
       {children}
     </SnakeGameContextProviderMock>,

@@ -1,32 +1,39 @@
 import React from 'react';
-import { mount } from 'enzyme';
-
-import { Page } from '@frontend/commons/components/pontoon/Page';
-import { Heading2 } from '@frontend/commons/components/pontoon/Heading2';
-import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
-
-import { SnakeGameBoard } from '../SnakeGameBoard';
-import { SnakeGameInfo } from '../SnakeGameInfo';
+import { render, screen, within } from '@testing-library/react';
 
 import { App } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 
+function pageHeading() {
+  return screen.getByTestId('page-heading');
+}
+
+function pageContent() {
+  return screen.getByTestId('page-content');
+}
+
 describe('snake-game/App', () => {
   it('renders Page components', () => {
-    const wrapper = mount(<App />);
+    render(<App />);
 
-    expect(wrapper.find(Page)).toHaveLength(1);
+    expect(pageContent()).toBeInTheDocument();
   });
 
   it('renders content', () => {
-    const wrapper = mount(<App />);
+    render(<App />);
 
-    expect(wrapper.find(Heading2).text()).toBe(
-      'Thank you for using Pontoon Add-on.',
-    );
-    expect(wrapper.find(Heading3).first().text()).toBe('Enjoy the game.');
-    expect(wrapper.find(SnakeGameBoard)).toHaveLength(1);
-    expect(wrapper.find(SnakeGameInfo)).toHaveLength(1);
+    expect(
+      within(pageHeading()).getByRole('heading', { level: 2 }),
+    ).toHaveTextContent('Thank you for using Pontoon Add-on.');
+    expect(
+      within(pageHeading()).getByRole('heading', { level: 3 }),
+    ).toHaveTextContent('Enjoy the game.');
+    expect(
+      within(pageContent()).getByTestId('snake-game-board'),
+    ).toBeInTheDocument();
+    expect(
+      within(pageContent()).getByTestId('snake-game-info'),
+    ).toBeInTheDocument();
   });
 });

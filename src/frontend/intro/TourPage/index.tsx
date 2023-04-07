@@ -43,7 +43,7 @@ const TourPageTiles: React.FC<React.ComponentProps<'div'>> = (props) => (
   />
 );
 
-export const PrivacyPolicyLinkWrapper: React.FC<React.ComponentProps<'div'>> = (
+const PrivacyPolicyLinkWrapper: React.FC<React.ComponentProps<'div'>> = (
   props,
 ) => (
   <div
@@ -54,8 +54,9 @@ export const PrivacyPolicyLinkWrapper: React.FC<React.ComponentProps<'div'>> = (
   />
 );
 
-export const CloseIcon: React.FC<React.ComponentProps<'span'>> = (props) => (
+const CloseIcon: React.FC<React.ComponentProps<'span'>> = (props) => (
   <span
+    data-testid="close-icon"
     css={css({
       display: 'inline-block',
       width: '16px',

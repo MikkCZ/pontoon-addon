@@ -1,38 +1,57 @@
 import React from 'react';
+import { screen, within } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { SnakeGame } from 'react-game-snake';
 
-import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
-
-import { mountWithSnakeGameContext } from '../test/SnakeGameContextMock';
+import { renderInSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';
 
 import { SnakeGameBoard } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 
+const WRAPPER_TEST_ID = 'snake-game-board';
+
+function wrapper() {
+  return screen.getByTestId(WRAPPER_TEST_ID);
+}
+
 describe('SnakeGameBoard', () => {
-  it('shows start screen before first start', () => {
-    const wrapper = mountWithSnakeGameContext({
+  it('renders with test id', () => {
+    renderInSnakeGameContext({
       children: <SnakeGameBoard />,
       gameState: GameState.NOT_STARTED,
     });
 
-    expect(wrapper.find(Heading3).text()).toBe('Snake');
-    expect(wrapper.find('button').text()).toBe('START GAME');
-    expect(wrapper.find(SnakeGame)).toHaveLength(0);
+    expect(wrapper()).toBeInTheDocument();
+  });
+
+  it('shows start screen before first start', () => {
+    renderInSnakeGameContext({
+      children: <SnakeGameBoard />,
+      gameState: GameState.NOT_STARTED,
+    });
+
+    expect(
+      within(wrapper()).getByRole('heading', { level: 3 }),
+    ).toHaveTextContent('Snake');
+    expect(within(wrapper()).getByTestId('button')).toHaveTextContent(
+      'START GAME',
+    );
+    expect(
+      within(wrapper()).queryByTestId('react-snake-game'),
+    ).not.toBeInTheDocument();
   });
 
   it('start game button starts the game', () => {
     const startGame = jest.fn();
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameBoard />,
       gameState: GameState.NOT_STARTED,
       startGame,
     });
 
     act(() => {
-      wrapper.find('button').simulate('click');
+      within(wrapper()).getByText('START GAME').click();
     });
 
     expect(startGame).toHaveBeenCalled();
@@ -40,39 +59,48 @@ describe('SnakeGameBoard', () => {
 
   it('shows score after game is lost', () => {
     const score = 42;
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameBoard />,
       gameState: GameState.LOST,
       score,
     });
 
-    expect(wrapper.find(Heading3).text()).toBe('GAMEOVER'); // <br> in the middle
-    expect(wrapper.find('h4').text()).toBe(`You scored ${score} points.`);
-    expect(wrapper.find('button').first().text()).toBe('TRY AGAIN');
-    expect(wrapper.find(SnakeGame)).toHaveLength(0);
+    expect(
+      within(wrapper()).getByRole('heading', { level: 3 }),
+    ).toHaveTextContent('GAMEOVER'); // <br> in the middle
+    expect(
+      within(wrapper()).getByRole('heading', { level: 4 }),
+    ).toHaveTextContent(`You scored ${score} points.`);
+    expect(within(wrapper()).getByTestId('button')).toHaveTextContent(
+      'TRY AGAIN',
+    );
+    expect(
+      within(wrapper()).queryByTestId('react-snake-game'),
+    ).not.toBeInTheDocument();
   });
 
   it('try again button restarts the game', () => {
     const restartGame = jest.fn();
-    const wrapper = mountWithSnakeGameContext({
+    renderInSnakeGameContext({
       children: <SnakeGameBoard />,
       gameState: GameState.LOST,
       restartGame,
     });
 
     act(() => {
-      wrapper.find('button').first().simulate('click');
+      within(wrapper()).getByText('TRY AGAIN').click();
     });
 
     expect(restartGame).toHaveBeenCalled();
   });
 
-  it('render game in progress', () => {
-    const wrapper = mountWithSnakeGameContext({
+  it('renders game in progress', () => {
+    renderInSnakeGameContext({
       children: <SnakeGameBoard />,
       gameState: GameState.RUNNING,
     });
 
-    expect(wrapper.find(SnakeGame)).toHaveLength(1);
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(wrapper().getElementsByTagName('canvas')).toHaveLength(1);
   });
 });

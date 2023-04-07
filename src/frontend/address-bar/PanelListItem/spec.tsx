@@ -1,28 +1,28 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
 import { PanelListItem } from '.';
 
 describe('PanelListItem', () => {
   it('has class to style in Firefox', () => {
-    const wrapper = shallow(<PanelListItem text="Text" onClick={jest.fn()} />);
+    render(<PanelListItem onClick={jest.fn()} />);
 
-    expect(wrapper.find('li').hasClass('panel-list-item')).toBeTruthy();
+    expect(screen.getByRole('listitem')).toHaveClass('panel-list-item');
   });
 
-  it('renders text', () => {
-    const wrapper = shallow(<PanelListItem text="Text" onClick={jest.fn()} />);
+  it('renders children', () => {
+    render(<PanelListItem onClick={jest.fn()}>Text</PanelListItem>);
 
-    expect(wrapper.find('li').text()).toBe('Text');
+    expect(screen.getByRole('listitem')).toHaveTextContent('Text');
   });
 
   it('calls the onClick handler', () => {
     const onClick = jest.fn();
-    const wrapper = shallow(<PanelListItem text="Text" onClick={onClick} />);
+    render(<PanelListItem onClick={onClick}>Text</PanelListItem>);
 
     act(() => {
-      wrapper.find('li').simulate('click');
+      screen.getByText('Text').click();
     });
 
     expect(onClick).toHaveBeenCalled();

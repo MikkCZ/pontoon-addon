@@ -89,7 +89,7 @@ export const TourPageTile: React.FC<Props> = ({
   button,
 }) => {
   return (
-    <Wrapper>
+    <Wrapper data-testid="tour-page-tile">
       <Row rowName="title">
         <Heading3>{title}</Heading3>
       </Row>

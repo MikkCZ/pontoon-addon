@@ -1,20 +1,18 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
-
-import { PanelListItem } from '../PanelListItem';
+import { render, screen } from '@testing-library/react';
 
 import { PanelSection } from '.';
 
 describe('PanelSection', () => {
   it('has class to style in Firefox', () => {
-    const wrapper = shallow(<PanelSection items={[]} />);
+    render(<PanelSection items={[]} />);
 
-    expect(wrapper.find('ul').hasClass('panel-section')).toBeTruthy();
-    expect(wrapper.find('ul').hasClass('panel-section-list')).toBeTruthy();
+    expect(screen.getByRole('list')).toHaveClass('panel-section');
+    expect(screen.getByRole('list')).toHaveClass('panel-section-list');
   });
 
   it('renders items', () => {
-    const wrapper = mount(
+    render(
       <PanelSection
         items={[
           { text: 'Text 1', onClick: jest.fn() },
@@ -23,8 +21,8 @@ describe('PanelSection', () => {
       />,
     );
 
-    expect(wrapper.find(PanelListItem)).toHaveLength(2);
-    expect(wrapper.find(PanelListItem).at(0).text()).toBe('Text 1');
-    expect(wrapper.find(PanelListItem).at(1).text()).toBe('Text 2');
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('Text 1');
+    expect(screen.getAllByRole('listitem')[1]).toHaveTextContent('Text 2');
   });
 });
