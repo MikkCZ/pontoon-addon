@@ -1,6 +1,5 @@
 import React from 'react';
-import { screen, within } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { screen, within, act } from '@testing-library/react';
 
 import { renderInSnakeGameContext } from '../test/SnakeGameContextMock';
 import { GameState } from '../SnakeGameContext';

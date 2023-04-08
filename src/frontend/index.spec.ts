@@ -1,6 +1,4 @@
-/* eslint-disable jest/expect-expect */
-import ReactDOM from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
 import {
@@ -17,25 +15,17 @@ jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
 jest.mock('@background/backgroundClient');
 
-const reactDomRenderSpy = jest.spyOn(ReactDOM, 'render');
-
 afterEach(() => {
   jest.resetAllMocks();
   document.body.textContent = '';
 });
 
-async function expectRendersToRoot(rootId: string): Promise<void> {
+function prepareRoot(rootId: string) {
   const rootDiv = document.createElement('div');
   rootDiv.id = rootId;
   document.body.appendChild(rootDiv);
-
-  await act(async () => {
-    await index();
-  });
-  await flushPromises();
-
-  expect(reactDomRenderSpy).toHaveBeenCalledTimes(1);
-  expect(reactDomRenderSpy.mock.calls[0][1]).toBe(rootDiv);
+  expect(rootDiv.innerHTML).toBe('');
+  return rootDiv;
 }
 
 describe('address bar', () => {
@@ -57,31 +47,66 @@ describe('address bar', () => {
   });
 
   it('renders', async () => {
-    await expectRendersToRoot('address-bar-root');
+    const root = prepareRoot('address-bar-root');
+
+    await act(async () => {
+      await index();
+      await flushPromises();
+    });
+
+    expect(root.innerHTML).not.toBe('');
   });
 });
 
 describe('intro', () => {
   it('renders', async () => {
-    await expectRendersToRoot('intro-root');
+    const root = prepareRoot('intro-root');
+
+    await act(async () => {
+      await index();
+      await flushPromises();
+    });
+
+    expect(root.innerHTML).not.toBe('');
   });
 });
 
 describe('options', () => {
   it('renders', async () => {
-    await expectRendersToRoot('options-root');
+    const root = prepareRoot('options-root');
+
+    await act(async () => {
+      await index();
+      await flushPromises();
+    });
+
+    expect(root.innerHTML).not.toBe('');
   });
 });
 
 describe('privacy policy', () => {
   it('renders', async () => {
-    await expectRendersToRoot('privacy-policy-root');
+    const root = prepareRoot('privacy-policy-root');
+
+    await act(async () => {
+      await index();
+      await flushPromises();
+    });
+
+    expect(root.innerHTML).not.toBe('');
   });
 });
 
 describe('snake game', () => {
   it('renders', async () => {
-    await expectRendersToRoot('snake-game-root');
+    const root = prepareRoot('snake-game-root');
+
+    await act(async () => {
+      await index();
+      await flushPromises();
+    });
+
+    expect(root.innerHTML).not.toBe('');
   });
 });
 
@@ -94,12 +119,21 @@ describe('toolbar button', () => {
     });
     (getFromStorage as jest.Mock).mockResolvedValue({
       notificationsData: {},
-      teamsList: { cs: {} },
+      teamsList: {
+        cs: { code: 'cs', name: 'Czech', strings: {}, bz_component: 'L10N/CS' },
+      },
       latestTeamsActivity: { cs: {} },
     });
   });
 
   it('renders', async () => {
-    await expectRendersToRoot('toolbar-button-root');
+    const root = prepareRoot('toolbar-button-root');
+
+    await act(async () => {
+      await index();
+      await flushPromises();
+    });
+
+    expect(root.innerHTML).not.toBe('');
   });
 });

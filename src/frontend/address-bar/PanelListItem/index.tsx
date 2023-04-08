@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface Props {
+interface Props extends Pick<React.ComponentProps<'li'>, 'children'> {
   onClick: () => void;
 }
 

@@ -75,7 +75,7 @@ const HeadingSection: React.FC<React.ComponentProps<'section'>> = (props) => (
   />
 );
 
-interface Props {
+interface Props extends Pick<React.ComponentProps<'main'>, 'children'> {
   bodyBackgroundColor?: React.ComponentProps<
     typeof GlobalBodyStyle
   >['backgroundColor'];

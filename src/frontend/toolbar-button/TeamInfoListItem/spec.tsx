@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { render, screen, within, act } from '@testing-library/react';
 
 import { TeamInfoListItem } from '.';
 

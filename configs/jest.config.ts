@@ -4,11 +4,14 @@ import { defaults } from 'jest-config';
 
 const rootDir = path.resolve(__dirname, '..');
 
-const staticFilesTranform = {
+const staticFilesTransform = {
   '.+\\.css$': 'jest-transform-stub',
   '.+\\.(png|svg)$': 'jest-transform-stub',
-  '.+\\.md$': 'jest-transform-stub',
-}
+};
+
+const textFilesModuleNameMapper = {
+  '.+\\.md$': path.resolve(__dirname, 'jest', 'text-file-mock.ts'),
+};
 
 const config: Config.InitialOptions = {
   rootDir,
@@ -32,14 +35,15 @@ const config: Config.InitialOptions = {
   preset: 'ts-jest',
   transform: {
     '.+\\.jsx?$': ['babel-jest', { presets: [ '@babel/env' ] }],
-    ...staticFilesTranform,
+    ...staticFilesTransform,
   },
   transformIgnorePatterns: [
     'node_modules/(?!react-game-snake)',
   ],
   moduleNameMapper: {
     ...defaults.moduleNameMapper,
-    ...staticFilesTranform,
+    ...staticFilesTransform,
+    ...textFilesModuleNameMapper,
     '@assets/(.*)$': '<rootDir>/src/assets/$1',
     '@background/(.*)$': '<rootDir>/src/background/$1',
     '@commons/(.*)$': '<rootDir>/src/commons/$1',

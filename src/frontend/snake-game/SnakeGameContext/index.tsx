@@ -47,7 +47,12 @@ export function useSnakeGameContext(): SnakeGameContext {
   return context;
 }
 
-export const SnakeGameContextProvider: React.FC = ({ children }) => {
+type Props = Pick<
+  React.ComponentProps<typeof SnakeGameReactContext.Provider>,
+  'children'
+>;
+
+export const SnakeGameContextProvider: React.FC<Props> = ({ children }) => {
   const [stateRef, _setStateRef] = useStateRef({
     gameState: GameState.NOT_STARTED,
     score: 0,
