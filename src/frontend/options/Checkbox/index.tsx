@@ -11,7 +11,7 @@ interface Props
 }
 
 export const Checkbox: React.FC<Props> = ({ optionKey, children }) => {
-  const [checked, setChecked] = useState<boolean>();
+  const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {

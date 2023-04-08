@@ -9,7 +9,7 @@ import { UrlInput } from '@frontend/commons/components/pontoon/UrlInput';
 
 export const PontoonBaseUrlInput: React.FC = () => {
   const [pontoonBaseUrl, setPontoonBaseUrlState] =
-    useState<OptionsContent['pontoon_base_url']>();
+    useState<OptionsContent['pontoon_base_url']>('');
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
