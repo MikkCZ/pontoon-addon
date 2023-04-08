@@ -59,7 +59,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@tsconfig/recommended": "^1.0.2",
-    "@types/dompurify": "^3.0.0",
+    "@types/dompurify": "^3.0.1",
     "@types/eslint": "^8.37.0",
     "@types/generate-json-webpack-plugin": "^0.3.4",
     "@types/javascript-time-ago": "^2.0.3",
