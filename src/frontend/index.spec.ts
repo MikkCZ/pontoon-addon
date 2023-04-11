@@ -50,7 +50,7 @@ describe('address bar', () => {
     const root = prepareRoot('address-bar-root');
 
     await act(async () => {
-      await index();
+      index();
       await flushPromises();
     });
 
@@ -63,7 +63,7 @@ describe('intro', () => {
     const root = prepareRoot('intro-root');
 
     await act(async () => {
-      await index();
+      index();
       await flushPromises();
     });
 
@@ -76,7 +76,7 @@ describe('options', () => {
     const root = prepareRoot('options-root');
 
     await act(async () => {
-      await index();
+      index();
       await flushPromises();
     });
 
@@ -89,7 +89,7 @@ describe('privacy policy', () => {
     const root = prepareRoot('privacy-policy-root');
 
     await act(async () => {
-      await index();
+      index();
       await flushPromises();
     });
 
@@ -102,7 +102,7 @@ describe('snake game', () => {
     const root = prepareRoot('snake-game-root');
 
     await act(async () => {
-      await index();
+      index();
       await flushPromises();
     });
 
@@ -130,7 +130,7 @@ describe('toolbar button', () => {
     const root = prepareRoot('toolbar-button-root');
 
     await act(async () => {
-      await index();
+      index();
       await flushPromises();
     });
 

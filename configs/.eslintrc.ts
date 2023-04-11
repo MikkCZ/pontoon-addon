@@ -39,6 +39,7 @@ const config: ESLint.ConfigData = {
         count: 1,
       },
     ],
+    'require-await': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

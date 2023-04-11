@@ -138,7 +138,7 @@ function wrapLinks(pontoonBaseUrl: string): HTMLReactParserOptions['replace'] {
 
 async function openTeamProject(projectUrl: string): Promise<void> {
   const teamProjectUrl = await getTeamProjectUrl(projectUrl);
-  openNewPontoonTab(teamProjectUrl);
+  await openNewPontoonTab(teamProjectUrl);
   window.close();
 }
 

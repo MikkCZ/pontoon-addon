@@ -284,7 +284,7 @@ describe('webExtensionsApi', () => {
       .expect(42, { file: 'foo/bar.js' })
       .andResolve([]);
 
-    executeScript(42, 'foo/bar.js');
+    await executeScript(42, 'foo/bar.js');
   });
 
   it('callWithInterval', () => {
