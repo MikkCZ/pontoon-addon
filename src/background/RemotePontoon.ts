@@ -68,7 +68,7 @@ export function listenToMessagesFromClients() {
   listenToMessagesExclusively(
     BackgroundClientMessageType.UPDATE_TEAMS_LIST,
     async () => {
-      return updateTeamsList();
+      return await updateTeamsList();
     },
   );
   listenToMessagesExclusively(
@@ -82,7 +82,7 @@ export function listenToMessagesFromClients() {
   listenToMessagesExclusively(
     BackgroundClientMessageType.GET_TEAM_FROM_PONTOON,
     async () => {
-      return getUsersTeamFromPontoon();
+      return await getUsersTeamFromPontoon();
     },
   );
 }

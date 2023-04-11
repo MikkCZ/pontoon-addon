@@ -21,7 +21,7 @@ function renderToolbarButtonApp(rootElement: HTMLElement) {
   renderRoot(rootElement, <ToolbarButtonApp />);
 }
 
-export async function render(): Promise<void> {
+export function render() {
   const addressBarRoot = document.getElementById('address-bar-root');
   const introRoot = document.getElementById('intro-root');
   const optionsRoot = document.getElementById('options-root');

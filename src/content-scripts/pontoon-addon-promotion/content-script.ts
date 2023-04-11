@@ -8,7 +8,7 @@ function injectScript(src: string) {
   document.head.prepend(script);
 }
 
-async function postMessage(): Promise<void> {
+function postMessage() {
   window.postMessage(
     {
       _type: 'PontoonAddonInfo',

@@ -143,7 +143,7 @@ export const pontoonHttpClient = new PontoonHttpClient();
 
 export const httpClient = {
   fetch: async (url: string): Promise<Response> => {
-    return fetch(url, { credentials: 'omit' });
+    return await fetch(url, { credentials: 'omit' });
   },
 };
 

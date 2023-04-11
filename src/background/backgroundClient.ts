@@ -17,7 +17,7 @@ async function getTeam(): Promise<{ code: string }> {
 }
 
 async function getPontoonBaseUrl(): Promise<string> {
-  return getOneOption('pontoon_base_url');
+  return await getOneOption('pontoon_base_url');
 }
 
 export async function getNotificationsUrl(): Promise<string> {
@@ -87,7 +87,7 @@ export async function reportTranslatedTextToBugzilla(text: string) {
 export async function notificationBellIconScriptLoaded(): Promise<{
   type: BackgroundClientMessageType;
 }> {
-  return browser.runtime.sendMessage({
+  return await browser.runtime.sendMessage({
     type: BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED,
   });
 }

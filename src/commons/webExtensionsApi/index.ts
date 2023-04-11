@@ -108,13 +108,13 @@ export function listenToStorageChange<K extends keyof StorageContent>(
 }
 
 export async function saveToStorage(toSave: Partial<StorageContent>) {
-  return browser.storage.local.set(toSave);
+  return await browser.storage.local.set(toSave);
 }
 
 export async function deleteFromStorage<K extends keyof StorageContent>(
   ...storageKeys: K[]
 ) {
-  return browser.storage.local.remove(storageKeys);
+  return await browser.storage.local.remove(storageKeys);
 }
 
 export async function createNotification(
@@ -132,7 +132,7 @@ export async function createNotification(
 }
 
 export async function closeNotification(notificationId: string) {
-  return browser.notifications.clear(notificationId);
+  return await browser.notifications.clear(notificationId);
 }
 
 export function createContextMenu(
@@ -142,7 +142,7 @@ export function createContextMenu(
 }
 
 export async function removeContextMenu(menuItemId: number | string) {
-  return browser.contextMenus.remove(menuItemId);
+  return await browser.contextMenus.remove(menuItemId);
 }
 
 export function browserFamily(): BrowserFamily {
@@ -154,26 +154,26 @@ export function browserFamily(): BrowserFamily {
 }
 
 export async function openNewTab(url: string) {
-  return browser.tabs.create({ url });
+  return await browser.tabs.create({ url });
 }
 
 export async function getAllTabs() {
-  return browser.tabs.query({});
+  return await browser.tabs.query({});
 }
 
 export async function getTabsMatching(...patterns: string[]) {
-  return browser.tabs.query({ url: patterns });
+  return await browser.tabs.query({ url: patterns });
 }
 
 export async function getTabsWithBaseUrl(baseUrl: string) {
-  return getTabsMatching(`${baseUrl}/*`);
+  return await getTabsMatching(`${baseUrl}/*`);
 }
 
 export async function getActiveTab(): Promise<Tabs.Tab> {
   return (await browser.tabs.query({ currentWindow: true, active: true }))[0];
 }
 
-export async function listenToTabsCompletedLoading(
+export function listenToTabsCompletedLoading(
   listener: (tab: Tabs.Tab & { id: number }) => void,
 ) {
   browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -188,23 +188,25 @@ export function getResourceUrl(path: string) {
 }
 
 export async function openOptions() {
-  return browser.runtime.openOptionsPage();
+  return await browser.runtime.openOptionsPage();
 }
 
 export async function openIntro() {
-  return openNewTab(browser.runtime.getURL('frontend/intro.html'));
+  return await openNewTab(browser.runtime.getURL('frontend/intro.html'));
 }
 
 export async function openPrivacyPolicy() {
-  return openNewTab(browser.runtime.getURL('frontend/privacy-policy.html'));
+  return await openNewTab(
+    browser.runtime.getURL('frontend/privacy-policy.html'),
+  );
 }
 
 export async function openSnakeGame() {
-  return openNewTab(browser.runtime.getURL('frontend/snake-game.html'));
+  return await openNewTab(browser.runtime.getURL('frontend/snake-game.html'));
 }
 
 export async function openToolbarButtonPopup() {
-  return browser.browserAction.openPopup();
+  return await browser.browserAction.openPopup();
 }
 
 export function supportsAddressBar(): boolean {
@@ -241,18 +243,20 @@ export function supportsContainers(): boolean {
 
 export async function getAllContainers() {
   if (supportsContainers()) {
-    return browser.contextualIdentities.query({});
+    return await browser.contextualIdentities.query({});
   } else {
     return [];
   }
 }
 
 export async function requestPermissionForPontoon(pontoonBaseUrl: string) {
-  return browser.permissions.request({ origins: [`${pontoonBaseUrl}/*`] });
+  return await browser.permissions.request({
+    origins: [`${pontoonBaseUrl}/*`],
+  });
 }
 
 export async function registerScriptForBaseUrl(baseUrl: string, file: string) {
-  return browser.contentScripts.register({
+  return await browser.contentScripts.register({
     js: [{ file }],
     matches: [`${baseUrl}/*`],
     runAt: 'document_end', // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
@@ -260,7 +264,7 @@ export async function registerScriptForBaseUrl(baseUrl: string, file: string) {
 }
 
 export async function executeScript(tabId: number, file: string) {
-  return browser.tabs.executeScript(tabId, { file });
+  return await browser.tabs.executeScript(tabId, { file });
 }
 
 export function callWithInterval(
