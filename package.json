@@ -50,7 +50,7 @@
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.4",
+    "@babel/core": "^7.21.5",
     "@babel/preset-env": "^7.21.4",
     "@emotion/eslint-plugin": "^11.10.0",
     "@graphql-codegen/cli": "^3.3.0",
