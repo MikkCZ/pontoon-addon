@@ -6,14 +6,16 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  Date: any;
+  ID: { input: string | number; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
 };
 
 export type DjangoDebug = {
@@ -23,50 +25,50 @@ export type DjangoDebug = {
 
 export type DjangoDebugSql = {
   __typename?: 'DjangoDebugSQL';
-  alias: Scalars['String'];
-  duration: Scalars['Float'];
-  encoding?: Maybe<Scalars['String']>;
-  isSelect: Scalars['Boolean'];
-  isSlow: Scalars['Boolean'];
-  isoLevel?: Maybe<Scalars['String']>;
-  params: Scalars['String'];
-  rawSql: Scalars['String'];
-  sql?: Maybe<Scalars['String']>;
-  startTime: Scalars['Float'];
-  stopTime: Scalars['Float'];
-  transId?: Maybe<Scalars['String']>;
-  transStatus?: Maybe<Scalars['String']>;
-  vendor: Scalars['String'];
+  alias: Scalars['String']['output'];
+  duration: Scalars['Float']['output'];
+  encoding?: Maybe<Scalars['String']['output']>;
+  isSelect: Scalars['Boolean']['output'];
+  isSlow: Scalars['Boolean']['output'];
+  isoLevel?: Maybe<Scalars['String']['output']>;
+  params: Scalars['String']['output'];
+  rawSql: Scalars['String']['output'];
+  sql?: Maybe<Scalars['String']['output']>;
+  startTime: Scalars['Float']['output'];
+  stopTime: Scalars['Float']['output'];
+  transId?: Maybe<Scalars['String']['output']>;
+  transStatus?: Maybe<Scalars['String']['output']>;
+  vendor: Scalars['String']['output'];
 };
 
 export type Locale = {
   __typename?: 'Locale';
-  approvedStrings: Scalars['Int'];
-  cldrPlurals: Scalars['String'];
-  code: Scalars['String'];
-  complete?: Maybe<Scalars['Boolean']>;
+  approvedStrings: Scalars['Int']['output'];
+  cldrPlurals: Scalars['String']['output'];
+  code: Scalars['String']['output'];
+  complete?: Maybe<Scalars['Boolean']['output']>;
   direction: LocaleDirection;
-  googleTranslateCode: Scalars['String'];
+  googleTranslateCode: Scalars['String']['output'];
   localizations?: Maybe<Array<Maybe<ProjectLocale>>>;
-  missingStrings?: Maybe<Scalars['Int']>;
-  msTerminologyCode: Scalars['String'];
-  msTranslatorCode: Scalars['String'];
-  name: Scalars['String'];
-  pluralRule: Scalars['String'];
-  population: Scalars['Int'];
-  pretranslatedStrings: Scalars['Int'];
-  script: Scalars['String'];
-  stringsWithErrors: Scalars['Int'];
-  stringsWithWarnings: Scalars['Int'];
-  systranTranslateCode: Scalars['String'];
-  totalStrings: Scalars['Int'];
-  unreviewedStrings: Scalars['Int'];
+  missingStrings?: Maybe<Scalars['Int']['output']>;
+  msTerminologyCode: Scalars['String']['output'];
+  msTranslatorCode: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  pluralRule: Scalars['String']['output'];
+  population: Scalars['Int']['output'];
+  pretranslatedStrings: Scalars['Int']['output'];
+  script: Scalars['String']['output'];
+  stringsWithErrors: Scalars['Int']['output'];
+  stringsWithWarnings: Scalars['Int']['output'];
+  systranTranslateCode: Scalars['String']['output'];
+  totalStrings: Scalars['Int']['output'];
+  unreviewedStrings: Scalars['Int']['output'];
 };
 
 
 export type LocaleLocalizationsArgs = {
-  includeDisabled?: InputMaybe<Scalars['Boolean']>;
-  includeSystem?: InputMaybe<Scalars['Boolean']>;
+  includeDisabled?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSystem?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export enum LocaleDirection {
@@ -76,40 +78,40 @@ export enum LocaleDirection {
 
 export type Project = {
   __typename?: 'Project';
-  approvedStrings: Scalars['Int'];
-  complete?: Maybe<Scalars['Boolean']>;
-  deadline?: Maybe<Scalars['Date']>;
-  disabled: Scalars['Boolean'];
-  info: Scalars['String'];
+  approvedStrings: Scalars['Int']['output'];
+  complete?: Maybe<Scalars['Boolean']['output']>;
+  deadline?: Maybe<Scalars['Date']['output']>;
+  disabled: Scalars['Boolean']['output'];
+  info: Scalars['String']['output'];
   localizations?: Maybe<Array<Maybe<ProjectLocale>>>;
-  missingStrings?: Maybe<Scalars['Int']>;
-  name: Scalars['String'];
-  pretranslatedStrings: Scalars['Int'];
-  pretranslationEnabled: Scalars['Boolean'];
-  priority: Scalars['Int'];
-  slug: Scalars['String'];
-  stringsWithErrors: Scalars['Int'];
-  stringsWithWarnings: Scalars['Int'];
-  syncDisabled: Scalars['Boolean'];
-  systemProject: Scalars['Boolean'];
+  missingStrings?: Maybe<Scalars['Int']['output']>;
+  name: Scalars['String']['output'];
+  pretranslatedStrings: Scalars['Int']['output'];
+  pretranslationEnabled: Scalars['Boolean']['output'];
+  priority: Scalars['Int']['output'];
+  slug: Scalars['String']['output'];
+  stringsWithErrors: Scalars['Int']['output'];
+  stringsWithWarnings: Scalars['Int']['output'];
+  syncDisabled: Scalars['Boolean']['output'];
+  systemProject: Scalars['Boolean']['output'];
   tags?: Maybe<Array<Maybe<Tag>>>;
-  totalStrings: Scalars['Int'];
-  unreviewedStrings: Scalars['Int'];
-  visibility: Scalars['String'];
+  totalStrings: Scalars['Int']['output'];
+  unreviewedStrings: Scalars['Int']['output'];
+  visibility: Scalars['String']['output'];
 };
 
 export type ProjectLocale = {
   __typename?: 'ProjectLocale';
-  approvedStrings: Scalars['Int'];
-  complete?: Maybe<Scalars['Boolean']>;
+  approvedStrings: Scalars['Int']['output'];
+  complete?: Maybe<Scalars['Boolean']['output']>;
   locale: Locale;
-  missingStrings?: Maybe<Scalars['Int']>;
-  pretranslatedStrings: Scalars['Int'];
+  missingStrings?: Maybe<Scalars['Int']['output']>;
+  pretranslatedStrings: Scalars['Int']['output'];
   project: Project;
-  stringsWithErrors: Scalars['Int'];
-  stringsWithWarnings: Scalars['Int'];
-  totalStrings: Scalars['Int'];
-  unreviewedStrings: Scalars['Int'];
+  stringsWithErrors: Scalars['Int']['output'];
+  stringsWithWarnings: Scalars['Int']['output'];
+  totalStrings: Scalars['Int']['output'];
+  unreviewedStrings: Scalars['Int']['output'];
 };
 
 export type Query = {
@@ -122,25 +124,25 @@ export type Query = {
 
 
 export type QueryLocaleArgs = {
-  code?: InputMaybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryProjectArgs = {
-  slug?: InputMaybe<Scalars['String']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryProjectsArgs = {
-  includeDisabled?: InputMaybe<Scalars['Boolean']>;
-  includeSystem?: InputMaybe<Scalars['Boolean']>;
+  includeDisabled?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSystem?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type Tag = {
   __typename?: 'Tag';
-  name: Scalars['String'];
-  priority?: Maybe<Scalars['Int']>;
-  slug: Scalars['String'];
+  name: Scalars['String']['output'];
+  priority?: Maybe<Scalars['Int']['output']>;
+  slug: Scalars['String']['output'];
 };
 
 export type GetTeamsInfoQueryVariables = Exact<{ [key: string]: never; }>;
