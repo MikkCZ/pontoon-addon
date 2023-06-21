@@ -64,7 +64,7 @@ const finalBoardWidth =
 const finalBoardHeight =
   gameOptions.fieldSize * gameOptions.countOfVerticalFields;
 
-function useBoardWith(eventListeners: EventListeners): JSX.Element {
+function useBoardWith(eventListeners: EventListeners): React.ReactNode {
   // (!) hack: the game does not survive re-renders, ensure it gets never re-rendered
   return useMemo(
     () => <SnakeGame {...gameOptions} {...eventListeners} />,
