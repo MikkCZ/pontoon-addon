@@ -4,6 +4,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
     "target": "ES2019",
+    "esModuleInterop": true,
     "lib": [
       "DOM",
       "ES2019"
