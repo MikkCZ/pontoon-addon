@@ -70,7 +70,7 @@
     "@types/react-dom": "^18.2.6",
     "@types/urijs": "^1.19.19",
     "@types/uuid": "^9.0.2",
-    "@types/webextension-polyfill": "^0.10.0",
+    "@types/webextension-polyfill": "^0.10.1",
     "@types/webpack": "^5.28.1",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.1",
