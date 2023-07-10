@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import * as Dom from 'graphql-request/dist/types.dom';
+import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -187,10 +187,10 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    getTeamsInfo(variables?: GetTeamsInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTeamsInfoQuery> {
+    getTeamsInfo(variables?: GetTeamsInfoQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetTeamsInfoQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTeamsInfoQuery>(GetTeamsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTeamsInfo', 'query');
     },
-    getProjectsInfo(variables?: GetProjectsInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectsInfoQuery> {
+    getProjectsInfo(variables?: GetProjectsInfoQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetProjectsInfoQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetProjectsInfoQuery>(GetProjectsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getProjectsInfo', 'query');
     }
   };
