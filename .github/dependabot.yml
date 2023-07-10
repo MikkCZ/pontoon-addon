@@ -8,6 +8,49 @@ updates:
     open-pull-requests-limit: 20
     commit-message:
       prefix: "fix"
+    groups:
+      graphql:
+        patterns:
+          - "graphql*"
+          - "@graphql-codegen/*"
+      lint:
+        patterns:
+          - "*eslint*"
+          - "*prettier*"
+      react:
+        patterns:
+          - "@emotion/react"
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      scripts:
+        patterns:
+          - "cross-env"
+          - "npm-run-all"
+      test:
+        patterns:
+          - "@babel/*"
+          - "@testing-library/*"
+          - "@types/jest"
+          - "*jest*"
+          - "mockzilla*"
+        exclude-patterns:
+          - "*eslint*"
+      typescript:
+        patterns:
+          - "@tsconfig/*"
+          - "ts-*"
+          - "typescript"
+        exclude-patterns:
+          - "*jest*"
+          - "*-loader"
+      webpack:
+        patterns:
+          - "*webpack*"
+          - "*-loader"
+          - "mini-css-extract-plugin"
+          - "web-ext-plugin"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -15,3 +58,7 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "fix"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
