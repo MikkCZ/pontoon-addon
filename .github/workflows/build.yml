@@ -20,6 +20,9 @@ env:
   PRODUCTION_ARTIFACT_NAME: dist
   DEVELOPMENT_ARTIFACT_NAME: dist-development
 
+permissions:
+  contents: read
+
 jobs:
   prepare_cache:
     name: Prepare cache

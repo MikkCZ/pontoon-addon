@@ -18,6 +18,9 @@ on:
 concurrency:
   group: "releases"
 
+permissions:
+  contents: write
+
 jobs:
   validate_input:
     runs-on: ubuntu-latest
