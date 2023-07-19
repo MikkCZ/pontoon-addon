@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import React, { useMemo } from 'react';
 import type { Renderer } from 'marked';
 import { marked } from 'marked';
@@ -42,7 +43,7 @@ function wrapLinks(domNode: DOMNode): JSX.Element | void {
   }
 }
 
-interface Props extends React.ComponentProps<'div'> {
+interface Props extends ComponentProps<'div'> {
   markdownText: string;
 }
 

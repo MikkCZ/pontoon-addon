@@ -1,14 +1,5 @@
 import React, { useEffect } from 'react';
 
-import {
-  createNotification,
-  openNewTab,
-  openOptions,
-  openToolbarButtonPopup,
-  supportsAddressBar,
-} from '@commons/webExtensionsApi';
-import { setOption } from '@commons/options';
-import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
 import toolbarButtonImage from '@assets/img/toolbar-button.png';
 import notificationsImage from '@assets/img/desktop-notification.svg';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
@@ -17,6 +8,15 @@ import contextMenuImage from '@assets/img/context-menu.png';
 import contextButtonsImage from '@assets/img/context-buttons.png';
 import settingsImage from '@assets/img/settings.svg';
 import feedbackImage from '@assets/img/2-Lions.png';
+import { pontoonAddonWiki, mozillaOrg } from '@commons/webLinks';
+import { setOption } from '@commons/options';
+import {
+  createNotification,
+  openNewTab,
+  openOptions,
+  openToolbarButtonPopup,
+  supportsAddressBar,
+} from '@commons/webExtensionsApi';
 
 import type { TourPageTile } from '../TourPageTile';
 import { TourPage } from '../TourPage';

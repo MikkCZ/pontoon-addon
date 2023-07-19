@@ -1,8 +1,8 @@
 import React from 'react';
 import { css } from '@emotion/react';
 
-import { colors, sizes } from '@frontend/commons/const';
 import pontoonLogo from '@assets/img/pontoon-logo.svg';
+import { colors, sizes } from '@frontend/commons/const';
 
 import { GlobalBodyStyle } from '../../../GlobalBodyStyle';
 

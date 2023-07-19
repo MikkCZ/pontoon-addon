@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import ReactTimeAgo from 'react-time-ago';
 
+import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getActiveTab,
@@ -22,7 +23,6 @@ import { openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
 import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
 import { Link } from '@frontend/commons/components/pontoon/Link';
-import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 
 import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';

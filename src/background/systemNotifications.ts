@@ -1,3 +1,4 @@
+import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getOneFromStorage,
@@ -10,7 +11,6 @@ import {
   pontoonTeam,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
-import pontoonLogo from '@assets/img/pontoon-logo.svg';
 import { getOneOption, getOptions } from '@commons/options';
 import { openNewPontoonTab } from '@commons/utils';
 
