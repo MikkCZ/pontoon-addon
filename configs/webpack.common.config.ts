@@ -2,6 +2,7 @@ import path from 'path';
 import type { Configuration, RuleSetUseItem } from 'webpack';
 import { ProvidePlugin } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
 import { BrowserFamily } from '../src/manifest.json';
 
@@ -18,12 +19,16 @@ const devtool = mode === WebpackMode.DEVEL ? 'source-map' : 'nosources-source-ma
 
 export const targetBrowser = process.env.TARGET_BROWSER as BrowserFamily || BrowserFamily.MOZILLA;
 
+const tsConfigPath = path.resolve(__dirname, 'tsconfig.json');
+
 const tsLoader: RuleSetUseItem = {
   loader: 'ts-loader',
   options: {
-    configFile: path.resolve(__dirname, 'tsconfig.json'),
+    configFile: tsConfigPath,
   },
 };
+
+const resolveExtensions = [ '.ts', '.tsx', '.js', '.jsx', '.css', '.json', '.png', '.svg', '.md' ];
 
 export const commonConfiguration: Configuration = {
   mode,
@@ -74,13 +79,13 @@ export const commonConfiguration: Configuration = {
   ],
   resolve: {
     modules: [ path.resolve(rootDir, 'node_modules') ],
-    extensions: [ '.ts', '.tsx', '.js', '.jsx', '.css', '.json', '.png', '.svg', '.md' ],
-    alias: {
-      '@assets': path.resolve(srcDir, 'assets'),
-      '@background': path.resolve(srcDir, 'background'),
-      '@commons': path.resolve(srcDir, 'commons'),
-      '@frontend': path.resolve(srcDir, 'frontend'),
-    },
+    extensions: resolveExtensions,
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: tsConfigPath,
+        extensions: resolveExtensions,
+      }),
+    ],
   },
 };
 
