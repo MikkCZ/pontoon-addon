@@ -1,14 +1,92 @@
 import path from 'path';
-import type { Configuration } from 'webpack';
+import type { Configuration, RuleSetUseItem } from 'webpack';
+import { ProvidePlugin } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import GenerateJsonPlugin from 'generate-json-webpack-plugin';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
-import { srcDir, targetBrowser, commonConfiguration } from './webpack.common.config';
 import { getManifestFor, BrowserFamily } from '../src/manifest.json';
 
-const extensionManifestJson = getManifestFor(targetBrowser);
+const rootDir = path.resolve(__dirname, '..');
+const srcDir = path.resolve(rootDir, 'src');
+const tsConfigPath = path.resolve(__dirname, 'tsconfig.json');
+
+const targetBrowser = process.env.TARGET_BROWSER as BrowserFamily || BrowserFamily.MOZILLA;
+
+const tsLoader: RuleSetUseItem = {
+  loader: 'ts-loader',
+  options: {
+    configFile: tsConfigPath,
+  },
+};
+
+const resolveExtensions = [ '.ts', '.tsx', '.js', '.jsx', '.css', '.json', '.png', '.svg', '.md' ];
+
+const commonConfiguration: Configuration = {
+  ...(process.env.MODE === 'development' ? {
+    mode: process.env.MODE,
+    devtool: 'source-map'
+  } : {
+    mode: 'production',
+    devtool: 'nosources-source-map'
+  }),
+  stats: 'errors-only',
+  output: {
+    path: path.resolve(rootDir, 'dist', targetBrowser, 'src'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        include: srcDir,
+        use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
+      },
+      {
+        test: /\.tsx?$/,
+        include: srcDir,
+        use: [ tsLoader ],
+      },
+      {
+        test: /\.json$/,
+        include: srcDir,
+        use: [ tsLoader ],
+      },
+      {
+        test: /\.png$/,
+        include: srcDir,
+        type: 'asset/inline', // base64 encoded
+      },
+      {
+        test: /\.svg$/,
+        include: srcDir,
+        type: 'asset/inline', // base64 encoded
+      },
+      {
+        test: /\.md$/,
+        include: rootDir,
+        type: 'asset/source', // as file content
+      },
+    ],
+  },
+  plugins: [
+    ...(targetBrowser !== BrowserFamily.MOZILLA
+        ? [new ProvidePlugin({ browser: 'webextension-polyfill' })]
+        : []
+    ),
+  ],
+  resolve: {
+    modules: [ path.resolve(rootDir, 'node_modules') ],
+    extensions: resolveExtensions,
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: tsConfigPath,
+        extensions: resolveExtensions,
+      }),
+    ],
+  },
+};
 
 const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
   template: path.resolve(srcDir, 'frontend/index.html.ejs'),
@@ -18,7 +96,9 @@ const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
   },
 };
 
-async function configs(): Promise<Configuration[]> {
+const extensionManifestJson = getManifestFor(targetBrowser);
+
+export default async function configs(): Promise<Configuration[]> {
   const { default: WebExtPlugin } = await import('web-ext-plugin');
   type TargetType = 'firefox-desktop' | 'firefox-android' | 'chromium'; // copy from web-ext-plugin
   let webExtRunTarget: TargetType | undefined;
@@ -175,5 +255,3 @@ async function configs(): Promise<Configuration[]> {
     ),
   ];
 }
-
-export default configs;
