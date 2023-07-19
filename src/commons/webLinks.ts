@@ -1,5 +1,5 @@
 import URI from 'urijs';
-import URITemplate from 'urijs/src/URITemplate';
+import { default as URITemplate } from 'urijs/src/URITemplate';
 
 const LINK_UTM_SOURCE = 'pontoon-addon';
 

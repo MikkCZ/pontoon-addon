@@ -1,4 +1,4 @@
-import URITemplate from 'urijs/src/URITemplate';
+import { default as URITemplate } from 'urijs/src/URITemplate';
 
 export const AUTOMATION_UTM_SOURCE = 'pontoon-addon-automation';
 

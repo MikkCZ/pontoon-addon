@@ -13,6 +13,7 @@
     "sourceMap": true,
     "baseUrl": "../",
     "paths": {
+      "@assets/*": ["src/assets/*"],
       "@background/*": ["src/background/*"],
       "@commons/*": ["src/commons/*"],
       "@frontend/*": ["src/frontend/*"]

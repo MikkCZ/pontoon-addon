@@ -1,10 +1,11 @@
+import type { ComponentProps } from 'react';
 import React from 'react';
 import { css } from '@emotion/react';
 
 import { colors } from '@frontend/commons/const';
 
-interface Props extends React.ComponentProps<'a'> {
-  href: NonNullable<React.ComponentProps<'a'>['href']>;
+interface Props extends ComponentProps<'a'> {
+  href: NonNullable<ComponentProps<'a'>['href']>;
 }
 
 export const NativeLink: React.FC<Props> = ({ href, children, ...props }) => (

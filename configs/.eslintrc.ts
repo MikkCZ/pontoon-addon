@@ -87,9 +87,11 @@ const config: ESLint.ConfigData = {
       '@typescript-eslint/parser': [ '.ts', '.tsx' ],
     },
     'import/resolver': {
-      webpack: {
-        // eslint-import-resolver-webpack only works with synchronous Webpack configs
-        config: path.resolve(__dirname, 'webpack.common.config.ts'),
+      typescript: {
+        alwaysTryTypes: true,
+        project: [
+          path.resolve(__dirname, 'tsconfig.json'),
+        ],
       },
     },
   },

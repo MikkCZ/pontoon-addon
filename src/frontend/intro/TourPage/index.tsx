@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { css } from '@emotion/react';
 
+import closeIcon from '@assets/img/glyph-dismiss-16.svg';
+import joystickImage from '@assets/img/joystick.svg';
 import { openPrivacyPolicy, openSnakeGame } from '@commons/webExtensionsApi';
 import { sizes } from '@frontend/commons/const';
 import { Page } from '@frontend/commons/components/pontoon/Page';
 import { Heading1 } from '@frontend/commons/components/pontoon/Heading1';
 import { Button } from '@frontend/commons/components/pontoon/Button';
-import closeIcon from '@assets/img/glyph-dismiss-16.svg';
-import joystickImage from '@assets/img/joystick.svg';
 
 import { TourPageTile } from '../TourPageTile';
 
