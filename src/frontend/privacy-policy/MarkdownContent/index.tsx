@@ -1,7 +1,6 @@
 import type { ComponentProps } from 'react';
 import React, { useMemo } from 'react';
-import type { Renderer } from 'marked';
-import { marked } from 'marked';
+import { marked, Renderer } from 'marked';
 import DOMPurify from 'dompurify';
 import type { DOMNode } from 'html-react-parser';
 import parse, { domToReact, Element } from 'html-react-parser';
@@ -9,16 +8,15 @@ import parse, { domToReact, Element } from 'html-react-parser';
 import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
 
 function renderMarkdown(markdown: string) {
-  const renderer = new marked.Renderer();
+  const renderer = new Renderer();
   const defaultLinkRenderer = renderer.link;
   renderer.link = function (
-    this: Renderer<never>,
-    href: string | null,
-    title: string | null,
+    href: string,
+    title: string | null | undefined,
     text: string,
   ): string {
     return defaultLinkRenderer
-      .call(this, href, title, text)
+      .call(renderer, href, title, text)
       .replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ');
   };
   const html = marked(markdown, { renderer });
