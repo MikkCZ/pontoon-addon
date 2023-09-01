@@ -9,6 +9,11 @@
       "DOM",
       "ES2019"
     ],
+    "types": [
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
+    ],
     "strict": true,
     "sourceMap": true,
     "baseUrl": "../",
