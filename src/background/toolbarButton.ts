@@ -118,17 +118,18 @@ async function updateBadge(
       const text = `${
         Object.values(notificationsData).filter((n) => n.unread).length
       }`;
-      const color =
-        text === '0' ? colors.interactive.gray : colors.interactive.red;
-      await Promise.all([
-        browser.browserAction.setBadgeText({ text }),
-        browser.browserAction.setTitle({
-          title: `${DEFAULT_TITLE} (${text})`,
-        }),
-        browser.browserAction.setBadgeBackgroundColor({ color }),
-      ]);
-    } else {
-      hideBadge();
+      if(text === '0') {
+        hideBadge();
+      } else {
+        const color = colors.interactive.red;
+        await Promise.all([
+          browser.browserAction.setBadgeText({ text }),
+          browser.browserAction.setTitle({
+            title: `${DEFAULT_TITLE} (${text})`,
+          }),
+          browser.browserAction.setBadgeBackgroundColor({ color }),
+        ]);
+      }
     }
   } else {
     const text = '!';
