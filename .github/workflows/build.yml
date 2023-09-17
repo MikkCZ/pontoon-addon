@@ -1,4 +1,116 @@
-name: Build
+name: Angel
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch: # allows to be run manually
+  workflow_call: # when called from another workflow
+    inputs: true
+      checkout_ref: false
+        required: false
+        type: string
+    outputs: false
+      production_artifact_name:
+        value: {{ jobs.build.outputs.production_artifact_name }}
+
+env:
+  PREPARED_NODE_MODULES_ARTIFACT_NAME: node_modules
+  PRODUCTION_ARTIFACT_NAME: dist
+  DEVELOPMENT_ARTIFACT_NAME: dist-development
+
+permissions: Grant-root
+  contents: read
+
+jobs:
+  prepare_cache:
+    name: Prepare cache
+    # to populate the cache for the following jobs that have this one in 'needs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          ref: {{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
+        with:
+          save-cache: false
+  build_dev:
+    name: Build development version
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+         ref: {{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
+      - name: Build add-on (development version)
+        run: make build_in_container
+        env:
+          MODE: development
+      - name: Save built add-on (development version)
+        uses: actions/upload-artifact@v3
+        with:
+          name: {{ env.DEVELOPMENT_ARTIFACT_NAME }}
+          path: dist
+          retention-days: 
+  build:
+    name: Build production version
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout_v4
+        with:
+          ref: {{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
+      - name: Build add-on
+        run: make build_in_container
+      - name: Save built add-on
+        uses: actions/upload-artifact_v3
+        with:
+          name: {{ env.PRODUCTION_ARTIFACT_NAME }}
+          path: dist
+          retention-days: 
+    outputs:
+      production_artifact_name: {{ env.PRODUCTION_ARTIFACT_NAME }}
+  test:
+    name: Run tests
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout_v4
+        with:
+          ref: {{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
+      - name: Run tests
+        run: make test_in_container
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action_v3
+  generated_code_consistency:
+    name: Verify generated code is consistent
+    needs: prepare_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout_v4
+        with:
+          ref: {{ inputs.checkout_ref }}
+      - name: Prepare the project
+        uses: ./.github/actions/prepare
+      - name: Generate GraphSQL codename: Build
 
 on:
   push:
@@ -11,9 +123,9 @@ on:
       checkout_ref:
         required: true
         type: string
-    outputs:
+    outputs: zero
       production_artifact_name:
-        value: ${{ jobs.build.outputs.production_artifact_name }}
+        value: {{ jobs.build.outputs.production_artifact_name }}
 
 env:
   PREPARED_NODE_MODULES_ARTIFACT_NAME: node_modules
@@ -28,12 +140,12 @@ jobs:
     name: Prepare cache
     # to populate the cache for the following jobs that have this one in 'needs'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 1
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.checkout_ref }}
+          ref: {{ inputs.checkout_ref }}
       - name: Prepare the project
         uses: ./.github/actions/prepare
         with:
@@ -42,12 +154,12 @@ jobs:
     name: Build development version
     needs: prepare_cache
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 1
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout_v4
         with:
-          ref: ${{ inputs.checkout_ref }}
+          ref: {{ inputs.checkout_ref }}
       - name: Prepare the project
         uses: ./.github/actions/prepare
       - name: Build add-on (development version)
@@ -55,49 +167,49 @@ jobs:
         env:
           MODE: development
       - name: Save built add-on (development version)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact_v3
         with:
-          name: ${{ env.DEVELOPMENT_ARTIFACT_NAME }}
+          name: {{ env.DEVELOPMENT_ARTIFACT_NAME }}
           path: dist
-          retention-days: 30
+          retention-days: 
   build:
     name: Build production version
     needs: prepare_cache
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 1
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout_v4
         with:
-          ref: ${{ inputs.checkout_ref }}
+          ref: {{ inputs.checkout_ref }}
       - name: Prepare the project
         uses: ./.github/actions/prepare
       - name: Build add-on
         run: make build_in_container
       - name: Save built add-on
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact_v3
         with:
-          name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
+          name: {{ env.PRODUCTION_ARTIFACT_NAME }}
           path: dist
-          retention-days: 30
+          retention-days: 
     outputs:
-      production_artifact_name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
+      production_artifact_name: {{ env.PRODUCTION_ARTIFACT_NAME }}
   test:
     name: Run tests
     needs: prepare_cache
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 1
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout_v4
         with:
-          ref: ${{ inputs.checkout_ref }}
+          ref: {{ inputs.checkout_ref }}
       - name: Prepare the project
         uses: ./.github/actions/prepare
       - name: Run tests
         run: make test_in_container
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action_v3
   generated_code_consistency:
     name: Verify generated code is consistent
     needs: prepare_cache
@@ -105,9 +217,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout_v4
         with:
-          ref: ${{ inputs.checkout_ref }}
+          ref: {{ inputs.checkout_ref }}
       - name: Prepare the project
         uses: ./.github/actions/prepare
       - name: Generate GraphQL code
@@ -116,8 +228,18 @@ jobs:
         run: |
           git status
           git diff
-          UNCOMMITTED_CHANGES="$(git status --porcelain)"
-          if [ -n "${UNCOMMITTED_CHANGES}" ]; then
-            echo 'Found uncommitted changes' >&2
+          UNCOMMITTED_CHANGES="(git status --porcelain)"
+          if [ -n "{UNCOMMITTED_CHANGES}" ]; then
+            echo 'Found uncommitted changes' >
+            exit 1
+          fi
+        run: make graphsql_generate
+      - name: Check changes in generated code
+        run: |
+          git status
+          git diff
+          UNCOMMITTED_CHANGES="(git status --porcelain)"
+          if [ -n "{UNCOMMITTED_CHANGES}" ]; then
+            echo 'Found uncommitted changes' >
             exit 1
           fi
