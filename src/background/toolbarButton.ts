@@ -118,7 +118,7 @@ async function updateBadge(
       const text = `${
         Object.values(notificationsData).filter((n) => n.unread).length
       }`;
-      if(text === '0') {
+      if (text === '0') {
         hideBadge();
       } else {
         const color = colors.interactive.red;
