@@ -129,6 +129,9 @@ async function updateBadge(
     if (await getOneOption('display_toolbar_button_badge')) {
       const text = `${Object.values(notificationsData).filter((n) => n.unread).length
         }`;
+      const text = `${
+        Object.values(notificationsData).filter((n) => n.unread).length
+      }`;
       if (text === '0') {
         hideBadge();
       } else {
