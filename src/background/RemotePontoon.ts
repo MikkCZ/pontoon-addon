@@ -116,7 +116,7 @@ async function updateNotificationsIfThereAreNew(pageContent: string) {
   }
 }
 
-async function updateNotificationsData() {
+export async function updateNotificationsData() {
   try {
     const reponse = await pontoonHttpClient.fetchFromPontoonSession(
       pontoonUserData(await getOneOption('pontoon_base_url')),
