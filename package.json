@@ -58,7 +58,7 @@
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.0.0",
-    "@tsconfig/recommended": "^1.0.2",
+    "@tsconfig/recommended": "^1.0.3",
     "@types/dompurify": "^3.0.2",
     "@types/eslint": "^8.44.2",
     "@types/generate-json-webpack-plugin": "^0.3.4",
