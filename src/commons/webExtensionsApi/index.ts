@@ -41,6 +41,7 @@ export interface StorageContent {
       bz_component: string;
     };
   };
+  notificationsDataLoadingState: string;
   notificationsData: {
     [id: number]: {
       id: number;
@@ -109,6 +110,7 @@ export function listenToStorageChange<K extends keyof StorageContent>(
 
 export async function saveToStorage(toSave: Partial<StorageContent>) {
   return await browser.storage.local.set(toSave);
+
 }
 
 export async function deleteFromStorage<K extends keyof StorageContent>(

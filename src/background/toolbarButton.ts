@@ -45,19 +45,7 @@ async function registerBadgeChanges() {
   listenToStorageChange(
     'notificationsData',
     ({ newValue: notificationsData }) => {
-      // let notificationsDataLoadingState = "loading";
-      // notificationsDataLoadingState = refreshData();
-      // try {
-      //   notificationsDataLoadingState = "loaded";
-      //   await updateNotificationsData();
-        // browser.browserAction.setBadgeBackgroundColor({colors.interactive.gray});
-        // } catch {
-          //   notificationsDataLoadingState = "error";
-        // }
       if (notificationsData) {
-        const color = colors.interactive.gray;
-        browser.browserAction.setBadgeBackgroundColor({color});
-        browser.browserAction.setIcon({path: './assests/img/spinner-solid.svg'});
         updateBadge(notificationsData);
       } else {
         updateBadge();
@@ -127,8 +115,6 @@ async function updateBadge(
 
   if (typeof notificationsData !== 'undefined') {
     if (await getOneOption('display_toolbar_button_badge')) {
-      const text = `${Object.values(notificationsData).filter((n) => n.unread).length
-        }`;
       const text = `${
         Object.values(notificationsData).filter((n) => n.unread).length
       }`;

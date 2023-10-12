@@ -1,6 +1,6 @@
 import URI from 'urijs';
 
-import type { StorageContent } from '@commons/webExtensionsApi';
+import { StorageContent } from '@commons/webExtensionsApi';
 import {
   deleteFromStorage,
   getActiveTab,
@@ -118,19 +118,25 @@ async function updateNotificationsIfThereAreNew(pageContent: string) {
 
 export async function updateNotificationsData() {
   try {
+    // setting the state to loading
+    await saveToStorage(StorageContent['notificationsDataLoadingState'] = "loading");
     const reponse = await pontoonHttpClient.fetchFromPontoonSession(
       pontoonUserData(await getOneOption('pontoon_base_url')),
-    );
-    const userData = (await reponse.json()) as UserDataApiResponse;
-    const notificationsData: StorageContent['notificationsData'] = {};
-    for (const notification of userData.notifications.notifications) {
-      notificationsData[notification.id] = notification;
+      );
+      const userData = (await reponse.json()) as UserDataApiResponse;
+      const notificationsData: StorageContent['notificationsData'] = {};
+      for (const notification of userData.notifications.notifications) {
+        notificationsData[notification.id] = notification;
+      }
+      // notifications are loaded
+      await saveToStorage({ notificationsData });
+      await saveToStorage(StorageContent['notificationsDataLoadingState'] = "loaded");
+    } catch (error) {
+      // setting state to error
+      await saveToStorage(StorageContent['notificationsDataLoadingState'] = "error");
+      await deleteFromStorage('notificationsData');
+      console.error(error);
     }
-    await saveToStorage({ notificationsData });
-  } catch (error) {
-    await deleteFromStorage('notificationsData');
-    console.error(error);
-  }
 }
 
 async function updateLatestTeamActivity() {
