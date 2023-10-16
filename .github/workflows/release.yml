@@ -50,7 +50,7 @@ jobs:
       - name: Bump version
         run: make bump_${{ inputs.version_component_to_bump }}_version_in_container # also creates the commit and tag
       - name: Push release commit
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
