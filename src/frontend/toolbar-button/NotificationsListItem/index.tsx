@@ -122,13 +122,13 @@ function wrapLinks(pontoonBaseUrl: string): HTMLReactParserOptions['replace'] {
               }
             }}
           >
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children as DOMNode[])}
           </NativeLink>
         );
       } else {
         return (
           <NativeLink href={href} target="_blank" rel="noopener noreferrer">
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children as DOMNode[])}
           </NativeLink>
         );
       }
