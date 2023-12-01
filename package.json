@@ -67,7 +67,7 @@
     "@types/node": "^18.18.8",
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
-    "@types/urijs": "^1.19.22",
+    "@types/urijs": "^1.19.25",
     "@types/uuid": "^9.0.6",
     "@types/webextension-polyfill": "^0.10.7",
     "@types/webpack": "^5.28.4",
