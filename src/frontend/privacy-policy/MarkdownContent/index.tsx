@@ -35,7 +35,7 @@ function wrapLinks(domNode: DOMNode): JSX.Element | void {
         target="_blank"
         rel="noopener noreferrer"
       >
-        {domToReact(domNode.children)}
+        {domToReact(domNode.children as DOMNode[])}
       </NativeLink>
     );
   }
