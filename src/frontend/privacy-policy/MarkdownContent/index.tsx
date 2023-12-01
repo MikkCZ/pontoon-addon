@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { marked, Renderer } from 'marked';
 import DOMPurify from 'dompurify';
 import type { DOMNode } from 'html-react-parser';
@@ -7,7 +7,7 @@ import parse, { domToReact, Element } from 'html-react-parser';
 
 import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
 
-function renderMarkdown(markdown: string) {
+async function renderMarkdown(markdown: string) {
   const renderer = new Renderer();
   const defaultLinkRenderer = renderer.link;
   renderer.link = function (
@@ -19,7 +19,7 @@ function renderMarkdown(markdown: string) {
       .call(renderer, href, title, text)
       .replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ');
   };
-  const html = marked(markdown, { renderer });
+  const html = await marked(markdown, { renderer });
   return DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
 }
 
@@ -49,10 +49,13 @@ export const MarkdownContent: React.FC<Props> = ({
   markdownText,
   ...props
 }) => {
-  const htmlToRender = useMemo(
-    () => renderMarkdown(markdownText),
-    [markdownText],
-  );
+  const [htmlToRender, setHtmlToRender] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      setHtmlToRender(await renderMarkdown(markdownText));
+    })();
+  }, [markdownText]);
 
   return <div {...props}>{parse(htmlToRender, { replace: wrapLinks })}</div>;
 };
