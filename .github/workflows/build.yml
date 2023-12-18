@@ -55,7 +55,7 @@ jobs:
         env:
           MODE: development
       - name: Save built add-on (development version)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.DEVELOPMENT_ARTIFACT_NAME }}
           path: dist
@@ -75,7 +75,7 @@ jobs:
       - name: Build add-on
         run: make build_in_container
       - name: Save built add-on
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PRODUCTION_ARTIFACT_NAME }}
           path: dist
