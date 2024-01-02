@@ -180,18 +180,18 @@ export const GetProjectsInfoDocument = gql`
 }
     `;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, variables) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     getTeamsInfo(variables?: GetTeamsInfoQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetTeamsInfoQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetTeamsInfoQuery>(GetTeamsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTeamsInfo', 'query');
+      return withWrapper((wrappedRequestHeaders) => client.request<GetTeamsInfoQuery>(GetTeamsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTeamsInfo', 'query', variables);
     },
     getProjectsInfo(variables?: GetProjectsInfoQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetProjectsInfoQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectsInfoQuery>(GetProjectsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getProjectsInfo', 'query');
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectsInfoQuery>(GetProjectsInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getProjectsInfo', 'query', variables);
     }
   };
 }
