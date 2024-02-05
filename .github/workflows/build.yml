@@ -97,7 +97,7 @@ jobs:
       - name: Run tests
         run: make test_in_container
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
   generated_code_consistency:
     name: Verify generated code is consistent
     needs: prepare_cache
