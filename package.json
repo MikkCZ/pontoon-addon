@@ -50,14 +50,14 @@
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
     "@emotion/eslint-plugin": "^11.11.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/typescript-graphql-request": "^6.1.0",
     "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@testing-library/jest-dom": "^6.4.1",
-    "@testing-library/react": "^14.2.0",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
     "@tsconfig/recommended": "^1.0.3",
     "@types/dompurify": "^3.0.5",
     "@types/eslint": "^8.56.5",
