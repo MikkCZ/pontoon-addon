@@ -37,7 +37,7 @@
     "dompurify": "^3.0.9",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
-    "html-react-parser": "^5.1.8",
+    "html-react-parser": "^5.1.10",
     "javascript-time-ago": "^2.5.9",
     "marked": "^12.0.0",
     "react": "^18.2.0",
