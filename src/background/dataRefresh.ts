@@ -28,19 +28,23 @@ export function setupDataRefresh() {
     refreshDataWithInterval(periodInMinutes),
   );
   callDelayed({ delayInSeconds: 1 }, async () => {
-    await refreshData();
+    await refreshData({ event: 'user interaction' });
     console.info('Data refreshed after initialization.');
   });
 
-  listenToOptionChange('contextual_identity', () => refreshData());
-  listenToOptionChange('pontoon_base_url', () => refreshData());
+  listenToOptionChange('contextual_identity', () =>
+    refreshData({ event: 'user interaction' }),
+  );
+  listenToOptionChange('pontoon_base_url', () =>
+    refreshData({ event: 'user interaction' }),
+  );
 
   registerLiveDataProvider();
 }
 
 function refreshDataWithInterval(periodInMinutes: number) {
   callWithInterval('data-refresher-alarm', { periodInMinutes }, () =>
-    refreshData(),
+    refreshData({ event: 'automation' }),
   );
 }
 
