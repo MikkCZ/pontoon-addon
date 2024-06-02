@@ -116,7 +116,7 @@
   },
   "overrides": {
     "mockzilla-webextension": {
-      "webextension-polyfill": "^0.10.0"
+      "webextension-polyfill": "^0.12.0"
     },
     "web-ext-plugin": {
       "web-ext": {
