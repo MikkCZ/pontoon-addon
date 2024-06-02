@@ -45,7 +45,17 @@ async function registerBadgeChanges() {
     'notificationsData',
     ({ newValue: notificationsData }) => {
       if (notificationsData) {
-        updateBadge(notificationsData);
+        updateBadge({ notificationsData });
+      } else {
+        updateBadge();
+      }
+    },
+  );
+  listenToStorageChange(
+    'notificationsDataLoadingState',
+    ({ newValue: notificationsDataLoadingState }) => {
+      if (notificationsDataLoadingState) {
+        updateBadge({ notificationsDataLoadingState });
       } else {
         updateBadge();
       }
@@ -106,45 +116,72 @@ function registerButtonPopup(action: OptionValue<'toolbar_button_action'>) {
 }
 
 async function updateBadge(
-  notificationsData?: Partial<StorageContent>['notificationsData'],
+  data?: Partial<
+    Pick<StorageContent, 'notificationsDataLoadingState' | 'notificationsData'>
+  >,
 ) {
-  if (typeof notificationsData === 'undefined') {
-    notificationsData = await getOneFromStorage('notificationsData');
-  }
+  const notificationsDataLoadingState =
+    data?.notificationsDataLoadingState ??
+    (await getOneFromStorage('notificationsDataLoadingState'));
+  const notificationsData =
+    data?.notificationsData ?? (await getOneFromStorage('notificationsData'));
 
-  if (typeof notificationsData !== 'undefined') {
+  if (
+    (typeof notificationsDataLoadingState === 'undefined' ||
+      notificationsDataLoadingState === 'loaded') &&
+    typeof notificationsData === 'object'
+  ) {
     if (await getOneOption('display_toolbar_button_badge')) {
-      const text = `${
-        Object.values(notificationsData).filter((n) => n.unread).length
-      }`;
-      if (text === '0') {
-        hideBadge();
-      } else {
-        const color = colors.interactive.red;
-        await Promise.all([
-          browser.browserAction.setBadgeText({ text }),
-          browser.browserAction.setTitle({
-            title: `${DEFAULT_TITLE} (${text})`,
-          }),
-          browser.browserAction.setBadgeBackgroundColor({ color }),
-        ]);
-      }
+      const unreadNotificationsCount = Object.values(notificationsData).filter(
+        (n) => n.unread,
+      ).length;
+      await loadedBadge(unreadNotificationsCount);
     }
+  } else if (notificationsDataLoadingState === 'loading') {
+    await loadingBadge();
   } else {
-    const text = '!';
-    const color = colors.interactive.red;
-    await Promise.all([
-      browser.browserAction.setBadgeText({ text }),
-      browser.browserAction.setTitle({ title: `${DEFAULT_TITLE} (${text})` }),
-      browser.browserAction.setBadgeBackgroundColor({ color }),
-    ]);
+    await errorBadge();
   }
 }
 
-async function hideBadge() {
+async function loadedBadge(unreadNotificationsCount: number) {
+  if (unreadNotificationsCount > 0) {
+    await setBadge({
+      text: `${unreadNotificationsCount}`,
+      title: `${DEFAULT_TITLE} (${unreadNotificationsCount})`,
+      color: colors.interactive.red,
+    });
+  } else {
+    await setBadge({
+      text: '', // hide badge
+      title: DEFAULT_TITLE,
+      color: colors.interactive.gray,
+    });
+  }
+}
+
+async function loadingBadge() {
+  await setBadge({
+    text: '🗘',
+    title: DEFAULT_TITLE,
+    color: colors.interactive.gray,
+  });
+}
+
+async function errorBadge() {
+  await setBadge({
+    text: '!',
+    title: DEFAULT_TITLE,
+    color: colors.interactive.red,
+  });
+}
+
+async function setBadge(data: { text: string; title: string; color: string }) {
+  const { text, title, color } = data;
   await Promise.all([
-    browser.browserAction.setBadgeText({ text: '' }),
-    browser.browserAction.setTitle({ title: DEFAULT_TITLE }),
+    browser.browserAction.setBadgeText({ text }),
+    browser.browserAction.setTitle({ title }),
+    browser.browserAction.setBadgeBackgroundColor({ color }),
   ]);
 }
 
@@ -154,8 +191,7 @@ async function addContextMenu() {
     title: 'Reload notifications',
     contexts: ['browser_action'],
     onclick: async () => {
-      await hideBadge();
-      refreshData();
+      await refreshData({ event: 'user interaction' });
     },
   });
 

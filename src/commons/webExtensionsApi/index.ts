@@ -41,6 +41,7 @@ export interface StorageContent {
       bz_component: string;
     };
   };
+  notificationsDataLoadingState: 'loading' | 'loaded' | 'error' | undefined;
   notificationsData: {
     [id: number]: {
       id: number;

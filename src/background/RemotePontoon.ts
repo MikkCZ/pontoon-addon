@@ -87,7 +87,12 @@ export function listenToMessagesFromClients() {
   );
 }
 
-export async function refreshData() {
+export async function refreshData(context: {
+  event: 'user interaction' | 'automation';
+}) {
+  if (context.event === 'user interaction') {
+    await saveToStorage({ notificationsDataLoadingState: 'loading' });
+  }
   await Promise.all([
     updateNotificationsData(),
     updateLatestTeamActivity(),
@@ -126,8 +131,12 @@ async function updateNotificationsData() {
     for (const notification of userData.notifications.notifications) {
       notificationsData[notification.id] = notification;
     }
-    await saveToStorage({ notificationsData });
+    await saveToStorage({
+      notificationsData,
+      notificationsDataLoadingState: 'loaded',
+    });
   } catch (error) {
+    await saveToStorage({ notificationsDataLoadingState: 'error' });
     await deleteFromStorage('notificationsData');
     console.error(error);
   }
