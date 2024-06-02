@@ -21,18 +21,6 @@ export const projectsListData: ProjectsListData = [
     ],
   },
   {
-    slug: 'donate-mozilla-content',
-    domains: ['donate.mozilla.org'],
-  },
-  {
-    slug: 'donate-thunderbird-content',
-    domains: ['give.thunderbird.net'],
-  },
-  {
-    slug: 'firefox-accounts',
-    domains: ['accounts.firefox.com', 'accounts.stage.mozaws.net'],
-  },
-  {
     slug: 'firefox-monitor-website',
     domains: [
       'monitor.firefox.com',
@@ -48,6 +36,7 @@ export const projectsListData: ProjectsListData = [
     slug: 'firefox-relay-website',
     domains: [
       'relay.firefox.com',
+      'stage.fxprivaterelay.nonprod.cloudops.mozgcp.net',
       'dev.fxprivaterelay.nonprod.cloudops.mozgcp.net',
     ],
   },
@@ -56,8 +45,8 @@ export const projectsListData: ProjectsListData = [
     domains: ['foundation.mozilla.org', 'foundation.mofostaging.net'],
   },
   {
-    slug: 'mdn',
-    domains: ['developer.mozilla.org', 'developer.allizom.org'],
+    slug: 'mozilla-accounts',
+    domains: ['accounts.firefox.com', 'accounts.stage.mozaws.net'],
   },
   {
     slug: 'mozilla-festival',
