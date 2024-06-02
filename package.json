@@ -133,7 +133,7 @@
   },
   "engineStrict": true,
   "browserslist": [
-    "Firefox >= 91.0",
-    "Chrome >= 88"
+    "Firefox >= 102.0",
+    "Chrome >= 104"
   ]
 }
