@@ -47,7 +47,7 @@
     "react-time-ago": "^7.3.3",
     "urijs": "^1.19.11",
     "uuid": "^9.0.1",
-    "webextension-polyfill": "^0.10.0"
+    "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
@@ -116,7 +116,7 @@
   },
   "overrides": {
     "mockzilla-webextension": {
-      "webextension-polyfill": "^0.10.0"
+      "webextension-polyfill": "^0.12.0"
     },
     "web-ext-plugin": {
       "web-ext": {
