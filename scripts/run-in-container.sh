@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-CONTAINER_IMAGE='docker.io/library/node:20-bookworm' # LTS
+CONTAINER_IMAGE=${CONTAINER_IMAGE:-'docker.io/library/node:20-bookworm'} # LTS
 COMMAND=${@}
 
 CONTAINER_RUN='podman run'
@@ -13,6 +13,8 @@ command -v podman > /dev/null 2>&1 || {
 }
 
 ${CONTAINER_RUN} \
+  -it \
+  -e "TERM=xterm-256color" \
   --pull=always \
   --rm=true \
   -v "${PWD}:${PWD}:Z" \
