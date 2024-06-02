@@ -17,6 +17,6 @@ ${PIP_INSTALL} mysql
 ${PIP_INSTALL} --require-hashes -r "${PONTOON_REPO_DIR}/requirements/default.txt"
 
 # export schema definition to file
-SECRET_KEY='SECRET_KEY' ${PONTOON_REPO_DIR}/manage.py graphql_schema --schema pontoon.api.schema.schema --out=-.graphql | grep -v '__debug' > "${OUTPUT_FILE}"
+SECRET_KEY='SECRET_KEY' ${PONTOON_REPO_DIR}/manage.py graphql_schema --schema pontoon.api.schema.schema --out=-.graphql > "${OUTPUT_FILE}"
 
 rm -r "${PONTOON_REPO_DIR}"
