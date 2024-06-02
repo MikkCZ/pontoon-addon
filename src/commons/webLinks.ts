@@ -188,10 +188,6 @@ export function mozillaWikiL10nTeamPage(team: string): string {
     .toString();
 }
 
-export function microsoftTerminologySearch(): string {
-  return 'https://www.microsoft.com/language/';
-}
-
 export function newLocalizationBug({
   team,
   selectedText,

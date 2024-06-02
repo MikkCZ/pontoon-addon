@@ -24,7 +24,6 @@ import {
   transvisionHome,
   mozillaL10nStyleGuide,
   mozillaWikiL10nTeamPage,
-  microsoftTerminologySearch,
   pontoonAddonWiki,
 } from '@commons/webLinks';
 import { openNewPontoonTab } from '@commons/utils';
@@ -160,13 +159,13 @@ async function addContextMenu() {
     },
   });
 
-  const pontoonPagesParentItemId = createContextMenu({
-    title: 'Pontoon',
+  const localeTeamParentItemId = createContextMenu({
+    title: 'Locale Team',
     contexts: ['browser_action'],
   });
-  const pontoonPagesMenuItems: Menus.CreateCreatePropertiesType[] = [
+  const localeTeamMenuItems: Menus.CreateCreatePropertiesType[] = [
     {
-      title: 'Team dashboard',
+      title: 'Dashboard',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
@@ -174,7 +173,7 @@ async function addContextMenu() {
       },
     },
     {
-      title: 'Team insights',
+      title: 'Insights',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
@@ -184,7 +183,7 @@ async function addContextMenu() {
       },
     },
     {
-      title: 'Team bugs',
+      title: 'Bugs',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
@@ -192,7 +191,7 @@ async function addContextMenu() {
       },
     },
     {
-      title: 'Search in Pontoon',
+      title: 'Search',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
           await getOptions(['pontoon_base_url', 'locale_team']);
@@ -206,49 +205,35 @@ async function addContextMenu() {
       },
     },
   ];
-  for (const item of pontoonPagesMenuItems) {
+  for (const item of localeTeamMenuItems) {
     createContextMenu({
       ...item,
       contexts: ['browser_action'],
-      parentId: pontoonPagesParentItemId,
+      parentId: localeTeamParentItemId,
     });
   }
 
-  const searchMenuParentItemId = createContextMenu({
-    title: 'Search l10n',
+  createContextMenu({
+    title: 'Pontoon search',
+    onclick: async () => {
+      const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
+        await getOptions(['pontoon_base_url', 'locale_team']);
+      openNewPontoonTab(
+        pontoonProjectTranslationView(
+          pontoonBaseUrl,
+          { code: teamCode },
+          { slug: 'all-projects' },
+        ),
+      );
+    },
     contexts: ['browser_action'],
   });
-  const searchMenuItems: Menus.CreateCreatePropertiesType[] = [
-    {
-      title: 'Search in Pontoon',
-      onclick: async () => {
-        const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
-          await getOptions(['pontoon_base_url', 'locale_team']);
-        openNewPontoonTab(
-          pontoonProjectTranslationView(
-            pontoonBaseUrl,
-            { code: teamCode },
-            { slug: 'all-projects' },
-          ),
-        );
-      },
-    },
-    {
-      title: 'Transvision',
-      onclick: () => openNewTab(transvisionHome(localeTeam)),
-    },
-    {
-      title: 'Microsoft Terminology Search',
-      onclick: () => openNewTab(microsoftTerminologySearch()),
-    },
-  ];
-  for (const item of searchMenuItems) {
-    createContextMenu({
-      ...item,
-      contexts: ['browser_action'],
-      parentId: searchMenuParentItemId,
-    });
-  }
+
+  createContextMenu({
+    title: 'Transvision',
+    onclick: () => openNewTab(transvisionHome(localeTeam)),
+    contexts: ['browser_action'],
+  });
 
   const localizationResourcesParentItemId = createContextMenu({
     title: 'Other l10n sources',
@@ -272,15 +257,25 @@ async function addContextMenu() {
     });
   }
 
-  createContextMenu({
-    title: 'Pontoon Add-on wiki',
+  const pontoonAddonParentItemId = createContextMenu({
+    title: 'Pontoon Add-on',
     contexts: ['browser_action'],
-    onclick: () => openNewTab(pontoonAddonWiki()),
   });
-
-  createContextMenu({
-    title: 'Pontoon Add-on tour',
-    contexts: ['browser_action'],
-    onclick: () => openIntro(),
-  });
+  const pontoonAddonItems: Menus.CreateCreatePropertiesType[] = [
+    {
+      title: 'Wiki',
+      onclick: () => openNewTab(pontoonAddonWiki()),
+    },
+    {
+      title: 'Introduction tour',
+      onclick: () => openIntro(),
+    },
+  ];
+  for (const item of pontoonAddonItems) {
+    createContextMenu({
+      ...item,
+      contexts: ['browser_action'],
+      parentId: pontoonAddonParentItemId,
+    });
+  }
 }
