@@ -250,7 +250,25 @@ export default async function configs(): Promise<Configuration[]> {
               minify: false,
             }),
           ],
-        }
+        },
+        {
+          ...commonConfiguration,
+          name: 'amo-metadata',
+          entry: './package.json', // anything webpack can load by itself
+          output: {
+            ...commonConfiguration.output,
+            // ignore chunk emitted from the entry
+            filename: path.relative(commonConfiguration.output?.path!, '/dev/null'),
+            path: path.resolve(commonConfiguration.output?.path!, '..', '..'),
+          },
+          plugins: [
+            new CopyPlugin({
+              patterns:[
+                { from: 'amo-metadata.json', to: path.resolve(commonConfiguration.output?.path!, '..') },
+              ],
+            }),
+          ],
+        },
       ] : []
     ),
   ];

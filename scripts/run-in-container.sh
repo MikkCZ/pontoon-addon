@@ -21,5 +21,7 @@ ${CONTAINER_RUN} \
   --workdir "${PWD}" \
   -e NPM_CONFIG_CACHE="${PWD}/.npm_in_container" \
   -e MODE="${MODE}" \
+  -e WEB_EXT_API_KEY="${WEB_EXT_API_KEY}" \
+  -e WEB_EXT_API_SECRET="${WEB_EXT_API_SECRET}" \
   --entrypoint=/bin/bash \
   "${CONTAINER_IMAGE}" -c "${COMMAND}"

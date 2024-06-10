@@ -22,17 +22,9 @@ watch:
 graphql_generate:
 	npm run graphql:generate
 
-.PHONY: bump_patch_version
-bump_patch_version:
-	npm version patch
-
-.PHONY: bump_minor_version
-bump_minor_version:
-	npm version minor
-
-.PHONY: bump_major_version
-bump_major_version:
-	npm version major
+.PHONY: bump_version
+bump_version:
+	npm version "$(bump)"
 
 .PHONY: all_in_container
 all_in_container:
@@ -63,14 +55,6 @@ export_pontoon_graphql_schema:
 	CONTAINER_IMAGE='docker.io/library/python:3.11-bookworm' bash ./scripts/run-in-container.sh 'bash ./scripts/export-pontoon-graphql-schema.sh ./src/pontoon.graphql'
 	make graphql_generate_in_container
 
-.PHONY: bump_patch_version_in_container
-bump_patch_version_in_container:
-	bash ./scripts/run-in-container.sh make bump_patch_version
-
-.PHONY: bump_minor_version_in_container
-bump_minor_version_in_container:
-	bash ./scripts/run-in-container.sh make bump_minor_version
-
-.PHONY: bump_major_version_in_container
-bump_major_version_in_container:
-	bash ./scripts/run-in-container.sh make bump_major_version
+.PHONY: bump_version_in_container
+bump_version_in_container:
+	bash ./scripts/run-in-container.sh make bump_version bump="$(bump)"

@@ -16,3 +16,5 @@ scripts/jq
 .pip
 
 .npm_in_container
+
+web-ext-artifacts
