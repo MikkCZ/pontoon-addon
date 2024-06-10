@@ -48,7 +48,7 @@ jobs:
           git config --local user.email '${{ github.actor }}@users.noreply.github.com'
           git config --local user.name '${{ github.actor }}'
       - name: Bump version
-        run: make bump_${{ inputs.version_component_to_bump }}_version_in_container # also creates the commit and tag
+        run: make bump_version_in_container bump='${{ inputs.version_component_to_bump }}' # also creates the commit and tag
       - name: Push release commit
         uses: ad-m/github-push-action@v0.8.0
         with:
@@ -65,7 +65,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       checkout_ref: ${{ format('refs/tags/{0}', needs.bump_version_and_tag.outputs.release_tag) }}
-  create_release:
+  create_github_release:
     needs:
       - bump_version_and_tag
       - build
@@ -94,3 +94,52 @@ jobs:
           fail_on_unmatched_files: true
           draft: false
           prerelease: false
+  publish_to_amo:
+    needs:
+      - bump_version_and_tag
+      - build
+      - create_github_release
+    runs-on: ubuntu-latest
+    environment: addons.mozilla.org
+    timeout-minutes: 10
+    steps:
+      - name: Download built add-on to publish
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.production_artifact_name }}
+          path: dist
+      - name: Download source code archive
+        run: wget 'https://github.com/MikkCZ/pontoon-addon/archive/refs/tags/${{ needs.bump_version_and_tag.outputs.release_tag }}.zip'
+      - name: Publish to addons.mozilla.org
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
+        run: |
+          npx web-ext@8 sign \
+            --channel=listed \
+            --source-dir=./dist/mozilla/src \
+            --upload-source-code=./${{ needs.bump_version_and_tag.outputs.release_tag }}.zip \
+            --amo-metadata=./dist/mozilla/amo-metadata.json
+  publish_to_chrome_web_store:
+    needs:
+      - bump_version_and_tag
+      - build
+      - create_github_release
+    runs-on: ubuntu-latest
+    environment: Chrome Web Store
+    timeout-minutes: 10
+    steps:
+      - name: Download built add-on to publish
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.production_artifact_name }}
+          path: dist
+      - name: Publish to Chrome Web Store
+        env:
+          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          npx chrome-webstore-upload-cli@3 \
+            --source=./dist/chromium/src

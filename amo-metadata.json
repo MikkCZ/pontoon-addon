@@ -1,0 +1,31 @@
+{
+  "categories": [
+    "alerts-updates",
+    "language-support",
+    "other"
+  ],
+  "description": {
+    "en-US": "Pontoon Add-on (formerly Pontoon Tools) eases localizers everyday work with <a href=\"https://pontoon.mozilla.org/\">Pontoon</a>, the Mozilla localization tool.\n\nThis add-on brings <strong>notifications</strong> from Pontoon directly into your browser. It also provides features for <strong>proofreading, bug reporting and fixing</strong>. The introduction tour will show you around right after installation. Version for Chrome <a href=\"https://chrome.google.com/webstore/detail/pontoon-tools/gnbfbnpjncpghhjmmhklfhcglbopagbb\">is now available too</a>.\n\nHave an idea, for something cool? <a href=\"https://github.com/MikkCZ/pontoon-addon/issues\">Let us know on GitHub</a>."
+  },
+  "homepage": {
+    "en-US": "https://github.com/MikkCZ/pontoon-addon/issues"
+  },
+  "name": {
+    "en-US": "Pontoon Add-on"
+  },
+  "slug": "pontoon-tools",
+  "summary": {
+    "en-US": "Tools for Pontoon and its integration into the browser."
+  },
+  "support_email": {
+    "en-US": "mstanke@mozilla.cz"
+  },
+  "version": {
+    "compatibility": [
+      "android",
+      "firefox"
+    ],
+    "license": "BSD-2-Clause",
+    "upload": "pontoon-tools@mikk.cz"
+  }
+}
