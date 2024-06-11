@@ -1,6 +1,6 @@
 {
   "name": "pontoon-addon",
-  "version": "4.12.1",
+  "version": "4.12.2",
   "private": true,
   "description": "Tools for Pontoon and its integration into the browser.",
   "author": "Michal Stanke",
