@@ -117,6 +117,7 @@ jobs:
         run: |
           npx web-ext@8 sign \
             --channel=listed \
+            --approval-timeout=0 `# Pontoon Add-on is approved manually, don't wait for it` \
             --source-dir=./dist/mozilla/src \
             --upload-source-code=./${{ needs.bump_version_and_tag.outputs.release_tag }}.zip \
             --amo-metadata=./dist/mozilla/amo-metadata.json
