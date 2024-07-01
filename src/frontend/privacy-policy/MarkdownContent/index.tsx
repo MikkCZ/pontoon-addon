@@ -10,13 +10,9 @@ import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
 async function renderMarkdown(markdown: string) {
   const renderer = new Renderer();
   const defaultLinkRenderer = renderer.link;
-  renderer.link = function (
-    href: string,
-    title: string | null | undefined,
-    text: string,
-  ): string {
+  renderer.link = (linkTokens) => {
     return defaultLinkRenderer
-      .call(renderer, href, title, text)
+      .call(renderer, linkTokens)
       .replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ');
   };
   const html = await marked(markdown, { renderer });
