@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
-    "dompurify": "^3.1.5",
+    "dompurify": "^3.1.6",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "html-react-parser": "^5.1.10",
