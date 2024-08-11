@@ -36,7 +36,7 @@
     "@emotion/react": "^11.13.0",
     "dompurify": "^3.1.6",
     "graphql": "^16.9.0",
-    "graphql-request": "^7.1.0",
+    "graphql-request": "^6.1.0",
     "html-react-parser": "^5.1.12",
     "javascript-time-ago": "^2.5.10",
     "marked": "^14.0.0",
