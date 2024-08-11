@@ -40,6 +40,12 @@ const config: ESLint.ConfigData = {
       },
     ],
     'require-await': 'error',
+    '@typescript-eslint/no-unused-expressions': [
+      'error',
+      {
+        allowShortCircuit: true,
+      },
+    ],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
