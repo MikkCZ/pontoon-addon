@@ -35,6 +35,7 @@ const Wrapper: React.FC<React.ComponentProps<'section'>> = (props) => (
 
 const Image: React.FC<React.ComponentProps<'img'>> = ({ alt, ...props }) => (
   <img
+    data-testid={props.src}
     css={css({
       margin: '1em auto',
       width: '100%',

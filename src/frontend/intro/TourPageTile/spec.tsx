@@ -46,7 +46,7 @@ describe('TourPageTile', () => {
     expect(
       within(wrapper()).getByRole('heading', { level: 3 }),
     ).toHaveTextContent('TITLE');
-    expect(within(wrapper()).getByRole('img')).toBeInTheDocument();
+    expect(within(wrapper()).getByTestId('mock.jpg')).toBeInTheDocument();
     expect(within(wrapper()).getByText('Lorem Ipsum')).toBeInTheDocument();
     expect(within(wrapper()).getByRole('button')).toHaveTextContent(
       'Lipsum...',
