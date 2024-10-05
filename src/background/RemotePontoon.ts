@@ -20,7 +20,11 @@ import {
 } from './apiEndpoints';
 import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import type { GetProjectsInfoResponse } from './httpClients';
-import { pontoonHttpClient, httpClient, graphqlClient } from './httpClients';
+import {
+  pontoonHttpClient,
+  httpClient,
+  pontoonGraphqlClient,
+} from './httpClients';
 import { projectsListData } from './data/projectsListData';
 
 type GetProjectsInfoProject = GetProjectsInfoResponse['projects'][number];
@@ -175,7 +179,7 @@ async function updateLatestTeamActivity() {
 
 async function updateTeamsList(): Promise<StorageContent['teamsList']> {
   const [pontoonData, bugzillaComponentsResponse] = await Promise.all([
-    graphqlClient(await getOneOption('pontoon_base_url')).getTeamsInfo(),
+    pontoonGraphqlClient.getTeamsInfo(),
     httpClient.fetch(bugzillaTeamComponents()),
   ]);
   const bugzillaComponents = (await bugzillaComponentsResponse.json()) as {
@@ -206,9 +210,7 @@ async function updateTeamsList(): Promise<StorageContent['teamsList']> {
 }
 
 async function updateProjectsList(): Promise<StorageContent['projectsList']> {
-  const pontoonData = await graphqlClient(
-    await getOneOption('pontoon_base_url'),
-  ).getProjectsInfo();
+  const pontoonData = await pontoonGraphqlClient.getProjectsInfo();
   const partialProjectsMap = new Map<
     GetProjectsInfoProject['slug'],
     GetProjectsInfoProject
