@@ -117,13 +117,6 @@
   "overrides": {
     "mockzilla-webextension": {
       "webextension-polyfill": "^0.12.0"
-    },
-    "web-ext-plugin": {
-      "web-ext": {
-        "addons-linter": {
-          "cheerio": "^1.0.0-rc.12"
-        }
-      }
     }
   },
   "engines": {
