@@ -102,6 +102,8 @@ jobs:
           name: coverage
           path: coverage
           retention-days: 30
+      - name: Show code coverage in summary
+        run: npx -y tsx scripts/test-coverage-github-summary.ts
   generated_code_consistency:
     name: Verify generated code is consistent
     needs: prepare_cache
