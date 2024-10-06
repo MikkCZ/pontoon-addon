@@ -313,6 +313,8 @@ export function listenToMessages<
       // no return to allow all listeners to react on the message
       action(typedMessade, sender);
     }
+    // always check check other actions if they are subscribed for this message
+    return undefined;
   });
 }
 
@@ -332,6 +334,7 @@ export function listenToMessagesAndRespond<
       // only one listener can send a response
       return action(typedMessade, sender);
     } else {
+      // let other actions check if they are subscribed for this message
       return undefined;
     }
   });
