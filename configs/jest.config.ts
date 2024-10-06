@@ -33,6 +33,14 @@ const config: Config.InitialOptions = {
     '.+\\.d.ts$',
   ],
   coverageReporters: ['clover', 'json', 'json-summary', 'lcov', 'html'],
+  coverageThreshold: {
+    global: {
+      lines: 50,
+      statements: 50,
+      functions: 45,
+      branches: 30,
+    },
+  },
   preset: 'ts-jest',
   transform: {
     '.+\\.jsx?$': ['babel-jest', { presets: [ '@babel/env' ] }],
