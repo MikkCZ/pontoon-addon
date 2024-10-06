@@ -74,9 +74,8 @@ describe('backgroundClient', () => {
   });
 
   it('updateTeamsList', async () => {
-    mockBrowserSendMessage<'UPDATE_TEAMS_LIST'>()
-      .expect({ type: 'update-teams-list' })
-      .andResolve({
+    const mockTeamsList: BackgroundClientMessage['UPDATE_TEAMS_LIST']['response'] =
+      {
         cs: {
           code: 'cs',
           name: 'Czech',
@@ -91,11 +90,14 @@ describe('backgroundClient', () => {
             totalStrings: 0,
           },
         },
-      });
+      };
+    mockBrowserSendMessage<'UPDATE_TEAMS_LIST'>()
+      .expect({ type: 'update-teams-list' })
+      .andResolve(mockTeamsList);
 
     const teams = await updateTeamsList();
 
-    expect(teams).toStrictEqual({ cs: { name: 'Czech' } });
+    expect(teams).toStrictEqual(mockTeamsList);
   });
 
   it('getUsersTeamFromPontoon', async () => {
@@ -109,14 +111,20 @@ describe('backgroundClient', () => {
   });
 
   it('getPontoonProjectForTheCurrentTab', async () => {
+    const mockProject: BackgroundClientMessage['GET_CURRENT_TAB_PROJECT']['response'] =
+      {
+        slug: 'firefox',
+        name: 'Firefox',
+        domains: [],
+      };
     mockBrowserSendMessage<'GET_CURRENT_TAB_PROJECT'>()
       .expect({ type: 'get-current-tab-project' })
-      .andResolve({ slug: 'firefox', name: 'Firefox', domains: [] });
+      .andResolve(mockProject);
 
     const project = await getPontoonProjectForTheCurrentTab();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(project?.slug).toBe('firefox');
+    expect(project).toStrictEqual(mockProject);
   });
 
   it('pageLoaded', async () => {
@@ -171,6 +179,8 @@ describe('backgroundClient', () => {
 
     const response = await notificationBellIconScriptLoaded();
 
-    expect(response.type).toBe('enable-notifications-bell-script');
+    expect(response).toStrictEqual({
+      type: 'enable-notifications-bell-script',
+    });
   });
 });
