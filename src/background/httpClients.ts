@@ -82,8 +82,8 @@ async function verifyPontoonRequestToken(
 ): Promise<boolean> {
   if (token) {
     const storageKey = tokenStorageKey(token);
-    const tokenInfoValue: string | undefined = (
-      await browser.storage.session.get(storageKey)
+    const tokenInfoValue = (
+      (await browser.storage.session.get(storageKey)) as Record<string, string>
     )[storageKey];
     if (typeof tokenInfoValue === 'string') {
       const tokenInfo: TokenInfo = JSON.parse(tokenInfoValue);

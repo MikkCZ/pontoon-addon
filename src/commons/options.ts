@@ -30,9 +30,9 @@ export async function getOptions<ID extends OptionId>(
   optionIds: ID[],
 ): Promise<OptionValues<ID>> {
   const defaultValues = defaultOptionsFor(browserFamily());
-  const storageItems = await browser.storage.local.get(
+  const storageItems = (await browser.storage.local.get(
     optionIds.map((optionId) => storageKeyFor(optionId)),
-  );
+  )) as Record<string, OptionValue<ID>>;
   const optionsWithDefaultValues: Partial<OptionValues<ID>> = {};
   for (const optionId of optionIds) {
     const storageKey = storageKeyFor(optionId);
