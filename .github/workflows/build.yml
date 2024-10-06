@@ -96,8 +96,16 @@ jobs:
         uses: ./.github/actions/prepare
       - name: Run tests
         run: make test_in_container
-      - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v4
+      - name: Upload code coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+          retention-days: 30
+      - name: Show code coverage in summary
+        run: |
+          summary="$(npx -y tsx@4 scripts/test-coverage-github-summary.ts)"
+          echo "${summary}" >> $GITHUB_STEP_SUMMARY
   generated_code_consistency:
     name: Verify generated code is consistent
     needs: prepare_cache
