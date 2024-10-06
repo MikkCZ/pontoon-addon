@@ -10,7 +10,7 @@ import {
 import { getOneOption, getOptions } from '@commons/options';
 import { openNewPontoonTab } from '@commons/utils';
 
-export function setupPageContextButtons() {
+export function init() {
   listenToMessagesFromContentScript();
 }
 

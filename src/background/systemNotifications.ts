@@ -14,7 +14,7 @@ import {
 import { getOneOption, getOptions } from '@commons/options';
 import { openNewPontoonTab } from '@commons/utils';
 
-export function setupSystemNotifications() {
+export function init() {
   listenToStorageChange(
     'notificationsData',
     async ({ newValue: notificationsData }) => {

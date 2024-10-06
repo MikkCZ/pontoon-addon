@@ -8,30 +8,32 @@ import {
   supportsAddressBar,
 } from '@commons/webExtensionsApi';
 
-import { listenToMessagesFromClients } from './RemotePontoon';
-import { setupSystemNotifications } from './systemNotifications';
-import { setupToolbarButton } from './toolbarButton';
-import { setupAddressBarIcon } from './addressBarIcon';
-import { setupPageContextMenus } from './contextMenu';
-import { setupPageContextButtons } from './contextButtons';
-import { setupIntegrationWithPontoonAddonPromotion } from './pontoonAddonPromotion';
-import { setupDataRefresh } from './dataRefresh';
+import { init as initPontoonHttpClient } from './httpClients/pontoonHttpClient';
+import { initMessageListeners } from './RemotePontoon';
+import { init as initSystemNotifications } from './systemNotifications';
+import { init as initToolbarButton } from './toolbarButton';
+import { init as init } from './addressBarIcon';
+import { init as initPageContextMenu } from './contextMenu';
+import { init as initPageContextButtons } from './contextButtons';
+import { init as initPontoonAddonPromotion } from './pontoonAddonPromotion';
+import { init as initDataRefresh } from './dataRefresh';
 
-listenToMessagesFromClients();
+initPontoonHttpClient();
+initMessageListeners();
 
 // native system
-setupSystemNotifications();
+initSystemNotifications();
 
 // browser UI
-setupToolbarButton();
+initToolbarButton();
 if (supportsAddressBar()) {
-  setupAddressBarIcon();
+  init();
 }
-setupPageContextMenus();
+initPageContextMenu();
 
 // pages content
-setupPageContextButtons();
-setupIntegrationWithPontoonAddonPromotion();
+initPageContextButtons();
+initPontoonAddonPromotion();
 
 // inject content scripts after installation
 // kudos to https://github.com/fregante/webext-inject-on-install
@@ -64,6 +66,6 @@ browser.runtime.onInstalled.addListener((details) => {
   }
 });
 
-setupDataRefresh();
+initDataRefresh();
 
 console.info('Background context initialized.');

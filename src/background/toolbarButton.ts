@@ -33,7 +33,7 @@ import { refreshData } from './RemotePontoon';
 
 const DEFAULT_TITLE = 'Pontoon notifications';
 
-export function setupToolbarButton() {
+export function init() {
   registerBadgeChanges();
   registerClickAction();
 

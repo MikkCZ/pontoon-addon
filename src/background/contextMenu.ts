@@ -29,7 +29,7 @@ const NON_SELECTION_CONTEXTS: Menus.ContextType[] = [
 ];
 const SELECTION_CONTEXTS: Menus.ContextType[] = ['selection'];
 
-export function setupPageContextMenus() {
+export function init() {
   listenToStorageChange('projectsList', () => createContextMenuItems());
   listenToStorageChange('teamsList', () => createContextMenuItems());
   listenToOptionChange('pontoon_base_url', () => createContextMenuItems());

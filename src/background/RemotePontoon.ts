@@ -18,12 +18,10 @@ import {
   pontoonUserData,
   bugzillaTeamComponents,
 } from './apiEndpoints';
-import type { GetProjectsInfoResponse } from './httpClients';
-import {
-  pontoonHttpClient,
-  httpClient,
-  pontoonGraphqlClient,
-} from './httpClients';
+import { httpClient } from './httpClients/httpClient';
+import type { GetProjectsInfoResponse } from './httpClients/pontoonGraphqlClient';
+import { pontoonGraphqlClient } from './httpClients/pontoonGraphqlClient';
+import { pontoonHttpClient } from './httpClients/pontoonHttpClient';
 import { projectsListData } from './data/projectsListData';
 
 type GetProjectsInfoProject = GetProjectsInfoResponse['projects'][number];
@@ -59,7 +57,7 @@ function parseDOM(pageContent: string) {
   return new DOMParser().parseFromString(pageContent, 'text/html');
 }
 
-export function listenToMessagesFromClients() {
+export function initMessageListeners() {
   listenToMessages<'PAGE_LOADED'>('pontoon-page-loaded', ({ documentHTML }) =>
     updateNotificationsIfThereAreNew(documentHTML),
   );

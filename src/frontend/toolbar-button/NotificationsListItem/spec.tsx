@@ -4,13 +4,13 @@ import { render, screen, within, act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
 import * as UtilsApiModule from '@commons/utils';
-import { getTeamProjectUrl } from '@background/backgroundClient';
+import { getTeamProjectUrl } from '@commons/backgroundMessaging';
 
 import { NotificationsListItem } from '.';
 
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
-jest.mock('@background/backgroundClient');
+jest.mock('@commons/backgroundMessaging');
 
 jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest

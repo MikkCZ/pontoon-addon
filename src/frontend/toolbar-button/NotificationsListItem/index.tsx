@@ -11,7 +11,7 @@ import type { HTMLReactParserOptions, DOMNode } from 'html-react-parser';
 import parse, { domToReact, Element } from 'html-react-parser';
 
 import type { StorageContent } from '@commons/webExtensionsApi';
-import { getTeamProjectUrl } from '@background/backgroundClient';
+import { getTeamProjectUrl } from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 import { Link } from '@frontend/commons/components/pontoon/Link';
 import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';

@@ -8,7 +8,7 @@ import { getOneOption, listenToOptionChange } from '@commons/options';
 const CONTENT_SCRIPT =
   'content-scripts/pontoon-addon-promotion-content-script.js';
 
-export function setupIntegrationWithPontoonAddonPromotion() {
+export function init() {
   listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
     registerContentScript(pontoonBaseUrl);
   });

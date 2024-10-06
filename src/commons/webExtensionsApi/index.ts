@@ -7,9 +7,9 @@ import type {
 } from 'webextension-polyfill';
 
 import type {
-  BackgroundClientMessageWithResponse,
-  BackgroundClientMessageWithoutResponse,
-} from '@commons/BackgroundClientMessageType';
+  BackgroundMessagesWithResponse,
+  BackgroundMessagesWithoutResponse,
+} from '../backgroundMessaging';
 
 import { default as browserObj } from './browser';
 
@@ -298,17 +298,17 @@ export function callDelayed(
 }
 
 export function listenToMessages<
-  T extends keyof BackgroundClientMessageWithoutResponse,
+  T extends keyof BackgroundMessagesWithoutResponse,
 >(
-  type: BackgroundClientMessageWithoutResponse[T]['message']['type'],
+  type: BackgroundMessagesWithoutResponse[T]['message']['type'],
   action: (
-    message: BackgroundClientMessageWithoutResponse[T]['message'],
+    message: BackgroundMessagesWithoutResponse[T]['message'],
     sender: Pick<Runtime.MessageSender, 'tab' | 'url'>,
   ) => void | Promise<void>,
 ) {
   browser.runtime.onMessage.addListener((message, sender) => {
     const typedMessade =
-      message as BackgroundClientMessageWithoutResponse[T]['message'];
+      message as BackgroundMessagesWithoutResponse[T]['message'];
     if (typedMessade.type === type) {
       // no return to allow all listeners to react on the message
       action(typedMessade, sender);
@@ -319,17 +319,17 @@ export function listenToMessages<
 }
 
 export function listenToMessagesAndRespond<
-  T extends keyof BackgroundClientMessageWithResponse,
+  T extends keyof BackgroundMessagesWithResponse,
 >(
-  type: BackgroundClientMessageWithResponse[T]['message']['type'],
+  type: BackgroundMessagesWithResponse[T]['message']['type'],
   action: (
-    message: BackgroundClientMessageWithResponse[T]['message'],
+    message: BackgroundMessagesWithResponse[T]['message'],
     sender: Pick<Runtime.MessageSender, 'tab' | 'url'>,
-  ) => Promise<BackgroundClientMessageWithResponse[T]['response']>,
+  ) => Promise<BackgroundMessagesWithResponse[T]['response']>,
 ) {
   browser.runtime.onMessage.addListener((message, sender) => {
     const typedMessade =
-      message as BackgroundClientMessageWithResponse[T]['message'];
+      message as BackgroundMessagesWithResponse[T]['message'];
     if (typedMessade.type === type) {
       // only one listener can send a response
       return action(typedMessade, sender);

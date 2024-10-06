@@ -7,13 +7,13 @@ import {
   getOneFromStorage,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
-import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 
 import { render as index } from './index';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
-jest.mock('@background/backgroundClient');
+jest.mock('@commons/backgroundMessaging');
 
 afterEach(() => {
   jest.resetAllMocks();

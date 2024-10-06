@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
 
-import { getSignInURL } from '@background/backgroundClient';
+import { getSignInURL } from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 import { colors, sizes } from '@frontend/commons/const';
 import { Link } from '@frontend/commons/components/pontoon/Link';

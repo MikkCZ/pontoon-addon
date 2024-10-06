@@ -5,7 +5,7 @@ import { getOneFromStorage } from '@commons/webExtensionsApi';
 import {
   updateTeamsList,
   getUsersTeamFromPontoon,
-} from '@background/backgroundClient';
+} from '@commons/backgroundMessaging';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import { Button } from '@frontend/commons/components/pontoon/Button';

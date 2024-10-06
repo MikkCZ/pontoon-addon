@@ -2,9 +2,9 @@
 import type { MockzillaDeep } from 'mockzilla';
 import 'mockzilla-webextension';
 
-import { getOneOption } from '@commons/options';
-import type { BackgroundClientMessage } from '@commons/BackgroundClientMessageType';
+import { getOneOption } from '../options';
 
+import type { BackgroundMessage } from '.';
 import {
   getNotificationsUrl,
   getPontoonProjectForTheCurrentTab,
@@ -18,7 +18,7 @@ import {
   reportTranslatedTextToBugzilla,
   searchTextInPontoon,
   updateTeamsList,
-} from './backgroundClient';
+} from '.';
 
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
@@ -38,15 +38,15 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-function mockBrowserSendMessage<T extends keyof BackgroundClientMessage>() {
+function mockBrowserSendMessage<T extends keyof BackgroundMessage>() {
   return mockBrowser.runtime.sendMessage as unknown as MockzillaDeep<{
     (
-      message: BackgroundClientMessage[T]['message'],
-    ): Promise<BackgroundClientMessage[T]['response']>;
+      message: BackgroundMessage[T]['message'],
+    ): Promise<BackgroundMessage[T]['response']>;
   }>;
 }
 
-describe('backgroundClient', () => {
+describe('messagingClient', () => {
   it('getNotificationsUrl', async () => {
     const url = await getNotificationsUrl();
 
@@ -74,23 +74,22 @@ describe('backgroundClient', () => {
   });
 
   it('updateTeamsList', async () => {
-    const mockTeamsList: BackgroundClientMessage['UPDATE_TEAMS_LIST']['response'] =
-      {
-        cs: {
-          code: 'cs',
-          name: 'Czech',
-          bz_component: 'BZ / Czech',
-          strings: {
-            approvedStrings: 0,
-            pretranslatedStrings: 0,
-            stringsWithWarnings: 0,
-            stringsWithErrors: 0,
-            missingStrings: 0,
-            unreviewedStrings: 0,
-            totalStrings: 0,
-          },
+    const mockTeamsList: BackgroundMessage['UPDATE_TEAMS_LIST']['response'] = {
+      cs: {
+        code: 'cs',
+        name: 'Czech',
+        bz_component: 'BZ / Czech',
+        strings: {
+          approvedStrings: 0,
+          pretranslatedStrings: 0,
+          stringsWithWarnings: 0,
+          stringsWithErrors: 0,
+          missingStrings: 0,
+          unreviewedStrings: 0,
+          totalStrings: 0,
         },
-      };
+      },
+    };
     mockBrowserSendMessage<'UPDATE_TEAMS_LIST'>()
       .expect({ type: 'update-teams-list' })
       .andResolve(mockTeamsList);
@@ -111,7 +110,7 @@ describe('backgroundClient', () => {
   });
 
   it('getPontoonProjectForTheCurrentTab', async () => {
-    const mockProject: BackgroundClientMessage['GET_CURRENT_TAB_PROJECT']['response'] =
+    const mockProject: BackgroundMessage['GET_CURRENT_TAB_PROJECT']['response'] =
       {
         slug: 'firefox',
         name: 'Firefox',
