@@ -4,11 +4,9 @@ import {
   pontoonNotifications,
   toPontoonTeamSpecificProjectUrl,
 } from '@commons/webLinks';
-import type { StorageContent } from '@commons/webExtensionsApi';
 import { browser } from '@commons/webExtensionsApi';
 import { getOneOption } from '@commons/options';
-
-import { BackgroundClientMessageType } from './BackgroundClientMessageType';
+import type { BackgroundClientMessage } from '@commons/BackgroundClientMessageType';
 
 async function getTeam(): Promise<{ code: string }> {
   return {
@@ -37,57 +35,59 @@ export async function getSignInURL(): Promise<string> {
   return pontoonFxaSignIn(await getPontoonBaseUrl());
 }
 
-export async function updateTeamsList(): Promise<StorageContent['teamsList']> {
-  return await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.UPDATE_TEAMS_LIST,
+async function sendMessage<T extends keyof BackgroundClientMessage>(
+  message: BackgroundClientMessage[T]['message'],
+): Promise<BackgroundClientMessage[T]['response']> {
+  return await browser.runtime.sendMessage(message);
+}
+
+export async function updateTeamsList() {
+  return await sendMessage<'UPDATE_TEAMS_LIST'>({
+    type: 'update-teams-list',
   });
 }
 
-export async function getUsersTeamFromPontoon(): Promise<string | undefined> {
-  return await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.GET_TEAM_FROM_PONTOON,
+export async function getUsersTeamFromPontoon() {
+  return await sendMessage<'GET_TEAM_FROM_PONTOON'>({
+    type: 'get-team-from-pontoon',
   });
 }
 
-export async function getPontoonProjectForTheCurrentTab(): Promise<
-  StorageContent['projectsList'][string] | undefined
-> {
-  return await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,
+export async function getPontoonProjectForTheCurrentTab() {
+  return await sendMessage<'GET_CURRENT_TAB_PROJECT'>({
+    type: 'get-current-tab-project',
   });
 }
 
 export async function pageLoaded(documentHTML: string) {
-  await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.PAGE_LOADED,
+  return await sendMessage<'PAGE_LOADED'>({
+    type: 'pontoon-page-loaded',
     documentHTML,
   });
 }
 
 export async function markAllNotificationsAsRead() {
-  await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.NOTIFICATIONS_READ,
+  return await sendMessage<'NOTIFICATIONS_READ'>({
+    type: 'notifications-read',
   });
 }
 
 export async function searchTextInPontoon(text: string) {
-  await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
+  return await sendMessage<'SEARCH_TEXT_IN_PONTOON'>({
+    type: 'search-text-in-pontoon',
     text,
   });
 }
 
 export async function reportTranslatedTextToBugzilla(text: string) {
-  await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA,
+  return await sendMessage<'REPORT_TRANSLATED_TEXT_TO_BUGZILLA'>({
+    type: 'report-translated-text-to-bugzilla',
     text,
   });
 }
 
-export async function notificationBellIconScriptLoaded(): Promise<{
-  type: BackgroundClientMessageType;
-}> {
-  return await browser.runtime.sendMessage({
-    type: BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED,
+export async function notificationBellIconScriptLoaded() {
+  return await sendMessage<'NOTIFICATIONS_BELL_SCRIPT_LOADED'>({
+    type: 'notifications-bell-script-loaded',
   });
 }

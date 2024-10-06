@@ -10,16 +10,14 @@ import {
 import { getOneOption, getOptions } from '@commons/options';
 import { openNewPontoonTab } from '@commons/utils';
 
-import { BackgroundClientMessageType } from './BackgroundClientMessageType';
-
 export function setupPageContextButtons() {
   listenToMessagesFromContentScript();
 }
 
 function listenToMessagesFromContentScript() {
-  listenToMessages(
-    BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
-    async (message: { text: string }) => {
+  listenToMessages<'SEARCH_TEXT_IN_PONTOON'>(
+    'search-text-in-pontoon',
+    async ({ text }) => {
       const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
         await getOptions(['pontoon_base_url', 'locale_team']);
       openNewPontoonTab(
@@ -27,14 +25,14 @@ function listenToMessagesFromContentScript() {
           pontoonBaseUrl,
           { code: teamCode },
           { slug: 'all-projects' },
-          message.text,
+          text,
         ),
       );
     },
   );
-  listenToMessages(
-    BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA,
-    async (message: { text: string }, { url }) => {
+  listenToMessages<'REPORT_TRANSLATED_TEXT_TO_BUGZILLA'>(
+    'report-translated-text-to-bugzilla',
+    async ({ text: selectedText }, { url }) => {
       const [teamCode, teamsList] = await Promise.all([
         getOneOption('locale_team'),
         getOneFromStorage('teamsList'),
@@ -42,7 +40,7 @@ function listenToMessagesFromContentScript() {
       openNewTab(
         newLocalizationBug({
           team: teamsList![teamCode], // eslint-disable-line @typescript-eslint/no-non-null-assertion
-          selectedText: message.text,
+          selectedText,
           url,
         }),
       );

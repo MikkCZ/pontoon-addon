@@ -4,7 +4,7 @@ import {
   callWithInterval,
   executeScript,
   getTabsWithBaseUrl,
-  listenToMessagesExclusively,
+  listenToMessagesAndRespond,
   listenToTabsCompletedLoading,
   supportsContainers,
 } from '@commons/webExtensionsApi';
@@ -13,8 +13,8 @@ import {
   getOptions,
   listenToOptionChange,
 } from '@commons/options';
+import type { BackgroundClientMessage } from '@commons/BackgroundClientMessageType';
 
-import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import { refreshData } from './RemotePontoon';
 
 export function setupDataRefresh() {
@@ -60,19 +60,21 @@ function registerLiveDataProvider() {
       }
     }
   });
-  listenToMessagesExclusively(
-    BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED,
-    async (_message, { tab: fromTab }) => {
+  listenToMessagesAndRespond<'NOTIFICATIONS_BELL_SCRIPT_LOADED'>(
+    'notifications-bell-script-loaded',
+    async (_, { tab: fromTab }) => {
       const contextualIdentity = await getOneOption('contextual_identity');
       if (
         contextualIdentity === fromTab?.cookieStoreId ||
         !supportsContainers()
       ) {
         return {
-          type: BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
+          type: 'enable-notifications-bell-script',
         };
       } else {
-        // nothing
+        return {
+          type: 'disable-notifications-bell-script',
+        };
       }
     },
   );
@@ -85,9 +87,11 @@ function registerLiveDataProvider() {
           contextualIdentity !== tab.cookieStoreId &&
           typeof tab.id !== 'undefined'
         ) {
-          browser.tabs.sendMessage(tab.id, {
-            type: BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT,
-          });
+          const message: BackgroundClientMessage['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message'] =
+            {
+              type: 'disable-notifications-bell-script',
+            };
+          browser.tabs.sendMessage(tab.id, message);
         }
       }
     },
