@@ -18,13 +18,13 @@ import {
   pontoonTeamsProject,
 } from '@commons/webLinks';
 import * as UtilsApiModule from '@commons/utils';
-import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 
 import { TeamInfo } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
-jest.mock('@background/backgroundClient');
+jest.mock('@commons/backgroundMessaging');
 
 jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest

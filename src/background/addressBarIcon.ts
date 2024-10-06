@@ -10,7 +10,7 @@ import {
 
 import { getPontoonProjectForPageUrl } from './RemotePontoon';
 
-export function setupAddressBarIcon() {
+export function init() {
   listenToStorageChange('projectsList', async () => {
     updatePageActions(await getAllTabs());
   });

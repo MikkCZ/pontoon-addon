@@ -1,7 +1,7 @@
 import {
   markAllNotificationsAsRead,
   notificationBellIconScriptLoaded,
-} from '@background/backgroundClient';
+} from '@commons/backgroundMessaging';
 import {
   listenToMessages,
   listenToStorageChange,

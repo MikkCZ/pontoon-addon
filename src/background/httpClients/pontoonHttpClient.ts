@@ -1,7 +1,5 @@
 import type { WebRequest } from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
-import { gql } from 'graphql-tag';
-import { GraphQLClient } from 'graphql-request';
 
 import { browser } from '@commons/webExtensionsApi';
 import {
@@ -10,14 +8,7 @@ import {
   listenToOptionChange,
 } from '@commons/options';
 
-import type {
-  GetProjectsInfoQuery,
-  GetTeamsInfoQuery,
-} from '../generated/pontoon.graphql';
-import { getSdk } from '../generated/pontoon.graphql';
-
-import { pontoonGraphQL } from './apiEndpoints';
-
+const PONTOON_REQUEST_TOKEN_HEADER = 'pontoon-addon-token';
 const PONTOON_REQUEST_TOKEN_STORAGE_KEY_PREFIX = 'pontoon_req_token_';
 const PONTOON_REQUEST_TOKEN_VALIDITY_SECONDS = 60;
 
@@ -25,15 +16,26 @@ interface TokenInfo {
   issued: string; // ISO date
 }
 
-async function listenForRequestsToPontoon(pontoonBaseUrl?: string) {
+export async function init() {
+  await listenToOptionChange(
+    'pontoon_base_url',
+    async ({ newValue: pontoonBaseUrl }) => {
+      await listenForRequestsToPontoon(pontoonBaseUrl);
+    },
+  );
+  await listenForRequestsToPontoon(await getPontoonBaseUrl());
+}
+
+async function getPontoonBaseUrl(): Promise<string> {
+  return await getOneOption('pontoon_base_url');
+}
+
+async function listenForRequestsToPontoon(pontoonBaseUrl: string) {
   if (browser.webRequest) {
-    if (typeof pontoonBaseUrl === 'undefined') {
-      pontoonBaseUrl = await getOneOption('pontoon_base_url');
-    }
-    browser.webRequest.onBeforeSendHeaders.removeListener(
+    await browser.webRequest.onBeforeSendHeaders.removeListener(
       setSessionCookieForPontoonRequest,
     );
-    browser.webRequest.onBeforeSendHeaders.addListener(
+    await browser.webRequest.onBeforeSendHeaders.addListener(
       setSessionCookieForPontoonRequest,
       { urls: [`${pontoonBaseUrl}/*`] },
       ['blocking', 'requestHeaders'],
@@ -42,7 +44,7 @@ async function listenForRequestsToPontoon(pontoonBaseUrl?: string) {
 }
 
 async function fetchFromPontoonSession(url: string): Promise<Response> {
-  const pontoonBaseUrl = await getOneOption('pontoon_base_url');
+  const pontoonBaseUrl = await getPontoonBaseUrl();
   if (!url.startsWith(`${pontoonBaseUrl}/`)) {
     throw new Error(
       `Attempted to fetch '${url}' with Pontoon session for '${pontoonBaseUrl}'.`,
@@ -54,11 +56,14 @@ async function fetchFromPontoonSession(url: string): Promise<Response> {
   if (browser.webRequest) {
     browser.webRequest.onBeforeSendHeaders.hasListener(
       setSessionCookieForPontoonRequest,
-    ) || (await listenForRequestsToPontoon());
-    headers.append('pontoon-addon-token', await issueNewPontoonRequestToken());
-    return fetch(url, { credentials: 'omit', headers: headers });
+    ) || (await listenForRequestsToPontoon(pontoonBaseUrl));
+    headers.append(
+      PONTOON_REQUEST_TOKEN_HEADER,
+      await issueNewPontoonRequestToken(),
+    );
+    return fetch(url, { credentials: 'omit', headers });
   } else {
-    return fetch(url, { credentials: 'include', headers: headers });
+    return fetch(url, { credentials: 'include', headers });
   }
 }
 
@@ -102,7 +107,7 @@ async function verifyPontoonRequestToken(
 async function setSessionCookieForPontoonRequest(
   details: WebRequest.OnBeforeSendHeadersDetailsType,
 ): Promise<WebRequest.BlockingResponse> {
-  const pontoonBaseUrl = await getOneOption('pontoon_base_url');
+  const pontoonBaseUrl = await getPontoonBaseUrl();
   if (!details.url.startsWith(`${pontoonBaseUrl}/`)) {
     console.warn(
       `Observed a request to '${details.url}', but Pontoon is at '${pontoonBaseUrl}'. Request passed unchanged.`,
@@ -111,7 +116,9 @@ async function setSessionCookieForPontoonRequest(
   }
 
   const tokens = (details.requestHeaders ?? [])
-    .filter((header) => header.name.toLowerCase() === 'pontoon-addon-token')
+    .filter(
+      (header) => header.name.toLowerCase() === PONTOON_REQUEST_TOKEN_HEADER,
+    )
     .map((header) => header.value);
   const isMarked =
     tokens.length > 0 &&
@@ -134,7 +141,9 @@ async function setSessionCookieForPontoonRequest(
       storeId: contextualIdentity,
     });
     const requestHeaders = (details.requestHeaders ?? [])
-      .filter((header) => header.name.toLowerCase() !== 'pontoon-addon-token')
+      .filter(
+        (header) => header.name.toLowerCase() !== PONTOON_REQUEST_TOKEN_HEADER,
+      )
       .filter((header) => header.name.toLowerCase() !== 'cookie')
       .concat(
         ...(cookie
@@ -153,85 +162,6 @@ async function setSessionCookieForPontoonRequest(
   }
 }
 
-listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) => {
-  listenForRequestsToPontoon(pontoonBaseUrl);
-});
-listenForRequestsToPontoon();
-
 export const pontoonHttpClient = {
   fetchFromPontoonSession,
 };
-
-export const httpClient = {
-  fetch: async (url: string): Promise<Response> => {
-    return await fetch(url, { credentials: 'omit' });
-  },
-};
-
-type DeepRequired<T> = T extends object
-  ? Required<{
-      [P in keyof T]: DeepRequired<T[P]>;
-    }>
-  : Required<T>;
-
-type DeepNonNullable<T> = T extends object
-  ? NonNullable<{
-      [P in keyof T]: DeepNonNullable<T[P]>;
-    }>
-  : NonNullable<T>;
-
-const _getTeamsInfoQuery = gql`
-  query getTeamsInfo {
-    locales {
-      code
-      name
-      approvedStrings
-      pretranslatedStrings
-      stringsWithWarnings
-      stringsWithErrors
-      missingStrings
-      unreviewedStrings
-      totalStrings
-    }
-  }
-`;
-
-interface GetTeamsInfoResponse {
-  locales: DeepRequired<DeepNonNullable<GetTeamsInfoQuery['locales']>>;
-}
-
-const _getProjectsInfoQuery = gql`
-  query getProjectsInfo {
-    projects {
-      slug
-      name
-    }
-  }
-`;
-
-export interface GetProjectsInfoResponse {
-  projects: DeepRequired<DeepNonNullable<GetProjectsInfoQuery['projects']>>;
-}
-
-function getGraphQLClient(pontoonBaseUrl: string) {
-  return getSdk(
-    new GraphQLClient(pontoonGraphQL(pontoonBaseUrl), {
-      method: 'GET',
-    }),
-  );
-}
-
-export const pontoonGraphqlClient = {
-  getTeamsInfo: async (): Promise<GetTeamsInfoResponse> => {
-    const client = getGraphQLClient(await getPontoonBaseUrl());
-    return (await client.getTeamsInfo()) as GetTeamsInfoResponse;
-  },
-  getProjectsInfo: async (): Promise<GetProjectsInfoResponse> => {
-    const client = getGraphQLClient(await getPontoonBaseUrl());
-    return (await client.getProjectsInfo()) as GetProjectsInfoResponse;
-  },
-};
-
-async function getPontoonBaseUrl(): Promise<string> {
-  return await getOneOption('pontoon_base_url');
-}

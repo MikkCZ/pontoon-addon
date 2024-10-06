@@ -18,7 +18,7 @@ import {
   pontoonTeam,
   pontoonTeamsProject,
 } from '@commons/webLinks';
-import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
 import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';

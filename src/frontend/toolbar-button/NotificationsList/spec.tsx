@@ -7,13 +7,13 @@ import * as UtilsApiModule from '@commons/utils';
 import {
   getNotificationsUrl,
   markAllNotificationsAsRead,
-} from '@background/backgroundClient';
+} from '@commons/backgroundMessaging';
 
 import { NotificationsList } from '.';
 
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
-jest.mock('@background/backgroundClient');
+jest.mock('@commons/backgroundMessaging');
 
 const windowCloseSpy = jest.spyOn(window, 'close').mockReturnValue(undefined);
 const openNewPontoonTabSpy = jest

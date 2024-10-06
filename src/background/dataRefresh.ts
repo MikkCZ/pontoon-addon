@@ -13,11 +13,11 @@ import {
   getOptions,
   listenToOptionChange,
 } from '@commons/options';
-import type { BackgroundClientMessageWithoutResponse } from '@commons/BackgroundClientMessageType';
+import type { BackgroundMessagesWithoutResponse } from '@commons/backgroundMessaging';
 
 import { refreshData } from './RemotePontoon';
 
-export function setupDataRefresh() {
+export function init() {
   listenToOptionChange(
     'data_update_interval',
     ({ newValue: periodInMinutes }) => {
@@ -87,7 +87,7 @@ function registerLiveDataProvider() {
           contextualIdentity !== tab.cookieStoreId &&
           typeof tab.id !== 'undefined'
         ) {
-          const message: BackgroundClientMessageWithoutResponse['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message'] =
+          const message: BackgroundMessagesWithoutResponse['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message'] =
             {
               type: 'disable-notifications-bell-script',
             };

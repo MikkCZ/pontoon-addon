@@ -3,10 +3,92 @@ import {
   pontoonSettings,
   pontoonNotifications,
   toPontoonTeamSpecificProjectUrl,
-} from '@commons/webLinks';
-import { browser } from '@commons/webExtensionsApi';
-import { getOneOption } from '@commons/options';
-import type { BackgroundClientMessage } from '@commons/BackgroundClientMessageType';
+} from '../webLinks';
+import type { StorageContent } from '../webExtensionsApi';
+import { browser } from '../webExtensionsApi';
+import { getOneOption } from '../options';
+
+export type BackgroundMessagesWithResponse = {
+  UPDATE_TEAMS_LIST: {
+    message: {
+      type: 'update-teams-list';
+    };
+    response: StorageContent['teamsList'];
+  };
+  GET_TEAM_FROM_PONTOON: {
+    message: {
+      type: 'get-team-from-pontoon';
+    };
+    response: string | undefined;
+  };
+  GET_CURRENT_TAB_PROJECT: {
+    message: {
+      type: 'get-current-tab-project';
+    };
+    response: StorageContent['projectsList'][string] | undefined;
+  };
+  NOTIFICATIONS_BELL_SCRIPT_LOADED: {
+    message: {
+      type: 'notifications-bell-script-loaded';
+    };
+    response: {
+      type:
+        | BackgroundMessagesWithoutResponse['ENABLE_NOTIFICATIONS_BELL_SCRIPT']['message']['type']
+        | BackgroundMessagesWithoutResponse['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message']['type'];
+    };
+  };
+};
+
+export type BackgroundMessagesWithoutResponse = {
+  PAGE_LOADED: {
+    message: {
+      type: 'pontoon-page-loaded';
+      documentHTML: string;
+    };
+    response: void;
+  };
+  NOTIFICATIONS_READ: {
+    message: {
+      type: 'notifications-read';
+    };
+    response: void;
+  };
+  SEARCH_TEXT_IN_PONTOON: {
+    message: {
+      type: 'search-text-in-pontoon';
+      text: string;
+    };
+    response: void;
+  };
+  REPORT_TRANSLATED_TEXT_TO_BUGZILLA: {
+    message: {
+      type: 'report-translated-text-to-bugzilla';
+      text: string;
+    };
+    response: void;
+  };
+  ENABLE_NOTIFICATIONS_BELL_SCRIPT: {
+    message: {
+      type: 'enable-notifications-bell-script';
+    };
+    response: void;
+  };
+  DISABLE_NOTIFICATIONS_BELL_SCRIPT: {
+    message: {
+      type: 'disable-notifications-bell-script';
+    };
+    response: void;
+  };
+};
+
+export type BackgroundMessage = BackgroundMessagesWithResponse &
+  BackgroundMessagesWithoutResponse;
+
+async function sendMessage<T extends keyof BackgroundMessage>(
+  message: BackgroundMessage[T]['message'],
+): Promise<BackgroundMessage[T]['response']> {
+  return await browser.runtime.sendMessage(message);
+}
 
 async function getTeam(): Promise<{ code: string }> {
   return {
@@ -33,12 +115,6 @@ export async function getTeamProjectUrl(projectUrl: string): Promise<string> {
 
 export async function getSignInURL(): Promise<string> {
   return pontoonFxaSignIn(await getPontoonBaseUrl());
-}
-
-async function sendMessage<T extends keyof BackgroundClientMessage>(
-  message: BackgroundClientMessage[T]['message'],
-): Promise<BackgroundClientMessage[T]['response']> {
-  return await browser.runtime.sendMessage(message);
 }
 
 export async function updateTeamsList() {

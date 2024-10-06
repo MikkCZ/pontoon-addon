@@ -1,3 +1,3 @@
-import { pageLoaded } from '@background/backgroundClient';
+import { pageLoaded } from '@commons/backgroundMessaging';
 
 pageLoaded(document.documentElement.innerHTML);

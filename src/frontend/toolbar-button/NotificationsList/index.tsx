@@ -5,7 +5,7 @@ import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getNotificationsUrl,
   markAllNotificationsAsRead,
-} from '@background/backgroundClient';
+} from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
 

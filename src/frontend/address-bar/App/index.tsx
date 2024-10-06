@@ -13,7 +13,7 @@ import {
   pontoonProjectTranslationView,
   pontoonTeamsProject,
 } from '@commons/webLinks';
-import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 
 import { PanelSection } from '../PanelSection';

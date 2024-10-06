@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { getSettingsUrl } from '@background/backgroundClient';
+import { getSettingsUrl } from '@commons/backgroundMessaging';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import { openNewPontoonTab } from '@commons/utils';

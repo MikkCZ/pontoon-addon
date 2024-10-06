@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
-import { getPontoonProjectForTheCurrentTab } from '@background/backgroundClient';
+import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 import {
   getActiveTab,
   getOneFromStorage,
@@ -21,7 +21,7 @@ import { App } from '.';
 
 jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
-jest.mock('@background/backgroundClient');
+jest.mock('@commons/backgroundMessaging');
 
 const openNewPontoonTabSpy = jest
   .spyOn(UtilsApiModule, 'openNewPontoonTab')

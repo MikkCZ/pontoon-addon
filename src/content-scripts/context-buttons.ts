@@ -3,7 +3,7 @@ import bugImage from '@assets/img/bug.svg';
 import {
   reportTranslatedTextToBugzilla,
   searchTextInPontoon,
-} from '@background/backgroundClient';
+} from '@commons/backgroundMessaging';
 import { colors } from '@frontend/commons/const';
 
 const contextButtonWidth = 24;
