@@ -102,8 +102,6 @@ jobs:
           name: coverage
           path: coverage
           retention-days: 30
-      - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v4
   generated_code_consistency:
     name: Verify generated code is consistent
     needs: prepare_cache

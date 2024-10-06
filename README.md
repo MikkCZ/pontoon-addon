@@ -1,7 +1,6 @@
 # Pontoon Add-on
 
 [![Build](https://github.com/MikkCZ/pontoon-addon/actions/workflows/build.yml/badge.svg)](https://github.com/MikkCZ/pontoon-addon/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/MikkCZ/pontoon-addon/branch/main/graph/badge.svg?token=wV84O1ujms)](https://codecov.io/gh/MikkCZ/pontoon-addon)
 
 [![Mozilla Add-on](https://img.shields.io/amo/v/pontoon-tools.svg?label=Mozilla%20Add-ons&color=informational)](https://addons.mozilla.org/firefox/addon/pontoon-tools/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/pontoon-tools.svg?label=users&color=informational)](https://addons.mozilla.org/firefox/addon/pontoon-tools/statistics/)
