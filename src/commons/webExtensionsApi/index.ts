@@ -7,7 +7,7 @@ import type {
 } from 'webextension-polyfill';
 
 import type {
-  BackgroundClientMessage,
+  BackgroundClientMessageWithResponse,
   BackgroundClientMessageWithoutResponse,
 } from '@commons/BackgroundClientMessageType';
 
@@ -317,16 +317,17 @@ export function listenToMessages<
 }
 
 export function listenToMessagesAndRespond<
-  T extends keyof BackgroundClientMessage,
+  T extends keyof BackgroundClientMessageWithResponse,
 >(
-  type: BackgroundClientMessage[T]['message']['type'],
+  type: BackgroundClientMessageWithResponse[T]['message']['type'],
   action: (
-    message: BackgroundClientMessage[T]['message'],
+    message: BackgroundClientMessageWithResponse[T]['message'],
     sender: Pick<Runtime.MessageSender, 'tab' | 'url'>,
-  ) => Promise<BackgroundClientMessage[T]['response']>,
+  ) => Promise<BackgroundClientMessageWithResponse[T]['response']>,
 ) {
   browser.runtime.onMessage.addListener((message, sender) => {
-    const typedMessade = message as BackgroundClientMessage[T]['message'];
+    const typedMessade =
+      message as BackgroundClientMessageWithResponse[T]['message'];
     if (typedMessade.type === type) {
       // only one listener can send a response
       return action(typedMessade, sender);

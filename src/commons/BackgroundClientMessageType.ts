@@ -23,9 +23,11 @@ export type BackgroundClientMessageWithResponse = {
     message: {
       type: 'notifications-bell-script-loaded';
     };
-    response:
-      | BackgroundClientMessageWithoutResponse['ENABLE_NOTIFICATIONS_BELL_SCRIPT']['message']
-      | BackgroundClientMessageWithoutResponse['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message'];
+    response: {
+      type:
+        | BackgroundClientMessageWithoutResponse['ENABLE_NOTIFICATIONS_BELL_SCRIPT']['message']['type']
+        | BackgroundClientMessageWithoutResponse['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message']['type'];
+    };
   };
 };
 
