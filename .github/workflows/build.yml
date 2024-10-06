@@ -104,7 +104,7 @@ jobs:
           retention-days: 30
       - name: Show code coverage in summary
         run: |
-          summary="$(npx -y tsx scripts/test-coverage-github-summary.ts)"
+          summary="$(npx -y tsx@4 scripts/test-coverage-github-summary.ts)"
           echo "${summary}" >> $GITHUB_STEP_SUMMARY
   generated_code_consistency:
     name: Verify generated code is consistent
