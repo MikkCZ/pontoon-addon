@@ -327,11 +327,14 @@ describe('webExtensionsApi', () => {
     );
   });
 
-  it('listenToMessagesExclusively', () => {
+  it('listenToMessagesAndRespond', () => {
     mockBrowser.runtime.onMessage.addListener
       .expect(expect.anything())
       .andReturn();
 
-    listenToMessagesAndRespond<'PAGE_LOADED'>('pontoon-page-loaded', jest.fn());
+    listenToMessagesAndRespond<'UPDATE_TEAMS_LIST'>(
+      'update-teams-list',
+      jest.fn(),
+    );
   });
 });
