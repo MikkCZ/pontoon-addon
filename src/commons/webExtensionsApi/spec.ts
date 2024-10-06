@@ -3,8 +3,6 @@ import type { MockzillaDeep } from 'mockzilla';
 import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 import 'mockzilla-webextension';
 
-import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
-
 import {
   browser,
   browserFamily,
@@ -37,7 +35,7 @@ import {
   callWithInterval,
   callDelayed,
   listenToMessages,
-  listenToMessagesExclusively,
+  listenToMessagesAndRespond,
   getTabsMatching,
 } from '.';
 
@@ -323,19 +321,19 @@ describe('webExtensionsApi', () => {
       .expect(expect.anything())
       .andReturn();
 
-    listenToMessages(
-      BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
+    listenToMessages<'SEARCH_TEXT_IN_PONTOON'>(
+      'search-text-in-pontoon',
       jest.fn(),
     );
   });
 
-  it('listenToMessagesExclusively', () => {
+  it('listenToMessagesAndRespond', () => {
     mockBrowser.runtime.onMessage.addListener
       .expect(expect.anything())
       .andReturn();
 
-    listenToMessagesExclusively(
-      BackgroundClientMessageType.PAGE_LOADED,
+    listenToMessagesAndRespond<'UPDATE_TEAMS_LIST'>(
+      'update-teams-list',
       jest.fn(),
     );
   });

@@ -3,6 +3,7 @@ import type { MockzillaDeep } from 'mockzilla';
 import 'mockzilla-webextension';
 
 import { getOneOption } from '@commons/options';
+import type { BackgroundClientMessage } from '@commons/BackgroundClientMessageType';
 
 import {
   getNotificationsUrl,
@@ -18,7 +19,6 @@ import {
   searchTextInPontoon,
   updateTeamsList,
 } from './backgroundClient';
-import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 
 jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
@@ -38,21 +38,11 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-function mockBrowserSendMessage() {
+function mockBrowserSendMessage<T extends keyof BackgroundClientMessage>() {
   return mockBrowser.runtime.sendMessage as unknown as MockzillaDeep<{
-    (message: {
-      type: BackgroundClientMessageType;
-      [key: string]: unknown;
-    }): Promise<unknown>;
-  }>;
-}
-
-function mockBrowserSendMessageVoid() {
-  return mockBrowser.runtime.sendMessage as unknown as MockzillaDeep<{
-    (message: {
-      type: BackgroundClientMessageType;
-      [key: string]: unknown;
-    }): Promise<void>;
+    (
+      message: BackgroundClientMessage[T]['message'],
+    ): Promise<BackgroundClientMessage[T]['response']>;
   }>;
 }
 
@@ -84,18 +74,35 @@ describe('backgroundClient', () => {
   });
 
   it('updateTeamsList', async () => {
-    mockBrowserSendMessage()
-      .expect({ type: BackgroundClientMessageType.UPDATE_TEAMS_LIST })
-      .andResolve({ cs: { name: 'Czech' } });
+    const mockTeamsList: BackgroundClientMessage['UPDATE_TEAMS_LIST']['response'] =
+      {
+        cs: {
+          code: 'cs',
+          name: 'Czech',
+          bz_component: 'BZ / Czech',
+          strings: {
+            approvedStrings: 0,
+            pretranslatedStrings: 0,
+            stringsWithWarnings: 0,
+            stringsWithErrors: 0,
+            missingStrings: 0,
+            unreviewedStrings: 0,
+            totalStrings: 0,
+          },
+        },
+      };
+    mockBrowserSendMessage<'UPDATE_TEAMS_LIST'>()
+      .expect({ type: 'update-teams-list' })
+      .andResolve(mockTeamsList);
 
     const teams = await updateTeamsList();
 
-    expect(teams).toStrictEqual({ cs: { name: 'Czech' } });
+    expect(teams).toStrictEqual(mockTeamsList);
   });
 
   it('getUsersTeamFromPontoon', async () => {
-    mockBrowserSendMessage()
-      .expect({ type: BackgroundClientMessageType.GET_TEAM_FROM_PONTOON })
+    mockBrowserSendMessage<'GET_TEAM_FROM_PONTOON'>()
+      .expect({ type: 'get-team-from-pontoon' })
       .andResolve('cs');
 
     const team = await getUsersTeamFromPontoon();
@@ -104,20 +111,26 @@ describe('backgroundClient', () => {
   });
 
   it('getPontoonProjectForTheCurrentTab', async () => {
-    mockBrowserSendMessage()
-      .expect({ type: BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT })
-      .andResolve({ slug: 'firefox' });
+    const mockProject: BackgroundClientMessage['GET_CURRENT_TAB_PROJECT']['response'] =
+      {
+        slug: 'firefox',
+        name: 'Firefox',
+        domains: [],
+      };
+    mockBrowserSendMessage<'GET_CURRENT_TAB_PROJECT'>()
+      .expect({ type: 'get-current-tab-project' })
+      .andResolve(mockProject);
 
     const project = await getPontoonProjectForTheCurrentTab();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    expect(project!.slug).toBe('firefox');
+    expect(project).toStrictEqual(mockProject);
   });
 
   it('pageLoaded', async () => {
-    mockBrowserSendMessageVoid()
+    mockBrowserSendMessage<'PAGE_LOADED'>()
       .expect({
-        type: BackgroundClientMessageType.PAGE_LOADED,
+        type: 'pontoon-page-loaded',
         documentHTML: '<html></html>',
       })
       .andResolve();
@@ -126,17 +139,17 @@ describe('backgroundClient', () => {
   });
 
   it('markAllNotificationsAsRead', async () => {
-    mockBrowserSendMessageVoid()
-      .expect({ type: BackgroundClientMessageType.NOTIFICATIONS_READ })
+    mockBrowserSendMessage<'NOTIFICATIONS_READ'>()
+      .expect({ type: 'notifications-read' })
       .andResolve();
 
     await markAllNotificationsAsRead();
   });
 
   it('searchTextInPontoon', async () => {
-    mockBrowserSendMessageVoid()
+    mockBrowserSendMessage<'SEARCH_TEXT_IN_PONTOON'>()
       .expect({
-        type: BackgroundClientMessageType.SEARCH_TEXT_IN_PONTOON,
+        type: 'search-text-in-pontoon',
         text: 'foo bar',
       })
       .andResolve();
@@ -145,9 +158,9 @@ describe('backgroundClient', () => {
   });
 
   it('reportTranslatedTextToBugzilla', async () => {
-    mockBrowserSendMessageVoid()
+    mockBrowserSendMessage<'REPORT_TRANSLATED_TEXT_TO_BUGZILLA'>()
       .expect({
-        type: BackgroundClientMessageType.REPORT_TRANSLATED_TEXT_TO_BUGZILLA,
+        type: 'report-translated-text-to-bugzilla',
         text: 'foo bar',
       })
       .andResolve();
@@ -156,18 +169,18 @@ describe('backgroundClient', () => {
   });
 
   it('notificationBellIconScriptLoaded', async () => {
-    mockBrowserSendMessage()
+    mockBrowserSendMessage<'NOTIFICATIONS_BELL_SCRIPT_LOADED'>()
       .expect({
-        type: BackgroundClientMessageType.NOTIFICATIONS_BELL_SCRIPT_LOADED,
+        type: 'notifications-bell-script-loaded',
       })
       .andResolve({
-        type: BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
+        type: 'enable-notifications-bell-script',
       });
 
     const response = await notificationBellIconScriptLoaded();
 
-    expect(response.type).toBe(
-      BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
-    );
+    expect(response).toStrictEqual({
+      type: 'enable-notifications-bell-script',
+    });
   });
 });

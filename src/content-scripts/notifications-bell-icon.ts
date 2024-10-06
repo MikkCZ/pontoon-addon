@@ -2,7 +2,6 @@ import {
   markAllNotificationsAsRead,
   notificationBellIconScriptLoaded,
 } from '@background/backgroundClient';
-import { BackgroundClientMessageType } from '@background/BackgroundClientMessageType';
 import {
   listenToMessages,
   listenToStorageChange,
@@ -48,15 +47,15 @@ function registerAllListeners() {
 }
 
 async function init() {
-  listenToMessages(
-    BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT,
+  listenToMessages<'ENABLE_NOTIFICATIONS_BELL_SCRIPT'>(
+    'enable-notifications-bell-script',
     () => {
       listenersEnabled = true;
       registerAllListeners();
     },
   );
-  listenToMessages(
-    BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT,
+  listenToMessages<'DISABLE_NOTIFICATIONS_BELL_SCRIPT'>(
+    'disable-notifications-bell-script',
     () => {
       listenersEnabled = false;
       console.info('Pontoon Add-on: listeners disabled');
@@ -64,11 +63,11 @@ async function init() {
   );
   const { type: responseType } = await notificationBellIconScriptLoaded();
   switch (responseType) {
-    case BackgroundClientMessageType.ENABLE_NOTIFICATIONS_BELL_SCRIPT:
+    case 'enable-notifications-bell-script':
       listenersEnabled = true;
       registerAllListeners();
       break;
-    case BackgroundClientMessageType.DISABLE_NOTIFICATIONS_BELL_SCRIPT:
+    case 'disable-notifications-bell-script':
       listenersEnabled = false;
       console.info('Pontoon Add-on: listeners disabled');
       break;

@@ -6,7 +6,7 @@ import {
   getActiveTab,
   getOneFromStorage,
   listenToMessages,
-  listenToMessagesExclusively,
+  listenToMessagesAndRespond,
   saveToStorage,
 } from '@commons/webExtensionsApi';
 import { pontoonSettings, pontoonTeamsList } from '@commons/webLinks';
@@ -18,7 +18,6 @@ import {
   pontoonUserData,
   bugzillaTeamComponents,
 } from './apiEndpoints';
-import { BackgroundClientMessageType } from './BackgroundClientMessageType';
 import type { GetProjectsInfoResponse } from './httpClients';
 import {
   pontoonHttpClient,
@@ -61,30 +60,28 @@ function parseDOM(pageContent: string) {
 }
 
 export function listenToMessagesFromClients() {
-  listenToMessages(
-    BackgroundClientMessageType.PAGE_LOADED,
-    (message: { documentHTML: string }) =>
-      updateNotificationsIfThereAreNew(message.documentHTML),
+  listenToMessages<'PAGE_LOADED'>('pontoon-page-loaded', ({ documentHTML }) =>
+    updateNotificationsIfThereAreNew(documentHTML),
   );
-  listenToMessages(BackgroundClientMessageType.NOTIFICATIONS_READ, () =>
+  listenToMessages<'NOTIFICATIONS_READ'>('notifications-read', () =>
     markAllNotificationsAsRead(),
   );
-  listenToMessagesExclusively(
-    BackgroundClientMessageType.UPDATE_TEAMS_LIST,
+  listenToMessagesAndRespond<'UPDATE_TEAMS_LIST'>(
+    'update-teams-list',
     async () => {
       return await updateTeamsList();
     },
   );
-  listenToMessagesExclusively(
-    BackgroundClientMessageType.GET_CURRENT_TAB_PROJECT,
+  listenToMessagesAndRespond<'GET_CURRENT_TAB_PROJECT'>(
+    'get-current-tab-project',
     async () => {
       const activeTab = await getActiveTab();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return getPontoonProjectForPageUrl(activeTab.url!);
     },
   );
-  listenToMessagesExclusively(
-    BackgroundClientMessageType.GET_TEAM_FROM_PONTOON,
+  listenToMessagesAndRespond<'GET_TEAM_FROM_PONTOON'>(
+    'get-team-from-pontoon',
     async () => {
       return await getUsersTeamFromPontoon();
     },
@@ -232,17 +229,15 @@ async function updateProjectsList(): Promise<StorageContent['projectsList']> {
 
 export async function getPontoonProjectForPageUrl(
   pageUrl: string,
-): Promise<Project | null> {
+): Promise<Project | undefined> {
   const { hostname } = URI.parse(pageUrl);
   const projectsList = await getOneFromStorage('projectsList');
   if (hostname && projectsList) {
-    return (
-      Object.values(projectsList).find((project) =>
-        project.domains.includes(hostname),
-      ) ?? null
+    return Object.values(projectsList).find((project) =>
+      project.domains.includes(hostname),
     );
   } else {
-    return null;
+    return undefined;
   }
 }
 
