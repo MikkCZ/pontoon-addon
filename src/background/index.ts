@@ -9,7 +9,7 @@ import {
 } from '@commons/webExtensionsApi';
 
 import { init as initPontoonHttpClient } from './httpClients/pontoonHttpClient';
-import { initMessageListeners } from './RemotePontoon';
+import { initMessageListeners, initOptions } from './RemotePontoon';
 import { init as initSystemNotifications } from './systemNotifications';
 import { init as initToolbarButton } from './toolbarButton';
 import { init as init } from './addressBarIcon';
@@ -20,6 +20,7 @@ import { init as initDataRefresh } from './dataRefresh';
 
 initPontoonHttpClient();
 initMessageListeners();
+initOptions();
 
 // native system
 initSystemNotifications();

@@ -3,6 +3,8 @@ import type { MockzillaDeep } from 'mockzilla';
 import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 import 'mockzilla-webextension';
 
+import { hash } from '@commons/utils';
+
 import {
   browser,
   browserFamily,
@@ -260,13 +262,16 @@ describe('webExtensionsApi', () => {
   });
 
   it('registerScriptForBaseUrl', async () => {
-    mockBrowser.contentScripts.register
-      .expect({
-        js: [{ file: 'foo/bar.js' }],
-        matches: ['https://localhost/*'],
-        runAt: 'document_end',
-      })
-      .andResolve({ unregister: jest.fn() });
+    mockBrowser.scripting.registerContentScripts
+      .expect([
+        {
+          id: await hash('https://localhost/*_foo/bar.js'),
+          js: ['foo/bar.js'],
+          matches: ['https://localhost/*'],
+          runAt: 'document_end',
+        },
+      ])
+      .andResolve();
 
     await registerScriptForBaseUrl('https://localhost', 'foo/bar.js');
   });

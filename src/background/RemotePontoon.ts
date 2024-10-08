@@ -10,7 +10,7 @@ import {
   saveToStorage,
 } from '@commons/webExtensionsApi';
 import { pontoonSettings, pontoonTeamsList } from '@commons/webLinks';
-import { getOneOption } from '@commons/options';
+import { getOneOption, resetDefaultOptions, setOption } from '@commons/options';
 
 import {
   AUTOMATION_UTM_SOURCE,
@@ -84,6 +84,26 @@ export function initMessageListeners() {
       return await getUsersTeamFromPontoon();
     },
   );
+  listenToMessagesAndRespond<'RESET_DEFAULT_OPTIONS'>(
+    'reset-default-options',
+    async () => {
+      await resetDefaultOptions();
+      await initOptions();
+      return {
+        type: 'default-options-reset',
+      };
+    },
+  );
+}
+
+export async function initOptions() {
+  const localeTeamOption = await getOneOption('locale_team');
+  if (typeof localeTeamOption !== 'string') {
+    const teamFromPontoon = await getUsersTeamFromPontoon();
+    if (typeof teamFromPontoon === 'string') {
+      await setOption('locale_team', teamFromPontoon);
+    }
+  }
 }
 
 export async function refreshData(context: {
