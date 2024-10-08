@@ -3,7 +3,7 @@ import type { MockzillaDeep } from 'mockzilla';
 import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 import 'mockzilla-webextension';
 
-import { hash } from '@commons/utils';
+import { defaultOptionsFor } from '../data/defaultOptions';
 
 import {
   browser,
@@ -42,6 +42,11 @@ import {
 } from '.';
 
 jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/data/defaultOptions');
+
+(defaultOptionsFor as jest.Mock).mockImplementation(() => ({
+  locale_team: 'en',
+}));
 
 describe('webExtensionsApi', () => {
   it('exports browser', () => {
@@ -262,16 +267,13 @@ describe('webExtensionsApi', () => {
   });
 
   it('registerScriptForBaseUrl', async () => {
-    mockBrowser.scripting.registerContentScripts
-      .expect([
-        {
-          id: await hash('https://localhost/*_foo/bar.js'),
-          js: ['foo/bar.js'],
-          matches: ['https://localhost/*'],
-          runAt: 'document_end',
-        },
-      ])
-      .andResolve();
+    mockBrowser.contentScripts.register
+      .expect({
+        js: [{ file: 'foo/bar.js' }],
+        matches: ['https://localhost/*'],
+        runAt: 'document_end',
+      })
+      .andResolve({ unregister: jest.fn() });
 
     await registerScriptForBaseUrl('https://localhost', 'foo/bar.js');
   });

@@ -7,14 +7,13 @@ import {
   resetDefaultOptions,
   setOption,
 } from './options';
+import { defaultOptionsFor } from './data/defaultOptions';
 
 jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/data/defaultOptions');
 
-jest.mock('./data/defaultOptions', () => ({
-  defaultOptionsFor: () => ({
-    locale_team: 'en',
-  }),
-  coalesceLegacyValues: (_: unknown, value: unknown) => value,
+(defaultOptionsFor as jest.Mock).mockImplementation(() => ({
+  locale_team: 'en',
 }));
 
 beforeEach(() => {

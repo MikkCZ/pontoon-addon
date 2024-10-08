@@ -9,7 +9,7 @@ export async function hash(
   algorithm: AlgorithmIdentifier = 'SHA-256',
 ): Promise<string> {
   const inputBytes = textEncoder.encode(input);
-  const hashBytes = await window.crypto.subtle.digest(algorithm, inputBytes);
+  const hashBytes = await crypto.subtle.digest(algorithm, inputBytes);
   return textDecoder.decode(hashBytes);
 }
 
