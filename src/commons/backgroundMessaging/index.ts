@@ -37,6 +37,14 @@ export type BackgroundMessagesWithResponse = {
         | BackgroundMessagesWithoutResponse['DISABLE_NOTIFICATIONS_BELL_SCRIPT']['message']['type'];
     };
   };
+  RESET_DEFAULT_OPTIONS: {
+    message: {
+      type: 'reset-default-options';
+    };
+    response: {
+      type: 'default-options-reset';
+    };
+  };
 };
 
 export type BackgroundMessagesWithoutResponse = {
@@ -165,5 +173,11 @@ export async function reportTranslatedTextToBugzilla(text: string) {
 export async function notificationBellIconScriptLoaded() {
   return await sendMessage<'NOTIFICATIONS_BELL_SCRIPT_LOADED'>({
     type: 'notifications-bell-script-loaded',
+  });
+}
+
+export async function resetDefaultOptions() {
+  return await sendMessage<'RESET_DEFAULT_OPTIONS'>({
+    type: 'reset-default-options',
   });
 }

@@ -3,6 +3,8 @@ import type { MockzillaDeep } from 'mockzilla';
 import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
 import 'mockzilla-webextension';
 
+import { defaultOptionsFor } from '../data/defaultOptions';
+
 import {
   browser,
   browserFamily,
@@ -40,6 +42,11 @@ import {
 } from '.';
 
 jest.mock('@commons/webExtensionsApi/browser');
+jest.mock('@commons/data/defaultOptions');
+
+(defaultOptionsFor as jest.Mock).mockImplementation(() => ({
+  locale_team: 'en',
+}));
 
 describe('webExtensionsApi', () => {
   it('exports browser', () => {

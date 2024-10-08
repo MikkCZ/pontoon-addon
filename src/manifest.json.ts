@@ -64,6 +64,7 @@ const pontoonLogo128Png = 'assets/img/pontoon-logo-128.png';
 // ts-prune-ignore-next
 export function getManifestFor(
   targetBrowser: BrowserFamily,
+  manifestVersion: 2 | 3,
 ): Record<string, unknown> {
   const forMozilla = targetBrowser === BrowserFamily.MOZILLA;
   const forChromium = targetBrowser === BrowserFamily.CHROMIUM;
@@ -96,7 +97,7 @@ export function getManifestFor(
           ),
         }
       : {}),
-    manifest_version: 2,
+    manifest_version: manifestVersion,
     name: 'Pontoon Add-on',
     description: packageJson.description,
     version: packageJson.version,
@@ -124,6 +125,7 @@ export function getManifestFor(
       'tabs',
       'notifications',
       'alarms',
+      ...(manifestVersion === 3 ? ['scripting'] : []),
       ...(forMozilla
         ? [
             'contextualIdentities',

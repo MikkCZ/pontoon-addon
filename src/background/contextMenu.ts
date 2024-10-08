@@ -40,24 +40,29 @@ export function init() {
 async function createContextMenuItems() {
   const [
     { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode },
-    { projectsList: projects, teamsList },
+    { projectsList, teamsList },
   ] = await Promise.all([
     getOptions(['pontoon_base_url', 'locale_team']),
     getFromStorage(['projectsList', 'teamsList']),
   ]);
-  if (projects && teamsList) {
+  if (
+    typeof projectsList === 'object' &&
+    Object.values(projectsList).length > 0 &&
+    typeof teamsList === 'object' &&
+    typeof teamsList[teamCode] === 'object'
+  ) {
     const team = teamsList[teamCode];
 
     const parentContextMenuId = await recreateContextMenu({
       id: 'page-context-menu-parent',
       title: 'Pontoon Add-on',
-      documentUrlPatterns: Object.values(projects)
+      documentUrlPatterns: Object.values(projectsList)
         .flatMap((project) => project.domains)
         .map((domain) => `https://${domain}/*`),
       contexts: [...NON_SELECTION_CONTEXTS, ...SELECTION_CONTEXTS],
     });
 
-    for (const project of Object.values(projects)) {
+    for (const project of Object.values(projectsList)) {
       for (const item of contextMenuItemsForProject(
         project,
         team,

@@ -96,7 +96,7 @@ const commonFrontendWebpackPluginOptions: HtmlWebpackPlugin.Options = {
   },
 };
 
-const extensionManifestJson = getManifestFor(targetBrowser);
+const extensionManifestJson = getManifestFor(targetBrowser, 2);
 
 export default async function configs(): Promise<Configuration[]> {
   const { default: WebExtPlugin } = await import('web-ext-plugin');

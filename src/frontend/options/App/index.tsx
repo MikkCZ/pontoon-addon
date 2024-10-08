@@ -7,13 +7,13 @@ import {
   openPrivacyPolicy,
   supportsContainers,
 } from '@commons/webExtensionsApi';
-import { resetDefaultOptions } from '@commons/options';
 import { pontoonAddonWiki } from '@commons/webLinks';
 import { colors } from '@frontend/commons/const';
 import { Page } from '@frontend/commons/components/pontoon/Page';
 import { Heading1 } from '@frontend/commons/components/pontoon/Heading1';
 import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
 import { Link } from '@frontend/commons/components/pontoon/Link';
+import { resetDefaultOptions } from '@commons/backgroundMessaging';
 
 import { LocaleSelection } from '../LocaleSelection';
 import { DataIntervalUpdateSelection } from '../DataIntervalUpdateSelection';

@@ -6,6 +6,8 @@ import type {
   Tabs,
 } from 'webextension-polyfill';
 
+import { hash } from '@commons/utils';
+
 import type {
   BackgroundMessagesWithResponse,
   BackgroundMessagesWithoutResponse,
@@ -259,12 +261,30 @@ export async function requestPermissionForPontoon(pontoonBaseUrl: string) {
   });
 }
 
-export async function registerScriptForBaseUrl(baseUrl: string, file: string) {
-  return await browser.contentScripts.register({
-    js: [{ file }],
-    matches: [`${baseUrl}/*`],
-    runAt: 'document_end', // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
-  });
+export async function registerScriptForBaseUrl(
+  baseUrl: string,
+  file: string,
+): Promise<void> {
+  const matches = [`${baseUrl}/*`];
+  const runAt = 'document_end'; // Corresponds to interactive. The DOM has finished loading, but resources such as scripts and images may still be loading.
+  if (typeof browser.contentScripts?.register === 'function') {
+    await browser.contentScripts.register({
+      js: [{ file }],
+      matches,
+      runAt,
+    });
+  } else if (typeof browser.scripting?.registerContentScripts === 'function') {
+    await browser.scripting.registerContentScripts([
+      {
+        id: await hash(`${baseUrl}_${file}`),
+        js: [file],
+        matches,
+        runAt,
+      },
+    ]);
+  } else {
+    console.error(`No extension API found to register content scripts.`);
+  }
 }
 
 export async function executeScript(tabId: number, file: string) {
