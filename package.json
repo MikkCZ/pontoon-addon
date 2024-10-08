@@ -126,7 +126,7 @@
   },
   "engineStrict": true,
   "browserslist": [
-    "Firefox >= 102.0",
-    "Chrome >= 104"
+    "Firefox >= 128.0",
+    "Chrome >= 127"
   ]
 }

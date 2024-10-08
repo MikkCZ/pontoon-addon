@@ -95,9 +95,11 @@ describe('webExtensionsApi', () => {
   });
 
   it('createContextMenu', () => {
-    mockBrowser.contextMenus.create.expect({ title: 'foo' }).andReturn('id');
+    mockBrowser.contextMenus.create
+      .expect({ id: 'foo', title: 'Foo' })
+      .andReturn('id');
 
-    createContextMenu({ title: 'foo' });
+    createContextMenu({ id: 'foo', title: 'Foo' });
   });
 
   it('removeContextMenu', async () => {
@@ -210,7 +212,7 @@ describe('webExtensionsApi', () => {
   });
 
   it('openToolbarButtonPopup', async () => {
-    mockBrowser.browserAction.openPopup.expect().andResolve();
+    mockBrowser.action.openPopup.expect().andResolve();
 
     await openToolbarButtonPopup();
   });
