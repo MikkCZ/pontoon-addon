@@ -80,11 +80,6 @@ export const App: React.FC = () => {
         </Section>
         <Section>
           <Heading3>Toolbar button</Heading3>
-          <div>
-            <Checkbox optionKey="display_toolbar_button_badge">
-              Show the number of unread notifications in the toolbar button
-            </Checkbox>
-          </div>
           <ToolbarButtonActionSelection />
           <div>
             <Checkbox optionKey="toolbar_button_popup_always_hide_read_notifications">

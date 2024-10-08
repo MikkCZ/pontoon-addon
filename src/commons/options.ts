@@ -2,7 +2,7 @@ import type { Storage } from 'webextension-polyfill';
 
 import { browser, browserFamily } from './webExtensionsApi';
 import type { OptionsContent } from './data/defaultOptions';
-import { defaultOptionsFor } from './data/defaultOptions';
+import { coalesceLegacyValues, defaultOptionsFor } from './data/defaultOptions';
 
 export type OptionId = keyof OptionsContent;
 
@@ -11,7 +11,7 @@ type OptionValues<ID extends OptionId> = Pick<OptionsContent, ID>;
 export type OptionValue<ID extends OptionId> = OptionValues<ID>[ID];
 
 interface OptionChange<ID extends OptionId> extends Storage.StorageChange {
-  oldValue?: OptionValue<ID>;
+  oldValue?: never;
   newValue: OptionValue<ID>;
 }
 
@@ -37,7 +37,10 @@ export async function getOptions<ID extends OptionId>(
   for (const optionId of optionIds) {
     const storageKey = storageKeyFor(optionId);
     if (typeof storageItems[storageKey] !== 'undefined') {
-      optionsWithDefaultValues[optionId] = storageItems[storageKey];
+      optionsWithDefaultValues[optionId] = coalesceLegacyValues(
+        optionId,
+        storageItems[storageKey],
+      );
     } else {
       optionsWithDefaultValues[optionId] = defaultValues[optionId];
     }

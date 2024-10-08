@@ -61,9 +61,6 @@ async function registerBadgeChanges() {
       }
     },
   );
-  listenToOptionChange('display_toolbar_button_badge', () => {
-    updateBadge();
-  });
   await updateBadge();
 }
 
@@ -88,9 +85,6 @@ async function buttonClickHandler() {
   switch (action) {
     case 'popup':
       break;
-    case 'home-page':
-      await openNewPontoonTab(await getOneOption('pontoon_base_url'));
-      break;
     case 'team-page':
       await openNewPontoonTab(pontoonTeam(pontoonBaseUrl, { code: teamCode }));
       break;
@@ -105,7 +99,6 @@ function registerButtonPopup(action: OptionValue<'toolbar_button_action'>) {
     case 'popup':
       popup = getResourceUrl('frontend/toolbar-button.html');
       break;
-    case 'home-page':
     case 'team-page':
       popup = '';
       break;
@@ -131,14 +124,10 @@ async function updateBadge(
       notificationsDataLoadingState === 'loaded') &&
     typeof notificationsData === 'object'
   ) {
-    if (await getOneOption('display_toolbar_button_badge')) {
-      const unreadNotificationsCount = Object.values(notificationsData).filter(
-        (n) => n.unread,
-      ).length;
-      await loadedBadge(unreadNotificationsCount);
-    } else {
-      await hideBadge();
-    }
+    const unreadNotificationsCount = Object.values(notificationsData).filter(
+      (n) => n.unread,
+    ).length;
+    await loadedBadge(unreadNotificationsCount);
   } else if (notificationsDataLoadingState === 'loading') {
     await loadingBadge();
   } else {

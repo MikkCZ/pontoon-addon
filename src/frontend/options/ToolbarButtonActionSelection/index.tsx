@@ -20,9 +20,6 @@ const options: {
   'team-page': {
     label: 'Open your locale team page',
   },
-  'home-page': {
-    label: 'Open your Pontoon homepage',
-  },
 };
 
 export const ToolbarButtonActionSelection: React.FC = () => {

@@ -14,6 +14,7 @@ jest.mock('./data/defaultOptions', () => ({
   defaultOptionsFor: () => ({
     locale_team: 'en',
   }),
+  coalesceLegacyValues: (_: unknown, value: unknown) => value,
 }));
 
 beforeEach(() => {
