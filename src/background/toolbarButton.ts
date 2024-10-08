@@ -136,6 +136,8 @@ async function updateBadge(
         (n) => n.unread,
       ).length;
       await loadedBadge(unreadNotificationsCount);
+    } else {
+      await hideBadge();
     }
   } else if (notificationsDataLoadingState === 'loading') {
     await loadingBadge();
@@ -152,12 +154,16 @@ async function loadedBadge(unreadNotificationsCount: number) {
       color: colors.interactive.red,
     });
   } else {
-    await setBadge({
-      text: '', // hide badge
-      title: DEFAULT_TITLE,
-      color: colors.interactive.gray,
-    });
+    await hideBadge();
   }
+}
+
+async function hideBadge() {
+  await setBadge({
+    text: '',
+    title: DEFAULT_TITLE,
+    color: colors.interactive.gray,
+  });
 }
 
 async function loadingBadge() {
