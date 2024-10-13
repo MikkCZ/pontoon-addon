@@ -237,15 +237,15 @@ export const TeamInfo: React.FC = () => {
         </ButtonPopupBottomLink>
         {!projectForCurrentTab && (
           <ButtonPopupBottomLink
-            onClick={() => openNewTabAndClosePopup(newLocalizationBug({ team }))}
+            onClick={() =>
+              openNewTabAndClosePopup(newLocalizationBug({ team }))
+            }
           >
             Report bug for {team.name} localization
           </ButtonPopupBottomLink>
         )}
       </section>
-      {projectForCurrentTab && (
-        <ProjectLinks />
-      )}
+      {projectForCurrentTab && <ProjectLinks />}
     </>
   ) : (
     <></>

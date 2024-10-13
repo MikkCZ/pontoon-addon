@@ -18,9 +18,8 @@ interface TokenInfo {
 }
 
 export function init() {
-  listenToOptionChange(
-    'pontoon_base_url',
-    ({ newValue: pontoonBaseUrl }) => listenForRequestsToPontoon(pontoonBaseUrl),
+  listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) =>
+    listenForRequestsToPontoon(pontoonBaseUrl),
   );
   doAsync(async () => {
     listenForRequestsToPontoon(await getPontoonBaseUrl());

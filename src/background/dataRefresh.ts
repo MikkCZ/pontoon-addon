@@ -14,9 +14,9 @@ import {
   listenToOptionChange,
 } from '@commons/options';
 import type { BackgroundMessagesWithoutResponse } from '@commons/backgroundMessaging';
+import { doAsync } from '@commons/utils';
 
 import { refreshData } from './RemotePontoon';
-import { doAsync } from '@commons/utils';
 
 export function init() {
   listenToOptionChange(
@@ -27,7 +27,7 @@ export function init() {
   );
   doAsync(async () => {
     refreshDataWithInterval(await getOneOption('data_update_interval'));
-  })
+  });
   callDelayed({ delayInSeconds: 1 }, async () => {
     await refreshData({ event: 'user interaction' });
     console.info('Data refreshed after initialization.');

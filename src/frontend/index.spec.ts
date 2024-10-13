@@ -1,11 +1,7 @@
 import { act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
-import {
-  getActiveTab,
-  getFromStorage,
-  getOneFromStorage,
-} from '@commons/webExtensionsApi';
+import { getFromStorage, getOneFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 

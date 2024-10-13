@@ -7,9 +7,9 @@ import {
   getAllTabs,
   listenToTabsCompletedLoading,
 } from '@commons/webExtensionsApi';
+import { doAsync } from '@commons/utils';
 
 import { getPontoonProjectForPageUrl } from './RemotePontoon';
-import { doAsync } from '@commons/utils';
 
 export function init() {
   listenToStorageChange('projectsList', async () => {

@@ -10,10 +10,7 @@ import {
   getOneFromStorage,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
-import {
-  pontoonSearchStringsWithStatus,
-  pontoonTeam,
-} from '@commons/webLinks';
+import { pontoonSearchStringsWithStatus, pontoonTeam } from '@commons/webLinks';
 import * as UtilsApiModule from '@commons/utils';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 

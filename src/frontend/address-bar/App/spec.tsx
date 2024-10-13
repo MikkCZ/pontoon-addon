@@ -3,11 +3,8 @@ import { render, screen, act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
-import {
-  getActiveTab,
-  getOneFromStorage,
-  StorageContent,
-} from '@commons/webExtensionsApi';
+import type { StorageContent } from '@commons/webExtensionsApi';
+import { getActiveTab, getOneFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 
 import { App } from '.';
