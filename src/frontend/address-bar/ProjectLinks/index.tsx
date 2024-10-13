@@ -54,7 +54,7 @@ export const ProjectLinks: React.FC = () => {
 
   if (projectForCurrentTab && team && pontoonBaseUrl) {
     return (
-      <>
+      <section data-testid="project-links">
         <ButtonPopupBottomLink
           onClick={() =>
             openNewPontoonTabAndClosePopup(
@@ -89,7 +89,7 @@ export const ProjectLinks: React.FC = () => {
         >
           {`Report bug for localization of ${projectForCurrentTab.name} to ${team.name}`}
         </ButtonPopupBottomLink>
-      </>
+      </section>
     );
   } else {
     return <></>;

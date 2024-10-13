@@ -7,15 +7,12 @@ import type { StorageContent } from '@commons/webExtensionsApi';
 import {
   getActiveTab,
   getFromStorage,
-  openNewTab,
+  getOneFromStorage,
 } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import {
-  newLocalizationBug,
-  pontoonProjectTranslationView,
   pontoonSearchStringsWithStatus,
   pontoonTeam,
-  pontoonTeamsProject,
 } from '@commons/webLinks';
 import * as UtilsApiModule from '@commons/utils';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
@@ -47,6 +44,7 @@ const team: StorageContent['teamsList'][string] = {
 };
 
 (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(undefined);
+(getOneFromStorage as jest.Mock).mockResolvedValue({ cs: team });
 (getFromStorage as jest.Mock).mockResolvedValue({
   teamsList: { cs: team },
   latestTeamsActivity: {
@@ -200,33 +198,6 @@ describe('TeamInfo', () => {
       await flushPromises();
     });
 
-    await act(async () => {
-      screen.getByText('Open Firefox dashboard for Czech').click();
-      await flushPromises();
-    });
-    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(1);
-    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
-      pontoonTeamsProject('https://localhost', team, project),
-    );
-
-    await act(async () => {
-      screen.getByText('Open Firefox translation view for Czech').click();
-      await flushPromises();
-    });
-    expect(openNewPontoonTabSpy).toHaveBeenCalledTimes(2);
-    expect(openNewPontoonTabSpy).toHaveBeenLastCalledWith(
-      pontoonProjectTranslationView('https://localhost', team, project),
-    );
-
-    await act(async () => {
-      screen
-        .getByText('Report bug for localization of Firefox to Czech')
-        .click();
-      await flushPromises();
-    });
-    expect(openNewTab).toHaveBeenCalledTimes(1);
-    expect(openNewTab).toHaveBeenLastCalledWith(
-      newLocalizationBug({ team, url: 'https://firefox.com' }),
-    );
+    expect(screen.getByTestId('project-links')).toBeInTheDocument();
   });
 });

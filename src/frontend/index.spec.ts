@@ -34,15 +34,12 @@ describe('address bar', () => {
       name: 'Some project',
       slug: 'some-project',
     });
-    (getOneFromStorage as jest.Mock).mockResolvedValue({
-      cs: { name: 'Czech', bz_component: 'L10N/CS' },
-    });
     (getOptions as jest.Mock).mockResolvedValue({
       locale_team: 'cs',
-      pontoon_base_url: 'https://localhost',
+      pontoon_base_url: 'https://127.0.0.1',
     });
-    (getActiveTab as jest.Mock).mockResolvedValue({
-      url: 'https://localhost/firefox',
+    (getOneFromStorage as jest.Mock).mockResolvedValue({
+      cs: { code: 'cs', name: 'Czech', strings: {}, bz_component: 'L10N/CS' },
     });
   });
 
@@ -112,6 +109,10 @@ describe('snake game', () => {
 
 describe('toolbar button', () => {
   beforeEach(() => {
+    (getPontoonProjectForTheCurrentTab as jest.Mock).mockReturnValue({
+      name: 'Some project',
+      slug: 'some-project',
+    });
     (getOptions as jest.Mock).mockResolvedValue({
       locale_team: 'cs',
       toolbar_button_popup_always_hide_read_notifications: true,
@@ -123,6 +124,9 @@ describe('toolbar button', () => {
         cs: { code: 'cs', name: 'Czech', strings: {}, bz_component: 'L10N/CS' },
       },
       latestTeamsActivity: { cs: {} },
+    });
+    (getOneFromStorage as jest.Mock).mockResolvedValue({
+      cs: { code: 'cs', name: 'Czech', strings: {}, bz_component: 'L10N/CS' },
     });
   });
 

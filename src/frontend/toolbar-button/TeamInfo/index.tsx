@@ -180,68 +180,73 @@ export const TeamInfo: React.FC = () => {
   }, []);
 
   return team && pontoonBaseUrl ? (
-    <section>
-      <Title>
-        <TitleLink
+    <>
+      <section>
+        <Title>
+          <TitleLink
+            onClick={() =>
+              openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
+            }
+          >
+            <Name>{team.name}</Name> <Code>{team.code}</Code>
+          </TitleLink>
+        </Title>
+        <List>
+          {teamActivity && (
+            <TeamInfoListItem
+              label="Activity"
+              value={
+                teamActivity.date_iso &&
+                !isNaN(Date.parse(teamActivity.date_iso)) ? (
+                  <>
+                    {teamActivity.user}{' '}
+                    <ReactTimeAgo date={new Date(teamActivity.date_iso)} />
+                  </>
+                ) : (
+                  '―'
+                )
+              }
+            />
+          )}
+          {STRING_CATEGORIES.map((category) => (
+            <TeamInfoListItem
+              key={category.status}
+              squareStyle={category.labelBeforeStyle}
+              label={category.label}
+              value={team.strings[category.dataProperty]}
+              onClick={() =>
+                openNewPontoonTabAndClosePopup(
+                  pontoonSearchStringsWithStatus(
+                    pontoonBaseUrl,
+                    team,
+                    category.status,
+                  ),
+                )
+              }
+            />
+          ))}
+        </List>
+      </section>
+      <section>
+        <ButtonPopupBottomLink
           onClick={() =>
             openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
           }
         >
-          <Name>{team.name}</Name> <Code>{team.code}</Code>
-        </TitleLink>
-      </Title>
-      <List>
-        {teamActivity && (
-          <TeamInfoListItem
-            label="Activity"
-            value={
-              teamActivity.date_iso &&
-              !isNaN(Date.parse(teamActivity.date_iso)) ? (
-                <>
-                  {teamActivity.user}{' '}
-                  <ReactTimeAgo date={new Date(teamActivity.date_iso)} />
-                </>
-              ) : (
-                '―'
-              )
-            }
-          />
-        )}
-        {STRING_CATEGORIES.map((category) => (
-          <TeamInfoListItem
-            key={category.status}
-            squareStyle={category.labelBeforeStyle}
-            label={category.label}
-            value={team.strings[category.dataProperty]}
-            onClick={() =>
-              openNewPontoonTabAndClosePopup(
-                pontoonSearchStringsWithStatus(
-                  pontoonBaseUrl,
-                  team,
-                  category.status,
-                ),
-              )
-            }
-          />
-        ))}
-      </List>
-      <ButtonPopupBottomLink
-        onClick={() =>
-          openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
-        }
-      >
-        Open {team.name} team page
-      </ButtonPopupBottomLink>
-      {projectForCurrentTab ? (
-        <ProjectLinks />
-      ) : (
-        <ButtonPopupBottomLink
-          onClick={() => openNewTabAndClosePopup(newLocalizationBug({ team }))}
-        >
-          Report bug for {team.name} localization
+          Open {team.name} team page
         </ButtonPopupBottomLink>
+        {!projectForCurrentTab && (
+          <ButtonPopupBottomLink
+            onClick={() => openNewTabAndClosePopup(newLocalizationBug({ team }))}
+          >
+            Report bug for {team.name} localization
+          </ButtonPopupBottomLink>
+        )}
+      </section>
+      {projectForCurrentTab && (
+        <ProjectLinks />
       )}
-    </section>
+    </>
   ) : (
     <></>
   );

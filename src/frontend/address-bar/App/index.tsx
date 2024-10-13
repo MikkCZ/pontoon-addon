@@ -15,9 +15,7 @@ export const App: React.FC = () => {
           },
         }}
       />
-      <section>
-        <ProjectLinks />
-      </section>
+      <ProjectLinks />
     </>
   );
 };
