@@ -4,27 +4,22 @@ import ReactTimeAgo from 'react-time-ago';
 
 import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 import type { StorageContent } from '@commons/webExtensionsApi';
-import {
-  getActiveTab,
-  getFromStorage,
-  openNewTab,
-} from '@commons/webExtensionsApi';
+import { getFromStorage, openNewTab } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import {
   newLocalizationBug,
-  pontoonProjectTranslationView,
   pontoonSearchStringsWithStatus,
   pontoonTeam,
-  pontoonTeamsProject,
 } from '@commons/webLinks';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
-import { openNewPontoonTab } from '@commons/utils';
+import { doAsync, openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
+import { ButtonPopupBottomLink } from '@frontend/commons/components/ButtonPopupBottomLink';
 import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
 import { Link } from '@frontend/commons/components/pontoon/Link';
+import { ProjectLinks } from '@frontend/address-bar/ProjectLinks';
 
-import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 
 const Title: React.FC<React.ComponentProps<typeof Heading3>> = ({
@@ -165,7 +160,7 @@ export const TeamInfo: React.FC = () => {
     useState<OptionsContent['pontoon_base_url']>();
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       const [
         projectForCurrentTab,
         { teamsList, latestTeamsActivity },
@@ -181,107 +176,77 @@ export const TeamInfo: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeamActivity(latestTeamsActivity![teamCode]);
       setPontoonBaseUrl(pontoon_base_url);
-    })();
+    });
   }, []);
 
   return team && pontoonBaseUrl ? (
-    <section>
-      <Title>
-        <TitleLink
+    <>
+      <section>
+        <Title>
+          <TitleLink
+            onClick={() =>
+              openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
+            }
+          >
+            <Name>{team.name}</Name> <Code>{team.code}</Code>
+          </TitleLink>
+        </Title>
+        <List>
+          {teamActivity && (
+            <TeamInfoListItem
+              label="Activity"
+              value={
+                teamActivity.date_iso &&
+                !isNaN(Date.parse(teamActivity.date_iso)) ? (
+                  <>
+                    {teamActivity.user}{' '}
+                    <ReactTimeAgo date={new Date(teamActivity.date_iso)} />
+                  </>
+                ) : (
+                  '―'
+                )
+              }
+            />
+          )}
+          {STRING_CATEGORIES.map((category) => (
+            <TeamInfoListItem
+              key={category.status}
+              squareStyle={category.labelBeforeStyle}
+              label={category.label}
+              value={team.strings[category.dataProperty]}
+              onClick={() =>
+                openNewPontoonTabAndClosePopup(
+                  pontoonSearchStringsWithStatus(
+                    pontoonBaseUrl,
+                    team,
+                    category.status,
+                  ),
+                )
+              }
+            />
+          ))}
+        </List>
+      </section>
+      <section>
+        <ButtonPopupBottomLink
           onClick={() =>
             openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
           }
         >
-          <Name>{team.name}</Name> <Code>{team.code}</Code>
-        </TitleLink>
-      </Title>
-      <List>
-        {teamActivity && (
-          <TeamInfoListItem
-            label="Activity"
-            value={
-              teamActivity.date_iso &&
-              !isNaN(Date.parse(teamActivity.date_iso)) ? (
-                <>
-                  {teamActivity.user}{' '}
-                  <ReactTimeAgo date={new Date(teamActivity.date_iso)} />
-                </>
-              ) : (
-                '―'
-              )
+          Open {team.name} team page
+        </ButtonPopupBottomLink>
+        {!projectForCurrentTab && (
+          <ButtonPopupBottomLink
+            onClick={() =>
+              openNewTabAndClosePopup(newLocalizationBug({ team }))
             }
-          />
+          >
+            Report bug for {team.name} localization
+          </ButtonPopupBottomLink>
         )}
-        {STRING_CATEGORIES.map((category) => (
-          <TeamInfoListItem
-            key={category.status}
-            squareStyle={category.labelBeforeStyle}
-            label={category.label}
-            value={team.strings[category.dataProperty]}
-            onClick={() =>
-              openNewPontoonTabAndClosePopup(
-                pontoonSearchStringsWithStatus(
-                  pontoonBaseUrl,
-                  team,
-                  category.status,
-                ),
-              )
-            }
-          />
-        ))}
-      </List>
-      <BottomLink
-        onClick={() =>
-          openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
-        }
-      >
-        Open {team.name} team page
-      </BottomLink>
-      {projectForCurrentTab ? (
-        <>
-          <BottomLink
-            onClick={() =>
-              openNewPontoonTabAndClosePopup(
-                pontoonTeamsProject(pontoonBaseUrl, team, projectForCurrentTab),
-              )
-            }
-          >
-            Open {projectForCurrentTab.name} dashboard for {team.name}
-          </BottomLink>
-          <BottomLink
-            onClick={() =>
-              openNewPontoonTabAndClosePopup(
-                pontoonProjectTranslationView(
-                  pontoonBaseUrl,
-                  team,
-                  projectForCurrentTab,
-                ),
-              )
-            }
-          >
-            Open {projectForCurrentTab.name} translation view for {team.name}
-          </BottomLink>
-          <BottomLink
-            onClick={async () =>
-              openNewTabAndClosePopup(
-                newLocalizationBug({
-                  team,
-                  url: (await getActiveTab()).url,
-                }),
-              )
-            }
-          >
-            {`Report bug for localization of ${projectForCurrentTab.name} to ${team.name}`}
-          </BottomLink>
-        </>
-      ) : (
-        <BottomLink
-          onClick={() => openNewTabAndClosePopup(newLocalizationBug({ team }))}
-        >
-          Report bug for {team.name} localization
-        </BottomLink>
-      )}
-    </section>
+      </section>
+      {projectForCurrentTab && <ProjectLinks />}
+    </>
   ) : (
     <></>
   );

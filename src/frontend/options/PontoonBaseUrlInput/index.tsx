@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { requestPermissionForPontoon } from '@commons/webExtensionsApi';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { doAsync } from '@commons/utils';
 import { Button } from '@frontend/commons/components/pontoon/Button';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { UrlInput } from '@frontend/commons/components/pontoon/UrlInput';
@@ -13,9 +14,9 @@ export const PontoonBaseUrlInput: React.FC = () => {
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       setPontoonBaseUrlState(await getOneOption('pontoon_base_url'));
-    })();
+    });
   }, []);
 
   return (

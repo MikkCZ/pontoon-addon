@@ -7,6 +7,7 @@ import {
   listenToStorageChange,
   getOneFromStorage,
 } from '@commons/webExtensionsApi';
+import { doAsync } from '@commons/utils';
 
 import { GlobalBodyStyle } from '../../GlobalBodyStyle';
 import { NotificationsList } from '../NotificationsList';
@@ -37,7 +38,7 @@ export const App: React.FC = () => {
   }, [pontoonBaseUrl]);
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       const [
         {
           toolbar_button_popup_always_hide_read_notifications:
@@ -61,7 +62,7 @@ export const App: React.FC = () => {
       listenToStorageChange('notificationsData', ({ newValue }) =>
         setNotificationsData(newValue),
       );
-    })();
+    });
   }, []);
 
   return loaded ? (

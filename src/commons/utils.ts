@@ -13,6 +13,8 @@ export async function hash(
   return textDecoder.decode(hashBytes);
 }
 
+export const doAsync = <T>(action: () => Promise<T>) => action();
+
 export async function openNewPontoonTab(url: string) {
   return browser.tabs.create({
     url,
