@@ -189,8 +189,7 @@ async function setBadge(data: { text: string; title: string; color: string }) {
   ]);
 }
 
-async function addContextMenu() {
-  const localeTeam = await getOneOption('locale_team');
+function addContextMenu() {
   createContextMenu({
     id: 'toolbar-button-reload-notifications',
     title: 'Reload notifications',
@@ -279,7 +278,10 @@ async function addContextMenu() {
   createContextMenu({
     id: 'toolbar-button-transvision',
     title: 'Transvision',
-    onclick: () => openNewTab(transvisionHome(localeTeam)),
+    onclick: async () => {
+      const localeTeam = await getOneOption('locale_team');
+      openNewTab(transvisionHome(localeTeam));
+    },
     contexts: ['browser_action'],
   });
 
@@ -291,13 +293,19 @@ async function addContextMenu() {
   const localizationResourcesItems: ContextMenuItemProperties[] = [
     {
       id: 'toolbar-button-mozilla-style-guide',
-      title: `Mozilla Style Guide (${localeTeam})`,
-      onclick: () => openNewTab(mozillaL10nStyleGuide(localeTeam)),
+      title: 'Mozilla Style Guide',
+      onclick: async () => {
+        const localeTeam = await getOneOption('locale_team');
+        openNewTab(mozillaL10nStyleGuide(localeTeam));
+      },
     },
     {
       id: 'toolbar-button-l10n-teams-mozillawiki',
-      title: `L10n:Teams:${localeTeam} - MozillaWiki`,
-      onclick: () => openNewTab(mozillaWikiL10nTeamPage(localeTeam)),
+      title: 'Localization team page - MozillaWiki',
+      onclick: async () => {
+        const localeTeam = await getOneOption('locale_team');
+        openNewTab(mozillaWikiL10nTeamPage(localeTeam));
+      },
     },
   ];
   for (const item of localizationResourcesItems) {

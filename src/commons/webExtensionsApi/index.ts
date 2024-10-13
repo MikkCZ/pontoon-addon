@@ -5,6 +5,7 @@ import type {
   Storage,
   Tabs,
 } from 'webextension-polyfill';
+import { v4 as uuidv4 } from 'uuid';
 
 import { hash } from '@commons/utils';
 
@@ -136,18 +137,19 @@ export async function deleteFromStorage<K extends keyof StorageContent>(
   return await browser.storage.local.remove(storageKeys);
 }
 
-export async function createNotification(
+export function createNotification(
   options: Notifications.CreateNotificationOptions,
   onClick: (notificationId: string) => void = closeNotification,
 ) {
-  const createdNotificationId = await browser.notifications.create(options);
-  if (onClick) {
+  const notificationId = uuidv4();
+  if (typeof onClick === 'function') {
     browser.notifications.onClicked.addListener((clickedNotificationId) => {
-      if (clickedNotificationId === createdNotificationId) {
+      if (clickedNotificationId === notificationId) {
         onClick(clickedNotificationId);
       }
     });
   }
+  browser.notifications.create(notificationId, options);
 }
 
 export async function closeNotification(notificationId: string) {

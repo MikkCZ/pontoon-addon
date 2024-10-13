@@ -81,7 +81,7 @@ async function notifyAboutUnreadNotifications(
       return item;
     });
   for (const notificationItem of notificationItems) {
-    await createNotification(
+    createNotification(
       {
         type: 'basic',
         iconUrl: pontoonLogo,
