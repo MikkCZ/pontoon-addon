@@ -190,11 +190,6 @@ export function getManifestFor(
     ...(forMozilla
       ? {
           page_action: {
-            ...(manifestVersion === 2
-              ? {
-                  browser_style: true,
-                }
-              : {}),
             default_icon: {
               '19': pontoonLogoGrayAlphaSvg,
               '38': pontoonLogoGrayAlphaSvg,

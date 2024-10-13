@@ -4,27 +4,22 @@ import ReactTimeAgo from 'react-time-ago';
 
 import lightbulbImage from '@assets/img/lightbulb-blue.svg';
 import type { StorageContent } from '@commons/webExtensionsApi';
-import {
-  getActiveTab,
-  getFromStorage,
-  openNewTab,
-} from '@commons/webExtensionsApi';
+import { getFromStorage, openNewTab } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import {
   newLocalizationBug,
-  pontoonProjectTranslationView,
   pontoonSearchStringsWithStatus,
   pontoonTeam,
-  pontoonTeamsProject,
 } from '@commons/webLinks';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
+import { ButtonPopupBottomLink } from '@frontend/commons/components/ButtonPopupBottomLink';
 import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
 import { Link } from '@frontend/commons/components/pontoon/Link';
+import { ProjectLinks } from '@frontend/address-bar/ProjectLinks';
 
-import { BottomLink } from '../BottomLink';
 import { TeamInfoListItem } from '../TeamInfoListItem';
 
 const Title: React.FC<React.ComponentProps<typeof Heading3>> = ({
@@ -230,56 +225,21 @@ export const TeamInfo: React.FC = () => {
           />
         ))}
       </List>
-      <BottomLink
+      <ButtonPopupBottomLink
         onClick={() =>
           openNewPontoonTabAndClosePopup(pontoonTeam(pontoonBaseUrl, team))
         }
       >
         Open {team.name} team page
-      </BottomLink>
+      </ButtonPopupBottomLink>
       {projectForCurrentTab ? (
-        <>
-          <BottomLink
-            onClick={() =>
-              openNewPontoonTabAndClosePopup(
-                pontoonTeamsProject(pontoonBaseUrl, team, projectForCurrentTab),
-              )
-            }
-          >
-            Open {projectForCurrentTab.name} dashboard for {team.name}
-          </BottomLink>
-          <BottomLink
-            onClick={() =>
-              openNewPontoonTabAndClosePopup(
-                pontoonProjectTranslationView(
-                  pontoonBaseUrl,
-                  team,
-                  projectForCurrentTab,
-                ),
-              )
-            }
-          >
-            Open {projectForCurrentTab.name} translation view for {team.name}
-          </BottomLink>
-          <BottomLink
-            onClick={async () =>
-              openNewTabAndClosePopup(
-                newLocalizationBug({
-                  team,
-                  url: (await getActiveTab()).url,
-                }),
-              )
-            }
-          >
-            {`Report bug for localization of ${projectForCurrentTab.name} to ${team.name}`}
-          </BottomLink>
-        </>
+        <ProjectLinks />
       ) : (
-        <BottomLink
+        <ButtonPopupBottomLink
           onClick={() => openNewTabAndClosePopup(newLocalizationBug({ team }))}
         >
           Report bug for {team.name} localization
-        </BottomLink>
+        </ButtonPopupBottomLink>
       )}
     </section>
   ) : (
