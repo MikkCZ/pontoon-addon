@@ -7,6 +7,7 @@ import {
   getOptions,
   listenToOptionChange,
 } from '@commons/options';
+import { doAsync } from '@commons/utils';
 
 const PONTOON_REQUEST_TOKEN_HEADER = 'pontoon-addon-token';
 const PONTOON_REQUEST_TOKEN_STORAGE_KEY_PREFIX = 'pontoon_req_token_';
@@ -16,14 +17,14 @@ interface TokenInfo {
   issued: string; // ISO date
 }
 
-export async function init() {
-  await listenToOptionChange(
+export function init() {
+  listenToOptionChange(
     'pontoon_base_url',
-    async ({ newValue: pontoonBaseUrl }) => {
-      await listenForRequestsToPontoon(pontoonBaseUrl);
-    },
+    ({ newValue: pontoonBaseUrl }) => listenForRequestsToPontoon(pontoonBaseUrl),
   );
-  await listenForRequestsToPontoon(await getPontoonBaseUrl());
+  doAsync(async () => {
+    listenForRequestsToPontoon(await getPontoonBaseUrl());
+  });
 }
 
 async function getPontoonBaseUrl(): Promise<string> {

@@ -4,6 +4,7 @@ import { getAllContainers } from '@commons/webExtensionsApi';
 import { containersInfoPage } from '@commons/webLinks';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { doAsync } from '@commons/utils';
 import { Button } from '@frontend/commons/components/pontoon/Button';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { SelectInput } from '@frontend/commons/components/pontoon/SelectInput';
@@ -21,13 +22,13 @@ export const ContainerSelection: React.FC = () => {
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       setContainersList([
         { cookieStoreId: 'firefox-default', name: 'Default (no container)' },
         ...(await getAllContainers()),
       ]);
       _setContainerState(await getOneOption('contextual_identity'));
-    })();
+    });
   }, []);
 
   const setContainer = useCallback(

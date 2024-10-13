@@ -13,7 +13,7 @@ import {
   pontoonTeam,
 } from '@commons/webLinks';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
-import { openNewPontoonTab } from '@commons/utils';
+import { doAsync, openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
 import { ButtonPopupBottomLink } from '@frontend/commons/components/ButtonPopupBottomLink';
 import { Heading3 } from '@frontend/commons/components/pontoon/Heading3';
@@ -160,7 +160,7 @@ export const TeamInfo: React.FC = () => {
     useState<OptionsContent['pontoon_base_url']>();
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       const [
         projectForCurrentTab,
         { teamsList, latestTeamsActivity },
@@ -176,7 +176,7 @@ export const TeamInfo: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeamActivity(latestTeamsActivity![teamCode]);
       setPontoonBaseUrl(pontoon_base_url);
-    })();
+    });
   }, []);
 
   return team && pontoonBaseUrl ? (

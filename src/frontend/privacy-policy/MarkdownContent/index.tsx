@@ -5,6 +5,7 @@ import DOMPurify from 'dompurify';
 import type { DOMNode } from 'html-react-parser';
 import parse, { domToReact, Element } from 'html-react-parser';
 
+import { doAsync } from '@commons/utils';
 import { NativeLink } from '@frontend/commons/components/pontoon/NativeLink';
 
 async function renderMarkdown(markdown: string) {
@@ -48,9 +49,9 @@ export const MarkdownContent: React.FC<Props> = ({
   const [htmlToRender, setHtmlToRender] = useState('');
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       setHtmlToRender(await renderMarkdown(markdownText));
-    })();
+    });
   }, [markdownText]);
 
   return <div {...props}>{parse(htmlToRender, { replace: wrapLinks })}</div>;

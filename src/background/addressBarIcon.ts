@@ -9,6 +9,7 @@ import {
 } from '@commons/webExtensionsApi';
 
 import { getPontoonProjectForPageUrl } from './RemotePontoon';
+import { doAsync } from '@commons/utils';
 
 export function init() {
   listenToStorageChange('projectsList', async () => {
@@ -18,8 +19,8 @@ export function init() {
     updatePageActions([tab]);
   });
 
-  getAllTabs().then((tabs) => {
-    updatePageActions(tabs);
+  doAsync(async () => {
+    updatePageActions(await getAllTabs());
   });
 }
 

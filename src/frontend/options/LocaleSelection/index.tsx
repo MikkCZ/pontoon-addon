@@ -8,6 +8,7 @@ import {
 } from '@commons/backgroundMessaging';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { doAsync } from '@commons/utils';
 import { Button } from '@frontend/commons/components/pontoon/Button';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { SelectInput } from '@frontend/commons/components/pontoon/SelectInput';
@@ -18,14 +19,14 @@ export const LocaleSelection: React.FC = () => {
     useState<OptionsContent['locale_team']>();
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       const [teamsInPontoon, teamCode] = await Promise.all([
         getOneFromStorage('teamsList'),
         getOneOption('locale_team'),
       ]);
       _setLocaleTeamState(teamCode);
       setTeamsList(teamsInPontoon);
-    })();
+    });
   }, []);
 
   const setLocaleTeam = useCallback(

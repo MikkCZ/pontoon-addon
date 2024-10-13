@@ -27,7 +27,7 @@ import {
   mozillaWikiL10nTeamPage,
   pontoonAddonWiki,
 } from '@commons/webLinks';
-import { openNewPontoonTab } from '@commons/utils';
+import { doAsync, openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
 
 import { refreshData } from './RemotePontoon';
@@ -43,7 +43,7 @@ export function initContextMenu() {
   addContextMenu();
 }
 
-async function registerBadgeChanges() {
+function registerBadgeChanges() {
   listenToStorageChange(
     'notificationsData',
     ({ newValue: notificationsData }) => {
@@ -64,17 +64,19 @@ async function registerBadgeChanges() {
       }
     },
   );
-  await updateBadge();
+  updateBadge();
 }
 
-async function registerClickAction() {
+function registerClickAction() {
   (browser.action ?? browser.browserAction).onClicked.addListener(() =>
     buttonClickHandler(),
   );
   listenToOptionChange('toolbar_button_action', ({ newValue: action }) => {
     registerButtonPopup(action);
   });
-  registerButtonPopup(await getOneOption('toolbar_button_action'));
+  doAsync(async () => {
+    registerButtonPopup(await getOneOption('toolbar_button_action'));
+  });
 }
 
 async function buttonClickHandler() {

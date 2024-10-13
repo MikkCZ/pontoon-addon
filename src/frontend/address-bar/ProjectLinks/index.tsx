@@ -14,7 +14,7 @@ import {
   pontoonTeamsProject,
 } from '@commons/webLinks';
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
-import { openNewPontoonTab } from '@commons/utils';
+import { doAsync, openNewPontoonTab } from '@commons/utils';
 import { ButtonPopupBottomLink } from '@frontend/commons/components/ButtonPopupBottomLink';
 
 async function openNewTabAndClosePopup(url: string): Promise<void> {
@@ -35,7 +35,7 @@ export const ProjectLinks: React.FC = () => {
     useState<OptionsContent['pontoon_base_url']>();
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       const [
         projectForCurrentTab,
         teamsList,
@@ -49,7 +49,7 @@ export const ProjectLinks: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setTeam(teamsList![teamCode]);
       setPontoonBaseUrl(pontoon_base_url);
-    })();
+    });
   }, []);
 
   if (projectForCurrentTab && team && pontoonBaseUrl) {
