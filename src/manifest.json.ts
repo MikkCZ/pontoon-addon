@@ -199,8 +199,15 @@ export function getManifestFor(
         }
       : {}),
     background: {
-      persistent: false,
       scripts: ['background/main.js'],
+      persistent: false,
+      ...(forChromium && manifestVersion === 3
+        ? {
+            scripts: undefined,
+            persistent: undefined,
+            service_worker: 'background/main.js',
+          }
+        : {}),
     },
     content_scripts: [
       {
