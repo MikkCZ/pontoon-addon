@@ -11,7 +11,6 @@ import {
 
 import { NotificationsList } from '.';
 
-jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@commons/backgroundMessaging');
 

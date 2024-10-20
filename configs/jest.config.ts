@@ -16,6 +16,9 @@ const textFilesModuleNameMapper = {
 const config: Config.InitialOptions = {
   rootDir,
   testEnvironment: 'jsdom',
+  setupFiles: [
+    'jest-webextension-mock',
+  ],
   setupFilesAfterEnv: [
     path.resolve(__dirname, 'jest.setup.ts'),
     'jest-canvas-mock', // only for 'react-game-snake'

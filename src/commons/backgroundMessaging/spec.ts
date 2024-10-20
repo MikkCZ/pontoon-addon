@@ -1,7 +1,4 @@
 /* eslint-disable jest/expect-expect */
-import type { MockzillaDeep } from 'mockzilla';
-import 'mockzilla-webextension';
-
 import { getOneOption } from '../options';
 
 import type { BackgroundMessage } from '.';
@@ -20,7 +17,6 @@ import {
   updateTeamsList,
 } from '.';
 
-jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 
 (getOneOption as jest.Mock).mockImplementation((key: string) => {
@@ -37,14 +33,6 @@ jest.mock('@commons/options');
 afterEach(() => {
   jest.clearAllMocks();
 });
-
-function mockBrowserSendMessage<T extends keyof BackgroundMessage>() {
-  return mockBrowser.runtime.sendMessage as unknown as MockzillaDeep<{
-    (
-      message: BackgroundMessage[T]['message'],
-    ): Promise<BackgroundMessage[T]['response']>;
-  }>;
-}
 
 describe('messagingClient', () => {
   it('getNotificationsUrl', async () => {
@@ -90,23 +78,27 @@ describe('messagingClient', () => {
         },
       },
     };
-    mockBrowserSendMessage<'UPDATE_TEAMS_LIST'>()
-      .expect({ type: 'update-teams-list' })
-      .andResolve(mockTeamsList);
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce(
+      mockTeamsList,
+    );
 
     const teams = await updateTeamsList();
 
     expect(teams).toStrictEqual(mockTeamsList);
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'update-teams-list',
+    });
   });
 
   it('getUsersTeamFromPontoon', async () => {
-    mockBrowserSendMessage<'GET_TEAM_FROM_PONTOON'>()
-      .expect({ type: 'get-team-from-pontoon' })
-      .andResolve('cs');
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce('cs');
 
     const team = await getUsersTeamFromPontoon();
 
     expect(team).toBe('cs');
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'get-team-from-pontoon',
+    });
   });
 
   it('getPontoonProjectForTheCurrentTab', async () => {
@@ -116,70 +108,73 @@ describe('messagingClient', () => {
         name: 'Firefox',
         domains: [],
       };
-    mockBrowserSendMessage<'GET_CURRENT_TAB_PROJECT'>()
-      .expect({ type: 'get-current-tab-project' })
-      .andResolve(mockProject);
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce(
+      mockProject,
+    );
 
     const project = await getPontoonProjectForTheCurrentTab();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(project).toStrictEqual(mockProject);
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'get-current-tab-project',
+    });
   });
 
   it('pageLoaded', async () => {
-    mockBrowserSendMessage<'PAGE_LOADED'>()
-      .expect({
-        type: 'pontoon-page-loaded',
-        documentHTML: '<html></html>',
-      })
-      .andResolve();
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce(undefined);
 
     await pageLoaded('<html></html>');
+
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'pontoon-page-loaded',
+      documentHTML: '<html></html>',
+    });
   });
 
   it('markAllNotificationsAsRead', async () => {
-    mockBrowserSendMessage<'NOTIFICATIONS_READ'>()
-      .expect({ type: 'notifications-read' })
-      .andResolve();
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce(undefined);
 
     await markAllNotificationsAsRead();
+
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'notifications-read',
+    });
   });
 
   it('searchTextInPontoon', async () => {
-    mockBrowserSendMessage<'SEARCH_TEXT_IN_PONTOON'>()
-      .expect({
-        type: 'search-text-in-pontoon',
-        text: 'foo bar',
-      })
-      .andResolve();
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce(undefined);
 
     await searchTextInPontoon('foo bar');
+
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'search-text-in-pontoon',
+      text: 'foo bar',
+    });
   });
 
   it('reportTranslatedTextToBugzilla', async () => {
-    mockBrowserSendMessage<'REPORT_TRANSLATED_TEXT_TO_BUGZILLA'>()
-      .expect({
-        type: 'report-translated-text-to-bugzilla',
-        text: 'foo bar',
-      })
-      .andResolve();
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce(undefined);
 
     await reportTranslatedTextToBugzilla('foo bar');
+
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'report-translated-text-to-bugzilla',
+      text: 'foo bar',
+    });
   });
 
   it('notificationBellIconScriptLoaded', async () => {
-    mockBrowserSendMessage<'NOTIFICATIONS_BELL_SCRIPT_LOADED'>()
-      .expect({
-        type: 'notifications-bell-script-loaded',
-      })
-      .andResolve({
-        type: 'enable-notifications-bell-script',
-      });
+    (browser.runtime.sendMessage as jest.Mock).mockResolvedValueOnce({
+      type: 'enable-notifications-bell-script',
+    });
 
     const response = await notificationBellIconScriptLoaded();
 
     expect(response).toStrictEqual({
       type: 'enable-notifications-bell-script',
+    });
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: 'notifications-bell-script-loaded',
     });
   });
 });
