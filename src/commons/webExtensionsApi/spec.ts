@@ -1,7 +1,5 @@
 /* eslint-disable jest/expect-expect */
-import type { MockzillaDeep } from 'mockzilla';
-import type { Alarms, ExtensionTypes, Tabs } from 'webextension-polyfill';
-import 'mockzilla-webextension';
+import type { Tabs } from 'webextension-polyfill';
 
 import { defaultOptionsFor } from '../data/defaultOptions';
 
@@ -41,12 +39,9 @@ import {
   getTabsMatching,
 } from '.';
 
-jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/data/defaultOptions');
 
-(defaultOptionsFor as jest.Mock).mockImplementation(() => ({
-  locale_team: 'en',
-}));
+(defaultOptionsFor as jest.Mock).mockReturnValue({ locale_team: 'en' });
 
 describe('webExtensionsApi', () => {
   it('exports browser', () => {
@@ -54,294 +49,372 @@ describe('webExtensionsApi', () => {
   });
 
   it('getFromStorage', async () => {
-    mockBrowser.storage.local.get.expect(['projectsList']).andResolve({});
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
     await getFromStorage(['projectsList']);
+
+    expect(browser.storage.local.get).toHaveBeenCalledWith(['projectsList']);
   });
 
   it('getOneFromStorage', async () => {
-    mockBrowser.storage.local.get.expect(['projectsList']).andResolve({});
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
     await getOneFromStorage('projectsList');
+
+    expect(browser.storage.local.get).toHaveBeenCalledWith(['projectsList']);
   });
 
   it('saveToStorage', async () => {
-    mockBrowser.storage.local.set.expect({ projectsList: {} }).andResolve();
+    (browser.storage.local.set as jest.Mock).mockResolvedValueOnce(undefined);
 
     await saveToStorage({ projectsList: {} });
+
+    expect(browser.storage.local.set).toHaveBeenCalledWith({
+      projectsList: {},
+    });
   });
 
   it('deleteFromStorage', async () => {
-    mockBrowser.storage.local.remove.expect(['projectsList']).andResolve();
+    (browser.storage.local.remove as jest.Mock).mockResolvedValueOnce(
+      undefined,
+    );
 
     await deleteFromStorage('projectsList');
+
+    expect(browser.storage.local.remove).toHaveBeenCalledWith(['projectsList']);
   });
 
   it('createNotification', async () => {
-    mockBrowser.notifications.create
-      .expect({ type: 'basic', title: 'foo', message: 'bar' })
-      .andResolve('id');
-    mockBrowser.notifications.onClicked.addListener
-      .expect(expect.anything())
-      .andReturn();
+    (browser.notifications.create as jest.Mock).mockResolvedValueOnce('id');
+    (
+      browser.notifications.onClicked.addListener as jest.Mock
+    ).mockReturnValueOnce(undefined);
 
     await createNotification({ type: 'basic', title: 'foo', message: 'bar' });
+
+    expect(browser.notifications.create).toHaveBeenCalledWith({
+      type: 'basic',
+      title: 'foo',
+      message: 'bar',
+    });
+    expect(browser.notifications.onClicked.addListener).toHaveBeenCalled();
   });
 
   it('closeNotification', async () => {
-    mockBrowser.notifications.clear.expect('id').andResolve(true);
+    (browser.notifications.clear as jest.Mock).mockResolvedValueOnce(true);
 
     await closeNotification('id');
+
+    expect(browser.notifications.clear).toHaveBeenCalledWith('id');
   });
 
   it('createContextMenu', () => {
-    mockBrowser.contextMenus.create.expect({ title: 'foo' }).andReturn('id');
+    (browser.contextMenus.create as jest.Mock).mockReturnValueOnce('id');
 
     createContextMenu({ title: 'foo' });
+
+    expect(browser.contextMenus.create).toHaveBeenCalledWith({ title: 'foo' });
   });
 
   it('removeContextMenu', async () => {
-    mockBrowser.contextMenus.remove.expect('id').andResolve();
+    (browser.contextMenus.remove as jest.Mock).mockResolvedValueOnce(undefined);
 
     await removeContextMenu('id');
+
+    expect(browser.contextMenus.remove).toHaveBeenCalledWith('id');
   });
 
-  it('browserFamily', () => {
-    mockBrowser.runtime.getURL
-      .expect('/')
-      .andReturn('moz-extension://index.html');
-    expect(browserFamily()).toBe('mozilla');
+  it('browserFamily mozilla', () => {
+    (browser.runtime.getURL as jest.Mock).mockReturnValueOnce(
+      'moz-extension://index.html',
+    );
 
-    mockBrowser.runtime.getURL
-      .expect('/')
-      .andReturn('chrome-extension://index.html');
-    expect(browserFamily()).toBe('chromium');
+    const family = browserFamily();
+
+    expect(family).toBe('mozilla');
+    expect(browser.runtime.getURL).toHaveBeenCalledWith('/');
+  });
+
+  it('browserFamily chromium', () => {
+    (browser.runtime.getURL as jest.Mock).mockReturnValueOnce(
+      'chrome-extension://index.html',
+    );
+
+    const family = browserFamily();
+
+    expect(family).toBe('chromium');
+    expect(browser.runtime.getURL).toHaveBeenCalledWith('/');
   });
 
   it('openNewTab', async () => {
-    mockBrowser.tabs.create
-      .expect({ url: 'https://localhost' })
-      .andResolve({} as Tabs.Tab);
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({} as Tabs.Tab);
 
     await openNewTab('https://localhost');
+
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'https://localhost',
+    });
   });
 
   it('getAllTabs', async () => {
-    mockBrowser.tabs.query.expect({}).andResolve([]);
+    (browser.tabs.query as jest.Mock).mockResolvedValueOnce([]);
 
     await getAllTabs();
+
+    expect(browser.tabs.query).toHaveBeenCalledWith({});
   });
 
   it('getTabsMatching', async () => {
-    mockBrowser.tabs.query
-      .expect({ url: ['https://localhost/*', 'https://127.0.0.1/*'] })
-      .andResolve([]);
+    (browser.tabs.query as jest.Mock).mockResolvedValueOnce([]);
 
     await getTabsMatching('https://localhost/*', 'https://127.0.0.1/*');
+
+    expect(browser.tabs.query).toHaveBeenCalledWith({
+      url: ['https://localhost/*', 'https://127.0.0.1/*'],
+    });
   });
 
   it('getTabsWithBaseUrl', async () => {
-    mockBrowser.tabs.query
-      .expect({ url: ['https://localhost/*'] })
-      .andResolve([]);
+    (browser.tabs.query as jest.Mock).mockResolvedValueOnce([]);
 
     await getTabsWithBaseUrl('https://localhost');
+
+    expect(browser.tabs.query).toHaveBeenCalledWith({
+      url: ['https://localhost/*'],
+    });
   });
 
   it('getActiveTab', async () => {
-    mockBrowser.tabs.query
-      .expect({ currentWindow: true, active: true })
-      .andResolve([
-        {
-          index: 0,
-          highlighted: true,
-          active: true,
-          pinned: false,
-          incognito: false,
-        },
-      ]);
+    (browser.tabs.query as jest.Mock).mockResolvedValueOnce([
+      {
+        index: 0,
+        highlighted: true,
+        active: true,
+        pinned: false,
+        incognito: false,
+      },
+    ]);
 
     await getActiveTab();
+
+    expect(browser.tabs.query).toHaveBeenCalledWith({
+      currentWindow: true,
+      active: true,
+    });
   });
 
   it('getResourceUrl', () => {
-    mockBrowser.runtime.getURL.expect('foo').andReturn('');
+    (browser.runtime.getURL as jest.Mock).mockReturnValueOnce('');
 
     getResourceUrl('foo');
+
+    expect(browser.runtime.getURL).toHaveBeenCalledWith('foo');
   });
 
   it('openOptions', async () => {
-    mockBrowser.runtime.openOptionsPage.expect().andResolve();
+    (browser.runtime.openOptionsPage as jest.Mock).mockResolvedValueOnce(
+      undefined,
+    );
 
     await openOptions();
+
+    expect(browser.runtime.openOptionsPage).toHaveBeenCalledWith();
   });
 
   it('openIntro', async () => {
-    mockBrowser.runtime.getURL
-      .expect('frontend/intro.html')
-      .andReturn('https://localhost');
-    mockBrowser.tabs.create
-      .expect({ url: 'https://localhost' })
-      .andResolve({} as Tabs.Tab);
+    (browser.runtime.getURL as jest.Mock).mockReturnValueOnce(
+      'https://localhost/intro',
+    );
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({} as Tabs.Tab);
 
     await openIntro();
+
+    expect(browser.runtime.getURL).toHaveBeenCalledWith('frontend/intro.html');
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'https://localhost/intro',
+    });
   });
 
   it('openPrivacyPolicy', async () => {
-    mockBrowser.runtime.getURL
-      .expect('frontend/privacy-policy.html')
-      .andReturn('https://localhost');
-    mockBrowser.tabs.create
-      .expect({ url: 'https://localhost' })
-      .andResolve({} as Tabs.Tab);
+    (browser.runtime.getURL as jest.Mock).mockReturnValueOnce(
+      'https://localhost/privacy-policy',
+    );
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({} as Tabs.Tab);
 
     await openPrivacyPolicy();
+
+    expect(browser.runtime.getURL).toHaveBeenCalledWith(
+      'frontend/privacy-policy.html',
+    );
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'https://localhost/privacy-policy',
+    });
   });
 
   it('openSnakeGame', async () => {
-    mockBrowser.runtime.getURL
-      .expect('frontend/snake-game.html')
-      .andReturn('https://localhost');
-    mockBrowser.tabs.create
-      .expect({ url: 'https://localhost' })
-      .andResolve({} as Tabs.Tab);
+    (browser.runtime.getURL as jest.Mock).mockReturnValueOnce(
+      'https://localhost/snake-game',
+    );
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({} as Tabs.Tab);
 
     await openSnakeGame();
+
+    expect(browser.runtime.getURL).toHaveBeenCalledWith(
+      'frontend/snake-game.html',
+    );
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'https://localhost/snake-game',
+    });
   });
 
   it('openToolbarButtonPopup', async () => {
-    mockBrowser.browserAction.openPopup.expect().andResolve();
+    (browser.browserAction.openPopup as jest.Mock).mockResolvedValueOnce(
+      undefined,
+    );
 
     await openToolbarButtonPopup();
+
+    expect(browser.browserAction.openPopup).toHaveBeenCalled();
   });
 
   it('supportsAddressBar', () => {
-    mockBrowser.pageAction.mockAllow();
     expect(supportsAddressBar()).toBe(true);
   });
 
   it('showAddressBarIcon', async () => {
-    mockBrowser.pageAction.setTitle
-      .expect({ tabId: 42, title: 'foo' })
-      .andReturn();
-    mockBrowser.pageAction.setIcon
-      .expect({ tabId: 42, path: { 16: '16.svg', 32: '32.svg' } })
-      .andResolve();
-    mockBrowser.pageAction.show.expect(42).andResolve();
+    (browser.pageAction.setTitle as jest.Mock).mockReturnValueOnce(undefined);
+    (browser.pageAction.setIcon as jest.Mock).mockResolvedValueOnce(undefined);
+    (browser.pageAction.show as jest.Mock).mockResolvedValueOnce(undefined);
 
     await showAddressBarIcon({ id: 42 } as Tabs.Tab, 'foo', {
       16: '16.svg',
       32: '32.svg',
     });
+
+    expect(browser.pageAction.setTitle).toHaveBeenCalledWith({
+      tabId: 42,
+      title: 'foo',
+    });
+    expect(browser.pageAction.setIcon).toHaveBeenCalledWith({
+      tabId: 42,
+      path: { 16: '16.svg', 32: '32.svg' },
+    });
+    expect(browser.pageAction.show).toHaveBeenCalledWith(42);
   });
 
   it('hideAddressBarIcon', async () => {
-    mockBrowser.pageAction.setTitle
-      .expect({ tabId: 42, title: 'foo' })
-      .andReturn();
-    mockBrowser.pageAction.setIcon.expect({ tabId: 42 }).andResolve();
-    mockBrowser.pageAction.hide.expect(42).andResolve();
+    (browser.pageAction.setTitle as jest.Mock).mockReturnValueOnce(undefined);
+    (browser.pageAction.setIcon as jest.Mock).mockResolvedValueOnce(undefined);
+    (browser.pageAction.hide as jest.Mock).mockResolvedValueOnce(undefined);
 
     await hideAddressBarIcon({ id: 42 } as Tabs.Tab, 'foo');
+
+    expect(browser.pageAction.setTitle).toHaveBeenCalledWith({
+      tabId: 42,
+      title: 'foo',
+    });
+    expect(browser.pageAction.setIcon).toHaveBeenCalledWith({ tabId: 42 });
+    expect(browser.pageAction.hide).toHaveBeenCalledWith(42);
   });
 
   it('supportsContainers', () => {
-    mockBrowser.contextualIdentities.mockAllow();
     expect(supportsContainers()).toBe(true);
   });
 
   it('getAllContainers', async () => {
-    mockBrowser.contextualIdentities.query.expect({}).andResolve([]);
+    (browser.contextualIdentities.query as jest.Mock).mockResolvedValueOnce([]);
 
     await getAllContainers();
+
+    expect(browser.contextualIdentities.query).toHaveBeenCalledWith({});
   });
 
   it('requestPermissionForPontoon', async () => {
-    mockBrowser.permissions.request
-      .expect({ origins: ['https://localhost/*'] })
-      .andResolve(true);
+    (browser.permissions.request as jest.Mock).mockResolvedValueOnce(true);
 
     const granted = await requestPermissionForPontoon('https://localhost');
 
     expect(granted).toBe(true);
+    expect(browser.permissions.request).toHaveBeenCalledWith({
+      origins: ['https://localhost/*'],
+    });
   });
 
   it('registerScriptForBaseUrl', async () => {
-    mockBrowser.contentScripts.register
-      .expect({
-        js: [{ file: 'foo/bar.js' }],
-        matches: ['https://localhost/*'],
-        runAt: 'document_end',
-      })
-      .andResolve({ unregister: jest.fn() });
+    (browser.contentScripts.register as jest.Mock).mockResolvedValueOnce({
+      unregister: jest.fn(),
+    });
 
     await registerScriptForBaseUrl('https://localhost', 'foo/bar.js');
+
+    expect(browser.contentScripts.register).toHaveBeenCalledWith({
+      js: [{ file: 'foo/bar.js' }],
+      matches: ['https://localhost/*'],
+      runAt: 'document_end',
+    });
   });
 
   it('executeScript', async () => {
-    (
-      mockBrowser.tabs.executeScript as unknown as MockzillaDeep<{
-        (
-          tabId: number,
-          details: ExtensionTypes.InjectDetails,
-        ): Promise<unknown[]>;
-      }>
-    )
-      .expect(42, { file: 'foo/bar.js' })
-      .andResolve([]);
+    (browser.tabs.executeScript as jest.Mock).mockResolvedValueOnce([]);
 
     await executeScript(42, 'foo/bar.js');
+
+    expect(browser.tabs.executeScript).toHaveBeenCalledWith(42, {
+      file: 'foo/bar.js',
+    });
   });
 
   it('callWithInterval', () => {
-    (
-      mockBrowser.alarms.create as unknown as MockzillaDeep<{
-        (name: string, alarmInfo: Alarms.CreateAlarmInfoType): void;
-      }>
-    )
-      .expect('name', { periodInMinutes: 42 })
-      .andReturn();
-    mockBrowser.alarms.onAlarm.addListener
-      .expect(expect.anything())
-      .andReturn();
+    (browser.alarms.create as jest.Mock).mockReturnValueOnce(undefined);
+    (browser.alarms.onAlarm.addListener as jest.Mock).mockReturnValueOnce(
+      undefined,
+    );
 
     callWithInterval('name', { periodInMinutes: 42 }, jest.fn());
+
+    expect(browser.alarms.create).toHaveBeenCalledWith('name', {
+      periodInMinutes: 42,
+    });
+    expect(browser.alarms.onAlarm.addListener).toHaveBeenCalled();
   });
 
   it('callDelayed', () => {
-    (
-      mockBrowser.alarms.create as unknown as MockzillaDeep<{
-        (name: string, alarmInfo: Alarms.CreateAlarmInfoType): void;
-      }>
-    )
-      .expect(expect.anything(), { delayInMinutes: 0.5 })
-      .andReturn();
-    mockBrowser.alarms.onAlarm.addListener
-      .expect(expect.anything())
-      .andReturn();
+    (browser.alarms.create as jest.Mock).mockReturnValueOnce(undefined);
+    (browser.alarms.onAlarm.addListener as jest.Mock).mockReturnValueOnce(
+      undefined,
+    );
 
     callDelayed({ delayInSeconds: 30 }, jest.fn());
+
+    expect(browser.alarms.create).toHaveBeenCalledWith(expect.anything(), {
+      delayInMinutes: 0.5,
+    });
+    expect(browser.alarms.onAlarm.addListener).toHaveBeenCalled();
   });
 
   it('listenToMessages', () => {
-    mockBrowser.runtime.onMessage.addListener
-      .expect(expect.anything())
-      .andReturn();
+    (browser.runtime.onMessage.addListener as jest.Mock).mockReturnValueOnce(
+      undefined,
+    );
 
     listenToMessages<'SEARCH_TEXT_IN_PONTOON'>(
       'search-text-in-pontoon',
       jest.fn(),
     );
+
+    expect(browser.runtime.onMessage.addListener).toHaveBeenCalled();
   });
 
   it('listenToMessagesAndRespond', () => {
-    mockBrowser.runtime.onMessage.addListener
-      .expect(expect.anything())
-      .andReturn();
+    (browser.runtime.onMessage.addListener as jest.Mock).mockReturnValueOnce(
+      undefined,
+    );
 
     listenToMessagesAndRespond<'UPDATE_TEAMS_LIST'>(
       'update-teams-list',
       jest.fn(),
     );
+
+    expect(browser.runtime.onMessage.addListener).toHaveBeenCalled();
   });
 });

@@ -8,7 +8,6 @@ import { getTeamProjectUrl } from '@commons/backgroundMessaging';
 
 import { NotificationsListItem } from '.';
 
-jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@commons/backgroundMessaging');
 

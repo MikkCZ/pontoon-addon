@@ -8,7 +8,6 @@ import { getSignInURL } from '@commons/backgroundMessaging';
 
 import { NotificationsListError } from '.';
 
-jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/options');
 jest.mock('@commons/backgroundMessaging');
 

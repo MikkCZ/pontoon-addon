@@ -34,7 +34,6 @@ updates:
           - "@testing-library/*"
           - "@types/jest"
           - "*jest*"
-          - "mockzilla*"
         exclude-patterns:
           - "*eslint*"
       typescript:

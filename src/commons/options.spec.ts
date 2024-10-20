@@ -1,6 +1,4 @@
 /* eslint-disable jest/expect-expect */
-import 'mockzilla-webextension';
-
 import {
   getOneOption,
   getOptions,
@@ -9,71 +7,80 @@ import {
 } from './options';
 import { defaultOptionsFor } from './data/defaultOptions';
 
-jest.mock('@commons/webExtensionsApi/browser');
 jest.mock('@commons/data/defaultOptions');
 
-(defaultOptionsFor as jest.Mock).mockImplementation(() => ({
-  locale_team: 'en',
-}));
+(defaultOptionsFor as jest.Mock).mockReturnValue({ locale_team: 'en' });
 
 beforeEach(() => {
-  mockBrowser.runtime.getURL.mock(() => 'moz-extension://');
+  (browser.runtime.getURL as jest.Mock).mockReturnValue('moz-extension://');
 });
 
 describe('options', () => {
   it('setOption', async () => {
-    mockBrowser.storage.local.set
-      .expect({ 'options.locale_team': 'cs' })
-      .andResolve();
+    (browser.storage.local.set as jest.Mock).mockResolvedValueOnce(undefined);
 
     await setOption('locale_team', 'cs');
+
+    expect(browser.storage.local.set).toHaveBeenCalledWith({
+      'options.locale_team': 'cs',
+    });
   });
 
   it('getOptions', async () => {
-    mockBrowser.storage.local.get
-      .expect(['options.locale_team'])
-      .andResolve({ 'options.locale_team': 'cs' });
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      'options.locale_team': 'cs',
+    });
 
     const { locale_team } = await getOptions(['locale_team']);
 
     expect(locale_team).toBe('cs');
+    expect(browser.storage.local.get).toHaveBeenCalledWith([
+      'options.locale_team',
+    ]);
   });
 
   it('getOptions loads default', async () => {
-    mockBrowser.storage.local.get
-      .expect(['options.locale_team'])
-      .andResolve({});
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
     const { locale_team } = await getOptions(['locale_team']);
 
     expect(locale_team).toBe('en');
+    expect(browser.storage.local.get).toHaveBeenCalledWith([
+      'options.locale_team',
+    ]);
   });
 
   it('getOneOption', async () => {
-    mockBrowser.storage.local.get
-      .expect(['options.locale_team'])
-      .andResolve({ 'options.locale_team': 'cs' });
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      'options.locale_team': 'cs',
+    });
 
     const locale_team = await getOneOption('locale_team');
 
     expect(locale_team).toBe('cs');
+    expect(browser.storage.local.get).toHaveBeenCalledWith([
+      'options.locale_team',
+    ]);
   });
 
   it('getOneOption loads default', async () => {
-    mockBrowser.storage.local.get
-      .expect(['options.locale_team'])
-      .andResolve({});
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
     const locale_team = await getOneOption('locale_team');
 
     expect(locale_team).toBe('en');
+    expect(browser.storage.local.get).toHaveBeenCalledWith([
+      'options.locale_team',
+    ]);
   });
 
   it('resetDefaultOptions', async () => {
-    mockBrowser.storage.local.set
-      .expect(expect.objectContaining({ 'options.locale_team': 'en' }))
-      .andResolve();
+    (browser.storage.local.set as jest.Mock).mockResolvedValueOnce(undefined);
 
     await resetDefaultOptions();
+
+    expect(browser.storage.local.set).toHaveBeenCalledWith(
+      expect.objectContaining({ 'options.locale_team': 'en' }),
+    );
   });
 });

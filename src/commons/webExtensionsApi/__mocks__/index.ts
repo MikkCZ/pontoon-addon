@@ -1,4 +1,4 @@
-import { default as browserObj } from './browser';
+import { default as browserObj } from '../browser';
 
 export const browser = browserObj;
 
