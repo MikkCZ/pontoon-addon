@@ -107,9 +107,9 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "ts-prune": "^0.10.3",
-    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "~5.5",
-    "web-ext-plugin": "^2.10.0",
+    "web-ext-plugin": "^2.11.0",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4"
   },
