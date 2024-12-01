@@ -33,7 +33,7 @@
     "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
   "dependencies": {
-    "@emotion/react": "^11.13.3",
+    "@emotion/react": "^11.13.5",
     "dompurify": "^3.1.7",
     "graphql": "^16.9.0",
     "graphql-request": "^6.1.0",
