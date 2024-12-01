@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
-    "dompurify": "^3.1.7",
+    "dompurify": "^3.2.2",
     "graphql": "^16.9.0",
     "graphql-request": "^6.1.0",
     "html-react-parser": "^5.1.18",
@@ -59,7 +59,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "@tsconfig/recommended": "^1.0.8",
-    "@types/dompurify": "^3.0.5",
+    "@types/dompurify": "^3.2.0",
     "@types/eslint": "^8.56.12",
     "@types/generate-json-webpack-plugin": "^0.3.7",
     "@types/javascript-time-ago": "^2.0.8",
