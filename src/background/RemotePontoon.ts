@@ -148,7 +148,10 @@ async function updateNotificationsData() {
     const userData = (await reponse.json()) as UserDataApiResponse;
     const notificationsData: StorageContent['notificationsData'] = {};
     for (const notification of userData.notifications.notifications) {
-      notificationsData[notification.id] = notification;
+      notificationsData[notification.id] = {
+        ...notification,
+        verb: notification.verb === 'ignore' ? undefined : notification.verb,
+      };
     }
     await saveToStorage({
       notificationsData,
