@@ -52,7 +52,7 @@ graphql_generate_in_container:
 
 .PHONY: export_pontoon_graphql_schema
 export_pontoon_graphql_schema:
-	CONTAINER_IMAGE='docker.io/library/python:3.11-bookworm' bash ./scripts/run-in-container.sh 'bash ./scripts/export-pontoon-graphql-schema.sh ./src/pontoon.graphql'
+	CONTAINER_IMAGE='docker.io/library/python:3.13-bookworm' bash ./scripts/run-in-container.sh 'bash ./scripts/export-pontoon-graphql-schema.sh ./src/pontoon.graphql'
 	make graphql_generate_in_container
 
 .PHONY: bump_version_in_container

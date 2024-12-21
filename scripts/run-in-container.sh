@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-CONTAINER_IMAGE=${CONTAINER_IMAGE:-'docker.io/library/node:20-bookworm'} # LTS
+CONTAINER_IMAGE=${CONTAINER_IMAGE:-'docker.io/library/node:22-bookworm'} # LTS
 COMMAND=${@}
 
 CONTAINER_RUN='podman run'
