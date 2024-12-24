@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import type { OptionId } from '@commons/options';
 import { getOneOption, setOption } from '@commons/options';
+import { doAsync } from '@commons/utils';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { CheckboxInput } from '@frontend/commons/components/pontoon/CheckboxInput';
 
@@ -14,9 +15,9 @@ export const Checkbox: React.FC<Props> = ({ optionKey, children }) => {
   const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       setChecked((await getOneOption(optionKey)) as boolean);
-    })();
+    });
   }, [optionKey]);
 
   return (

@@ -2,6 +2,7 @@ import {
   markAllNotificationsAsRead,
   notificationBellIconScriptLoaded,
 } from '@commons/backgroundMessaging';
+import { doAsync } from '@commons/utils';
 import {
   listenToMessages,
   listenToStorageChange,
@@ -46,7 +47,7 @@ function registerAllListeners() {
   }
 }
 
-async function init() {
+function init() {
   listenToMessages<'ENABLE_NOTIFICATIONS_BELL_SCRIPT'>(
     'enable-notifications-bell-script',
     () => {
@@ -61,19 +62,21 @@ async function init() {
       console.info('Pontoon Add-on: listeners disabled');
     },
   );
-  const { type: responseType } = await notificationBellIconScriptLoaded();
-  switch (responseType) {
-    case 'enable-notifications-bell-script':
-      listenersEnabled = true;
-      registerAllListeners();
-      break;
-    case 'disable-notifications-bell-script':
-      listenersEnabled = false;
-      console.info('Pontoon Add-on: listeners disabled');
-      break;
-    default:
-      throw new Error(`Unexpected response type '${responseType}'.`);
-  }
+  doAsync(async () => {
+    const { type: responseType } = await notificationBellIconScriptLoaded();
+    switch (responseType) {
+      case 'enable-notifications-bell-script':
+        listenersEnabled = true;
+        registerAllListeners();
+        break;
+      case 'disable-notifications-bell-script':
+        listenersEnabled = false;
+        console.info('Pontoon Add-on: listeners disabled');
+        break;
+      default:
+        throw new Error(`Unexpected response type '${responseType}'.`);
+    }
+  });
 }
 
 init();

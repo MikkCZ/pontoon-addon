@@ -8,8 +8,8 @@ import {
 } from '@commons/backgroundMessaging';
 import { openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
+import { ButtonPopupBottomLink } from '@frontend/commons/components/ButtonPopupBottomLink';
 
-import { BottomLink } from '../BottomLink';
 import { NotificationsListItem } from '../NotificationsListItem';
 import { NotificationsListError } from '../NotificationsListError';
 
@@ -61,18 +61,18 @@ export const NotificationsList: React.FC<Props> = ({
             ))}
         </List>
         {containsUnreadNotifications ? (
-          <BottomLink onClick={() => markAllNotificationsAsRead()}>
+          <ButtonPopupBottomLink onClick={() => markAllNotificationsAsRead()}>
             Mark all Notifications as read
-          </BottomLink>
+          </ButtonPopupBottomLink>
         ) : (
-          <BottomLink
+          <ButtonPopupBottomLink
             onClick={async () => {
               await openNewPontoonTab(await getNotificationsUrl());
               window.close();
             }}
           >
             See all Notifications
-          </BottomLink>
+          </ButtonPopupBottomLink>
         )}
       </section>
     );
