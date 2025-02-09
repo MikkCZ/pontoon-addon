@@ -98,7 +98,7 @@ interface Props
 
 function wrapLinks(pontoonBaseUrl: string): HTMLReactParserOptions['replace'] {
   // eslint-disable-next-line react/display-name
-  return (domNode: DOMNode): JSX.Element | void => {
+  return (domNode: DOMNode): React.JSX.Element | void => {
     if (
       domNode instanceof Element &&
       domNode.name === 'a' &&
