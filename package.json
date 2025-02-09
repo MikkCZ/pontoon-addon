@@ -30,6 +30,7 @@
     "webpack:watch:chromium": "cross-env MODE=development TARGET_BROWSER=chromium webpack --config ./configs/webpack.config.ts --watch",
     "jest:run": "jest --ci --config ./configs/jest.config.ts",
     "watch": "npm-run-all build:clean --parallel webpack:watch:*",
+    "graphql:download": "get-graphql-schema https://pontoon.mozilla.org/graphql/ > ./src/pontoon.graphql",
     "graphql:generate": "graphql-codegen --config ./configs/codegen.yml"
   },
   "dependencies": {
@@ -87,6 +88,7 @@
     "eslint-plugin-testing-library": "^7.1.1",
     "flush-promises": "^1.0.2",
     "generate-json-webpack-plugin": "^2.0.0",
+    "get-graphql-schema": "^2.1.2",
     "graphql-request": "^6.1.0",
     "html-webpack-plugin": "^5.6.3",
     "jest": "^28.1.3",

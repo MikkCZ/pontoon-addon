@@ -86,116 +86,98 @@ export type DjangoDebugSql = {
 
 export type Locale = {
   __typename?: 'Locale';
-  approvedStrings: Scalars['Int']['output'];
+  approvedStrings?: Maybe<Scalars['Int']['output']>;
   /**
-   *
-   *         A comma separated list of
-   *         <a href="http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html">
-   *         CLDR plural categories</a>, where 0 represents zero, 1 one, 2 two, 3 few, 4 many, and 5 other.
-   *         E.g. 1,5
-   *
+   * A comma separated list of
+   * <a href="http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html">
+   * CLDR plural categories</a>, where 0 represents zero, 1 one, 2 two, 3 few, 4 many, and 5 other.
+   * E.g. 1,5
    */
   cldrPlurals: Scalars['String']['output'];
   code: Scalars['String']['output'];
   complete?: Maybe<Scalars['Boolean']['output']>;
   /**
-   *
-   *         Writing direction of the script. Set to "right-to-left" if "rtl" value
-   *         for the locale script is set to "YES" in
-   *         <a href="https://github.com/unicode-cldr/cldr-core/blob/master/scriptMetadata.json">
-   *         CLDR scriptMetadata.json</a>.
-   *
+   * Writing direction of the script. Set to "right-to-left" if "rtl" value
+   * for the locale script is set to "YES" in
+   * <a href="https://github.com/unicode-cldr/cldr-core/blob/master/scriptMetadata.json">
+   * CLDR scriptMetadata.json</a>.
    */
   direction: BaseLocaleDirectionChoices;
   /**
-   *
-   *         Google Translate maintains its own list of
-   *         <a href="https://translate.google.com/intl/en/about/languages/">
-   *         supported locales</a>. Choose a matching locale from the list or leave blank to disable
-   *         support for Google Cloud Translation machine translation service.
-   *
+   * Google Translate maintains its own list of
+   * <a href="https://translate.google.com/intl/en/about/languages/">
+   * supported locales</a>. Choose a matching locale from the list or leave blank to disable
+   * support for Google Cloud Translation machine translation service.
    */
   googleTranslateCode: Scalars['String']['output'];
   localizations?: Maybe<Array<Maybe<ProjectLocale>>>;
   missingStrings?: Maybe<Scalars['Int']['output']>;
   /**
+   * Microsoft Terminology uses language codes that include both the language and
+   * the country/region. Choose a matching locale from the list or leave blank to disable support
+   * for Microsoft terminology:
    *
-   *         Microsoft Terminology uses language codes that include both the language and
-   *         the country/region. Choose a matching locale from the list or leave blank to disable support
-   *         for Microsoft terminology:
-   *
-   *         af-za, am-et, ar-dz, ar-eg, ar-sa, as-in, az-latn-az, be-by, bg-bg, bn-bd, bn-in,
-   *         bs-cyrl-ba, bs-latn-ba, ca-es, ca-es-valencia, chr-cher-us, cs-cz, cy-gb, da-dk, de-at,
-   *         de-ch, de-de, el-gr, en-au, en-ca, en-gb, en-hk, en-ie, en-in, en-my, en-ng, en-nz, en-ph,
-   *         en-pk, en-sg, en-tt, en-us, en-za, es-ar, es-bo, es-cl, es-co, es-cr, es-do, es-ec, es-es,
-   *         es-gt, es-hn, es-mx, es-ni, es-pa, es-pe, es-pr, es-py, es-sv, es-us, es-uy, es-ve, et-ee,
-   *         eu-es, fa-ir, fi-fi, fil-ph, fo-fo, fr-be, fr-ca, fr-ch, fr-dz, fr-fr, fr-ma, fr-tn,
-   *         fuc-latn-sn, ga-ie, gd-gb, gl-es, gu-in, guc-ve, ha-latn-ng, he-il, hi-in, hr-hr, hu-hu,
-   *         hy-am, id-id, ig-ng, is-is, it-ch, it-it, iu-latn-ca, ja-jp, ka-ge, kk-kz, km-kh, kn-in,
-   *         ko-kr, kok-in, ku-arab-iq, ky-kg, lb-lu, lo-la, lt-lt, lv-lv, mi-nz, mk-mk, ml-in, mn-mn,
-   *         mr-in, ms-bn, ms-my, mt-mt, my-mm, nb-no, ne-np, nl-be, nl-nl, nn-no, nso-za, or-in,
-   *         pa-arab-pk, pa-in, pl-pl, prs-af, ps-af, pt-br, pt-pt, quc-latn-gt, quz-pe, ro-md, ro-ro,
-   *         ru-kz, ru-ru, rw-rw, sd-arab-pk, si-lk, sk-sk, sl-si, sp-xl, sq-al, sr-cyrl-ba, sr-cyrl-rs,
-   *         sr-latn-me, sr-latn-rs, sv-se, sw-ke, ta-in, te-in, tg-cyrl-tj, th-th, ti-et, tk-tm, tl-ph,
-   *         tn-za, tr-tr, tt-ru, ug-cn, uk-ua, ur-pk, uz-cyrl-uz, uz-latn-uz, vi-vn, wo-sn, xh-za,
-   *         yo-ng, zh-cn, zh-hk, zh-sg, zh-tw, zu-za
-   *
+   * af-za, am-et, ar-dz, ar-eg, ar-sa, as-in, az-latn-az, be-by, bg-bg, bn-bd, bn-in,
+   * bs-cyrl-ba, bs-latn-ba, ca-es, ca-es-valencia, chr-cher-us, cs-cz, cy-gb, da-dk, de-at,
+   * de-ch, de-de, el-gr, en-au, en-ca, en-gb, en-hk, en-ie, en-in, en-my, en-ng, en-nz, en-ph,
+   * en-pk, en-sg, en-tt, en-us, en-za, es-ar, es-bo, es-cl, es-co, es-cr, es-do, es-ec, es-es,
+   * es-gt, es-hn, es-mx, es-ni, es-pa, es-pe, es-pr, es-py, es-sv, es-us, es-uy, es-ve, et-ee,
+   * eu-es, fa-ir, fi-fi, fil-ph, fo-fo, fr-be, fr-ca, fr-ch, fr-dz, fr-fr, fr-ma, fr-tn,
+   * fuc-latn-sn, ga-ie, gd-gb, gl-es, gu-in, guc-ve, ha-latn-ng, he-il, hi-in, hr-hr, hu-hu,
+   * hy-am, id-id, ig-ng, is-is, it-ch, it-it, iu-latn-ca, ja-jp, ka-ge, kk-kz, km-kh, kn-in,
+   * ko-kr, kok-in, ku-arab-iq, ky-kg, lb-lu, lo-la, lt-lt, lv-lv, mi-nz, mk-mk, ml-in, mn-mn,
+   * mr-in, ms-bn, ms-my, mt-mt, my-mm, nb-no, ne-np, nl-be, nl-nl, nn-no, nso-za, or-in,
+   * pa-arab-pk, pa-in, pl-pl, prs-af, ps-af, pt-br, pt-pt, quc-latn-gt, quz-pe, ro-md, ro-ro,
+   * ru-kz, ru-ru, rw-rw, sd-arab-pk, si-lk, sk-sk, sl-si, sp-xl, sq-al, sr-cyrl-ba, sr-cyrl-rs,
+   * sr-latn-me, sr-latn-rs, sv-se, sw-ke, ta-in, te-in, tg-cyrl-tj, th-th, ti-et, tk-tm, tl-ph,
+   * tn-za, tr-tr, tt-ru, ug-cn, uk-ua, ur-pk, uz-cyrl-uz, uz-latn-uz, vi-vn, wo-sn, xh-za,
+   * yo-ng, zh-cn, zh-hk, zh-sg, zh-tw, zu-za
    */
   msTerminologyCode: Scalars['String']['output'];
   /**
-   *
-   *         Microsoft Translator maintains its own list of
-   *         <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/translator/languages">
-   *         supported locales</a>. Choose a matching locale from the list or leave blank to disable
-   *         support for Microsoft Translator machine translation service.
-   *
+   * Microsoft Translator maintains its own list of
+   * <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/translator/languages">
+   * supported locales</a>. Choose a matching locale from the list or leave blank to disable
+   * support for Microsoft Translator machine translation service.
    */
   msTranslatorCode: Scalars['String']['output'];
   name: Scalars['String']['output'];
   /**
-   *
-   *         Plural rule is part of the plurals header in
-   *         <a href="https://www.gnu.org/software/gettext/manual/gettext.html#Plural-forms">
-   *         Gettext PO files
-   *         </a>,
-   *         that follows the <i>plural=</i> string, without the trailing semicolon.
-   *         E.g. (n != 1)
-   *
+   * Plural rule is part of the plurals header in
+   * <a href="https://www.gnu.org/software/gettext/manual/gettext.html#Plural-forms">
+   * Gettext PO files
+   * </a>,
+   * that follows the <i>plural=</i> string, without the trailing semicolon.
+   * E.g. (n != 1)
    */
   pluralRule: Scalars['String']['output'];
   /**
-   *
-   *         Number of native speakers. Find locale code in
-   *         <a href="https://github.com/unicode-org/cldr-json/blob/main/cldr-json/cldr-core/supplemental/territoryInfo.json">CLDR territoryInfo.json</a>
-   *         and multiply its "_populationPercent" with the territory "_population".
-   *         Repeat if multiple occurrences of locale code exist and sum products.
-   *
+   * Number of native speakers. Find locale code in
+   * <a href="https://github.com/unicode-org/cldr-json/blob/main/cldr-json/cldr-core/supplemental/territoryInfo.json">CLDR territoryInfo.json</a>
+   * and multiply its "_populationPercent" with the territory "_population".
+   * Repeat if multiple occurrences of locale code exist and sum products.
    */
   population: Scalars['Int']['output'];
-  pretranslatedStrings: Scalars['Int']['output'];
+  pretranslatedStrings?: Maybe<Scalars['Int']['output']>;
   /**
-   *
-   *         The script used by this locale. Find it in
-   *         <a
-   *         href="http://www.unicode.org/cldr/charts/latest/supplemental/languages_and_scripts.html">
-   *         CLDR Languages and Scripts</a>.
-   *
+   * The script used by this locale. Find it in
+   * <a
+   * href="http://www.unicode.org/cldr/charts/latest/supplemental/languages_and_scripts.html">
+   * CLDR Languages and Scripts</a>.
    */
   script: Scalars['String']['output'];
-  stringsWithErrors: Scalars['Int']['output'];
-  stringsWithWarnings: Scalars['Int']['output'];
+  stringsWithErrors?: Maybe<Scalars['Int']['output']>;
+  stringsWithWarnings?: Maybe<Scalars['Int']['output']>;
   /**
-   *
-   *         SYSTRAN maintains its own list of
-   *         <a href="https://platform.systran.net/index">supported locales</a>.
-   *         Choose a matching locale from the list or leave blank to disable
-   *         support for SYSTRAN machine translation service.
-   *
+   * SYSTRAN maintains its own list of
+   * <a href="https://platform.systran.net/index">supported locales</a>.
+   * Choose a matching locale from the list or leave blank to disable
+   * support for SYSTRAN machine translation service.
    */
   systranTranslateCode: Scalars['String']['output'];
   teamDescription: Scalars['String']['output'];
-  totalStrings: Scalars['Int']['output'];
-  unreviewedStrings: Scalars['Int']['output'];
+  totalStrings?: Maybe<Scalars['Int']['output']>;
+  unreviewedStrings?: Maybe<Scalars['Int']['output']>;
 };
 
 
@@ -206,64 +188,54 @@ export type LocaleLocalizationsArgs = {
 
 export type Project = {
   __typename?: 'Project';
-  approvedStrings: Scalars['Int']['output'];
+  approvedStrings?: Maybe<Scalars['Int']['output']>;
   complete?: Maybe<Scalars['Boolean']['output']>;
   deadline?: Maybe<Scalars['Date']['output']>;
   /**
-   *
-   *         Hide project from the UI and only keep it accessible from the admin.
-   *         Disable the project instead of deleting it to keep translation memory
-   *         and attributions. Also prevents project from syncing with VCS.
-   *
+   * Hide project from the UI and only keep it accessible from the admin.
+   * Disable the project instead of deleting it to keep translation memory
+   * and attributions. Also prevents project from syncing with VCS.
    */
   disabled: Scalars['Boolean']['output'];
   info: Scalars['String']['output'];
   localizations?: Maybe<Array<Maybe<ProjectLocale>>>;
   missingStrings?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
-  pretranslatedStrings: Scalars['Int']['output'];
+  pretranslatedStrings?: Maybe<Scalars['Int']['output']>;
   /**
-   *
-   *         Pretranslate project strings using automated sources
-   *         like translation memory and machine translation.
-   *
+   * Pretranslate project strings using automated sources
+   * like translation memory and machine translation.
    */
   pretranslationEnabled: Scalars['Boolean']['output'];
   priority: Scalars['Int']['output'];
   slug: Scalars['String']['output'];
-  stringsWithErrors: Scalars['Int']['output'];
-  stringsWithWarnings: Scalars['Int']['output'];
-  /**
-   *
-   *         Prevent project from syncing with VCS.
-   *
-   */
+  stringsWithErrors?: Maybe<Scalars['Int']['output']>;
+  stringsWithWarnings?: Maybe<Scalars['Int']['output']>;
+  /** Prevent project from syncing with VCS. */
   syncDisabled: Scalars['Boolean']['output'];
   /**
-   *
-   *         System projects are built into Pontoon. They are accessible from the
-   *         translate view, but hidden from dashboards.
-   *
+   * System projects are built into Pontoon. They are accessible from the
+   * translate view, but hidden from dashboards.
    */
   systemProject: Scalars['Boolean']['output'];
   tags?: Maybe<Array<Maybe<Tag>>>;
-  totalStrings: Scalars['Int']['output'];
-  unreviewedStrings: Scalars['Int']['output'];
+  totalStrings?: Maybe<Scalars['Int']['output']>;
+  unreviewedStrings?: Maybe<Scalars['Int']['output']>;
   visibility: Scalars['String']['output'];
 };
 
 export type ProjectLocale = {
   __typename?: 'ProjectLocale';
-  approvedStrings: Scalars['Int']['output'];
+  approvedStrings?: Maybe<Scalars['Int']['output']>;
   complete?: Maybe<Scalars['Boolean']['output']>;
   locale: Locale;
   missingStrings?: Maybe<Scalars['Int']['output']>;
-  pretranslatedStrings: Scalars['Int']['output'];
+  pretranslatedStrings?: Maybe<Scalars['Int']['output']>;
   project: Project;
-  stringsWithErrors: Scalars['Int']['output'];
-  stringsWithWarnings: Scalars['Int']['output'];
-  totalStrings: Scalars['Int']['output'];
-  unreviewedStrings: Scalars['Int']['output'];
+  stringsWithErrors?: Maybe<Scalars['Int']['output']>;
+  stringsWithWarnings?: Maybe<Scalars['Int']['output']>;
+  totalStrings?: Maybe<Scalars['Int']['output']>;
+  unreviewedStrings?: Maybe<Scalars['Int']['output']>;
 };
 
 export type Query = {
@@ -273,6 +245,8 @@ export type Query = {
   locales?: Maybe<Array<Maybe<Locale>>>;
   project?: Maybe<Project>;
   projects?: Maybe<Array<Maybe<Project>>>;
+  termSearch?: Maybe<Array<Maybe<Term>>>;
+  tmSearch?: Maybe<Array<Maybe<TranslationMemoryEntry>>>;
 };
 
 
@@ -291,6 +265,18 @@ export type QueryProjectsArgs = {
   includeSystem?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
+export type QueryTermSearchArgs = {
+  locale: Scalars['String']['input'];
+  search: Scalars['String']['input'];
+};
+
+
+export type QueryTmSearchArgs = {
+  locale: Scalars['String']['input'];
+  search: Scalars['String']['input'];
+};
+
 export type Tag = {
   __typename?: 'Tag';
   name: Scalars['String']['output'];
@@ -298,10 +284,46 @@ export type Tag = {
   slug: Scalars['String']['output'];
 };
 
+export type Term = {
+  __typename?: 'Term';
+  definition: Scalars['String']['output'];
+  partOfSpeech: TerminologyTermPartOfSpeechChoices;
+  text: Scalars['String']['output'];
+  translationText?: Maybe<Scalars['String']['output']>;
+  translations?: Maybe<Array<Maybe<TermTranslation>>>;
+  usage: Scalars['String']['output'];
+};
+
+export type TermTranslation = {
+  __typename?: 'TermTranslation';
+  locale: Locale;
+  text: Scalars['String']['output'];
+};
+
+/** An enumeration. */
+export enum TerminologyTermPartOfSpeechChoices {
+  /** Adjective */
+  Adjective = 'ADJECTIVE',
+  /** Adverb */
+  Adverb = 'ADVERB',
+  /** Noun */
+  Noun = 'NOUN',
+  /** Verb */
+  Verb = 'VERB'
+}
+
+export type TranslationMemoryEntry = {
+  __typename?: 'TranslationMemoryEntry';
+  locale: Locale;
+  project?: Maybe<Project>;
+  source: Scalars['String']['output'];
+  target: Scalars['String']['output'];
+};
+
 export type GetTeamsInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTeamsInfoQuery = { __typename?: 'Query', locales?: Array<{ __typename?: 'Locale', code: string, name: string, approvedStrings: number, pretranslatedStrings: number, stringsWithWarnings: number, stringsWithErrors: number, missingStrings?: number | null, unreviewedStrings: number, totalStrings: number } | null> | null };
+export type GetTeamsInfoQuery = { __typename?: 'Query', locales?: Array<{ __typename?: 'Locale', code: string, name: string, approvedStrings?: number | null, pretranslatedStrings?: number | null, stringsWithWarnings?: number | null, stringsWithErrors?: number | null, missingStrings?: number | null, unreviewedStrings?: number | null, totalStrings?: number | null } | null> | null };
 
 export type GetProjectsInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
