@@ -19,7 +19,7 @@ async function renderMarkdown(markdown: string) {
   return DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
 }
 
-function wrapLinks(domNode: DOMNode): JSX.Element | void {
+function wrapLinks(domNode: DOMNode): React.JSX.Element | void {
   if (
     domNode instanceof Element &&
     domNode.name === 'a' &&
