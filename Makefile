@@ -22,6 +22,10 @@ watch:
 graphql_generate:
 	npm run graphql:generate
 
+.PHONY: graphql_download_schema
+graphql_download_schema:
+	npm run graphql:download
+
 .PHONY: bump_version
 bump_version:
 	npm version "$(bump)"
@@ -46,13 +50,17 @@ test_in_container:
 watch_in_container:
 	bash ./scripts/run-in-container.sh make watch
 
+.PHONY: graphql_download_schema_in_container
+graphql_download_schema_in_container:
+	bash ./scripts/run-in-container.sh make graphql_download_schema
+
 .PHONY: graphql_generate_in_container
 graphql_generate_in_container:
 	bash ./scripts/run-in-container.sh make graphql_generate
 
-.PHONY: export_pontoon_graphql_schema
-export_pontoon_graphql_schema:
-	CONTAINER_IMAGE='docker.io/library/python:3.13-bookworm' bash ./scripts/run-in-container.sh 'bash ./scripts/export-pontoon-graphql-schema.sh ./src/pontoon.graphql'
+.PHONY: update_pontoon_graphql_schema
+update_pontoon_graphql_schema:
+	make graphql_download_schema_in_container
 	make graphql_generate_in_container
 
 .PHONY: bump_version_in_container
