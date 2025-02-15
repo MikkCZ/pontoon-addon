@@ -5,6 +5,7 @@ import type {
   Storage,
   Tabs,
 } from 'webextension-polyfill';
+import { v4 as uuidv4 } from 'uuid';
 
 import { hash } from '@commons/utils';
 
@@ -88,6 +89,19 @@ interface StorageChange<K extends keyof StorageContent>
   newValue?: StorageResult<K>[K];
 }
 
+export interface ContextMenuItemProperties
+  extends Menus.CreateCreatePropertiesType {
+  id: NonNullable<Menus.CreateCreatePropertiesType['id']>;
+  onclick?: (
+    info: Parameters<
+      NonNullable<Menus.CreateCreatePropertiesType['onclick']>
+    >[0],
+    tab?: Parameters<
+      NonNullable<Menus.CreateCreatePropertiesType['onclick']>
+    >[1],
+  ) => void;
+}
+
 export async function getFromStorage<K extends keyof StorageContent>(
   storageKeys: K[],
 ): Promise<StorageResult<K>> {
@@ -123,28 +137,35 @@ export async function deleteFromStorage<K extends keyof StorageContent>(
   return await browser.storage.local.remove(storageKeys);
 }
 
-export async function createNotification(
+export function createNotification(
   options: Notifications.CreateNotificationOptions,
   onClick: (notificationId: string) => void = closeNotification,
 ) {
-  const createdNotificationId = await browser.notifications.create(options);
-  if (onClick) {
+  const notificationId = uuidv4();
+  if (typeof onClick === 'function') {
     browser.notifications.onClicked.addListener((clickedNotificationId) => {
-      if (clickedNotificationId === createdNotificationId) {
+      if (clickedNotificationId === notificationId) {
         onClick(clickedNotificationId);
       }
     });
   }
+  browser.notifications.create(notificationId, options);
 }
 
 export async function closeNotification(notificationId: string) {
   return await browser.notifications.clear(notificationId);
 }
 
-export function createContextMenu(
-  createProperties: Menus.CreateCreatePropertiesType,
-) {
-  return browser.contextMenus.create(createProperties);
+export function createContextMenu(createProperties: ContextMenuItemProperties) {
+  const { onclick, ...declarativeCreateProperties } = createProperties;
+  if (typeof onclick === 'function') {
+    browser.contextMenus.onClicked.addListener((info, tab) => {
+      if (info.menuItemId === declarativeCreateProperties.id) {
+        onclick(info, tab);
+      }
+    });
+  }
+  return browser.contextMenus.create(declarativeCreateProperties);
 }
 
 export async function removeContextMenu(menuItemId: number | string) {
@@ -212,7 +233,7 @@ export async function openSnakeGame() {
 }
 
 export async function openToolbarButtonPopup() {
-  return await browser.browserAction.openPopup();
+  return await (browser.action ?? browser.browserAction).openPopup();
 }
 
 export function supportsAddressBar(): boolean {
@@ -288,7 +309,16 @@ export async function registerScriptForBaseUrl(
 }
 
 export async function executeScript(tabId: number, file: string) {
-  return await browser.tabs.executeScript(tabId, { file });
+  if (typeof browser.tabs?.executeScript === 'function') {
+    return await browser.tabs.executeScript(tabId, { file });
+  } else if (typeof browser.scripting?.executeScript === 'function') {
+    return await browser.scripting.executeScript({
+      target: { tabId },
+      files: [file],
+    });
+  } else {
+    console.error(`No extension API found to execute content scripts.`);
+  }
 }
 
 export function callWithInterval(

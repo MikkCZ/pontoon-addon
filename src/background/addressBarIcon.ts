@@ -7,6 +7,7 @@ import {
   getAllTabs,
   listenToTabsCompletedLoading,
 } from '@commons/webExtensionsApi';
+import { doAsync } from '@commons/utils';
 
 import { getPontoonProjectForPageUrl } from './RemotePontoon';
 
@@ -18,8 +19,8 @@ export function init() {
     updatePageActions([tab]);
   });
 
-  getAllTabs().then((tabs) => {
-    updatePageActions(tabs);
+  doAsync(async () => {
+    updatePageActions(await getAllTabs());
   });
 }
 

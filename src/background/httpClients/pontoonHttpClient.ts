@@ -7,6 +7,7 @@ import {
   getOptions,
   listenToOptionChange,
 } from '@commons/options';
+import { doAsync } from '@commons/utils';
 
 const PONTOON_REQUEST_TOKEN_HEADER = 'pontoon-addon-token';
 const PONTOON_REQUEST_TOKEN_STORAGE_KEY_PREFIX = 'pontoon_req_token_';
@@ -16,26 +17,25 @@ interface TokenInfo {
   issued: string; // ISO date
 }
 
-export async function init() {
-  await listenToOptionChange(
-    'pontoon_base_url',
-    async ({ newValue: pontoonBaseUrl }) => {
-      await listenForRequestsToPontoon(pontoonBaseUrl);
-    },
+export function init() {
+  listenToOptionChange('pontoon_base_url', ({ newValue: pontoonBaseUrl }) =>
+    listenForRequestsToPontoon(pontoonBaseUrl),
   );
-  await listenForRequestsToPontoon(await getPontoonBaseUrl());
+  doAsync(async () => {
+    listenForRequestsToPontoon(await getPontoonBaseUrl());
+  });
 }
 
 async function getPontoonBaseUrl(): Promise<string> {
   return await getOneOption('pontoon_base_url');
 }
 
-async function listenForRequestsToPontoon(pontoonBaseUrl: string) {
+function listenForRequestsToPontoon(pontoonBaseUrl: string) {
   if (browser.webRequest) {
-    await browser.webRequest.onBeforeSendHeaders.removeListener(
+    browser.webRequest.onBeforeSendHeaders.removeListener(
       setSessionCookieForPontoonRequest,
     );
-    await browser.webRequest.onBeforeSendHeaders.addListener(
+    browser.webRequest.onBeforeSendHeaders.addListener(
       setSessionCookieForPontoonRequest,
       { urls: [`${pontoonBaseUrl}/*`] },
       ['blocking', 'requestHeaders'],
@@ -56,7 +56,7 @@ async function fetchFromPontoonSession(url: string): Promise<Response> {
   if (browser.webRequest) {
     browser.webRequest.onBeforeSendHeaders.hasListener(
       setSessionCookieForPontoonRequest,
-    ) || (await listenForRequestsToPontoon(pontoonBaseUrl));
+    ) || listenForRequestsToPontoon(pontoonBaseUrl);
     headers.append(
       PONTOON_REQUEST_TOKEN_HEADER,
       await issueNewPontoonRequestToken(),
