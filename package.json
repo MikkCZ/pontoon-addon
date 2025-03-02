@@ -68,7 +68,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/urijs": "^1.19.25",
-    "@types/webextension-polyfill": "^0.12.1",
+    "@types/webextension-polyfill": "^0.12.3",
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
