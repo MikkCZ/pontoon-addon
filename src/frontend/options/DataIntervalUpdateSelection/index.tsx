@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
+import { doAsync } from '@commons/utils';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { SelectInput } from '@frontend/commons/components/pontoon/SelectInput';
 
@@ -12,9 +13,9 @@ export const DataIntervalUpdateSelection: React.FC = () => {
     useState<OptionsContent['data_update_interval']>();
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       _setIntervalMinutesState(await getOneOption('data_update_interval'));
-    })();
+    });
   }, []);
 
   const setIntervalMinutes = useCallback(
