@@ -1,21 +1,11 @@
-import type { Tabs } from 'webextension-polyfill';
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import flushPromises from 'flush-promises';
 
 import { getPontoonProjectForTheCurrentTab } from '@commons/backgroundMessaging';
-import {
-  getActiveTab,
-  getOneFromStorage,
-  openNewTab,
-} from '@commons/webExtensionsApi';
+import type { StorageContent } from '@commons/webExtensionsApi';
+import { getActiveTab, getOneFromStorage } from '@commons/webExtensionsApi';
 import { getOptions } from '@commons/options';
-import {
-  newLocalizationBug,
-  pontoonProjectTranslationView,
-  pontoonTeamsProject,
-} from '@commons/webLinks';
-import * as UtilsApiModule from '@commons/utils';
 
 import { App } from '.';
 
@@ -23,29 +13,26 @@ jest.mock('@commons/webExtensionsApi');
 jest.mock('@commons/options');
 jest.mock('@commons/backgroundMessaging');
 
-const openNewPontoonTabSpy = jest
-  .spyOn(UtilsApiModule, 'openNewPontoonTab')
-  .mockResolvedValue({} as Tabs.Tab);
-
-const project = {
-  name: 'Some Project',
-  slug: 'some-project',
-};
-
-const team = {
+const team: StorageContent['teamsList'][string] = {
   code: 'cs',
   name: 'Czech',
   bz_component: 'L10N/CS',
+  strings: {
+    approvedStrings: 0,
+    pretranslatedStrings: 0,
+    stringsWithWarnings: 0,
+    stringsWithErrors: 0,
+    missingStrings: 0,
+    unreviewedStrings: 0,
+    totalStrings: 0,
+  },
 };
 
-(getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
-(getOneFromStorage as jest.Mock).mockResolvedValue({ [team.code]: team });
+(getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(undefined);
+(getOneFromStorage as jest.Mock).mockResolvedValue({ cs: team });
 (getOptions as jest.Mock).mockResolvedValue({
-  locale_team: team.code,
+  locale_team: 'cs',
   pontoon_base_url: 'https://localhost',
-});
-(getActiveTab as jest.Mock).mockResolvedValue({
-  url: 'https://localhost/firefox',
 });
 
 afterEach(() => {
@@ -53,82 +40,18 @@ afterEach(() => {
 });
 
 describe('address-bar/App', () => {
-  it('renders items for the project', async () => {
+  it('renders links for project in the current tab', async () => {
+    const project = { name: 'Firefox', slug: 'firefox' };
+    (getPontoonProjectForTheCurrentTab as jest.Mock).mockResolvedValue(project);
+    (getActiveTab as jest.Mock).mockResolvedValue({
+      url: 'https://firefox.com',
+    });
+
     render(<App />);
     await act(async () => {
       await flushPromises();
     });
 
-    const expectedItems = [
-      'Open Some Project dashboard for Czech',
-      'Open Some Project translation view for Czech',
-      'Report bug for localization of Some Project to Czech',
-    ];
-
-    expect(screen.getByRole('list')).toBeInTheDocument();
-    expect(screen.getByRole('list')).toHaveClass('panel-section');
-    expect(screen.getAllByRole('listitem')).toHaveLength(expectedItems.length);
-    for (const [i, expectedText] of expectedItems.entries()) {
-      expect(screen.getAllByRole('listitem')[i]).toHaveTextContent(
-        expectedText,
-      );
-    }
-  });
-
-  it('item opens project dashboard page', async () => {
-    render(<App />);
-    await act(async () => {
-      await flushPromises();
-    });
-
-    await act(async () => {
-      screen.getByText('Open Some Project dashboard for Czech').click();
-      await flushPromises();
-    });
-
-    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
-      pontoonTeamsProject('https://localhost', { code: 'cs' }, project),
-    );
-  });
-
-  it('items opens project translation view', async () => {
-    render(<App />);
-    await act(async () => {
-      await flushPromises();
-    });
-
-    await act(async () => {
-      screen.getByText('Open Some Project translation view for Czech').click();
-      await flushPromises();
-    });
-
-    expect(openNewPontoonTabSpy).toHaveBeenCalledWith(
-      pontoonProjectTranslationView(
-        'https://localhost',
-        { code: 'cs' },
-        project,
-      ),
-    );
-  });
-
-  it('items opens link to report a bug', async () => {
-    render(<App />);
-    await act(async () => {
-      await flushPromises();
-    });
-
-    await act(async () => {
-      screen
-        .getByText('Report bug for localization of Some Project to Czech')
-        .click();
-      await flushPromises();
-    });
-
-    expect(openNewTab).toHaveBeenCalledWith(
-      newLocalizationBug({
-        team,
-        url: 'https://localhost/firefox',
-      }),
-    );
+    expect(screen.getByTestId('project-links')).toBeInTheDocument();
   });
 });
