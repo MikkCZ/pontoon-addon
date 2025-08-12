@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.checkout_ref }}
       - name: Prepare the project
@@ -45,7 +45,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.checkout_ref }}
       - name: Prepare the project
@@ -67,7 +67,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.checkout_ref }}
       - name: Prepare the project
@@ -89,7 +89,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.checkout_ref }}
       - name: Prepare the project
@@ -113,7 +113,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.checkout_ref }}
       - name: Prepare the project
