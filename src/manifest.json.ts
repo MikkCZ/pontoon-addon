@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
+import type { Manifest } from 'webextension-polyfill';
 import type { IPackageJson } from 'package-json-type';
 
 import { DEFAULT_PONTOON_BASE_URL } from './const';
@@ -65,7 +66,7 @@ const pontoonLogo128Png = 'assets/img/pontoon-logo-128.png';
 export function getManifestFor(
   targetBrowser: BrowserFamily,
   manifestVersion: 2 | 3,
-): Record<string, unknown> {
+): Manifest.WebExtensionManifest {
   const forMozilla = targetBrowser === BrowserFamily.MOZILLA;
   const forChromium = targetBrowser === BrowserFamily.CHROMIUM;
 
@@ -76,6 +77,28 @@ export function getManifestFor(
       )}.`,
     );
   }
+
+  const hostPermissions = [
+    `${DEFAULT_PONTOON_BASE_URL}/*`,
+    'https://flod.org/*',
+    ...projectsListData
+      .flatMap((project) => project.domains)
+      .map((domain) => `https://${domain}/*`),
+  ];
+
+  const browserAction = {
+    default_title: 'Pontoon notifications',
+    ...(forMozilla
+      ? {
+          default_icon: pontoonLogoSvg,
+        }
+      : {}),
+    ...(forChromium
+      ? {
+          default_icon: pontoonLogo32Png,
+        }
+      : {}),
+  };
 
   return {
     ...(forMozilla
@@ -100,8 +123,11 @@ export function getManifestFor(
     manifest_version: manifestVersion,
     name: 'Pontoon Add-on',
     description: packageJson.description,
-    version: packageJson.version,
-    author: packageJson.author,
+    version: packageJson.version ?? '',
+    author:
+      typeof packageJson.author === 'object'
+        ? packageJson.author.name
+        : packageJson.author,
     homepage_url: packageJson.homepage,
     icons: {
       ...(forMozilla
@@ -134,34 +160,36 @@ export function getManifestFor(
             'webRequestBlocking',
           ]
         : []),
-      `${DEFAULT_PONTOON_BASE_URL}/*`,
-      'https://flod.org/*',
-      ...projectsListData
-        .flatMap((project) => project.domains)
-        .map((domain) => `https://${domain}/*`),
+      ...(manifestVersion === 2 ? hostPermissions : []),
     ],
-    optional_permissions: ['<all_urls>'], // when Pontoon server changes
+    ...(manifestVersion === 2
+      ? {
+          optional_permissions: ['<all_urls>'], // when Pontoon server changes
+        }
+      : {}),
+    ...(manifestVersion === 3
+      ? {
+          host_permissions: hostPermissions,
+          optional_host_permissions: ['<all_urls>'], // when Pontoon server changes
+        }
+      : {}),
     options_ui: {
       page: 'frontend/options.html',
       open_in_tab: true,
     },
-    browser_action: {
-      default_title: 'Pontoon notifications',
-      ...(forMozilla
-        ? {
-            default_icon: pontoonLogoSvg,
-          }
-        : {}),
-      ...(forChromium
-        ? {
-            default_icon: pontoonLogo32Png,
-          }
-        : {}),
-    },
+    ...(manifestVersion === 2
+      ? {
+          browser_action: browserAction,
+        }
+      : {}),
+    ...(manifestVersion === 3
+      ? {
+          action: browserAction,
+        }
+      : {}),
     ...(forMozilla
       ? {
           page_action: {
-            browser_style: true,
             default_icon: {
               '19': pontoonLogoGrayAlphaSvg,
               '38': pontoonLogoGrayAlphaSvg,
@@ -172,6 +200,14 @@ export function getManifestFor(
       : {}),
     background: {
       scripts: ['background/main.js'],
+      persistent: false,
+      ...(forChromium && manifestVersion === 3
+        ? {
+            scripts: undefined,
+            persistent: undefined,
+            service_worker: 'background/main.js',
+          }
+        : {}),
     },
     content_scripts: [
       {
@@ -187,8 +223,22 @@ export function getManifestFor(
         run_at: 'document_end',
       },
     ],
-    web_accessible_resources: [
-      'content-scripts/pontoon-addon-promotion-in-page.js',
-    ],
+    ...(manifestVersion === 2
+      ? {
+          web_accessible_resources: [
+            'content-scripts/pontoon-addon-promotion-in-page.js',
+          ],
+        }
+      : {}),
+    ...(manifestVersion === 3
+      ? {
+          web_accessible_resources: [
+            {
+              resources: ['content-scripts/pontoon-addon-promotion-in-page.js'],
+              matches: [`${DEFAULT_PONTOON_BASE_URL}/*`],
+            },
+          ],
+        }
+      : {}),
   };
 }

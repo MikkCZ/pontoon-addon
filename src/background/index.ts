@@ -11,7 +11,10 @@ import {
 import { init as initPontoonHttpClient } from './httpClients/pontoonHttpClient';
 import { initMessageListeners, initOptions } from './RemotePontoon';
 import { init as initSystemNotifications } from './systemNotifications';
-import { init as initToolbarButton } from './toolbarButton';
+import {
+  init as initToolbarButton,
+  initContextMenu as initToolbarButtonContextMenu,
+} from './toolbarButton';
 import { init as init } from './addressBarIcon';
 import { init as initPageContextMenu } from './contextMenu';
 import { init as initPageContextButtons } from './contextButtons';
@@ -30,11 +33,15 @@ initToolbarButton();
 if (supportsAddressBar()) {
   init();
 }
-initPageContextMenu();
 
 // pages content
 initPageContextButtons();
 initPontoonAddonPromotion();
+
+browser.runtime.onStartup.addListener(() => {
+  initToolbarButtonContextMenu();
+  initPageContextMenu();
+});
 
 // inject content scripts after installation
 // kudos to https://github.com/fregante/webext-inject-on-install

@@ -1,12 +1,13 @@
-import type { Menus } from 'webextension-polyfill';
-
 import type { OptionValue } from '@commons/options';
 import {
   getOptions,
   getOneOption,
   listenToOptionChange,
 } from '@commons/options';
-import type { StorageContent } from '@commons/webExtensionsApi';
+import type {
+  ContextMenuItemProperties,
+  StorageContent,
+} from '@commons/webExtensionsApi';
 import {
   browser,
   openNewTab,
@@ -26,7 +27,7 @@ import {
   mozillaWikiL10nTeamPage,
   pontoonAddonWiki,
 } from '@commons/webLinks';
-import { openNewPontoonTab } from '@commons/utils';
+import { doAsync, openNewPontoonTab } from '@commons/utils';
 import { colors } from '@frontend/commons/const';
 
 import { refreshData } from './RemotePontoon';
@@ -36,11 +37,13 @@ const DEFAULT_TITLE = 'Pontoon notifications';
 export function init() {
   registerBadgeChanges();
   registerClickAction();
+}
 
+export function initContextMenu() {
   addContextMenu();
 }
 
-async function registerBadgeChanges() {
+function registerBadgeChanges() {
   listenToStorageChange(
     'notificationsData',
     ({ newValue: notificationsData }) => {
@@ -61,15 +64,19 @@ async function registerBadgeChanges() {
       }
     },
   );
-  await updateBadge();
+  updateBadge();
 }
 
-async function registerClickAction() {
-  browser.browserAction.onClicked.addListener(() => buttonClickHandler());
+function registerClickAction() {
+  (browser.action ?? browser.browserAction).onClicked.addListener(() =>
+    buttonClickHandler(),
+  );
   listenToOptionChange('toolbar_button_action', ({ newValue: action }) => {
     registerButtonPopup(action);
   });
-  registerButtonPopup(await getOneOption('toolbar_button_action'));
+  doAsync(async () => {
+    registerButtonPopup(await getOneOption('toolbar_button_action'));
+  });
 }
 
 async function buttonClickHandler() {
@@ -105,7 +112,7 @@ function registerButtonPopup(action: OptionValue<'toolbar_button_action'>) {
     default:
       throw new Error(`Unknown toolbar button action '${action}'.`);
   }
-  browser.browserAction.setPopup({ popup });
+  (browser.action ?? browser.browserAction).setPopup({ popup });
 }
 
 async function updateBadge(
@@ -174,15 +181,17 @@ async function errorBadge() {
 async function setBadge(data: { text: string; title: string; color: string }) {
   const { text, title, color } = data;
   await Promise.all([
-    browser.browserAction.setBadgeText({ text }),
-    browser.browserAction.setTitle({ title }),
-    browser.browserAction.setBadgeBackgroundColor({ color }),
+    (browser.action ?? browser.browserAction).setBadgeText({ text }),
+    (browser.action ?? browser.browserAction).setTitle({ title }),
+    (browser.action ?? browser.browserAction).setBadgeBackgroundColor({
+      color,
+    }),
   ]);
 }
 
-async function addContextMenu() {
-  const localeTeam = await getOneOption('locale_team');
+function addContextMenu() {
   createContextMenu({
+    id: 'toolbar-button-reload-notifications',
     title: 'Reload notifications',
     contexts: ['browser_action'],
     onclick: async () => {
@@ -191,11 +200,13 @@ async function addContextMenu() {
   });
 
   const localeTeamParentItemId = createContextMenu({
+    id: 'toolbar-button-locale-team',
     title: 'Locale Team',
     contexts: ['browser_action'],
   });
-  const localeTeamMenuItems: Menus.CreateCreatePropertiesType[] = [
+  const localeTeamMenuItems: ContextMenuItemProperties[] = [
     {
+      id: 'toolbar-button-dashboard',
       title: 'Dashboard',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
@@ -204,6 +215,7 @@ async function addContextMenu() {
       },
     },
     {
+      id: 'toolbar-button-insights',
       title: 'Insights',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
@@ -214,6 +226,7 @@ async function addContextMenu() {
       },
     },
     {
+      id: 'toolbar-button-bugs',
       title: 'Bugs',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
@@ -222,6 +235,7 @@ async function addContextMenu() {
       },
     },
     {
+      id: 'toolbar-button-search',
       title: 'Search',
       onclick: async () => {
         const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
@@ -245,6 +259,7 @@ async function addContextMenu() {
   }
 
   createContextMenu({
+    id: 'toolbar-button-pontoon-search',
     title: 'Pontoon search',
     onclick: async () => {
       const { pontoon_base_url: pontoonBaseUrl, locale_team: teamCode } =
@@ -261,23 +276,36 @@ async function addContextMenu() {
   });
 
   createContextMenu({
+    id: 'toolbar-button-transvision',
     title: 'Transvision',
-    onclick: () => openNewTab(transvisionHome(localeTeam)),
+    onclick: async () => {
+      const localeTeam = await getOneOption('locale_team');
+      openNewTab(transvisionHome(localeTeam));
+    },
     contexts: ['browser_action'],
   });
 
   const localizationResourcesParentItemId = createContextMenu({
+    id: 'toolbar-button-other-l10n-sources',
     title: 'Other l10n sources',
     contexts: ['browser_action'],
   });
-  const localizationResourcesItems: Menus.CreateCreatePropertiesType[] = [
+  const localizationResourcesItems: ContextMenuItemProperties[] = [
     {
-      title: `Mozilla Style Guide (${localeTeam})`,
-      onclick: () => openNewTab(mozillaL10nStyleGuide(localeTeam)),
+      id: 'toolbar-button-mozilla-style-guide',
+      title: 'Mozilla Style Guide',
+      onclick: async () => {
+        const localeTeam = await getOneOption('locale_team');
+        openNewTab(mozillaL10nStyleGuide(localeTeam));
+      },
     },
     {
-      title: `L10n:Teams:${localeTeam} - MozillaWiki`,
-      onclick: () => openNewTab(mozillaWikiL10nTeamPage(localeTeam)),
+      id: 'toolbar-button-l10n-teams-mozillawiki',
+      title: 'Localization team page - MozillaWiki',
+      onclick: async () => {
+        const localeTeam = await getOneOption('locale_team');
+        openNewTab(mozillaWikiL10nTeamPage(localeTeam));
+      },
     },
   ];
   for (const item of localizationResourcesItems) {
@@ -289,15 +317,18 @@ async function addContextMenu() {
   }
 
   const pontoonAddonParentItemId = createContextMenu({
+    id: 'toolbar-button-parent',
     title: 'Pontoon Add-on',
     contexts: ['browser_action'],
   });
-  const pontoonAddonItems: Menus.CreateCreatePropertiesType[] = [
+  const pontoonAddonItems: ContextMenuItemProperties[] = [
     {
+      id: 'toolbar-button-wiki',
       title: 'Wiki',
       onclick: () => openNewTab(pontoonAddonWiki()),
     },
     {
+      id: 'toolbar-button-introduction-tour',
       title: 'Introduction tour',
       onclick: () => openIntro(),
     },

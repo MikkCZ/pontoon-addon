@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { getSettingsUrl } from '@commons/backgroundMessaging';
 import { getOneOption, setOption } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
-import { openNewPontoonTab } from '@commons/utils';
+import { doAsync, openNewPontoonTab } from '@commons/utils';
 import { Link } from '@frontend/commons/components/pontoon/Link';
 import { InputLabel } from '@frontend/commons/components/pontoon/InputLabel';
 import { RadioInput } from '@frontend/commons/components/pontoon/RadioInput';
@@ -27,9 +27,9 @@ export const ToolbarButtonActionSelection: React.FC = () => {
     useState<OptionsContent['toolbar_button_action']>();
 
   useEffect(() => {
-    (async () => {
+    doAsync(async () => {
       setSelectedValue(await getOneOption('toolbar_button_action'));
-    })();
+    });
   }, []);
 
   const handleChange = useCallback(

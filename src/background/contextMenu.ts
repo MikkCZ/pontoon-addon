@@ -1,11 +1,14 @@
-import type { Menus, Tabs } from 'webextension-polyfill';
+import type { Menus } from 'webextension-polyfill';
 
 import {
   pontoonProjectTranslationView,
   newLocalizationBug,
   pontoonTeamsProject,
 } from '@commons/webLinks';
-import type { StorageContent } from '@commons/webExtensionsApi';
+import type {
+  ContextMenuItemProperties,
+  StorageContent,
+} from '@commons/webExtensionsApi';
 import {
   openNewTab,
   getFromStorage,
@@ -16,10 +19,6 @@ import {
 import { getOptions, listenToOptionChange } from '@commons/options';
 import type { OptionsContent } from '@commons/data/defaultOptions';
 import { openNewPontoonTab } from '@commons/utils';
-
-interface ContextMenuItemProperties extends Menus.CreateCreatePropertiesType {
-  id: NonNullable<Menus.CreateCreatePropertiesType['id']>;
-}
 
 const NON_SELECTION_CONTEXTS: Menus.ContextType[] = [
   'page',
@@ -111,7 +110,7 @@ function contextMenuItemsForProject(
       title: `Search for "%s" in ${team.name} translations of ${project.name}`,
       documentUrlPatterns,
       contexts: SELECTION_CONTEXTS,
-      onclick: (info: Menus.OnClickData) => {
+      onclick: (info) => {
         openNewPontoonTab(
           pontoonProjectTranslationView(
             pontoonBaseUrl,
@@ -127,7 +126,7 @@ function contextMenuItemsForProject(
       title: `Search for "%s" in ${team.name} translations of all projects`,
       documentUrlPatterns,
       contexts: SELECTION_CONTEXTS,
-      onclick: (info: Menus.OnClickData) => {
+      onclick: (info) => {
         openNewPontoonTab(
           pontoonProjectTranslationView(
             pontoonBaseUrl,
@@ -143,20 +142,20 @@ function contextMenuItemsForProject(
       title: `Report bug for localization of ${project.name} to ${team.name}`,
       documentUrlPatterns,
       contexts: NON_SELECTION_CONTEXTS,
-      onclick: (_info: Menus.OnClickData, { url }: Tabs.Tab) =>
-        openNewTab(newLocalizationBug({ team, url })),
+      onclick: (_info, tab) =>
+        openNewTab(newLocalizationBug({ team, url: tab?.url })),
     },
     {
       id: `report-bug-for-localization-of-selected-text-${project.slug}`,
       title: 'Report bug for localization of "%s"',
       documentUrlPatterns,
       contexts: SELECTION_CONTEXTS,
-      onclick: (info: Menus.OnClickData, { url }: Tabs.Tab) =>
+      onclick: (info, tab) =>
         openNewTab(
           newLocalizationBug({
             team,
             selectedText: info.selectionText ?? '',
-            url,
+            url: tab?.url,
           }),
         ),
     },
