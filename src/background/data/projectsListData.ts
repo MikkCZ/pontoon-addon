@@ -22,10 +22,7 @@ export const projectsListData: ProjectsListData = [
   },
   {
     slug: 'firefoxcom',
-    domains: [
-      'www.firefox.com',
-      'www-dev.springfield.moz.works',
-    ],
+    domains: ['www.firefox.com', 'www-dev.springfield.moz.works'],
   },
   {
     slug: 'firefox-monitor-website',
