@@ -29,10 +29,7 @@ export const projectsListData: ProjectsListData = [
   },
   {
     slug: 'firefox-monitor-website',
-    domains: [
-      'monitor.firefox.com',
-      'fx-breach-alerts.herokuapp.com',
-    ],
+    domains: ['monitor.firefox.com', 'fx-breach-alerts.herokuapp.com'],
   },
   {
     slug: 'firefox-profiler',
