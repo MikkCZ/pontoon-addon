@@ -21,10 +21,16 @@ export const projectsListData: ProjectsListData = [
     ],
   },
   {
+    slug: 'firefoxcom',
+    domains: [
+      'www.firefox.com',
+      'www-dev.springfield.moz.works',
+    ],
+  },
+  {
     slug: 'firefox-monitor-website',
     domains: [
       'monitor.firefox.com',
-      'monitor-localization.herokuapp.com',
       'fx-breach-alerts.herokuapp.com',
     ],
   },
@@ -42,7 +48,11 @@ export const projectsListData: ProjectsListData = [
   },
   {
     slug: 'foundation-website-content',
-    domains: ['foundation.mozilla.org', 'foundation.mofostaging.net'],
+    domains: [
+      'www.mozillafoundation.org',
+      'foundation.mozilla.org',
+      'foundation.mofostaging.net',
+    ],
   },
   {
     slug: 'mozilla-accounts',
